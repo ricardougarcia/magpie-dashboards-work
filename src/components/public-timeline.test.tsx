@@ -96,21 +96,19 @@ function getTimelineItem(name: string) {
 }
 
 describe("PublicTimeline presentation safeguards", () => {
-  it("renders the simplified copy, mapped legend tokens, and no native Gantt tooltips", () => {
+  it("renders the simplified copy and role without public Color Signal keys or native Gantt tooltips", () => {
     const { container } = render(<PublicTimeline data={data} />);
 
     expect(screen.queryByText("Hover to scan. Select a bar to pin its record and trace every connected work item.")).toBeNull();
     expect(screen.getByText("Planned")).toBeTruthy();
     expect(screen.queryByText("Planned. Not yet placed.")).toBeNull();
 
-    const legend = screen.getByLabelText("Color key");
-    expect(Array.from(legend.querySelectorAll("i")).map((swatch) => swatch.className)).toEqual([
-      "color-steel",
-      "color-forest",
-      "color-graphite",
-      "color-umber",
-      "color-signal",
-    ]);
+    expect(screen.getByText("Principal Product Manager")).toBeTruthy();
+    expect(screen.queryByText("Sole principal PM")).toBeNull();
+    expect(screen.queryByLabelText("Color key")).toBeNull();
+    ["Discovery-led", "Corrective", "Reliability", "Governance", "Growth"].forEach((label) => {
+      expect(screen.queryByText(label)).toBeNull();
+    });
     container.querySelectorAll("[data-timeline-item]").forEach((item) => {
       expect(item.hasAttribute("title")).toBe(false);
     });

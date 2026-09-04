@@ -13,14 +13,6 @@ export const LANE_CODES: Record<string, string> = {
   "Challenges Planned / Unplanned": "CRV",
 };
 
-export const COLOR_LABELS: Record<PublicTimelineItem["colorToken"], string> = {
-  graphite: "Discovery-led",
-  signal: "Corrective",
-  steel: "Reliability",
-  umber: "Governance",
-  forest: "Growth",
-};
-
 export type TelemetryTab = "overview" | "connections";
 
 export function TelemetryMediaPlaceholder({ item }: { item: PublicTimelineItem }) {
@@ -29,7 +21,7 @@ export function TelemetryMediaPlaceholder({ item }: { item: PublicTimelineItem }
       <div className="media-placeholder-grid" aria-hidden="true" />
       <span className="eyebrow">Artifact pending</span>
       <strong>{item.name}</strong>
-      <span className="media-placeholder-meta">MEDIA SLOT / {item.colorToken.toUpperCase()}</span>
+      <span className="media-placeholder-meta">MEDIA SLOT</span>
     </div>
   );
 }
@@ -96,7 +88,6 @@ export function TelemetryAperture({
           >
             <div className="telemetry-hover-meta">
               <span>{laneName}</span>
-              <span>{COLOR_LABELS[item.colorToken]}</span>
             </div>
             <h2>{item.name}</h2>
             <p>{item.value || item.description}</p>

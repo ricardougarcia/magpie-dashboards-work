@@ -2,6 +2,7 @@ import "server-only";
 
 import { list, put } from "@vercel/blob";
 import seedData from "@/data/timeline.seed.json";
+import { normalizeStoredConnectorRoute } from "@/lib/orthogonal-connectors";
 import { timelineDataSchema } from "@/lib/timeline-schema";
 import { colorTokenForLane, type TimelineData } from "@/lib/timeline-types";
 
@@ -39,7 +40,13 @@ export async function saveTimelineData(input: TimelineData): Promise<TimelineDat
     ...input,
     version: input.version + 1,
     updatedAt: new Date().toISOString(),
-    items: input.items.map((item) => ({ ...item, colorToken: colorTokenForLane(item.lane) })),
+    items: input.items.map((item) => ({
+      ...item,
+      colorToken: colorTokenForLane(item.lane),
+      relations: item.relations.map((relation) => relation.connector
+        ? { ...relation, connector: normalizeStoredConnectorRoute(relation.connector) }
+        : relation),
+    })),
   }) as TimelineData;
 
   await put(DATA_PATH, JSON.stringify(next), {

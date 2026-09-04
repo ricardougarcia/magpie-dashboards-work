@@ -53,7 +53,7 @@ export function resolveConnectorPoints(
     alignTerminalApproach(points, route.source.side, "source");
     alignTerminalApproach(points, route.target.side, "target");
   }
-  return simplifyOrthogonalPoints(points);
+  return orthogonalizeConnectorPoints(points, route.source.side, route.target.side);
 }
 
 export function routeFromPixelPoints(
@@ -62,18 +62,44 @@ export function routeFromPixelPoints(
   targetRect: ConnectorRect,
 ): OrthogonalConnectorRoute {
   const frame = routeFrame(sourceRect, targetRect);
-  const points = simplifyOrthogonalPoints(route.points).map((point) => toNormalized(point, frame));
+  const points = orthogonalizeConnectorPoints(route.points, route.source.side, route.target.side)
+    .map((point) => toNormalized(point, frame));
   return { source: route.source, target: route.target, points };
 }
 
 export function connectorPath(points: ConnectorPixelPoint[]) {
-  if (points.length === 0) return "";
-  return points.slice(1).reduce((path, point, index) => {
-    const previous = points[index];
+  const orthogonal = orthogonalizeConnectorPoints(points);
+  if (orthogonal.length === 0) return "";
+  return orthogonal.slice(1).reduce((path, point, index) => {
+    const previous = orthogonal[index];
     if (previous.x === point.x) return `${path} V ${round(point.y)}`;
-    if (previous.y === point.y) return `${path} H ${round(point.x)}`;
-    return `${path} L ${round(point.x)} ${round(point.y)}`;
-  }, `M ${round(points[0].x)} ${round(points[0].y)}`);
+    return `${path} H ${round(point.x)}`;
+  }, `M ${round(orthogonal[0].x)} ${round(orthogonal[0].y)}`);
+}
+
+export function normalizeStoredConnectorRoute(route: OrthogonalConnectorRoute): OrthogonalConnectorRoute {
+  if (route.points.length < 2) return route;
+  const orthogonal: ConnectorPoint[] = [{ x: round(route.points[0].x), y: round(route.points[0].y) }];
+  route.points.slice(1).forEach((rawPoint) => {
+    const point = { x: round(rawPoint.x), y: round(rawPoint.y) };
+    const previous = orthogonal.at(-1)!;
+    if (previous.x === point.x || previous.y === point.y) {
+      orthogonal.push(point);
+      return;
+    }
+    const beforePrevious = orthogonal.at(-2);
+    const previousWasHorizontal = beforePrevious ? beforePrevious.y === previous.y : false;
+    const beginVertically = beforePrevious
+      ? previousWasHorizontal
+      : route.source.side === "top" || route.source.side === "bottom";
+    orthogonal.push(
+      beginVertically
+        ? { x: previous.x, y: point.y }
+        : { x: point.x, y: previous.y },
+      point,
+    );
+  });
+  return { ...route, points: simplifyOrthogonalPoints(orthogonal) };
 }
 
 export function nearestTerminal(rect: ConnectorRect, point: ConnectorPixelPoint): ConnectorTerminal {
@@ -252,6 +278,68 @@ function alignTerminalApproach(
     adjacent.y = endpoint.y;
     if (next) adjacent.x = next.x;
   }
+}
+
+export function orthogonalizeConnectorPoints(
+  points: ConnectorPixelPoint[],
+  sourceSide?: ConnectorTerminalSide,
+  targetSide?: ConnectorTerminalSide,
+) {
+  if (points.length === 0) return [];
+  const candidates = points.map((point) => ({ x: snap(point.x), y: snap(point.y) }));
+  const orthogonal: ConnectorPixelPoint[] = [candidates[0]];
+
+  candidates.slice(1).forEach((candidate) => {
+    const previous = orthogonal.at(-1)!;
+    if (previous.x === candidate.x || previous.y === candidate.y) {
+      orthogonal.push(candidate);
+      return;
+    }
+    const beforePrevious = orthogonal.at(-2);
+    const previousWasHorizontal = beforePrevious ? beforePrevious.y === previous.y : false;
+    const beginVertically = beforePrevious ? previousWasHorizontal : sourceSide === "top" || sourceSide === "bottom";
+    orthogonal.push(
+      beginVertically
+        ? { x: previous.x, y: candidate.y }
+        : { x: candidate.x, y: previous.y },
+      candidate,
+    );
+  });
+
+  let result = simplifyOrthogonalPoints(orthogonal);
+  if (sourceSide && result.length >= 2) {
+    const start = result[0];
+    const adjacent = result[1];
+    const vertical = sourceSide === "top" || sourceSide === "bottom";
+    if ((vertical && start.x !== adjacent.x) || (!vertical && start.y !== adjacent.y)) {
+      const distance = GRID * 4;
+      const approach = vertical
+        ? { x: start.x, y: start.y + (sourceSide === "top" ? -distance : distance) }
+        : { x: start.x + (sourceSide === "left" ? -distance : distance), y: start.y };
+      const bridge = vertical
+        ? { x: adjacent.x, y: approach.y }
+        : { x: approach.x, y: adjacent.y };
+      result = [start, approach, bridge, ...result.slice(1)];
+    }
+  }
+
+  if (targetSide && result.length >= 2) {
+    const end = result.at(-1)!;
+    const adjacent = result.at(-2)!;
+    const vertical = targetSide === "top" || targetSide === "bottom";
+    if ((vertical && adjacent.x !== end.x) || (!vertical && adjacent.y !== end.y)) {
+      const distance = GRID * 4;
+      const approach = vertical
+        ? { x: end.x, y: end.y + (targetSide === "top" ? -distance : distance) }
+        : { x: end.x + (targetSide === "left" ? -distance : distance), y: end.y };
+      const bridge = vertical
+        ? { x: adjacent.x, y: approach.y }
+        : { x: approach.x, y: adjacent.y };
+      result = [...result.slice(0, -1), bridge, approach, end];
+    }
+  }
+
+  return simplifyOrthogonalPoints(result);
 }
 
 function simplifyOrthogonalPoints(points: ConnectorPixelPoint[]) {

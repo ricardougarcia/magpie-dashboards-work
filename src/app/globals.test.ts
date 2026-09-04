@@ -19,11 +19,15 @@ describe("public timeline visual tokens", () => {
   });
 
   it("uses the signal-red plus cursor system for default and actionable states", () => {
-    expect(css).toContain('--cursor-default: url("/cursor-plus.svg") 16 16, crosshair');
-    expect(css).toContain('--cursor-action: url("/cursor-plus-pick.svg") 16 16, pointer');
+    expect(css).toContain('--cursor-default: url("/cursor-plus.svg") 12 12, crosshair');
+    expect(css).toContain('--cursor-action: url("/cursor-plus-pick.svg") 12 12, pointer');
+    expect(defaultCursor).toContain('width="24" height="24"');
+    expect(pickerCursor).toContain('width="24" height="24"');
+    expect(defaultCursor).toContain('M11 5');
+    expect(pickerCursor).toContain('M11 4');
     expect(defaultCursor).toContain('#D6452F');
     expect(pickerCursor).toContain('#D6452F');
-    expect(pickerCursor).toContain('<rect');
+    expect(pickerCursor).not.toContain('<rect');
   });
 
   it("uses the matching signal-red plus favicon", () => {

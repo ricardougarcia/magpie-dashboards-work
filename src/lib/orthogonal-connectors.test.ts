@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { timelineItemSchema } from "@/lib/timeline-schema";
 import {
+  connectorPath,
   createDefaultConnector,
   injectElbow,
   moveElbow,
   moveTerminal,
+  normalizeStoredConnectorRoute,
+  orthogonalizeConnectorPoints,
   resolveConnectorPoints,
   slideSegment,
   terminalPoint,
@@ -30,6 +33,41 @@ describe("owner-defined orthogonal connector geometry", () => {
     expect(points[0]).toEqual(terminalPoint(source, route.source));
     expect(points.at(-1)).toEqual(terminalPoint(target, route.target));
     expectOrthogonal(points);
+  });
+
+  it("repairs diagonal legacy points before rendering and emits only horizontal or vertical SVG commands", () => {
+    const diagonal = [{ x: 20, y: 30 }, { x: 240, y: 120 }, { x: 540, y: 190 }];
+    const repaired = orthogonalizeConnectorPoints(diagonal, "right", "left");
+
+    expectOrthogonal(repaired);
+    expect(connectorPath(diagonal)).not.toContain(" L ");
+    expect(connectorPath(diagonal)).toMatch(/^M [\d.-]+ [\d.-]+(?: [HV] [\d.-]+)+$/);
+  });
+
+  it("normalizes diagonal persisted control points into schema-safe right angles", () => {
+    const route = normalizeStoredConnectorRoute({
+      source: { side: "right", offset: 0.5 },
+      target: { side: "left", offset: 0.5 },
+      points: [{ x: 0.08, y: 0.2 }, { x: 0.52, y: 0.68 }, { x: 0.92, y: 0.8 }],
+    });
+
+    expectOrthogonal(route.points);
+    expect(route.points.length).toBeGreaterThan(3);
+  });
+
+  it("repairs a two-point saved route after independent item movement", () => {
+    const route = {
+      source: { side: "right", offset: 0.5 } as const,
+      target: { side: "left", offset: 0.5 } as const,
+      points: [{ x: 0.08, y: 0.2 }, { x: 0.92, y: 0.8 }],
+    };
+    const movedSource = { ...source, left: 84, top: 122 };
+    const movedTarget = { ...target, left: 612, top: 64 };
+    const points = resolveConnectorPoints(route, movedSource, movedTarget);
+
+    expectOrthogonal(points);
+    expect(points[0]).toEqual(terminalPoint(movedSource, route.source));
+    expect(points.at(-1)).toEqual(terminalPoint(movedTarget, route.target));
   });
 
   it("moves either terminal to a new border while preserving a right-angle path", () => {
@@ -80,6 +118,7 @@ describe("owner-defined orthogonal connector geometry", () => {
         let route = createDefaultConnector(source, target);
         route = moveTerminal(route, "source", { side: sourceSide, offset: 0.5 }, source, target);
         route = moveTerminal(route, "target", { side: targetSide, offset: 0.5 }, source, target);
+        expectOrthogonal(route.points);
         expectOrthogonal(resolveConnectorPoints(route, source, target));
       });
     });

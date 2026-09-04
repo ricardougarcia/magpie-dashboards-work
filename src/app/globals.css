@@ -16,8 +16,8 @@
   --future-width: 250px;
   --month-width: 120px;
   --timeline-width: 1080px;
-  --cursor-default: url("/cursor-plus.svg") 16 16, crosshair;
-  --cursor-action: url("/cursor-plus-pick.svg") 16 16, pointer;
+  --cursor-default: url("/cursor-plus.svg") 12 12, crosshair;
+  --cursor-action: url("/cursor-plus-pick.svg") 12 12, pointer;
 }
 
 * {

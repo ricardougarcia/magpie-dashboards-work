@@ -22,7 +22,7 @@ import {
   type TelemetryTab,
 } from "@/components/telemetry-aperture";
 import { connectorPath, resolveConnectorPoints, type ConnectorRect } from "@/lib/orthogonal-connectors";
-import { MONTHS, colorTokenForLane, placementSpan, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
+import { MONTHS, placementSpan, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
 const LANE_ORDER = [
   "Eng Build",
@@ -347,7 +347,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
           <dl className="hero-metrics">
             <div><dt>Window</dt><dd>09 months</dd></div>
             <div><dt>Work items</dt><dd>{publicItems.length}</dd></div>
-            <div><dt>Role</dt><dd>Sole principal PM</dd></div>
+            <div><dt>Role</dt><dd>Principal Product Manager</dd></div>
           </dl>
         </div>
       </section>
@@ -358,17 +358,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
             <span className="index-mark">[02]</span>
             <h2 id="timeline-heading">The work, in motion</h2>
           </div>
-          <div className="timeline-guide">
-            <div className="timeline-legend" aria-label="Color key">
-              <span className="legend-title">Color key</span>
-              {LANE_ORDER.map((lane) => (
-                <span className="legend-entry" key={lane}>
-                  <i className={`color-${colorTokenForLane(lane)}`} />
-                  {lane === "Challenges Planned / Unplanned" ? "Curve balls" : lane}
-                </span>
-              ))}
-            </div>
-          </div>
+
         </div>
 
         <div className="workbench">
