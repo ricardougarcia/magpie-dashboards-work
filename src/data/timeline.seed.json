@@ -1,0 +1,1320 @@
+{
+  "version": 1,
+  "updatedAt": "2026-09-03T00:00:00.000Z",
+  "meta": {
+    "title": "Magpie Dashboards",
+    "subtitle": "Product leadership through rebuild, recovery, and scale",
+    "owner": "Rico Garcia",
+    "period": "January–September 2026"
+  },
+  "lanes": [
+    {
+      "id": "eng-build",
+      "name": "Eng Build",
+      "displayName": "Eng Build",
+      "index": 1
+    },
+    {
+      "id": "product-build",
+      "name": "Product Build",
+      "displayName": "Product Build",
+      "index": 2
+    },
+    {
+      "id": "product-discovery",
+      "name": "Product Discovery",
+      "displayName": "Product Discovery",
+      "index": 3
+    },
+    {
+      "id": "processes",
+      "name": "Processes",
+      "displayName": "Processes",
+      "index": 4
+    },
+    {
+      "id": "challenges-planned-unplanned",
+      "name": "Challenges Planned / Unplanned",
+      "displayName": "Curve balls",
+      "index": 5
+    },
+    {
+      "id": "in-flight-future",
+      "name": "In-Flight / Future",
+      "displayName": "In-Flight / Future",
+      "index": 6
+    }
+  ],
+  "items": [
+    {
+      "id": "eng-build--infra-new-data-lake-layers-marts-analytics-staging-prod",
+      "name": "Infra: New Data Lake Layers Marts, Analytics, Staging, Prod",
+      "lane": "Eng Build",
+      "description": "Built the V2 data lake foundation: layered marts, analytics, staging, and prod environments with dbt.",
+      "placement": "Jan - Mar",
+      "value": "Replaced a monolithic, fragmented ETL with a version-controlled, testable, observable architecture that can scale to K-8 and projected user growth.",
+      "relations": [
+        {
+          "targetName": "V2 Migration Phases 1/3 Completion Dashboard",
+          "description": "provided the pipeline Completion re-launched on.",
+          "targetId": "eng-build--v2-migration-phases-1-3-completion-dashboard"
+        },
+        {
+          "targetName": "Data Lake for FE failure — read up",
+          "description": "the failed experiment shaped this architecture (transform in the lake, serve from Postgres).",
+          "targetId": "challenges-planned-unplanned--data-lake-for-fe-failure-read-up"
+        },
+        {
+          "targetName": "BI Tool Stood up for I&L",
+          "description": "the governed marts are what the BI tool reads.",
+          "targetId": "eng-build--bi-tool-stood-up-for-i-l"
+        }
+      ],
+      "guidingLights": [
+        "Stabilize",
+        "Grow"
+      ],
+      "start": 0,
+      "end": 2,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "steel",
+      "media": null
+    },
+    {
+      "id": "eng-build--deltas-delights",
+      "name": "Deltas & Delights",
+      "lane": "Eng Build",
+      "description": "Workstream shoring up prior-year promises: bug fixes, small enhancements, and unblocked commitments.",
+      "placement": "Jan - Feb",
+      "value": "Restored credibility with partners on existing commitments while the V2 rebuild proceeded in parallel.",
+      "relations": [
+        {
+          "targetName": "High volume of Bugs & ETL Failures",
+          "description": "this workstream absorbed and burned down that volume.",
+          "targetId": "challenges-planned-unplanned--high-volume-of-bugs-etl-failures"
+        },
+        {
+          "targetName": "Quality & Testing Improvements to V1 ETL and some V2",
+          "description": "successor workstream that hardened what Deltas & Delights patched.",
+          "targetId": "eng-build--quality-testing-improvements-to-v1-etl-and-some-v2"
+        }
+      ],
+      "guidingLights": [
+        "Fix"
+      ],
+      "start": 0,
+      "end": 1,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "signal",
+      "media": null
+    },
+    {
+      "id": "eng-build--data-lineage-data-dictionary-for-ui-and-dbt-documentation-for-data-lake",
+      "name": "Data Lineage data dictionary for UI and DBT documentation for Data Lake",
+      "lane": "Eng Build",
+      "description": "First frontend data dictionary explaining every dashboard's data lineage and calculations, plus dbt docs for the lake.",
+      "placement": "Feb - Mar",
+      "value": "Converted knowledge held by individuals into shared documentation; educators' numbers became explainable end to end.",
+      "relations": [
+        {
+          "targetName": "Infra: New Data Lake Layers Marts, Analytics, Staging, Prod",
+          "description": "documents the models this infrastructure introduced.",
+          "targetId": "eng-build--infra-new-data-lake-layers-marts-analytics-staging-prod"
+        },
+        {
+          "targetName": "Data Crosswalk series",
+          "description": "the dictionary is the reference the crosswalk aligned against.",
+          "targetId": "processes--data-crosswalk-series"
+        }
+      ],
+      "guidingLights": [
+        "Learn",
+        "Govern"
+      ],
+      "start": 1,
+      "end": 2,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "graphite",
+      "media": null
+    },
+    {
+      "id": "eng-build--quality-testing-improvements-to-v1-etl-and-some-v2",
+      "name": "Quality & Testing Improvements to V1 ETL and some V2",
+      "lane": "Eng Build",
+      "description": "Testing epic hardening the legacy V1 pipeline (and early V2) while V2 was under construction.",
+      "placement": "Feb - Apr",
+      "value": "Kept the live product reliable during the migration; customers never lost the nightly refresh.",
+      "relations": [
+        {
+          "targetName": "Deltas & Delights",
+          "description": "turned its reactive fixes into durable test coverage.",
+          "targetId": "eng-build--deltas-delights"
+        },
+        {
+          "targetName": "V2 Migration Phases 1/3 Completion Dashboard",
+          "description": "protected V1 stability while the first migration ran.",
+          "targetId": "eng-build--v2-migration-phases-1-3-completion-dashboard"
+        }
+      ],
+      "guidingLights": [
+        "Stabilize"
+      ],
+      "start": 1,
+      "end": 3,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "steel",
+      "media": null
+    },
+    {
+      "id": "eng-build--v2-migration-phases-1-3-completion-dashboard",
+      "name": "V2 Migration Phases 1/3 Completion Dashboard",
+      "lane": "Eng Build",
+      "description": "The Completion Dashboard blackout and rebuild: taken offline deliberately, rebuilt on the V2 pipeline, relaunched with V1/V2 parity validation.",
+      "placement": "Mar - May",
+      "value": "Relaunched with zero reported bugs and became the proof-of-concept migration model, so Usage and ROAR migrate without blackouts.",
+      "relations": [
+        {
+          "targetName": "Infra: New Data Lake Layers Marts, Analytics, Staging, Prod",
+          "description": "the pipeline it re-launched on.",
+          "targetId": "eng-build--infra-new-data-lake-layers-marts-analytics-staging-prod"
+        },
+        {
+          "targetName": "V2 Connection Phases 2/3 (Usage)",
+          "description": "follows the model this phase proved.",
+          "targetId": "eng-build--v2-connection-phases-2-3-usage"
+        },
+        {
+          "targetName": "V2 Connection Phases 3/3 (ROAR)",
+          "description": "follows the model this phase proved.",
+          "targetId": "eng-build--v2-connection-phases-3-3-roar"
+        },
+        {
+          "targetName": "High volume of Bugs & ETL Failures",
+          "description": "inflated Completion data was the trigger for rebuild over repair.",
+          "targetId": "challenges-planned-unplanned--high-volume-of-bugs-etl-failures"
+        },
+        {
+          "targetName": "K-2 Content Expansion",
+          "description": "upcoming curriculum changes meant patches would break again, strengthening the rebuild case.",
+          "targetId": "challenges-planned-unplanned--k-2-content-expansion"
+        }
+      ],
+      "guidingLights": [
+        "Fix",
+        "Stabilize"
+      ],
+      "start": 2,
+      "end": 4,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "signal",
+      "media": null
+    },
+    {
+      "id": "eng-build--sli-slo-refined-ability-definitions-and-creation",
+      "name": "SLI/SLO [refined] ability, definitions, and creation",
+      "lane": "Eng Build",
+      "description": "Defined and created service level indicators and objectives for the dashboards and backend, where none existed.",
+      "placement": "Mar - Apr",
+      "value": "Gave the team measurable reliability targets, enabling alerting, enablement claims, and go-to-market confidence.",
+      "relations": [
+        {
+          "targetName": "DataDog Reports & Alerts",
+          "description": "direct output; the SLI/SLOs are what the alerts measure (explicit arrow in source diagram).",
+          "targetId": "eng-build--datadog-reports-alerts"
+        },
+        {
+          "targetName": "App Usage Visibility Report build",
+          "description": "shares the DataDog instrumentation foundation.",
+          "targetId": "product-build--app-usage-visibility-report-build"
+        }
+      ],
+      "guidingLights": [
+        "Govern",
+        "Stabilize"
+      ],
+      "start": 2,
+      "end": 3,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "umber",
+      "media": null
+    },
+    {
+      "id": "eng-build--datadog-reports-alerts",
+      "name": "DataDog Reports & Alerts",
+      "lane": "Eng Build",
+      "description": "Reports and alerting built on the SLI/SLO definitions and DataDog instrumentation.",
+      "placement": "Apr - May",
+      "value": "The team now detects degradation before customers report it; stability became observable rather than assumed.",
+      "relations": [
+        {
+          "targetName": "SLI/SLO [refined] ability, definitions, and creation",
+          "description": "implements those definitions (explicit arrow in source diagram).",
+          "targetId": "eng-build--sli-slo-refined-ability-definitions-and-creation"
+        }
+      ],
+      "guidingLights": [
+        "Stabilize"
+      ],
+      "start": 3,
+      "end": 4,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "steel",
+      "media": null
+    },
+    {
+      "id": "eng-build--expanded-student-analytics",
+      "name": "Expanded Student Analytics",
+      "lane": "Eng Build",
+      "description": "Expanded educator-facing analytics to show individual student performance against peers.",
+      "placement": "Mar - Apr",
+      "value": "Gave educators the context to interpret an individual student's numbers, deepening the dashboards' instructional value.",
+      "relations": [
+        {
+          "targetName": "Customer Discovery Competitor Analysis",
+          "description": "discovery findings informed which context educators needed.",
+          "targetId": "product-discovery--customer-discovery-competitor-analysis"
+        }
+      ],
+      "guidingLights": [
+        "Grow"
+      ],
+      "start": 2,
+      "end": 3,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "forest",
+      "media": null
+    },
+    {
+      "id": "eng-build--quality-testing-improvements-for-v2",
+      "name": "Quality & Testing Improvements for V2",
+      "lane": "Eng Build",
+      "description": "Test automation and expanded synthetic and edge-case data for the V2 pipeline.",
+      "placement": "May - Jun",
+      "value": "Baked the post-mortem lessons from V1's bug era into the new pipeline so old failure modes can't silently return.",
+      "relations": [
+        {
+          "targetName": "V2 Migration Phases 1/3 Completion Dashboard",
+          "description": "post-mortem findings from the blackout drove this work.",
+          "targetId": "eng-build--v2-migration-phases-1-3-completion-dashboard"
+        },
+        {
+          "targetName": "V2 Connection Phases 2/3 (Usage)",
+          "description": "protected by this coverage.",
+          "targetId": "eng-build--v2-connection-phases-2-3-usage"
+        },
+        {
+          "targetName": "V2 Connection Phases 3/3 (ROAR)",
+          "description": "protected by this coverage.",
+          "targetId": "eng-build--v2-connection-phases-3-3-roar"
+        }
+      ],
+      "guidingLights": [
+        "Stabilize"
+      ],
+      "start": 4,
+      "end": 5,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "steel",
+      "media": null
+    },
+    {
+      "id": "eng-build--v2-connection-phases-2-3-usage",
+      "name": "V2 Connection Phases 2/3 (Usage)",
+      "lane": "Eng Build",
+      "description": "Migration of the Usage Dashboard onto the V2 pipeline using the model proven by Completion.",
+      "placement": "May - Jul",
+      "value": "Second dashboard onto the scalable foundation, with no blackout required.",
+      "relations": [
+        {
+          "targetName": "V2 Migration Phases 1/3 Completion Dashboard",
+          "description": "applies its migration model.",
+          "targetId": "eng-build--v2-migration-phases-1-3-completion-dashboard"
+        },
+        {
+          "targetName": "ROAR K-8 expansion caused a rework of agg metrics in Usage & Completion",
+          "description": "absorbed this rework mid-migration.",
+          "targetId": "challenges-planned-unplanned--roar-k-8-expansion-caused-a-rework-of-agg-metrics-in-usage-completion"
+        }
+      ],
+      "guidingLights": [
+        "Stabilize",
+        "Grow"
+      ],
+      "start": 4,
+      "end": 6,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "steel",
+      "media": null
+    },
+    {
+      "id": "eng-build--v2-connection-phases-3-3-roar",
+      "name": "V2 Connection Phases 3/3 (ROAR)",
+      "lane": "Eng Build",
+      "description": "Migration of the ROAR Assessments Dashboard onto the V2 pipeline, completing the three-phase plan.",
+      "placement": "Jul - Sep",
+      "value": "Completes the V2 migration, clearing the path to decommission V1 entirely.",
+      "relations": [
+        {
+          "targetName": "V2 Migration Phases 1/3 Completion Dashboard",
+          "description": "applies its migration model.",
+          "targetId": "eng-build--v2-migration-phases-1-3-completion-dashboard"
+        },
+        {
+          "targetName": "ROAR Expansion to K-8",
+          "description": "shares the ROAR surface; sequencing coordinated between them.",
+          "targetId": "eng-build--roar-expansion-to-k-8"
+        }
+      ],
+      "guidingLights": [
+        "Stabilize",
+        "Grow"
+      ],
+      "start": 6,
+      "end": 8,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "steel",
+      "media": null
+    },
+    {
+      "id": "eng-build--roar-phoneme-rework",
+      "name": "ROAR Phoneme Rework",
+      "lane": "Eng Build",
+      "description": "Scoring change from percentile to % Correct after Stanford deprecated the norming tables, shipped against a hard back-to-school deadline.",
+      "placement": "Jun - Aug",
+      "value": "Preserved assessment scoring for educators despite a vanished external dependency; a deliberate scope cut (reusing the Letter pattern) reduced the work by roughly a third and protected the deadline.",
+      "relations": [
+        {
+          "targetName": "Manual ROAR stuck student reporting, and Phoneme reporting and analysis",
+          "description": "manual reporting bridged the gap this rework created.",
+          "targetId": "product-build--manual-roar-stuck-student-reporting-and-phoneme-reporting-and-analysis"
+        },
+        {
+          "targetName": "ROAR Learner Overview table for Admins",
+          "description": "part of the same ROAR reporting improvement arc.",
+          "targetId": "eng-build--roar-learner-overview-table-for-admins"
+        }
+      ],
+      "guidingLights": [
+        "Fix"
+      ],
+      "start": 5,
+      "end": 7,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "signal",
+      "media": null
+    },
+    {
+      "id": "eng-build--roar-expansion-to-k-8",
+      "name": "ROAR Expansion to K-8",
+      "lane": "Eng Build",
+      "description": "K-8 ROAR Dashboard build toward a fall beta as the company expands beyond K-2.",
+      "placement": "Jun - Sep",
+      "value": "Extends the product to the company's new market; aggregation suppression for grades 3-8 treated as load-bearing correctness work ahead of August rostering.",
+      "relations": [
+        {
+          "targetName": "ROAR K-8 expansion caused a rework of agg metrics in Usage & Completion",
+          "description": "the expansion is the cause of that rework.",
+          "targetId": "challenges-planned-unplanned--roar-k-8-expansion-caused-a-rework-of-agg-metrics-in-usage-completion"
+        },
+        {
+          "targetName": "K-8 expansion of Usage",
+          "description": "future work this seeds.",
+          "targetId": "in-flight-future--k-8-expansion-of-usage"
+        },
+        {
+          "targetName": "K-8 expansion of ROAR",
+          "description": "future work this seeds.",
+          "targetId": "in-flight-future--k-8-expansion-of-roar"
+        }
+      ],
+      "guidingLights": [
+        "Grow"
+      ],
+      "start": 5,
+      "end": 8,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "forest",
+      "media": null
+    },
+    {
+      "id": "eng-build--bi-tool-stood-up-for-i-l",
+      "name": "BI Tool Stood up for I&L",
+      "lane": "Eng Build",
+      "description": "Business intelligence tool stood up on the shared, governed marts for the research team.",
+      "placement": "Jun - Jul",
+      "value": "Research pulls the same governed metrics the product reports, retiring manual report production and returning that capacity to efficacy research.",
+      "relations": [
+        {
+          "targetName": "Infra: New Data Lake Layers Marts, Analytics, Staging, Prod",
+          "description": "reads the governed marts this created.",
+          "targetId": "eng-build--infra-new-data-lake-layers-marts-analytics-staging-prod"
+        },
+        {
+          "targetName": "Data Crosswalk series",
+          "description": "the shared definitions that make the tool trustworthy.",
+          "targetId": "processes--data-crosswalk-series"
+        },
+        {
+          "targetName": "Data Lake Content Expansion for I&L",
+          "description": "future work extending what I&L can reach.",
+          "targetId": "in-flight-future--data-lake-content-expansion-for-i-l"
+        }
+      ],
+      "guidingLights": [
+        "Govern",
+        "Grow"
+      ],
+      "start": 5,
+      "end": 6,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "umber",
+      "media": null
+    },
+    {
+      "id": "eng-build--roar-learner-overview-table-for-admins",
+      "name": "ROAR Learner Overview table for Admins",
+      "lane": "Eng Build",
+      "description": "New admin-facing table summarizing ROAR learner status.",
+      "placement": "Jul - Aug",
+      "value": "Gave admins an at-a-glance assessment view they previously lacked, supporting the back-to-school motion.",
+      "relations": [
+        {
+          "targetName": "ROAR Phoneme Rework",
+          "description": "part of the same ROAR reporting improvement arc.",
+          "targetId": "eng-build--roar-phoneme-rework"
+        },
+        {
+          "targetName": "ROAR Progress Page for all roles",
+          "description": "future work this points toward.",
+          "targetId": "in-flight-future--roar-progress-page-for-all-roles"
+        }
+      ],
+      "guidingLights": [
+        "Grow"
+      ],
+      "start": 6,
+      "end": 7,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "forest",
+      "media": null
+    },
+    {
+      "id": "product-build--app-usage-visibility-report-build",
+      "name": "App Usage Visibility Report build",
+      "lane": "Product Build",
+      "description": "Usage reports built by Rico on DataDog instrumentation engineering stood up, showing how educators actually use the dashboards.",
+      "placement": "Feb - Mar",
+      "value": "Ended flying blind: the team could finally see customer behavior, which fed adoption insight, instrumentation gap findings, and the fidelity problem discovery.",
+      "relations": [
+        {
+          "targetName": "App Usage Visibility analysis",
+          "description": "the analysis performed on these reports.",
+          "targetId": "product-discovery--app-usage-visibility-analysis"
+        },
+        {
+          "targetName": "SLI/SLO [refined] ability, definitions, and creation",
+          "description": "shares the DataDog foundation.",
+          "targetId": "eng-build--sli-slo-refined-ability-definitions-and-creation"
+        },
+        {
+          "targetName": "Enablement Resources. Videos",
+          "description": "usage findings (low fidelity of use) motivated the series.",
+          "targetId": "product-discovery--enablement-resources-videos"
+        }
+      ],
+      "guidingLights": [
+        "Learn"
+      ],
+      "start": 1,
+      "end": 2,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "graphite",
+      "media": null
+    },
+    {
+      "id": "product-build--a11y-scraper",
+      "name": "A11y scraper",
+      "lane": "Product Build",
+      "description": "WCAG 2.2 accessibility scanner built by Rico to check dashboard pages for compliance.",
+      "placement": "Feb - Mar",
+      "value": "Established accessibility parity with the student side as a measurable, repeatable check; a11y is woven incrementally into UI work rather than run as one initiative.",
+      "relations": [
+        {
+          "targetName": "V2 Migration Phases 1/3 Completion Dashboard",
+          "description": "the incremental a11y program began with the Completion relaunch.",
+          "targetId": "eng-build--v2-migration-phases-1-3-completion-dashboard"
+        }
+      ],
+      "guidingLights": [
+        "Fix",
+        "Govern"
+      ],
+      "start": 1,
+      "end": 2,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "signal",
+      "media": null
+    },
+    {
+      "id": "product-build--replica-site",
+      "name": "Replica Site",
+      "lane": "Product Build",
+      "description": "Exact, data-rich copy of the dashboard UI and functionality (six months of data, design schema parity) built by Rico.",
+      "placement": "Mar - Apr",
+      "value": "Prototyping and design environment that covers the committed-designer gap; used to produce research and product feature designs without engineering time.",
+      "relations": [
+        {
+          "targetName": "All research & prototype designs",
+          "description": "the environment those designs are produced in.",
+          "targetId": "product-build--all-research-prototype-designs"
+        },
+        {
+          "targetName": "Customer Discovery ROAR Progress Validation",
+          "description": "prototypes validated with customers came from here.",
+          "targetId": "product-discovery--customer-discovery-roar-progress-validation"
+        }
+      ],
+      "guidingLights": [
+        "Learn",
+        "Grow"
+      ],
+      "start": 2,
+      "end": 3,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "graphite",
+      "media": null
+    },
+    {
+      "id": "product-build--manual-roar-stuck-student-reporting-and-phoneme-reporting-and-analysis",
+      "name": "Manual ROAR stuck student reporting, and Phoneme reporting and analysis",
+      "lane": "Product Build",
+      "description": "Manual production reporting covering ROAR Phoneme scoring and stuck-student detection during the dashboard coverage gap.",
+      "placement": "Jul - Aug",
+      "value": "Surfaced 601 students silently stuck on incomplete subtests (phoneme driving about 59%), gave educators interim visibility, and feeds the future ROAR Progress Page.",
+      "relations": [
+        {
+          "targetName": "ROAR Phoneme Rework",
+          "description": "bridges the reporting gap during the scoring transition.",
+          "targetId": "eng-build--roar-phoneme-rework"
+        },
+        {
+          "targetName": "ROAR Progress Page for all roles",
+          "description": "this work is its direct precursor.",
+          "targetId": "in-flight-future--roar-progress-page-for-all-roles"
+        }
+      ],
+      "guidingLights": [
+        "Fix",
+        "Learn"
+      ],
+      "start": 6,
+      "end": 7,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "signal",
+      "media": null
+    },
+    {
+      "id": "product-build--all-research-prototype-designs",
+      "name": "All research & prototype designs",
+      "lane": "Product Build",
+      "description": "Ongoing production of research artifacts and product feature designs, spanning the entire period.",
+      "placement": "Jan - Sep (ongoing)",
+      "value": "Continuous design output despite no committed designer; kept discovery findings flowing into buildable specifications.",
+      "relations": [
+        {
+          "targetName": "Replica Site",
+          "description": "the environment these designs are produced in.",
+          "targetId": "product-build--replica-site"
+        },
+        {
+          "targetName": "Customer Discovery Competitor Analysis",
+          "description": "findings feed these designs.",
+          "targetId": "product-discovery--customer-discovery-competitor-analysis"
+        }
+      ],
+      "guidingLights": [
+        "Learn",
+        "Grow"
+      ],
+      "start": 0,
+      "end": 8,
+      "planned": false,
+      "ongoing": true,
+      "colorToken": "graphite",
+      "media": null
+    },
+    {
+      "id": "product-discovery--customer-discovery-competitor-analysis",
+      "name": "Customer Discovery Competitor Analysis",
+      "lane": "Product Discovery",
+      "description": "Discovery program designed and conducted by Rico: surveys, virtual and in-person interviews, classroom observations, synthesized against competitor analysis.",
+      "placement": "Jan - Feb",
+      "value": "Grounded the roadmap in real educator pain rather than assumptions; findings informed development direction all year.",
+      "relations": [
+        {
+          "targetName": "Expanded Student Analytics",
+          "description": "discovery findings shaped what context educators needed.",
+          "targetId": "eng-build--expanded-student-analytics"
+        },
+        {
+          "targetName": "All research & prototype designs",
+          "description": "findings feed the design output.",
+          "targetId": "product-build--all-research-prototype-designs"
+        }
+      ],
+      "guidingLights": [
+        "Learn"
+      ],
+      "start": 0,
+      "end": 1,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "graphite",
+      "media": null
+    },
+    {
+      "id": "product-discovery--published-roadmap-and-gtm-resources",
+      "name": "Published Roadmap and GTM resources",
+      "lane": "Product Discovery",
+      "description": "Initial roadmap publication with go-to-market resources for new features and releases.",
+      "placement": "Mar - Apr",
+      "value": "Partners and internal teams could see what was coming for the first time; set up the later codified external roadmap.",
+      "relations": [
+        {
+          "targetName": "External Facing Roadmap & GTM Releases",
+          "description": "the maturation of this initial publication.",
+          "targetId": "product-discovery--external-facing-roadmap-gtm-releases"
+        }
+      ],
+      "guidingLights": [
+        "Govern"
+      ],
+      "start": 2,
+      "end": 3,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "umber",
+      "media": null
+    },
+    {
+      "id": "product-discovery--app-usage-visibility-analysis",
+      "name": "App Usage Visibility analysis",
+      "lane": "Product Discovery",
+      "description": "Analysis of the usage reports: adoption patterns, instrumentation gaps, and behavioral findings.",
+      "placement": "Mar - Apr",
+      "value": "Identified the dominant instrumentation gap (roughly 840 unlabeled clicks per month) and a silent analytics endpoint failure, and surfaced that educators were not using dashboards to fidelity.",
+      "relations": [
+        {
+          "targetName": "App Usage Visibility Report build",
+          "description": "analyzes those reports.",
+          "targetId": "product-build--app-usage-visibility-report-build"
+        },
+        {
+          "targetName": "Enablement Resources. Videos",
+          "description": "the fidelity finding motivated the series.",
+          "targetId": "product-discovery--enablement-resources-videos"
+        }
+      ],
+      "guidingLights": [
+        "Learn"
+      ],
+      "start": 2,
+      "end": 3,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "graphite",
+      "media": null
+    },
+    {
+      "id": "product-discovery--customer-discovery-roar-progress-validation",
+      "name": "Customer Discovery ROAR Progress Validation",
+      "lane": "Product Discovery",
+      "description": "Customer validation of ROAR progress reporting concepts using prototypes.",
+      "placement": "Apr - May",
+      "value": "De-risked the ROAR progress direction with educator input before build investment.",
+      "relations": [
+        {
+          "targetName": "Replica Site",
+          "description": "prototypes came from this environment.",
+          "targetId": "product-build--replica-site"
+        },
+        {
+          "targetName": "ROAR Progress Page for all roles",
+          "description": "validates the direction of that future work.",
+          "targetId": "in-flight-future--roar-progress-page-for-all-roles"
+        }
+      ],
+      "guidingLights": [
+        "Learn"
+      ],
+      "start": 3,
+      "end": 4,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "graphite",
+      "media": null
+    },
+    {
+      "id": "product-discovery--external-facing-roadmap-gtm-releases",
+      "name": "External Facing Roadmap & GTM Releases",
+      "lane": "Product Discovery",
+      "description": "External-facing roadmap with go-to-market releases for all new features, created by Rico.",
+      "placement": "May - Jun",
+      "value": "First published roadmap across all Platform teams, and still the only one; partners gained forward visibility.",
+      "relations": [
+        {
+          "targetName": "External Facing Roadmap & GTM Releases norms and structures",
+          "description": "the codified process this produced (explicit arrow in source diagram).",
+          "targetId": "processes--external-facing-roadmap-gtm-releases-norms-and-structures"
+        },
+        {
+          "targetName": "Published Roadmap and GTM resources",
+          "description": "the initial publication this matured from.",
+          "targetId": "product-discovery--published-roadmap-and-gtm-resources"
+        }
+      ],
+      "guidingLights": [
+        "Govern",
+        "Grow"
+      ],
+      "start": 4,
+      "end": 5,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "umber",
+      "media": null
+    },
+    {
+      "id": "product-discovery--enablement-resources-videos",
+      "name": "Enablement Resources. Videos",
+      "lane": "Product Discovery",
+      "description": "Nine-video educator demo series across all three dashboards and all three personas; scripted from academics and partnerships language, recorded, demoed, and edited by Rico.",
+      "placement": "Jul - Aug",
+      "value": "Supported the back-to-school motion and addressed the fidelity gap: resources to integrate dashboards as a tool that informs instruction.",
+      "relations": [
+        {
+          "targetName": "App Usage Visibility analysis",
+          "description": "the fidelity finding this responds to.",
+          "targetId": "product-discovery--app-usage-visibility-analysis"
+        },
+        {
+          "targetName": "ROAR Learner Overview table for Admins",
+          "description": "back-to-school features the series showcases.",
+          "targetId": "eng-build--roar-learner-overview-table-for-admins"
+        }
+      ],
+      "guidingLights": [
+        "Grow",
+        "Learn"
+      ],
+      "start": 6,
+      "end": 7,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "forest",
+      "media": null
+    },
+    {
+      "id": "processes--data-crosswalk-series",
+      "name": "Data Crosswalk series",
+      "lane": "Processes",
+      "description": "Cross-functional definition alignment series with Impact & Learning, reconciling metrics between research and product.",
+      "placement": "Feb - Apr",
+      "value": "Metrics mean one thing; research and product pull the same numbers, foundational to governance and the BI tool.",
+      "relations": [
+        {
+          "targetName": "BI Tool Stood up for I&L",
+          "description": "the shared definitions that make it trustworthy.",
+          "targetId": "eng-build--bi-tool-stood-up-for-i-l"
+        },
+        {
+          "targetName": "Data Lineage data dictionary for UI and DBT documentation for Data Lake",
+          "description": "the documented reference the crosswalk aligned against.",
+          "targetId": "eng-build--data-lineage-data-dictionary-for-ui-and-dbt-documentation-for-data-lake"
+        }
+      ],
+      "guidingLights": [
+        "Govern"
+      ],
+      "start": 1,
+      "end": 3,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "umber",
+      "media": null
+    },
+    {
+      "id": "processes--intake-board-sop",
+      "name": "Intake Board & SOP",
+      "lane": "Processes",
+      "description": "Intake board and standard operating procedures for non-engineering stakeholders to submit bugs and feature requests, created and facilitated by Rico as an experiment then codified.",
+      "placement": "Mar - Apr",
+      "value": "Replaced ad hoc requests with a structured, transparent pipeline; the team's front door now exists.",
+      "relations": [
+        {
+          "targetName": "New Initiative Process across product & eng",
+          "description": "sibling process work formalizing how work enters and moves.",
+          "targetId": "challenges-planned-unplanned--new-initiative-process-across-product-eng"
+        }
+      ],
+      "guidingLights": [
+        "Govern"
+      ],
+      "start": 2,
+      "end": 3,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "umber",
+      "media": null
+    },
+    {
+      "id": "processes--external-facing-roadmap-gtm-releases-norms-and-structures",
+      "name": "External Facing Roadmap & GTM Releases norms and structures",
+      "lane": "Processes",
+      "description": "Codified norms and structures for maintaining the external roadmap and GTM release process.",
+      "placement": "May - Jun",
+      "value": "Made the roadmap a repeatable practice rather than a one-time artifact.",
+      "relations": [
+        {
+          "targetName": "External Facing Roadmap & GTM Releases",
+          "description": "codifies that work (explicit arrow in source diagram).",
+          "targetId": "product-discovery--external-facing-roadmap-gtm-releases"
+        }
+      ],
+      "guidingLights": [
+        "Govern"
+      ],
+      "start": 4,
+      "end": 5,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "umber",
+      "media": null
+    },
+    {
+      "id": "processes--platform-data-deletion-future-initiative-crafting",
+      "name": "Platform Data Deletion + Future Initiative crafting",
+      "lane": "Processes",
+      "description": "Cross-team data deletion project (Platform Data, Platform Services, Commercial) led by Rico, plus crafting of the future data disposition initiative.",
+      "placement": "May - Jul",
+      "value": "Compliant deletion aligned to FERPA, COPPA, GDPR, and NY2D, and a mapped arc for student profile disposition, longitudinal learning, and auditability.",
+      "relations": [
+        {
+          "targetName": "Data Deletion project",
+          "description": "the same effort viewed from the Challenges lane (intentional duplicate).",
+          "targetId": "challenges-planned-unplanned--data-deletion-project"
+        }
+      ],
+      "guidingLights": [
+        "Govern"
+      ],
+      "start": 4,
+      "end": 6,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "umber",
+      "media": null
+    },
+    {
+      "id": "challenges-planned-unplanned--high-volume-of-bugs-etl-failures",
+      "name": "High volume of Bugs & ETL Failures",
+      "lane": "Challenges Planned / Unplanned",
+      "description": "Early-period bug volume and ETL failures inherited from the brittle V1 pipeline.",
+      "placement": "Jan - Mar",
+      "value": "The pain that justified the rebuild; burned down through Deltas & Delights and the V1 testing epic while V2 provided the permanent fix.",
+      "relations": [
+        {
+          "targetName": "Deltas & Delights",
+          "description": "the workstream that absorbed this volume.",
+          "targetId": "eng-build--deltas-delights"
+        },
+        {
+          "targetName": "V2 Migration Phases 1/3 Completion Dashboard",
+          "description": "the permanent answer to this pattern.",
+          "targetId": "eng-build--v2-migration-phases-1-3-completion-dashboard"
+        }
+      ],
+      "guidingLights": [
+        "Fix"
+      ],
+      "start": 0,
+      "end": 2,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "signal",
+      "media": null
+    },
+    {
+      "id": "challenges-planned-unplanned--eedi",
+      "name": "EEDI",
+      "lane": "Challenges Planned / Unplanned",
+      "description": "Preparation for a potential AI partnership, documenting backend structure, event flow, current and future state; the partnership fell through.",
+      "placement": "Jan - Feb",
+      "value": "The documentation and architectural articulation informed the path forward despite the partnership not materializing.",
+      "relations": [
+        {
+          "targetName": "Data Lineage data dictionary for UI and DBT documentation for Data Lake",
+          "description": "the articulation work overlapped with documentation needs.",
+          "targetId": "eng-build--data-lineage-data-dictionary-for-ui-and-dbt-documentation-for-data-lake"
+        }
+      ],
+      "guidingLights": [
+        "Learn"
+      ],
+      "start": 0,
+      "end": 1,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "graphite",
+      "media": null
+    },
+    {
+      "id": "challenges-planned-unplanned--data-lake-for-fe-failure-read-up",
+      "name": "Data Lake for FE failure — read up",
+      "lane": "Challenges Planned / Unplanned",
+      "description": "Structured experiment testing whether the frontend could be served directly from the data lake; failed on cost and performance.",
+      "placement": "Feb - Mar",
+      "value": "Because it was framed as an experiment, the failure was cheap and decisive; it drove the shipped architecture (transform in the lake, serve from Postgres).",
+      "relations": [
+        {
+          "targetName": "Infra: New Data Lake Layers Marts, Analytics, Staging, Prod",
+          "description": "the failure shaped this design.",
+          "targetId": "eng-build--infra-new-data-lake-layers-marts-analytics-staging-prod"
+        }
+      ],
+      "guidingLights": [
+        "Learn"
+      ],
+      "start": 1,
+      "end": 2,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "graphite",
+      "media": null
+    },
+    {
+      "id": "challenges-planned-unplanned--k-2-content-expansion",
+      "name": "K-2 Content Expansion",
+      "lane": "Challenges Planned / Unplanned",
+      "description": "New K-2 curriculum content and structure changes from other product teams, with PDAT as a dependency for accurate reporting.",
+      "placement": "Apr - May",
+      "value": "Absorbed without breaking reporting; also strengthened the case for rebuild over repair, since patches would not have survived it.",
+      "relations": [
+        {
+          "targetName": "V2 Migration Phases 1/3 Completion Dashboard",
+          "description": "upcoming content changes were part of the rebuild rationale.",
+          "targetId": "eng-build--v2-migration-phases-1-3-completion-dashboard"
+        }
+      ],
+      "guidingLights": [
+        "Stabilize"
+      ],
+      "start": 3,
+      "end": 4,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "steel",
+      "media": null
+    },
+    {
+      "id": "challenges-planned-unplanned--new-initiative-process-across-product-eng",
+      "name": "New Initiative Process across product & eng",
+      "lane": "Challenges Planned / Unplanned",
+      "description": "A new cross-org initiative process introduced across product and engineering that PDAT had to adopt mid-flight.",
+      "placement": "Apr - May",
+      "value": "Adopted without losing delivery momentum; complemented PDAT's own intake and roadmap process work.",
+      "relations": [
+        {
+          "targetName": "Intake Board & SOP",
+          "description": "sibling process work on how work enters and moves.",
+          "targetId": "processes--intake-board-sop"
+        }
+      ],
+      "guidingLights": [
+        "Govern"
+      ],
+      "start": 3,
+      "end": 4,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "umber",
+      "media": null
+    },
+    {
+      "id": "challenges-planned-unplanned--roar-k-8-expansion-caused-a-rework-of-agg-metrics-in-usage-completion",
+      "name": "ROAR K-8 expansion caused a rework of agg metrics in Usage & Completion",
+      "lane": "Challenges Planned / Unplanned",
+      "description": "The K-8 expansion forced a rework of aggregation metrics in the Usage and Completion dashboards.",
+      "placement": "Jun - Jul",
+      "value": "Reframed as load-bearing correctness work ahead of August rostering rather than a distraction; K-8 numbers will be right on day one.",
+      "relations": [
+        {
+          "targetName": "ROAR Expansion to K-8",
+          "description": "the expansion driving the rework.",
+          "targetId": "eng-build--roar-expansion-to-k-8"
+        },
+        {
+          "targetName": "V2 Connection Phases 2/3 (Usage)",
+          "description": "absorbed the rework mid-migration.",
+          "targetId": "eng-build--v2-connection-phases-2-3-usage"
+        }
+      ],
+      "guidingLights": [
+        "Stabilize",
+        "Grow"
+      ],
+      "start": 5,
+      "end": 6,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "steel",
+      "media": null
+    },
+    {
+      "id": "challenges-planned-unplanned--data-deletion-project",
+      "name": "Data Deletion project",
+      "lane": "Challenges Planned / Unplanned",
+      "description": "Compliance-driven data deletion project arriving as unplanned cross-team work.",
+      "placement": "May - Jul",
+      "value": "Turned a compliance scramble into a coherent, led initiative and seeded the future data stewardship roadmap.",
+      "relations": [
+        {
+          "targetName": "Platform Data Deletion + Future Initiative crafting",
+          "description": "the same effort viewed from the Processes lane.",
+          "targetId": "processes--platform-data-deletion-future-initiative-crafting"
+        }
+      ],
+      "guidingLights": [
+        "Govern"
+      ],
+      "start": 4,
+      "end": 6,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "umber",
+      "media": null
+    },
+    {
+      "id": "challenges-planned-unplanned--roar-phoneme-rework",
+      "name": "ROAR Phoneme Rework",
+      "lane": "Challenges Planned / Unplanned",
+      "description": "Unplanned scoring change forced by Stanford deprecating the norming tables; a curve ball woven into planned work.",
+      "placement": "Jun - Aug",
+      "value": "Absorbed into planned capacity through deliberate scope cuts and sequencing; shipped against the hard back-to-school deadline.",
+      "relations": [
+        {
+          "targetName": "ROAR Phoneme Rework",
+          "description": "the delivery view of the same work.",
+          "targetId": "eng-build--roar-phoneme-rework"
+        },
+        {
+          "targetName": "Manual ROAR stuck student reporting, and Phoneme reporting and analysis",
+          "description": "the reporting bridge during the transition.",
+          "targetId": "product-build--manual-roar-stuck-student-reporting-and-phoneme-reporting-and-analysis"
+        }
+      ],
+      "guidingLights": [
+        "Fix"
+      ],
+      "start": 5,
+      "end": 7,
+      "planned": false,
+      "ongoing": false,
+      "colorToken": "signal",
+      "media": null
+    },
+    {
+      "id": "in-flight-future--increase-dashboard-refresh-frequency",
+      "name": "Increase dashboard refresh frequency",
+      "lane": "In-Flight / Future",
+      "description": "Increase how often dashboard data refreshes.",
+      "placement": "Oct - Dec (planned)",
+      "value": "Fresher data for instructional decisions; enabled by the V2 pipeline's efficiency.",
+      "relations": [
+        {
+          "targetName": "Infra: New Data Lake Layers Marts, Analytics, Staging, Prod",
+          "description": "the foundation that makes higher frequency feasible.",
+          "targetId": "eng-build--infra-new-data-lake-layers-marts-analytics-staging-prod"
+        }
+      ],
+      "guidingLights": [
+        "Grow"
+      ],
+      "start": 9,
+      "end": 11,
+      "planned": true,
+      "ongoing": false,
+      "colorToken": "forest",
+      "media": null
+    },
+    {
+      "id": "in-flight-future--roar-progress-page-for-all-roles",
+      "name": "ROAR Progress Page for all roles",
+      "lane": "In-Flight / Future",
+      "description": "In-dashboard ROAR progress page for every persona, including subtest-level completion and stuck-student visibility.",
+      "placement": "Oct - Dec (planned)",
+      "value": "Moves stuck-student detection from manual analysis into the product for the educators who can act on it.",
+      "relations": [
+        {
+          "targetName": "Manual ROAR stuck student reporting, and Phoneme reporting and analysis",
+          "description": "direct precursor.",
+          "targetId": "product-build--manual-roar-stuck-student-reporting-and-phoneme-reporting-and-analysis"
+        },
+        {
+          "targetName": "Customer Discovery ROAR Progress Validation",
+          "description": "validated the direction.",
+          "targetId": "product-discovery--customer-discovery-roar-progress-validation"
+        }
+      ],
+      "guidingLights": [
+        "Grow"
+      ],
+      "start": 9,
+      "end": 11,
+      "planned": true,
+      "ongoing": false,
+      "colorToken": "forest",
+      "media": null
+    },
+    {
+      "id": "in-flight-future--csv-export",
+      "name": "CSV Export",
+      "lane": "In-Flight / Future",
+      "description": "Export dashboard data to CSV.",
+      "placement": "Oct - Dec (planned)",
+      "value": "Lets educators and admins take data into their own workflows.",
+      "relations": [
+        {
+          "targetName": "Customer Discovery Competitor Analysis",
+          "description": "a commonly requested capability surfaced through discovery.",
+          "targetId": "product-discovery--customer-discovery-competitor-analysis"
+        }
+      ],
+      "guidingLights": [
+        "Grow"
+      ],
+      "start": 9,
+      "end": 11,
+      "planned": true,
+      "ongoing": false,
+      "colorToken": "forest",
+      "media": null
+    },
+    {
+      "id": "in-flight-future--lesson-completion-recency",
+      "name": "Lesson Completion Recency",
+      "lane": "In-Flight / Future",
+      "description": "Surface how recently students completed lessons.",
+      "placement": "Oct - Dec (planned)",
+      "value": "Sharper instructional signal than completion counts alone.",
+      "relations": [
+        {
+          "targetName": "V2 Connection Phases 2/3 (Usage)",
+          "description": "builds on the migrated Usage and Completion foundation.",
+          "targetId": "eng-build--v2-connection-phases-2-3-usage"
+        }
+      ],
+      "guidingLights": [
+        "Grow"
+      ],
+      "start": 9,
+      "end": 11,
+      "planned": true,
+      "ongoing": false,
+      "colorToken": "forest",
+      "media": null
+    },
+    {
+      "id": "in-flight-future--data-lake-content-expansion-for-i-l",
+      "name": "Data Lake Content Expansion for I&L",
+      "lane": "In-Flight / Future",
+      "description": "Expand data lake content available to Impact & Learning.",
+      "placement": "Oct - Dec (planned)",
+      "value": "Extends research's self-serve reach on governed data.",
+      "relations": [
+        {
+          "targetName": "BI Tool Stood up for I&L",
+          "description": "extends what that tool can reach.",
+          "targetId": "eng-build--bi-tool-stood-up-for-i-l"
+        }
+      ],
+      "guidingLights": [
+        "Grow",
+        "Govern"
+      ],
+      "start": 9,
+      "end": 11,
+      "planned": true,
+      "ongoing": false,
+      "colorToken": "forest",
+      "media": null
+    },
+    {
+      "id": "in-flight-future--k-8-expansion-of-usage",
+      "name": "K-8 expansion of Usage",
+      "lane": "In-Flight / Future",
+      "description": "Extend the Usage Dashboard to grades K-8.",
+      "placement": "Oct - Dec (planned)",
+      "value": "Full-product coverage of the company's expanded market.",
+      "relations": [
+        {
+          "targetName": "ROAR Expansion to K-8",
+          "description": "seeded by that work and its aggregation rework.",
+          "targetId": "eng-build--roar-expansion-to-k-8"
+        }
+      ],
+      "guidingLights": [
+        "Grow"
+      ],
+      "start": 9,
+      "end": 11,
+      "planned": true,
+      "ongoing": false,
+      "colorToken": "forest",
+      "media": null
+    },
+    {
+      "id": "in-flight-future--k-8-expansion-of-roar",
+      "name": "K-8 expansion of ROAR",
+      "lane": "In-Flight / Future",
+      "description": "Extend ROAR reporting fully to grades K-8 beyond the fall beta.",
+      "placement": "Oct - Dec (planned)",
+      "value": "Completes the assessment story for the expanded market.",
+      "relations": [
+        {
+          "targetName": "ROAR Expansion to K-8",
+          "description": "the beta this generalizes.",
+          "targetId": "eng-build--roar-expansion-to-k-8"
+        }
+      ],
+      "guidingLights": [
+        "Grow"
+      ],
+      "start": 9,
+      "end": 11,
+      "planned": true,
+      "ongoing": false,
+      "colorToken": "forest",
+      "media": null
+    }
+  ]
+}
