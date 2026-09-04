@@ -12,6 +12,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { CoordinateCursor } from "@/components/coordinate-cursor";
 import { MONTHS, placementSpan, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
 const LANE_ORDER = [
@@ -29,6 +30,14 @@ const PHASES = [
   { label: "Prepare for scale", start: 6, span: 3 },
 ];
 
+const LANE_CODES: Record<string, string> = {
+  "Eng Build": "ENG",
+  "Product Build": "BLD",
+  "Product Discovery": "DSC",
+  Processes: "OPS",
+  "Challenges Planned / Unplanned": "CRV",
+};
+
 const COLOR_LABELS: Record<PublicTimelineItem["colorToken"], string> = {
   graphite: "Discovery-led",
   signal: "Corrective",
@@ -38,7 +47,7 @@ const COLOR_LABELS: Record<PublicTimelineItem["colorToken"], string> = {
 };
 
 type PositionedItem = PublicTimelineItem & { row: number };
-type Connection = { id: string; path: string };
+type Connection = { id: string; targetId: string; path: string };
 
 function assignRows(items: PublicTimelineItem[]) {
   const result = new Map<string, number>();
@@ -54,9 +63,9 @@ function assignRows(items: PublicTimelineItem[]) {
   return { rows: result, count: Math.max(1, rowEnds.length) };
 }
 
-function MediaPlaceholder({ item, compact = false }: { item: PublicTimelineItem; compact?: boolean }) {
+function MediaPlaceholder({ item }: { item: PublicTimelineItem }) {
   return (
-    <div className={`media-placeholder ${compact ? "is-compact" : ""}`} aria-label="Media not yet uploaded">
+    <div className="media-placeholder" aria-label="Media not yet uploaded">
       <div className="media-placeholder-grid" aria-hidden="true" />
       <span className="eyebrow">Artifact pending</span>
       <strong>{item.name}</strong>
@@ -68,19 +77,15 @@ function MediaPlaceholder({ item, compact = false }: { item: PublicTimelineItem;
 function DetailPanel({
   item,
   allItems,
-  activeRelation,
-  setActiveRelation,
-  hoveredRelation,
-  setHoveredRelation,
+  focusedRelation,
+  setFocusedRelation,
   onClose,
   onPreview,
 }: {
   item: PublicTimelineItem;
   allItems: PublicTimelineItem[];
-  activeRelation: string | null;
-  setActiveRelation: (id: string | null) => void;
-  hoveredRelation: string | null;
-  setHoveredRelation: (id: string | null) => void;
+  focusedRelation: string | null;
+  setFocusedRelation: (id: string | null) => void;
   onClose: () => void;
   onPreview: () => void;
 }) {
@@ -88,31 +93,19 @@ function DetailPanel({
   return (
     <motion.aside
       className="detail-panel"
-      initial={{ opacity: 0, x: 18 }}
+      initial={{ opacity: 0, x: 22 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 18 }}
-      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+      exit={{ opacity: 0, x: 22 }}
+      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
       aria-label={`Details for ${item.name}`}
     >
+      <span className="detail-rail-label">Selected work / record</span>
       <div className="detail-panel-head">
-        <span className="index-mark">[{String(index).padStart(2, "0")}]</span>
+        <span className="index-mark">[{String(index).padStart(2, "0")}] / {LANE_CODES[item.lane] ?? "Q4"}</span>
         <button className="icon-button" type="button" onClick={onClose} aria-label="Close details">
           <X size={16} />
         </button>
       </div>
-
-      <button className="detail-media" type="button" onClick={onPreview} aria-label="Open media preview">
-        {item.media ? (
-          item.media.type === "video" ? (
-            <video src={item.media.url} muted playsInline preload="metadata" />
-          ) : (
-            <Image src={item.media.url} alt={item.media.alt} fill sizes="420px" unoptimized />
-          )
-        ) : (
-          <MediaPlaceholder item={item} />
-        )}
-        <span className="preview-label"><Maximize2 size={13} /> Preview</span>
-      </button>
 
       <div className="detail-title-block">
         <span className={`color-notch color-${item.colorToken}`} aria-hidden="true" />
@@ -121,8 +114,8 @@ function DetailPanel({
 
       <dl className="detail-specs">
         <div>
-          <dt>Type</dt>
-          <dd>{item.lane === "Challenges Planned / Unplanned" ? "Curve ball" : item.lane}</dd>
+          <dt>Lane</dt>
+          <dd>{item.lane === "Challenges Planned / Unplanned" ? "Curve balls" : item.lane}</dd>
         </div>
         <div>
           <dt>Placement</dt>
@@ -140,27 +133,30 @@ function DetailPanel({
       </section>
 
       <section className="detail-section value-section">
-        <span className="eyebrow">Value</span>
+        <span className="eyebrow">Value delivered</span>
         <p>{item.value}</p>
       </section>
 
       {item.relations.length > 0 && (
         <section className="detail-section relations-section">
-          <span className="eyebrow">Relates to</span>
+          <div className="relations-heading">
+            <span className="eyebrow">Connected work</span>
+            <span>{item.relations.length} visible on timeline</span>
+          </div>
           <div className="relation-list">
             {item.relations.map((relation) => {
               const target = allItems.find((entry) => entry.id === relation.targetId);
-              const isActive = activeRelation === relation.targetId || hoveredRelation === relation.targetId;
+              const isActive = focusedRelation === relation.targetId;
               return (
                 <div className="relation-entry" key={`${item.id}-${relation.targetId}`}>
                   <button
                     type="button"
                     className={`relation-chip color-${target?.colorToken ?? "graphite"} ${isActive ? "is-active" : ""}`}
-                    onMouseEnter={() => setHoveredRelation(relation.targetId)}
-                    onMouseLeave={() => setHoveredRelation(null)}
-                    onFocus={() => setHoveredRelation(relation.targetId)}
-                    onBlur={() => setHoveredRelation(null)}
-                    onClick={() => setActiveRelation(activeRelation === relation.targetId ? null : relation.targetId)}
+                    onMouseEnter={() => setFocusedRelation(relation.targetId)}
+                    onMouseLeave={() => setFocusedRelation(null)}
+                    onFocus={() => setFocusedRelation(relation.targetId)}
+                    onBlur={() => setFocusedRelation(null)}
+                    onClick={() => setFocusedRelation(isActive ? null : relation.targetId)}
                   >
                     <span>{relation.targetName}</span>
                     <ArrowUpRight size={13} />
@@ -172,6 +168,19 @@ function DetailPanel({
           </div>
         </section>
       )}
+
+      <button className="detail-media" type="button" onClick={onPreview} aria-label="Open media preview">
+        {item.media ? (
+          item.media.type === "video" ? (
+            <video src={item.media.url} muted playsInline preload="metadata" />
+          ) : (
+            <Image src={item.media.url} alt={item.media.alt} fill sizes="420px" unoptimized />
+          )
+        ) : (
+          <MediaPlaceholder item={item} />
+        )}
+        <span className="preview-label"><Maximize2 size={13} /> Preview artifact</span>
+      </button>
     </motion.aside>
   );
 }
@@ -179,20 +188,18 @@ function DetailPanel({
 export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const reduceMotion = useReducedMotion();
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [hoveredRelation, setHoveredRelation] = useState<string | null>(null);
-  const [activeRelation, setActiveRelation] = useState<string | null>(null);
+  const [focusedRelation, setFocusedRelation] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [connections, setConnections] = useState<Connection[]>([]);
-  const [coordinate, setCoordinate] = useState("X 0000 / M JAN / Y 000");
   const canvasRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef(new Map<string, HTMLElement>());
 
   const publicItems = data.items;
-  const displayId = selectedId ?? hoveredId;
-  const displayItem = publicItems.find((item) => item.id === displayId) ?? null;
   const selectedItem = publicItems.find((item) => item.id === selectedId) ?? null;
-  const relationTarget = hoveredRelation ?? activeRelation;
+  const relatedIds = useMemo(
+    () => new Set(selectedItem?.relations.map((relation) => relation.targetId) ?? []),
+    [selectedItem],
+  );
 
   const laneData = useMemo(() => {
     return LANE_ORDER.map((lane) => {
@@ -213,7 +220,10 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       if (previewOpen) setPreviewOpen(false);
-      else setSelectedId(null);
+      else {
+        setSelectedId(null);
+        setFocusedRelation(null);
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -221,37 +231,45 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
 
   useLayoutEffect(() => {
     const updateLines = () => {
-      if (!selectedItem || !relationTarget || !canvasRef.current) {
+      if (!selectedItem || !canvasRef.current) {
         setConnections([]);
         return;
       }
       const source = itemRefs.current.get(selectedItem.id);
-      const target = itemRefs.current.get(relationTarget);
-      if (!source || !target) {
+      if (!source) {
         setConnections([]);
         return;
       }
+
       const canvasRect = canvasRef.current.getBoundingClientRect();
       const sourceRect = source.getBoundingClientRect();
-      const targetRect = target.getBoundingClientRect();
-      const sourceCenter = {
-        x: sourceRect.left - canvasRect.left + sourceRect.width / 2,
-        y: sourceRect.top - canvasRect.top + sourceRect.height / 2,
-      };
-      const targetCenter = {
-        x: targetRect.left - canvasRect.left + targetRect.width / 2,
-        y: targetRect.top - canvasRect.top + targetRect.height / 2,
-      };
-      const direction = targetCenter.x >= sourceCenter.x ? 1 : -1;
-      const startX = sourceCenter.x + direction * Math.min(sourceRect.width / 2, 34);
-      const endX = targetCenter.x - direction * Math.min(targetRect.width / 2, 34);
-      const middleX = startX + (endX - startX) / 2;
-      setConnections([
-        {
-          id: `${selectedItem.id}-${relationTarget}`,
-          path: `M ${startX} ${sourceCenter.y} H ${middleX} V ${targetCenter.y} H ${endX}`,
-        },
-      ]);
+      const sourceCenterX = sourceRect.left - canvasRect.left + sourceRect.width / 2;
+      const sourceCenterY = sourceRect.top - canvasRect.top + sourceRect.height / 2;
+
+      const nextConnections = selectedItem.relations.flatMap((relation) => {
+        const target = itemRefs.current.get(relation.targetId);
+        if (!target) return [];
+        const targetRect = target.getBoundingClientRect();
+        const targetCenterX = targetRect.left - canvasRect.left + targetRect.width / 2;
+        const targetCenterY = targetRect.top - canvasRect.top + targetRect.height / 2;
+        const sameBand = Math.abs(targetCenterY - sourceCenterY) < 34;
+        const movesDown = targetCenterY >= sourceCenterY;
+        const sourceY = movesDown
+          ? sourceRect.bottom - canvasRect.top + 2
+          : sourceRect.top - canvasRect.top - 2;
+        const targetY = movesDown
+          ? targetRect.top - canvasRect.top - 2
+          : targetRect.bottom - canvasRect.top + 2;
+        const railY = sameBand
+          ? Math.max(sourceRect.bottom, targetRect.bottom) - canvasRect.top + 8
+          : sourceY + (targetY - sourceY) / 2;
+        return [{
+          id: `${selectedItem.id}-${relation.targetId}`,
+          targetId: relation.targetId,
+          path: `M ${sourceCenterX} ${sourceY} V ${railY} H ${targetCenterX} V ${targetY}`,
+        }];
+      });
+      setConnections(nextConnections);
     };
 
     updateLines();
@@ -262,28 +280,18 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
       window.removeEventListener("resize", updateLines);
       observer.disconnect();
     };
-  }, [selectedItem, relationTarget, laneData]);
+  }, [selectedItem, laneData]);
 
   const handleCanvasClick = (event: ReactMouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget || (event.target as HTMLElement).closest("[data-gantt-background]")) {
       setSelectedId(null);
-      setActiveRelation(null);
+      setFocusedRelation(null);
     }
-  };
-
-  const handlePointerReadout = (event: ReactMouseEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = Math.max(0, event.clientX - rect.left);
-    const y = Math.max(0, event.clientY - rect.top);
-    const monthIndex = Math.min(8, Math.max(0, Math.floor(((x - 220) / 1080) * 9)));
-    setCoordinate(`X ${String(Math.round(x)).padStart(4, "0")} / M ${MONTHS[monthIndex].toUpperCase()} / Y ${String(Math.round(y)).padStart(3, "0")}`);
   };
 
   const selectItem = (item: PublicTimelineItem) => {
     setSelectedId(item.id);
-    setHoveredId(null);
-    setActiveRelation(null);
-    setHoveredRelation(null);
+    setFocusedRelation(null);
   };
 
   return (
@@ -309,7 +317,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
           <span>Restore the trust.</span>
         </h1>
         <div className="hero-bottom">
-          <p>{data.meta.subtitle}. A nine-month record of product leadership across engineering, research, operations, and the curve balls in between.</p>
+          <p>{data.meta.subtitle}. A nine-month record of product leadership across engineering, research, operations, and the curve balls in between to migrate all three dashboards, restore partner trust, and prepare the platform for K–8.</p>
           <dl className="hero-metrics">
             <div><dt>Window</dt><dd>09 months</dd></div>
             <div><dt>Work items</dt><dd>{publicItems.length}</dd></div>
@@ -325,7 +333,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
             <h2 id="timeline-heading">The work, in motion</h2>
           </div>
           <div className="timeline-guide">
-            <p>Select any bar for context. Hover or select a relationship to trace the system behind the work.</p>
+            <p>Hover to scan. Select a bar to open its record and trace every connected work item.</p>
             <div className="timeline-legend" aria-label="Color key">
               <span className="legend-title">Color key</span>
               {(Object.entries(COLOR_LABELS) as Array<[PublicTimelineItem["colorToken"], string]>).map(([color, label]) => (
@@ -335,24 +343,14 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
           </div>
         </div>
 
-        <div className={`workbench ${displayItem ? "has-detail" : ""}`}>
+        <div className={`workbench ${selectedItem ? "has-detail" : ""}`}>
           <div className="timeline-scroll" onClick={handleCanvasClick}>
-            <div
-              className="timeline-canvas"
-              ref={canvasRef}
-              onMouseMove={handlePointerReadout}
-              data-gantt-background
-            >
-              <div className="coordinate-readout">{coordinate}</div>
+            <div className="timeline-canvas" ref={canvasRef} data-gantt-background>
               <div className="phase-row">
                 <div className="axis-spacer"><span>Phase</span></div>
                 <div className="phase-track">
                   {PHASES.map((phase, index) => (
-                    <div
-                      className="phase"
-                      key={phase.label}
-                      style={{ gridColumn: `${phase.start + 1} / span ${phase.span}` }}
-                    >
+                    <div className="phase" key={phase.label} style={{ gridColumn: `${phase.start + 1} / span ${phase.span}` }}>
                       <span>[0{index + 1}]</span>{phase.label}
                     </div>
                   ))}
@@ -376,14 +374,14 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                 <div className="lane-stack" data-gantt-background>
                   {laneData.map((lane, laneIndex) => (
                     <section
-                      className="lane-row"
+                      className={`lane-row lane-${laneIndex + 1}`}
                       key={lane.lane}
-                      style={{ "--lane-height": `${lane.count * 45 + 24}px` } as CSSProperties}
+                      style={{ "--lane-height": `${lane.count * 29 + 12}px`, "--lane-index": laneIndex } as CSSProperties}
                     >
                       <div className="lane-label" data-gantt-background>
-                        <span className="index-mark">[{String(laneIndex + 1).padStart(2, "0")}]</span>
+                        <span className="lane-code">{LANE_CODES[lane.lane]}</span>
                         <strong>{lane.displayName}</strong>
-                        <small>{lane.items.length} items</small>
+                        <small>{String(lane.items.length).padStart(2, "0")} items</small>
                       </div>
                       <div className="lane-track" data-gantt-background>
                         <div className="month-grid" data-gantt-background>
@@ -391,8 +389,9 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                         </div>
                         {lane.items.map((item) => {
                           const isSelected = selectedId === item.id;
-                          const isRelated = relationTarget === item.id;
-                          const isMuted = Boolean(relationTarget) && !isRelated && !isSelected;
+                          const isRelated = relatedIds.has(item.id);
+                          const isFocused = focusedRelation === item.id;
+                          const isMuted = Boolean(focusedRelation) && !isFocused && !isSelected;
                           const style = {
                             "--item-left": `${(item.start / 9) * 100}%`,
                             "--item-width": `${(placementSpan(item.start, item.end) / 9) * 100}%`,
@@ -407,21 +406,17 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                               layout={!reduceMotion}
                               type="button"
                               key={item.id}
-                              className={`timeline-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isRelated ? "is-related" : ""} ${isMuted ? "is-muted" : ""}`}
+                              className={`timeline-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isMuted ? "is-muted" : ""}`}
                               style={style}
-                              onMouseEnter={() => setHoveredId(item.id)}
-                              onMouseLeave={() => setHoveredId(null)}
-                              onFocus={() => setHoveredId(item.id)}
-                              onBlur={() => setHoveredId(null)}
                               onClick={(event) => {
                                 event.stopPropagation();
                                 selectItem(item);
                               }}
                               aria-pressed={isSelected}
                               aria-label={`${item.name}, ${item.placement}`}
+                              title={item.name}
                             >
                               <span className="item-name">{item.name}</span>
-                              <span className="item-placement">{item.placement.replace(" (ongoing)", "")}</span>
                             </motion.button>
                           );
                         })}
@@ -433,27 +428,24 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                 <aside className="future-rail" aria-label="In-flight and future work">
                   <div className="future-rail-intro">
                     <span className="index-mark">[06]</span>
-                    <h3>Groundwork for Q4</h3>
-                    <p>Already planned. Not yet placed.</p>
+                    <h3>Q4 groundwork</h3>
+                    <p>Planned. Not yet placed.</p>
                   </div>
                   <div className="future-list">
                     {futureItems.map((item, index) => {
                       const isSelected = selectedId === item.id;
-                      const isRelated = relationTarget === item.id;
-                      const isMuted = Boolean(relationTarget) && !isRelated && !isSelected;
+                      const isRelated = relatedIds.has(item.id);
+                      const isFocused = focusedRelation === item.id;
+                      const isMuted = Boolean(focusedRelation) && !isFocused && !isSelected;
                       return (
                         <button
                           ref={(node) => {
                             if (node) itemRefs.current.set(item.id, node);
                             else itemRefs.current.delete(item.id);
                           }}
-                          className={`future-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isRelated ? "is-related" : ""} ${isMuted ? "is-muted" : ""}`}
+                          className={`future-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isMuted ? "is-muted" : ""}`}
                           type="button"
                           key={item.id}
-                          onMouseEnter={() => setHoveredId(item.id)}
-                          onMouseLeave={() => setHoveredId(null)}
-                          onFocus={() => setHoveredId(item.id)}
-                          onBlur={() => setHoveredId(null)}
                           onClick={(event) => {
                             event.stopPropagation();
                             selectItem(item);
@@ -461,7 +453,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                         >
                           <span>{String(index + 1).padStart(2, "0")}</span>
                           <strong>{item.name}</strong>
-                          <ArrowUpRight size={14} />
+                          <ArrowUpRight size={13} />
                         </button>
                       );
                     })}
@@ -470,19 +462,14 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
               </div>
 
               <svg className="connection-layer" aria-hidden="true">
-                <defs>
-                  <marker id="relation-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-                    <path d="M 0 0 L 7 3.5 L 0 7 z" />
-                  </marker>
-                </defs>
                 {connections.map((connection) => (
                   <motion.path
                     key={connection.id}
+                    className={`${focusedRelation === connection.targetId ? "is-focused" : ""} ${focusedRelation && focusedRelation !== connection.targetId ? "is-dimmed" : ""}`}
                     d={connection.path}
                     initial={reduceMotion ? false : { pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: 1 }}
                     transition={{ duration: reduceMotion ? 0 : 0.35 }}
-                    markerEnd="url(#relation-arrow)"
                   />
                 ))}
               </svg>
@@ -490,20 +477,16 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
           </div>
 
           <AnimatePresence mode="wait">
-            {displayItem && (
+            {selectedItem && (
               <DetailPanel
-                key={displayItem.id}
-                item={displayItem}
+                key={selectedItem.id}
+                item={selectedItem}
                 allItems={publicItems}
-                activeRelation={activeRelation}
-                setActiveRelation={setActiveRelation}
-                hoveredRelation={hoveredRelation}
-                setHoveredRelation={setHoveredRelation}
+                focusedRelation={focusedRelation}
+                setFocusedRelation={setFocusedRelation}
                 onClose={() => {
                   setSelectedId(null);
-                  setHoveredId(null);
-                  setActiveRelation(null);
-                  setHoveredRelation(null);
+                  setFocusedRelation(null);
                 }}
                 onPreview={() => setPreviewOpen(true)}
               />
@@ -523,8 +506,10 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         <span>Product leadership case record</span>
       </footer>
 
+      <CoordinateCursor />
+
       <AnimatePresence>
-        {previewOpen && displayItem && (
+        {previewOpen && selectedItem && (
           <motion.div
             className="preview-overlay"
             initial={{ opacity: 0 }}
@@ -533,7 +518,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
             onMouseDown={() => setPreviewOpen(false)}
             role="dialog"
             aria-modal="true"
-            aria-label={`Media preview for ${displayItem.name}`}
+            aria-label={`Media preview for ${selectedItem.name}`}
           >
             <button className="preview-close" type="button" onClick={() => setPreviewOpen(false)} aria-label="Close media preview">
               <X size={18} />
@@ -545,14 +530,14 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
               exit={reduceMotion ? undefined : { scale: 0.96, y: 12 }}
               onMouseDown={(event) => event.stopPropagation()}
             >
-              {displayItem.media ? (
-                displayItem.media.type === "video" ? (
-                  <video src={displayItem.media.url} controls autoPlay />
+              {selectedItem.media ? (
+                selectedItem.media.type === "video" ? (
+                  <video src={selectedItem.media.url} controls autoPlay />
                 ) : (
-                  <Image src={displayItem.media.url} alt={displayItem.media.alt} fill sizes="90vw" unoptimized />
+                  <Image src={selectedItem.media.url} alt={selectedItem.media.alt} fill sizes="90vw" unoptimized />
                 )
               ) : (
-                <MediaPlaceholder item={displayItem} />
+                <MediaPlaceholder item={selectedItem} />
               )}
             </motion.div>
           </motion.div>
