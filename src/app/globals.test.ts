@@ -43,6 +43,13 @@ describe("public timeline visual tokens", () => {
     expect(css).not.toMatch(/@media[^{}]*\{[\s\S]*?\.coordinate-cursor,[\s\S]*?display:\s*none/);
   });
 
+  it("renders Guiding Light focus as five equal cells with black matching items and faint orthogonal tethers", () => {
+    expect(css).toMatch(/\.guiding-light-track\s*\{[\s\S]*?grid-template-columns:\s*repeat\(5, minmax\(0, 1fr\)\)/);
+    expect(css).toMatch(/\.timeline-item\.is-guiding-match,[\s\S]*?\.future-item\.is-guiding-match\s*\{[\s\S]*?color:\s*var\(--paper-raised\)[\s\S]*?background:\s*var\(--ink\)/);
+    expect(css).toMatch(/\.guiding-light-tether-layer\s*\{[\s\S]*?pointer-events:\s*none/);
+    expect(css).toMatch(/\.guiding-light-tether-layer path\s*\{[\s\S]*?stroke-linecap:\s*butt/);
+  });
+
   it("stops every visible connector stroke at its calculated item-border endpoint", () => {
     expect(css).toMatch(/\.connection-layer path:not\(\[d\^="M 0"\]\)\s*\{[\s\S]*?stroke-linecap:\s*butt/);
     expect(css).toMatch(/\.connector-route-shadow,\s*\.connector-route-line\s*\{[\s\S]*?stroke-linecap:\s*butt/);

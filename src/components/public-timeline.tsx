@@ -21,9 +21,10 @@ import {
   TelemetryMediaPlaceholder,
   type TelemetryTab,
 } from "@/components/telemetry-aperture";
+import { guidingLightTetherGeometry } from "@/lib/guiding-light-tethers";
 import { connectorPath, resolveConnectorPoints, type ConnectorRect } from "@/lib/orthogonal-connectors";
 import { TELEMETRY_TETHER_DURATION, telemetryTetherGeometry } from "@/lib/telemetry-tether";
-import { MONTHS, placementSpan, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
+import { GUIDING_LIGHTS, MONTHS, placementSpan, type GuidingLight, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
 const LANE_ORDER = [
   "Eng Build",
@@ -31,13 +32,6 @@ const LANE_ORDER = [
   "Product Discovery",
   "Processes",
   "Challenges Planned / Unplanned",
-];
-
-const PHASES = [
-  { label: "Learn fast, stabilize faster", start: 0, span: 2 },
-  { label: "Choose rebuild over repair", start: 2, span: 2 },
-  { label: "Relaunch and govern", start: 4, span: 2 },
-  { label: "Prepare for scale", start: 6, span: 3 },
 ];
 
 const PIXEL_TONES = ["#111311", "#191b19", "#2b2d2b", "#3d3f3d"] as const;
@@ -68,6 +62,7 @@ const PIXEL_FIELDS = Array.from({ length: 6 }, (_, seed) => createPixelField(see
 
 type PositionedItem = PublicTimelineItem & { row: number };
 type Connection = { id: string; targetId: string; path: string };
+type GuidingLightTether = { id: string; path: string };
 type TelemetrySide = "left" | "right";
 
 function assignRows(items: PublicTimelineItem[]) {
@@ -93,12 +88,15 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const [activeTab, setActiveTab] = useState<TelemetryTab>("overview");
   const [telemetrySide, setTelemetrySide] = useState<TelemetrySide>("right");
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [activeGuidingLight, setActiveGuidingLight] = useState<GuidingLight | null>(null);
   const [connections, setConnections] = useState<Connection[]>([]);
+  const [guidingLightTethers, setGuidingLightTethers] = useState<GuidingLightTether[]>([]);
   const [tetherPath, setTetherPath] = useState<string | null>(null);
   const [apertureNode, setApertureNode] = useState<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const apertureRef = useRef<HTMLElement | null>(null);
   const itemRefs = useRef(new Map<string, HTMLElement>());
+  const guidingLightRefs = useRef(new Map<GuidingLight, HTMLButtonElement>());
 
   const publicItems = data.items;
   const selectedItem = publicItems.find((item) => item.id === selectedId) ?? null;
@@ -108,6 +106,9 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const activeLane = displayItem?.lane ?? null;
   const activeRelation = focusedRelation ?? selectedRelation;
   const relatedIds = new Set(selectedItem?.relations.map((relation) => relation.targetId) ?? []);
+  const guidingMatchIds = new Set(activeGuidingLight
+    ? publicItems.filter((item) => item.guidingLights.includes(activeGuidingLight)).map((item) => item.id)
+    : []);
 
   const laneData = useMemo(() => {
     return LANE_ORDER.map((lane) => {
@@ -133,6 +134,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         setSelectedId(null);
         setFocusedRelation(null);
         setSelectedRelation(null);
+        setActiveGuidingLight(null);
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -153,6 +155,17 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
     document.addEventListener("pointerdown", dismissOnOutsidePointer, true);
     return () => document.removeEventListener("pointerdown", dismissOnOutsidePointer, true);
   }, [hoveredId, selectedId, previewOpen]);
+
+  useEffect(() => {
+    if (!activeGuidingLight) return;
+    const dismissGuidingLightFocus = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (target?.closest("[data-guiding-light]")) return;
+      setActiveGuidingLight(null);
+    };
+    document.addEventListener("pointerdown", dismissGuidingLightFocus, true);
+    return () => document.removeEventListener("pointerdown", dismissGuidingLightFocus, true);
+  }, [activeGuidingLight]);
 
   useEffect(() => {
     const clearTransientPreview = () => setHoveredId(null);
@@ -243,6 +256,64 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   }, [selectedItem, laneData]);
 
   useLayoutEffect(() => {
+    if (!activeGuidingLight || !canvasRef.current) {
+      const frame = window.requestAnimationFrame(() => setGuidingLightTethers([]));
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    const cell = guidingLightRefs.current.get(activeGuidingLight);
+    if (!cell) {
+      const frame = window.requestAnimationFrame(() => setGuidingLightTethers([]));
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    let frame: number | null = null;
+    const matchingItems = publicItems
+      .filter((item) => item.guidingLights.includes(activeGuidingLight))
+      .flatMap((item) => {
+        const node = itemRefs.current.get(item.id);
+        return node ? [{ item, node }] : [];
+      });
+    const updateTethers = () => {
+      const canvasRect = canvasRef.current?.getBoundingClientRect();
+      if (!canvasRect) return;
+      const cellRect = cell.getBoundingClientRect();
+      const nextTethers = matchingItems.map(({ item, node }, index) => ({
+        id: `${activeGuidingLight}-${item.id}`,
+        path: guidingLightTetherGeometry(
+          cellRect,
+          node.getBoundingClientRect(),
+          canvasRect,
+          index,
+          matchingItems.length,
+        ).path,
+      }));
+      setGuidingLightTethers(nextTethers);
+    };
+    const scheduleUpdate = () => {
+      if (frame !== null) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = null;
+        updateTethers();
+      });
+    };
+
+    updateTethers();
+    const observer = new ResizeObserver(scheduleUpdate);
+    observer.observe(cell);
+    if (canvasRef.current) observer.observe(canvasRef.current);
+    matchingItems.forEach(({ node }) => observer.observe(node));
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("scroll", scheduleUpdate, true);
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("scroll", scheduleUpdate, true);
+    };
+  }, [activeGuidingLight, publicItems]);
+
+  useLayoutEffect(() => {
     if (!selectedItem || !apertureNode) {
       const frame = window.requestAnimationFrame(() => setTetherPath(null));
       return () => window.cancelAnimationFrame(frame);
@@ -304,7 +375,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   };
 
   const previewItem = (item: PublicTimelineItem, element: HTMLElement) => {
-    if (selectedItem) return;
+    if (selectedItem || activeGuidingLight) return;
     setHoveredId(item.id);
     setSideFromElement(element);
   };
@@ -321,11 +392,14 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   };
 
   const handleCanvasClick = (event: ReactMouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget || (event.target as HTMLElement).closest("[data-gantt-background]")) {
+    const target = event.target as HTMLElement;
+    if (target.closest("[data-guiding-light]")) return;
+    if (event.target === event.currentTarget || target.closest("[data-gantt-background]")) {
       setHoveredId(null);
       setSelectedId(null);
       setFocusedRelation(null);
       setSelectedRelation(null);
+      setActiveGuidingLight(null);
     }
   };
 
@@ -333,9 +407,19 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
     setSideFromElement(element);
     setSelectedId(item.id);
     setHoveredId(null);
+    setActiveGuidingLight(null);
     setActiveTab("overview");
     setFocusedRelation(null);
     setSelectedRelation(null);
+  };
+
+  const selectGuidingLight = (guidingLight: GuidingLight) => {
+    setActiveGuidingLight((current) => current === guidingLight ? null : guidingLight);
+    setHoveredId(null);
+    setSelectedId(null);
+    setFocusedRelation(null);
+    setSelectedRelation(null);
+    setPreviewOpen(false);
   };
 
   const toggleRelation = (relationId: string) => {
@@ -387,13 +471,24 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         <div className="workbench">
           <div className="timeline-scroll" data-gantt-region onClick={handleCanvasClick}>
             <div className="timeline-canvas" ref={canvasRef} data-gantt-background>
-              <div className="phase-row">
-                <div className="axis-spacer"><span>Phase</span></div>
-                <div className="phase-track">
-                  {PHASES.map((phase, index) => (
-                    <div className="phase" key={phase.label} style={{ gridColumn: `${phase.start + 1} / span ${phase.span}` }}>
-                      <span>[0{index + 1}]</span>{phase.label}
-                    </div>
+              <div className="phase-row guiding-light-row">
+                <div className="axis-spacer"><span>Guiding Light</span></div>
+                <div className="guiding-light-track" role="group" aria-label="Focus timeline by Guiding Light">
+                  {GUIDING_LIGHTS.map((guidingLight, index) => (
+                    <button
+                      ref={(node) => {
+                        if (node) guidingLightRefs.current.set(guidingLight, node);
+                        else guidingLightRefs.current.delete(guidingLight);
+                      }}
+                      type="button"
+                      className={`guiding-light-cell ${activeGuidingLight === guidingLight ? "is-active" : ""}`}
+                      key={guidingLight}
+                      data-guiding-light={guidingLight}
+                      aria-pressed={activeGuidingLight === guidingLight}
+                      onClick={() => selectGuidingLight(guidingLight)}
+                    >
+                      <span>[0{index + 1}]</span>{guidingLight}
+                    </button>
                   ))}
                 </div>
                 <div className="future-axis">Q4 / PLANNED</div>
@@ -449,9 +544,12 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                             const isHovered = hoveredId === item.id;
                             const isRelated = relatedIds.has(item.id);
                             const isFocused = activeRelation === item.id;
-                            const isMuted = Boolean(selectedItem) && (activeRelation
-                              ? !isSelected && !isFocused
-                              : !isSelected && !isRelated);
+                            const isGuidingMatch = guidingMatchIds.has(item.id);
+                            const isMuted = activeGuidingLight
+                              ? !isGuidingMatch
+                              : Boolean(selectedItem) && (activeRelation
+                                ? !isSelected && !isFocused
+                                : !isSelected && !isRelated);
                             const style = {
                               "--item-left": `${(item.start / 9) * 100}%`,
                               "--item-width": `${(placementSpan(item.start, item.end) / 9) * 100}%`,
@@ -466,7 +564,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                                 layout={!reduceMotion}
                                 type="button"
                                 key={item.id}
-                                className={`timeline-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isHovered ? "is-hovered" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isMuted ? "is-muted" : ""}`}
+                                className={`timeline-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isHovered ? "is-hovered" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isGuidingMatch ? "is-guiding-match" : ""} ${isMuted ? "is-muted" : ""}`}
                                 style={style}
                                 onPointerEnter={(event) => {
                                   if (event.pointerType !== "touch") previewItem(item, event.currentTarget);
@@ -520,19 +618,24 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                       const isHovered = hoveredId === item.id;
                       const isRelated = relatedIds.has(item.id);
                       const isFocused = activeRelation === item.id;
-                      const isMuted = Boolean(selectedItem) && (activeRelation
-                        ? !isSelected && !isFocused
-                        : !isSelected && !isRelated);
+                      const isGuidingMatch = guidingMatchIds.has(item.id);
+                      const isMuted = activeGuidingLight
+                        ? !isGuidingMatch
+                        : Boolean(selectedItem) && (activeRelation
+                          ? !isSelected && !isFocused
+                          : !isSelected && !isRelated);
                       return (
                         <button
                           ref={(node) => {
                             if (node) itemRefs.current.set(item.id, node);
                             else itemRefs.current.delete(item.id);
                           }}
-                          className={`future-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isHovered ? "is-hovered" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isMuted ? "is-muted" : ""}`}
+                          className={`future-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isHovered ? "is-hovered" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isGuidingMatch ? "is-guiding-match" : ""} ${isMuted ? "is-muted" : ""}`}
                           type="button"
                           data-timeline-item
                           key={item.id}
+                          aria-pressed={isSelected}
+                          aria-label={`${item.name}, ${item.placement}`}
                           onPointerEnter={(event) => {
                             if (event.pointerType !== "touch") previewItem(item, event.currentTarget);
                           }}
@@ -555,6 +658,20 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                   </div>
                 </aside>
               </div>
+
+              <svg className="guiding-light-tether-layer" aria-hidden="true">
+                {activeGuidingLight && guidingLightTethers.map((tether, index) => (
+                  <motion.path
+                    key={tether.id}
+                    d={tether.path}
+                    initial={reduceMotion ? { opacity: 0.42 } : { pathLength: 0, opacity: 0 }}
+                    animate={reduceMotion ? { opacity: 0 } : { pathLength: 1, opacity: [0, 0.52, 0] }}
+                    transition={reduceMotion
+                      ? { duration: 0.18 }
+                      : { duration: TELEMETRY_TETHER_DURATION, times: [0, 0.58, 1], delay: index * 0.035 }}
+                  />
+                ))}
+              </svg>
 
               <svg className="connection-layer" aria-hidden="true">
                 {connections.map((connection) => (

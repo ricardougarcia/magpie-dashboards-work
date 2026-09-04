@@ -32,6 +32,7 @@ const data: PublicTimelineData = {
       placement: "Jan - Feb",
       value: "First item value.",
       relations: [{ targetId: "second-item", targetName: "Second item", description: "Connected work." }],
+      guidingLights: ["Learn", "Stabilize"],
       start: 0,
       end: 1,
       planned: false,
@@ -47,6 +48,7 @@ const data: PublicTimelineData = {
       placement: "Feb - Mar",
       value: "Second item value.",
       relations: [],
+      guidingLights: ["Fix", "Stabilize"],
       start: 1,
       end: 2,
       planned: false,
@@ -62,6 +64,7 @@ const data: PublicTimelineData = {
       placement: "Oct - Nov (planned)",
       value: "Future value.",
       relations: [],
+      guidingLights: ["Grow"],
       start: 9,
       end: 10,
       planned: true,
@@ -142,6 +145,64 @@ describe("PublicTimeline presentation safeguards", () => {
     expect(readout!.classList.contains("is-right-of-cursor")).toBe(true);
     expect(readout!.textContent).toContain("X:31PX");
     expect(readout!.textContent).toContain("Y:44PX");
+  });
+
+  it("replaces the Phase row with five evenly ordered Guiding Light controls", () => {
+    render(<PublicTimeline data={data} />);
+    const group = screen.getByRole("group", { name: "Focus timeline by Guiding Light" });
+    const labels = Array.from(group.querySelectorAll("button")).map((button) => button.textContent?.replace(/\[\d+\]/, ""));
+
+    expect(labels).toEqual(["Learn", "Fix", "Stabilize", "Govern", "Grow"]);
+    expect(screen.queryByText("Phase")).toBeNull();
+    expect(screen.queryByText("Learn fast, stabilize faster")).toBeNull();
+    expect(screen.getByText("Q4 / PLANNED")).toBeTruthy();
+  });
+
+  it("focuses every multi-value match without opening a modal or Connected Work lines", async () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    const stabilize = screen.getByRole("button", { name: /Stabilize/ });
+    fireEvent.click(stabilize);
+
+    await waitFor(() => expect(container.querySelectorAll(".guiding-light-tether-layer path")).toHaveLength(2));
+    expect(stabilize.getAttribute("aria-pressed")).toBe("true");
+    expect(getTimelineItem("First item").classList.contains("is-guiding-match")).toBe(true);
+    expect(getTimelineItem("Second item").classList.contains("is-guiding-match")).toBe(true);
+    expect(getTimelineItem("Planned item").classList.contains("is-muted")).toBe(true);
+    expect(container.querySelectorAll(".connection-layer path")).toHaveLength(0);
+    expect(screen.queryByLabelText(/Selected details for/)).toBeNull();
+
+    fireEvent.pointerEnter(getTimelineItem("First item"), { pointerType: "mouse" });
+    expect(screen.queryByLabelText(/Preview for/)).toBeNull();
+  });
+
+  it("focuses matching planned work and dismisses Guiding Light focus outside the chosen cell", async () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    const grow = screen.getByRole("button", { name: /Grow/ });
+    fireEvent.click(grow);
+
+    await waitFor(() => expect(getTimelineItem("Planned item").classList.contains("is-guiding-match")).toBe(true));
+    expect(getTimelineItem("First item").classList.contains("is-muted")).toBe(true);
+    expect(container.querySelectorAll(".guiding-light-tether-layer path")).toHaveLength(1);
+
+    fireEvent.pointerDown(screen.getByRole("heading", { name: "The work, in motion" }), { pointerType: "mouse" });
+    await waitFor(() => expect(grow.getAttribute("aria-pressed")).toBe("false"));
+    expect(getTimelineItem("Planned item").classList.contains("is-guiding-match")).toBe(false);
+    expect(container.querySelectorAll(".guiding-light-tether-layer path")).toHaveLength(0);
+  });
+
+  it("clears Guiding Light focus on Escape and when an item is selected", async () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    const learn = screen.getByRole("button", { name: /Learn/ });
+    fireEvent.click(learn);
+    fireEvent.keyDown(window, { key: "Escape" });
+    await waitFor(() => expect(learn.getAttribute("aria-pressed")).toBe("false"));
+
+    fireEvent.click(learn);
+    fireEvent.click(getTimelineItem("First item"));
+    await waitFor(() => expect(screen.getByLabelText("Selected details for First item")).toBeTruthy());
+    expect(learn.getAttribute("aria-pressed")).toBe("false");
+    expect(container.querySelectorAll(".guiding-light-tether-layer path")).toHaveLength(0);
+    expect(container.querySelectorAll(".connection-layer path")).toHaveLength(1);
   });
 
   it("uses varied per-pixel timing while preserving the overall left-to-right acquisition", () => {

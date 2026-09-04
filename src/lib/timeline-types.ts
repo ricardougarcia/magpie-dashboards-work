@@ -72,7 +72,7 @@ export type TimelineLane = {
   index: number;
 };
 
-export type PublicTimelineItem = Omit<TimelineItem, "guidingLights">;
+export type PublicTimelineItem = TimelineItem;
 
 export type TimelineData = {
   version: number;
