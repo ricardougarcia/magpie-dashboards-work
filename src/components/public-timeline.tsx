@@ -22,6 +22,7 @@ import {
   TelemetryMediaPlaceholder,
   type TelemetryTab,
 } from "@/components/telemetry-aperture";
+import { routeConnections, type RoutingRect } from "@/lib/connection-routing";
 import { MONTHS, placementSpan, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
 const LANE_ORDER = [
@@ -79,6 +80,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const [connections, setConnections] = useState<Connection[]>([]);
   const [tetherPath, setTetherPath] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const timelineBodyRef = useRef<HTMLDivElement>(null);
   const apertureRef = useRef<HTMLElement | null>(null);
   const itemRefs = useRef(new Map<string, HTMLElement>());
 
@@ -157,7 +159,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
 
   useLayoutEffect(() => {
     const updateLines = () => {
-      if (!selectedItem || !canvasRef.current) {
+      if (!selectedItem || !canvasRef.current || !timelineBodyRef.current) {
         setConnections([]);
         return;
       }
@@ -168,40 +170,43 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
       }
 
       const canvasRect = canvasRef.current.getBoundingClientRect();
-      const sourceRect = source.getBoundingClientRect();
-      const sourceCenterX = sourceRect.left - canvasRect.left + sourceRect.width / 2;
-      const sourceCenterY = sourceRect.top - canvasRect.top + sourceRect.height / 2;
-
-      const nextConnections = selectedItem.relations.flatMap((relation) => {
+      const toRoutingRect = (rect: DOMRect): RoutingRect => ({
+        left: rect.left - canvasRect.left,
+        top: rect.top - canvasRect.top,
+        right: rect.right - canvasRect.left,
+        bottom: rect.bottom - canvasRect.top,
+      });
+      const bodyRect = toRoutingRect(timelineBodyRef.current.getBoundingClientRect());
+      const bounds: RoutingRect = {
+        left: bodyRect.left + 2,
+        top: bodyRect.top + 2,
+        right: bodyRect.right - 2,
+        bottom: bodyRect.bottom - 2,
+      };
+      const obstacles = Array.from(itemRefs.current.values()).map((item) => toRoutingRect(item.getBoundingClientRect()));
+      const targets = selectedItem.relations.flatMap((relation) => {
         const target = itemRefs.current.get(relation.targetId);
         if (!target) return [];
-        const targetRect = target.getBoundingClientRect();
-        const targetCenterX = targetRect.left - canvasRect.left + targetRect.width / 2;
-        const targetCenterY = targetRect.top - canvasRect.top + targetRect.height / 2;
-        const sameBand = Math.abs(targetCenterY - sourceCenterY) < 34;
-        const movesDown = targetCenterY >= sourceCenterY;
-        const sourceY = movesDown
-          ? sourceRect.bottom - canvasRect.top + 2
-          : sourceRect.top - canvasRect.top - 2;
-        const targetY = movesDown
-          ? targetRect.top - canvasRect.top - 2
-          : targetRect.bottom - canvasRect.top + 2;
-        const railY = sameBand
-          ? Math.max(sourceRect.bottom, targetRect.bottom) - canvasRect.top + 8
-          : sourceY + (targetY - sourceY) / 2;
         return [{
           id: `${selectedItem.id}-${relation.targetId}`,
           targetId: relation.targetId,
-          path: `M ${sourceCenterX} ${sourceY} V ${railY} H ${targetCenterX} V ${targetY}`,
+          rect: toRoutingRect(target.getBoundingClientRect()),
         }];
       });
-      setConnections(nextConnections);
+      const nextConnections = routeConnections({
+        bounds,
+        source: toRoutingRect(source.getBoundingClientRect()),
+        targets,
+        obstacles,
+      });
+      setConnections(nextConnections.map(({ id, targetId, path }) => ({ id, targetId, path })));
     };
 
     updateLines();
     window.addEventListener("resize", updateLines);
     const observer = new ResizeObserver(updateLines);
     if (canvasRef.current) observer.observe(canvasRef.current);
+    itemRefs.current.forEach((item) => observer.observe(item));
     return () => {
       window.removeEventListener("resize", updateLines);
       observer.disconnect();
@@ -249,6 +254,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   };
 
   const previewItem = (item: PublicTimelineItem, element: HTMLElement) => {
+    if (selectedItem) return;
     setHoveredId(item.id);
     setSideFromElement(element);
   };
@@ -309,7 +315,8 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
           <span>Restore the trust.</span>
         </h1>
         <div className="hero-bottom">
-          <p>{data.meta.subtitle}. A nine-month record of product leadership across engineering, research, operations, and the curve balls in between to migrate all three dashboards, restore partner trust, and prepare the platform for K–8.</p>
+                      <p className="hero-summary">{data.meta.subtitle}. A nine-month record of product leadership across engineering, research, operations, and the curve balls in between to migrate all three dashboards, restore partner trust, and prepare the platform for K–8.</p>
+
           <dl className="hero-metrics">
             <div><dt>Window</dt><dd>09 months</dd></div>
             <div><dt>Work items</dt><dd>{publicItems.length}</dd></div>
@@ -325,7 +332,6 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
             <h2 id="timeline-heading">The work, in motion</h2>
           </div>
           <div className="timeline-guide">
-            <p>Hover to scan. Select a bar to pin its record and trace every connected work item.</p>
             <div className="timeline-legend" aria-label="Color key">
               <span className="legend-title">Color key</span>
               {(Object.entries(COLOR_LABELS) as Array<[PublicTimelineItem["colorToken"], string]>).map(([color, label]) => (
@@ -362,7 +368,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                 <div className="future-axis">OCT—DEC</div>
               </div>
 
-              <div className="timeline-body">
+              <div className="timeline-body" ref={timelineBodyRef}>
                 <div className="lane-stack" data-gantt-background>
                   {laneData.map((lane, laneIndex) => {
                     const isLaneActive = activeLane === lane.lane;
@@ -431,7 +437,6 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                                 data-timeline-item
                                 aria-pressed={isSelected}
                                 aria-label={`${item.name}, ${item.placement}`}
-                                title={item.name}
                               >
                                 <span className="item-name">{item.name}</span>
                               </motion.button>
@@ -458,7 +463,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                     </div>
                     <span className="index-mark">[06]</span>
                     <h3>Q4 groundwork</h3>
-                    <p>Planned. Not yet placed.</p>
+                    <p>Planned</p>
                   </div>
                   <div className="future-list">
                     {futureItems.map((item, index) => {

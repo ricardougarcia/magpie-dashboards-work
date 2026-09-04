@@ -3148,3 +3148,26 @@ footer {
   color: #fff;
   box-shadow: none;
 }
+
+/* Copy and color-key refinements */
+.hero-summary {
+  letter-spacing: -0.012em;
+  font-kerning: normal;
+}
+
+.timeline-guide {
+  align-self: end;
+  gap: 0;
+}
+
+.timeline-legend {
+  padding-top: 10px;
+}
+
+.legend-entry i.color-graphite,
+.legend-entry i.color-signal,
+.legend-entry i.color-steel,
+.legend-entry i.color-umber,
+.legend-entry i.color-forest {
+  background: var(--item-color);
+}

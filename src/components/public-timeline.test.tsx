@@ -21,6 +21,7 @@ const data: PublicTimelineData = {
   lanes: [
     { id: "eng-build", name: "Eng Build", displayName: "Eng Build", index: 1 },
     { id: "product-build", name: "Product Build", displayName: "Product Build", index: 2 },
+    { id: "in-flight-future", name: "In-Flight / Future", displayName: "In-Flight / Future", index: 6 },
   ],
   items: [
     {
@@ -53,6 +54,21 @@ const data: PublicTimelineData = {
       colorToken: "signal",
       media: null,
     },
+    {
+      id: "planned-item",
+      name: "Planned item",
+      lane: "In-Flight / Future",
+      description: "Planned item context.",
+      placement: "Oct - Nov (planned)",
+      value: "Future value.",
+      relations: [],
+      start: 9,
+      end: 10,
+      planned: true,
+      ongoing: false,
+      colorToken: "forest",
+      media: null,
+    },
   ],
 };
 
@@ -79,6 +95,28 @@ function getTimelineItem(name: string) {
   return screen.getByRole("button", { name: new RegExp(`^${name},`) });
 }
 
+describe("PublicTimeline presentation safeguards", () => {
+  it("renders the simplified copy, mapped legend tokens, and no native Gantt tooltips", () => {
+    const { container } = render(<PublicTimeline data={data} />);
+
+    expect(screen.queryByText("Hover to scan. Select a bar to pin its record and trace every connected work item.")).toBeNull();
+    expect(screen.getByText("Planned")).toBeTruthy();
+    expect(screen.queryByText("Planned. Not yet placed.")).toBeNull();
+
+    const legend = screen.getByLabelText("Color key");
+    expect(Array.from(legend.querySelectorAll("i")).map((swatch) => swatch.className)).toEqual([
+      "color-graphite",
+      "color-signal",
+      "color-steel",
+      "color-umber",
+      "color-forest",
+    ]);
+    container.querySelectorAll("[data-timeline-item]").forEach((item) => {
+      expect(item.hasAttribute("title")).toBe(false);
+    });
+  });
+});
+
 describe("PublicTimeline telemetry ownership", () => {
   it("dismisses a hover-only preview when the page is clicked outside it", async () => {
     render(<PublicTimeline data={data} />);
@@ -89,7 +127,7 @@ describe("PublicTimeline telemetry ownership", () => {
     await waitFor(() => expect(screen.queryByLabelText("Preview for First item")).toBeNull());
   });
 
-  it("replaces the current telemetry record when another Gantt item is selected", async () => {
+  it("ignores hover while pinned but replaces the record when another Gantt item is selected", async () => {
     render(<PublicTimeline data={data} />);
     const first = getTimelineItem("First item");
     const second = getTimelineItem("Second item");
@@ -100,7 +138,8 @@ describe("PublicTimeline telemetry ownership", () => {
     await waitFor(() => expect(screen.getByLabelText("Selected details for First item")).toBeTruthy());
 
     fireEvent.pointerEnter(second, { pointerType: "mouse" });
-    await waitFor(() => expect(screen.getByLabelText("Preview for Second item")).toBeTruthy());
+    expect(screen.queryByLabelText("Preview for Second item")).toBeNull();
+    expect(screen.getByLabelText("Selected details for First item")).toBeTruthy();
     fireEvent.click(second);
 
     await waitFor(() => {
@@ -119,7 +158,7 @@ describe("PublicTimeline telemetry ownership", () => {
     await waitFor(() => expect(screen.queryByLabelText("Selected details for First item")).toBeNull());
   });
 
-  it("clears stale hover ownership after viewport movement while preserving a pinned record", async () => {
+  it("preserves a pinned record across hover and viewport movement", async () => {
     render(<PublicTimeline data={data} />);
     const first = getTimelineItem("First item");
     const second = getTimelineItem("Second item");
@@ -127,13 +166,10 @@ describe("PublicTimeline telemetry ownership", () => {
     fireEvent.click(first);
     await waitFor(() => expect(screen.getByLabelText("Selected details for First item")).toBeTruthy());
     fireEvent.pointerEnter(second, { pointerType: "mouse" });
-    await waitFor(() => expect(screen.getByLabelText("Preview for Second item")).toBeTruthy());
+    expect(screen.queryByLabelText("Preview for Second item")).toBeNull();
 
     fireEvent(window, new Event("resize"));
-    await waitFor(() => {
-      expect(screen.queryByLabelText("Preview for Second item")).toBeNull();
-      expect(screen.getByLabelText("Selected details for First item")).toBeTruthy();
-    });
+    expect(screen.getByLabelText("Selected details for First item")).toBeTruthy();
   });
 
   it("clears an unpinned hover preview when the document pointer boundary is left", async () => {
