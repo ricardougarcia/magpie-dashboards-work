@@ -41,7 +41,9 @@ Never commit real values. Configure all three variables for Production, Preview,
 
 ## Editor capabilities
 
-The owner workspace supports horizontal drag-to-move placement, start and end month controls, lane changes, new item creation, deletion, every detail-card field, one or two Guiding Light tags, constrained color tokens, relation targets and descriptions, and image, GIF, or video uploads up to 25 MB. Saving increments the persisted timeline version and updates its timestamp.
+The owner workspace supports horizontal drag-to-move placement, start and end month controls, lane changes, new item creation, deletion, every detail-card field, one or two Guiding Light tags, constrained color tokens, Connected Work targets and descriptions, and image, GIF, or video uploads up to 25 MB. Saving increments the persisted timeline version and updates its timestamp.
+
+Each existing Connected Work entry includes **Edit orthogonal line**. The line workspace is restricted to that source and already-linked target. Owners can drag either terminal around its item border, slide horizontal or vertical segments in the perpendicular direction, drag visible elbows, or drag a segment midpoint to inject a new right-angle bend. Routes are stored as normalized control points, so endpoints continue tracking their items when placement changes or the timeline responds to another viewport size. Relations without a saved route continue using the established public connector behavior.
 
 ## Data source and integrity
 
@@ -53,7 +55,7 @@ Run the complete verification suite before pushing:
 pnpm check
 ```
 
-This command validates all 45 source records and relation targets, runs ESLint, and produces a full production build.
+This command validates all 45 source records and relation targets, runs the connector geometry, editor persistence, selected-modal, presentation, and interaction regression suites, runs ESLint, and produces a full production build.
 
 ## Deployment
 

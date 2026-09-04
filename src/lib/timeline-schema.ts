@@ -3,10 +3,30 @@ import { z } from "zod";
 const guidingLightSchema = z.enum(["Learn", "Fix", "Stabilize", "Govern", "Grow"]);
 const colorTokenSchema = z.enum(["graphite", "signal", "steel", "umber", "forest"]);
 
+const connectorTerminalSchema = z.object({
+  side: z.enum(["top", "right", "bottom", "left"]),
+  offset: z.number().min(0).max(1),
+});
+
+const connectorPointSchema = z.object({
+  x: z.number().min(-4).max(5),
+  y: z.number().min(-4).max(5),
+});
+
+const orthogonalConnectorSchema = z.object({
+  source: connectorTerminalSchema,
+  target: connectorTerminalSchema,
+  points: z.array(connectorPointSchema).min(2).max(24).refine(
+    (points) => points.slice(1).every((point, index) => point.x === points[index].x || point.y === points[index].y),
+    "Connector points must form horizontal or vertical segments.",
+  ),
+});
+
 const relationSchema = z.object({
   targetId: z.string().min(1),
   targetName: z.string().min(1),
   description: z.string().min(1),
+  connector: orthogonalConnectorSchema.optional(),
 });
 
 const mediaSchema = z.object({

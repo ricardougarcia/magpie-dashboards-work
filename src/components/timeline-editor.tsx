@@ -16,6 +16,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { ConnectorRouteEditor } from "@/components/connector-route-editor";
 import {
   COLOR_TOKENS,
   GUIDING_LIGHTS,
@@ -26,6 +27,7 @@ import {
   placementSpan,
   type ColorToken,
   type GuidingLight,
+  type OrthogonalConnectorRoute,
   type TimelineData,
   type TimelineItem,
 } from "@/lib/timeline-types";
@@ -46,8 +48,12 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
   const [saveState, setSaveState] = useState<"idle" | "saved" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [editingRelationIndex, setEditingRelationIndex] = useState<number | null>(null);
 
   const selected = data.items.find((item) => item.id === selectedId) ?? null;
+  const editingRelation = selected && editingRelationIndex !== null
+    ? selected.relations[editingRelationIndex] ?? null
+    : null;
   const timelineItems = data.items.filter((item) => !item.planned);
   const futureItems = data.items.filter((item) => item.planned);
 
@@ -65,6 +71,11 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
     setDirty(true);
     setSaveState("idle");
     setStatusMessage("");
+  }
+
+  function chooseItem(id: string) {
+    setEditingRelationIndex(null);
+    setSelectedId(id);
   }
 
   function updateSelected(patch: Partial<TimelineItem>) {
@@ -123,7 +134,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
       media: null,
     };
     commit((draft) => draft.items.push(next));
-    setSelectedId(id);
+    chooseItem(id);
   }
 
   function removeItem() {
@@ -135,7 +146,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
         item.relations = item.relations.filter((relation) => relation.targetId !== selected.id);
       });
     });
-    setSelectedId(data.items.find((item) => item.id !== selected.id)?.id ?? "");
+    chooseItem(data.items.find((item) => item.id !== selected.id)?.id ?? "");
   }
 
   function toggleLight(light: GuidingLight) {
@@ -146,6 +157,15 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
       : [...selected.guidingLights, light].slice(-2);
     if (next.length === 0) return;
     updateSelected({ guidingLights: next });
+  }
+
+  function updateRelationConnector(index: number, connector: OrthogonalConnectorRoute) {
+    if (!selected) return;
+    updateSelected({
+      relations: selected.relations.map((relation, relationIndex) => relationIndex === index
+        ? { ...relation, connector }
+        : relation),
+    });
   }
 
   function addRelation() {
@@ -222,7 +242,17 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
         </div>
       </header>
 
-      <div className="editor-layout">
+      <div className={`editor-layout ${editingRelation ? "is-connector-mode" : ""}`}>
+        {editingRelation && selected && editingRelationIndex !== null ? (
+          <ConnectorRouteEditor
+            key={`${selected.id}-${editingRelation.targetId}`}
+            data={data}
+            source={selected}
+            relation={editingRelation}
+            onChange={(route) => updateRelationConnector(editingRelationIndex, route)}
+            onDone={() => setEditingRelationIndex(null)}
+          />
+        ) : (
         <section className="editor-board" aria-label="Editable timeline">
           <div className="editor-board-intro">
             <div><span className="index-mark">[EDIT / 01]</span><h1>Place the work</h1></div>
@@ -240,7 +270,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
                 <div className="editor-lane-head"><span>[{String(lane.index).padStart(2, "0")}]</span><strong>{lane.displayName}</strong></div>
                 {lane.items.map((item) => (
                   <div className="editor-item-row" key={item.id}>
-                    <button type="button" className="editor-item-label" onClick={() => setSelectedId(item.id)}>
+                    <button type="button" className="editor-item-label" onClick={() => chooseItem(item.id)}>
                       <span className={`editor-swatch color-${item.colorToken}`} />
                       <span>{item.name}</span>
                       <ChevronRight size={13} />
@@ -262,7 +292,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
                           left: `calc(${(item.start / 9) * 100}% + 4px)`,
                           width: `calc(${(placementSpan(item.start, item.end) / 9) * 100}% - 8px)`,
                         }}
-                        onClick={() => setSelectedId(item.id)}
+                        onClick={() => chooseItem(item.id)}
                       >
                         <GripHorizontal size={12} />
                         <span>{item.placement.replace(" (ongoing)", "")}</span>
@@ -281,7 +311,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
                     type="button"
                     key={item.id}
                     className={`editor-future-item color-${item.colorToken} ${selectedId === item.id ? "is-selected" : ""}`}
-                    onClick={() => setSelectedId(item.id)}
+                    onClick={() => chooseItem(item.id)}
                   >
                     <span>{item.name}</span><small>{item.placement}</small>
                   </button>
@@ -290,6 +320,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
             </section>
           </div>
         </section>
+        )}
 
         <aside className="editor-inspector" aria-label="Item inspector">
           {selected ? (
@@ -366,17 +397,25 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
                 </fieldset>
 
                 <fieldset className="form-section relation-editor">
-                  <div className="legend-row"><legend>Relations</legend><button type="button" onClick={addRelation}><Plus size={13} /> Add</button></div>
+                  <div className="legend-row"><legend>Connected Work</legend><button type="button" onClick={addRelation}><Plus size={13} /> Add</button></div>
                   {selected.relations.length === 0 && <p className="empty-note">No connected work items.</p>}
                   {selected.relations.map((relation, index) => (
-                    <div className="relation-form" key={`${relation.targetId}-${index}`}>
-                      <button type="button" className="remove-relation" aria-label="Remove relation" onClick={() => updateSelected({ relations: selected.relations.filter((_, relationIndex) => relationIndex !== index) })}><X size={13} /></button>
+                    <div className={`relation-form ${editingRelationIndex === index ? "is-editing-route" : ""}`} key={`${relation.targetId}-${index}`}>
+                      <button type="button" className="remove-relation" aria-label="Remove relation" onClick={() => {
+                        setEditingRelationIndex(null);
+                        updateSelected({ relations: selected.relations.filter((_, relationIndex) => relationIndex !== index) });
+                      }}><X size={13} /></button>
                       <label>Related item<select value={relation.targetId} onChange={(event) => {
                         const target = data.items.find((item) => item.id === event.target.value);
                         if (!target) return;
-                        updateSelected({ relations: selected.relations.map((entry, relationIndex) => relationIndex === index ? { ...entry, targetId: target.id, targetName: target.name } : entry) });
+                        setEditingRelationIndex(null);
+                        updateSelected({ relations: selected.relations.map((entry, relationIndex) => relationIndex === index ? { ...entry, targetId: target.id, targetName: target.name, connector: undefined } : entry) });
                       }}>{data.items.filter((item) => item.id !== selected.id).map((item) => <option key={item.id} value={item.id}>{item.name} / {item.lane}</option>)}</select></label>
                       <label>Connection<textarea rows={3} value={relation.description} onChange={(event) => updateSelected({ relations: selected.relations.map((entry, relationIndex) => relationIndex === index ? { ...entry, description: event.target.value } : entry) })} /></label>
+                      <div className="relation-route-control">
+                        <button type="button" onClick={() => setEditingRelationIndex(index)}><GripHorizontal size={13} /> Edit orthogonal line</button>
+                        <span>{relation.connector ? "Custom route saved" : "Default route"}</span>
+                      </div>
                     </div>
                   ))}
                 </fieldset>

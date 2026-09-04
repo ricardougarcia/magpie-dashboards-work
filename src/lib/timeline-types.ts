@@ -4,10 +4,29 @@ export const COLOR_TOKENS = ["graphite", "signal", "steel", "umber", "forest"] a
 export type GuidingLight = (typeof GUIDING_LIGHTS)[number];
 export type ColorToken = (typeof COLOR_TOKENS)[number];
 
+export type ConnectorTerminalSide = "top" | "right" | "bottom" | "left";
+
+export type ConnectorTerminal = {
+  side: ConnectorTerminalSide;
+  offset: number;
+};
+
+export type ConnectorPoint = {
+  x: number;
+  y: number;
+};
+
+export type OrthogonalConnectorRoute = {
+  source: ConnectorTerminal;
+  target: ConnectorTerminal;
+  points: ConnectorPoint[];
+};
+
 export type TimelineRelation = {
   targetId: string;
   targetName: string;
   description: string;
+  connector?: OrthogonalConnectorRoute;
 };
 
 export type TimelineMedia = {

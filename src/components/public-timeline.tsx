@@ -22,6 +22,7 @@ import {
   TelemetryMediaPlaceholder,
   type TelemetryTab,
 } from "@/components/telemetry-aperture";
+import { connectorPath, resolveConnectorPoints, type ConnectorRect } from "@/lib/orthogonal-connectors";
 import { MONTHS, placementSpan, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
 const LANE_ORDER = [
@@ -169,15 +170,31 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
 
       const canvasRect = canvasRef.current.getBoundingClientRect();
       const sourceRect = source.getBoundingClientRect();
-      const sourceCenterX = sourceRect.left - canvasRect.left + sourceRect.width / 2;
-      const sourceCenterY = sourceRect.top - canvasRect.top + sourceRect.height / 2;
+      const relativeRect = (rect: DOMRect): ConnectorRect => ({
+        left: rect.left - canvasRect.left,
+        top: rect.top - canvasRect.top,
+        width: rect.width,
+        height: rect.height,
+      });
+      const sourceConnectorRect = relativeRect(sourceRect);
+      const sourceCenterX = sourceConnectorRect.left + sourceConnectorRect.width / 2;
+      const sourceCenterY = sourceConnectorRect.top + sourceConnectorRect.height / 2;
 
       const nextConnections = selectedItem.relations.flatMap((relation) => {
         const target = itemRefs.current.get(relation.targetId);
         if (!target) return [];
         const targetRect = target.getBoundingClientRect();
-        const targetCenterX = targetRect.left - canvasRect.left + targetRect.width / 2;
-        const targetCenterY = targetRect.top - canvasRect.top + targetRect.height / 2;
+        const targetConnectorRect = relativeRect(targetRect);
+        if (relation.connector) {
+          const points = resolveConnectorPoints(relation.connector, sourceConnectorRect, targetConnectorRect);
+          return [{
+            id: `${selectedItem.id}-${relation.targetId}`,
+            targetId: relation.targetId,
+            path: connectorPath(points),
+          }];
+        }
+        const targetCenterX = targetConnectorRect.left + targetConnectorRect.width / 2;
+        const targetCenterY = targetConnectorRect.top + targetConnectorRect.height / 2;
         const sameBand = Math.abs(targetCenterY - sourceCenterY) < 34;
         const movesDown = targetCenterY >= sourceCenterY;
         const sourceY = movesDown

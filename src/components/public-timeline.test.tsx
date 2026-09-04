@@ -204,6 +204,26 @@ describe("PublicTimeline telemetry ownership", () => {
     await waitFor(() => expect(screen.getByLabelText("Selected details for First item")).toBeTruthy());
   });
 
+  it("renders a saved owner-defined route without blocking the selected modal", async () => {
+    const routedData = structuredClone(data);
+    routedData.items[0].relations[0].connector = {
+      source: { side: "right", offset: 0.5 },
+      target: { side: "left", offset: 0.5 },
+      points: [
+        { x: 0.12, y: 0.32 },
+        { x: 0.48, y: 0.32 },
+        { x: 0.48, y: 0.7 },
+        { x: 0.88, y: 0.7 },
+      ],
+    };
+    const { container } = render(<PublicTimeline data={routedData} />);
+
+    fireEvent.click(getTimelineItem("First item"));
+    await waitFor(() => expect(screen.getByLabelText("Selected details for First item")).toBeTruthy());
+    const connector = container.querySelector<SVGPathElement>(".connection-layer path");
+    expect(connector?.getAttribute("d")).toMatch(/^M /);
+  });
+
   it("retains Escape as a deterministic dismissal path", async () => {
     render(<PublicTimeline data={data} />);
     fireEvent.click(getTimelineItem("First item"));
