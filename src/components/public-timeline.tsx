@@ -362,7 +362,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         </div>
 
         <div className="workbench">
-          <div className="timeline-scroll" onClick={handleCanvasClick}>
+          <div className="timeline-scroll" data-gantt-region onClick={handleCanvasClick}>
             <div className="timeline-canvas" ref={canvasRef} data-gantt-background>
               <div className="phase-row">
                 <div className="axis-spacer"><span>Phase</span></div>

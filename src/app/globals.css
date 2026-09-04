@@ -16,8 +16,8 @@
   --future-width: 250px;
   --month-width: 120px;
   --timeline-width: 1080px;
-  --cursor-default: url("/cursor-plus.svg") 12 12, crosshair;
-  --cursor-action: url("/cursor-plus-pick.svg") 12 12, pointer;
+  --cursor-default: url("/cursor-plus.svg") 10 10, crosshair;
+  --cursor-action: url("/cursor-plus-pick.svg") 10 10, pointer;
 }
 
 * {
@@ -2342,38 +2342,62 @@ footer {
 .coordinate-cursor {
   position: fixed;
   z-index: 90;
-  top: 0;
-  left: 0;
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 7px;
-  padding: 5px 7px;
-  border: 1px solid rgba(17, 19, 17, 0.45);
-  background: rgba(241, 239, 233, 0.92);
-  color: var(--ink);
+  bottom: 18px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  color: rgba(17, 19, 17, 0.74);
   opacity: 0;
   pointer-events: none;
   font-family: var(--font-mono), monospace;
-  font-size: 7px;
-  letter-spacing: 0.05em;
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  line-height: 1.18;
   text-transform: uppercase;
-  transition: opacity 120ms ease;
-  will-change: transform;
-}
-
-.coordinate-cursor::before {
-  content: "";
-  position: absolute;
-  top: -6px;
-  left: -6px;
-  width: 5px;
-  height: 5px;
-  border-top: 1px solid var(--signal);
-  border-left: 1px solid var(--signal);
+  transition: opacity 140ms ease;
 }
 
 .coordinate-cursor.is-visible {
   opacity: 1;
+}
+
+.cursor-guides {
+  position: fixed;
+  z-index: 70;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms ease;
+}
+
+.cursor-guides.is-visible {
+  opacity: 1;
+}
+
+.cursor-guide-horizontal,
+.cursor-guide-vertical {
+  position: absolute;
+  display: block;
+  background: rgba(17, 19, 17, 0.11);
+  will-change: top, left;
+}
+
+.cursor-guide-horizontal {
+  right: 0;
+  left: 0;
+  height: 1px;
+  transform: translateY(-0.5px);
+}
+
+.cursor-guide-vertical {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-0.5px);
 }
 
 .outcome-strip > div {
@@ -2426,7 +2450,8 @@ footer {
     display: none;
   }
 
-  .coordinate-cursor {
+  .coordinate-cursor,
+  .cursor-guides {
     display: none;
   }
 }

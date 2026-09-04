@@ -74,6 +74,8 @@ const data: PublicTimelineData = {
 
 beforeEach(() => {
   vi.stubGlobal("ResizeObserver", ResizeObserverMock);
+  vi.stubGlobal("requestAnimationFrame", vi.fn((callback: FrameRequestCallback) => window.setTimeout(() => callback(0), 0)));
+  vi.stubGlobal("cancelAnimationFrame", vi.fn((id: number) => window.clearTimeout(id)));
   vi.stubGlobal("matchMedia", vi.fn().mockImplementation((query: string) => ({
     matches: false,
     media: query,
@@ -112,6 +114,28 @@ describe("PublicTimeline presentation safeguards", () => {
     container.querySelectorAll("[data-timeline-item]").forEach((item) => {
       expect(item.hasAttribute("title")).toBe(false);
     });
+  });
+
+  it("shows stacked coordinates globally while restricting viewport guides to the Gantt", async () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    const gantt = container.querySelector<HTMLElement>("[data-gantt-region]");
+    const guides = container.querySelector<HTMLElement>(".cursor-guides");
+    const readout = container.querySelector<HTMLElement>(".coordinate-cursor");
+    expect(gantt).toBeTruthy();
+    expect(guides).toBeTruthy();
+    expect(readout).toBeTruthy();
+
+    fireEvent.pointerMove(gantt!, { clientX: 229, clientY: 147 });
+    await waitFor(() => expect(guides!.classList.contains("is-visible")).toBe(true));
+    expect(readout!.classList.contains("is-visible")).toBe(true);
+    expect(readout!.textContent).toContain("X:229PX");
+    expect(readout!.textContent).toContain("Y:147PX");
+
+    fireEvent.pointerMove(document.body, { clientX: 31, clientY: 44 });
+    await waitFor(() => expect(guides!.classList.contains("is-visible")).toBe(false));
+    expect(readout!.classList.contains("is-visible")).toBe(true);
+    expect(readout!.textContent).toContain("X:31PX");
+    expect(readout!.textContent).toContain("Y:44PX");
   });
 
   it("uses varied per-pixel timing while preserving the overall left-to-right acquisition", () => {
