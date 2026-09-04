@@ -215,11 +215,11 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         const sameBand = Math.abs(targetCenterY - sourceCenterY) < 34;
         const movesDown = targetCenterY >= sourceCenterY;
         const sourceY = movesDown
-          ? sourceRect.bottom - canvasRect.top + 2
-          : sourceRect.top - canvasRect.top - 2;
+          ? sourceRect.bottom - canvasRect.top
+          : sourceRect.top - canvasRect.top;
         const targetY = movesDown
-          ? targetRect.top - canvasRect.top - 2
-          : targetRect.bottom - canvasRect.top + 2;
+          ? targetRect.top - canvasRect.top
+          : targetRect.bottom - canvasRect.top;
         const railY = sameBand
           ? Math.max(sourceRect.bottom, targetRect.bottom) - canvasRect.top + 8
           : sourceY + (targetY - sourceY) / 2;

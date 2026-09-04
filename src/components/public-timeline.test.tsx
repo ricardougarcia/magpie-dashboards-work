@@ -204,6 +204,37 @@ describe("PublicTimeline telemetry ownership", () => {
     });
   });
 
+  it("terminates legacy Connected Work lines exactly on fractional item borders", async () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    const canvas = container.querySelector<HTMLElement>(".timeline-canvas")!;
+    const first = getTimelineItem("First item");
+    const second = getTimelineItem("Second item");
+    const canvasRect = { left: 100, top: 200, width: 1000, height: 600 };
+    const sourceRect = { left: 200.25, top: 300.5, width: 220.75, height: 31.25 };
+    const targetRect = { left: 500.5, top: 420.25, width: 180.5, height: 32.5 };
+    const asDomRect = (rect: { left: number; top: number; width: number; height: number }) => ({
+      ...rect,
+      right: rect.left + rect.width,
+      bottom: rect.top + rect.height,
+      x: rect.left,
+      y: rect.top,
+      toJSON: () => rect,
+    } as DOMRect);
+    vi.spyOn(canvas, "getBoundingClientRect").mockImplementation(() => asDomRect(canvasRect));
+    vi.spyOn(first, "getBoundingClientRect").mockImplementation(() => asDomRect(sourceRect));
+    vi.spyOn(second, "getBoundingClientRect").mockImplementation(() => asDomRect(targetRect));
+
+    fireEvent.click(first);
+    fireEvent(window, new Event("resize"));
+
+    const connection = await waitFor(() => {
+      const path = container.querySelector<SVGPathElement>(".connection-layer path");
+      expect(path?.getAttribute("d")).toBeTruthy();
+      return path!;
+    });
+    expect(connection.getAttribute("d")).toBe("M 210.625 131.75 V 176 H 490.75 V 220.25");
+  });
+
   it("reanchors the tether to the live modal border after its position changes", async () => {
     const { container } = render(<PublicTimeline data={data} />);
     const first = getTimelineItem("First item");

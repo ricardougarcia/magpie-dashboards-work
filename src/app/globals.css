@@ -646,6 +646,8 @@ select:focus-visible {
   fill: none;
   stroke: var(--signal);
   stroke-width: 1.5;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
 }
 
@@ -3459,7 +3461,7 @@ footer {
 .connector-route-shadow,
 .connector-route-line {
   fill: none;
-  stroke-linecap: square;
+  stroke-linecap: butt;
   stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
@@ -3722,7 +3724,7 @@ footer {
   fill: none;
   stroke: var(--signal);
   stroke-width: 1.15;
-  stroke-linecap: square;
+  stroke-linecap: butt;
   stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
 }

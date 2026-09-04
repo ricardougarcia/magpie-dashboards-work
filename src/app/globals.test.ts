@@ -43,6 +43,12 @@ describe("public timeline visual tokens", () => {
     expect(css).not.toMatch(/@media[^{}]*\{[\s\S]*?\.coordinate-cursor,[\s\S]*?display:\s*none/);
   });
 
+  it("stops every visible connector stroke at its calculated item-border endpoint", () => {
+    expect(css).toMatch(/\.connection-layer path:not\(\[d\^="M 0"\]\)\s*\{[\s\S]*?stroke-linecap:\s*butt/);
+    expect(css).toMatch(/\.connector-route-shadow,\s*\.connector-route-line\s*\{[\s\S]*?stroke-linecap:\s*butt/);
+    expect(css).toMatch(/\.editor-network-preview path\s*\{[\s\S]*?stroke-linecap:\s*butt/);
+  });
+
   it("uses the matching signal-red plus favicon", () => {
     expect(favicon).toContain('#D6452F');
     expect(favicon).toContain('<path');

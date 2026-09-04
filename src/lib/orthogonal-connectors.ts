@@ -220,13 +220,13 @@ export function injectElbow(
 export function terminalPoint(rect: ConnectorRect, terminal: ConnectorTerminal): ConnectorPixelPoint {
   if (terminal.side === "top" || terminal.side === "bottom") {
     return {
-      x: snap(rect.left + rect.width * terminal.offset),
-      y: snap(terminal.side === "top" ? rect.top : rect.top + rect.height),
+      x: round(rect.left + rect.width * terminal.offset),
+      y: round(terminal.side === "top" ? rect.top : rect.top + rect.height),
     };
   }
   return {
-    x: snap(terminal.side === "left" ? rect.left : rect.left + rect.width),
-    y: snap(rect.top + rect.height * terminal.offset),
+    x: round(terminal.side === "left" ? rect.left : rect.left + rect.width),
+    y: round(rect.top + rect.height * terminal.offset),
   };
 }
 
@@ -286,7 +286,12 @@ export function orthogonalizeConnectorPoints(
   targetSide?: ConnectorTerminalSide,
 ) {
   if (points.length === 0) return [];
-  const candidates = points.map((point) => ({ x: snap(point.x), y: snap(point.y) }));
+  const candidates = points.map((point, index) => {
+    const endpoint = index === 0 || index === points.length - 1;
+    return endpoint
+      ? { x: round(point.x), y: round(point.y) }
+      : { x: snap(point.x), y: snap(point.y) };
+  });
   const orthogonal: ConnectorPixelPoint[] = [candidates[0]];
 
   candidates.slice(1).forEach((candidate) => {
@@ -310,32 +315,18 @@ export function orthogonalizeConnectorPoints(
   if (sourceSide && result.length >= 2) {
     const start = result[0];
     const adjacent = result[1];
-    const vertical = sourceSide === "top" || sourceSide === "bottom";
-    if ((vertical && start.x !== adjacent.x) || (!vertical && start.y !== adjacent.y)) {
-      const distance = GRID * 4;
-      const approach = vertical
-        ? { x: start.x, y: start.y + (sourceSide === "top" ? -distance : distance) }
-        : { x: start.x + (sourceSide === "left" ? -distance : distance), y: start.y };
-      const bridge = vertical
-        ? { x: adjacent.x, y: approach.y }
-        : { x: approach.x, y: adjacent.y };
-      result = [start, approach, bridge, ...result.slice(1)];
+    if (!terminalApproachIsOutward(start, adjacent, sourceSide)) {
+      const [outward, detour, bridge] = exteriorTerminalDogleg(start, adjacent, sourceSide);
+      result = [start, outward, detour, bridge, ...result.slice(1)];
     }
   }
 
   if (targetSide && result.length >= 2) {
     const end = result.at(-1)!;
     const adjacent = result.at(-2)!;
-    const vertical = targetSide === "top" || targetSide === "bottom";
-    if ((vertical && adjacent.x !== end.x) || (!vertical && adjacent.y !== end.y)) {
-      const distance = GRID * 4;
-      const approach = vertical
-        ? { x: end.x, y: end.y + (targetSide === "top" ? -distance : distance) }
-        : { x: end.x + (targetSide === "left" ? -distance : distance), y: end.y };
-      const bridge = vertical
-        ? { x: adjacent.x, y: approach.y }
-        : { x: approach.x, y: adjacent.y };
-      result = [...result.slice(0, -1), bridge, approach, end];
+    if (!terminalApproachIsOutward(end, adjacent, targetSide)) {
+      const [outward, detour, bridge] = exteriorTerminalDogleg(end, adjacent, targetSide);
+      result = [...result.slice(0, -1), bridge, detour, outward, end];
     }
   }
 
@@ -353,6 +344,39 @@ function simplifyOrthogonalPoints(points: ConnectorPixelPoint[]) {
     const next = deduplicated[index + 1];
     return !((previous.x === point.x && point.x === next.x) || (previous.y === point.y && point.y === next.y));
   });
+}
+
+function exteriorTerminalDogleg(
+  endpoint: ConnectorPixelPoint,
+  adjacent: ConnectorPixelPoint,
+  side: ConnectorTerminalSide,
+): [ConnectorPixelPoint, ConnectorPixelPoint, ConnectorPixelPoint] {
+  const distance = GRID * 4;
+  const vertical = side === "top" || side === "bottom";
+  const outward = vertical
+    ? { x: endpoint.x, y: endpoint.y + (side === "top" ? -distance : distance) }
+    : { x: endpoint.x + (side === "left" ? -distance : distance), y: endpoint.y };
+  const perpendicular = vertical
+    ? (adjacent.x >= endpoint.x ? distance : -distance)
+    : (adjacent.y >= endpoint.y ? distance : -distance);
+  const detour = vertical
+    ? { x: outward.x + perpendicular, y: outward.y }
+    : { x: outward.x, y: outward.y + perpendicular };
+  const bridge = vertical
+    ? { x: detour.x, y: adjacent.y }
+    : { x: adjacent.x, y: detour.y };
+  return [outward, detour, bridge];
+}
+
+function terminalApproachIsOutward(
+  endpoint: ConnectorPixelPoint,
+  adjacent: ConnectorPixelPoint,
+  side: ConnectorTerminalSide,
+) {
+  if (side === "top") return adjacent.x === endpoint.x && adjacent.y <= endpoint.y;
+  if (side === "right") return adjacent.y === endpoint.y && adjacent.x >= endpoint.x;
+  if (side === "bottom") return adjacent.x === endpoint.x && adjacent.y >= endpoint.y;
+  return adjacent.y === endpoint.y && adjacent.x <= endpoint.x;
 }
 
 function rectCenter(rect: ConnectorRect): ConnectorPixelPoint {

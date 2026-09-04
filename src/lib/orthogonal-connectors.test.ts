@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { timelineItemSchema } from "@/lib/timeline-schema";
+import type { ConnectorTerminal } from "@/lib/timeline-types";
 import {
   connectorPath,
   createDefaultConnector,
@@ -23,6 +24,35 @@ function expectOrthogonal(points: ConnectorPixelPoint[]) {
     const previous = points[index];
     expect(previous.x === point.x || previous.y === point.y).toBe(true);
   });
+}
+
+function expectBorderStop(point: ConnectorPixelPoint, rect: ConnectorRect, terminal: ConnectorTerminal) {
+  const right = rect.left + rect.width;
+  const bottom = rect.top + rect.height;
+  if (terminal.side === "top") expect(point.y).toBe(rect.top);
+  if (terminal.side === "right") expect(point.x).toBe(right);
+  if (terminal.side === "bottom") expect(point.y).toBe(bottom);
+  if (terminal.side === "left") expect(point.x).toBe(rect.left);
+  expect(point.x).toBeGreaterThanOrEqual(rect.left);
+  expect(point.x).toBeLessThanOrEqual(right);
+  expect(point.y).toBeGreaterThanOrEqual(rect.top);
+  expect(point.y).toBeLessThanOrEqual(bottom);
+}
+
+function expectOutwardApproach(endpoint: ConnectorPixelPoint, adjacent: ConnectorPixelPoint, side: ConnectorTerminal["side"]) {
+  if (side === "top") {
+    expect(adjacent.x).toBe(endpoint.x);
+    expect(adjacent.y).toBeLessThan(endpoint.y);
+  } else if (side === "right") {
+    expect(adjacent.y).toBe(endpoint.y);
+    expect(adjacent.x).toBeGreaterThan(endpoint.x);
+  } else if (side === "bottom") {
+    expect(adjacent.x).toBe(endpoint.x);
+    expect(adjacent.y).toBeGreaterThan(endpoint.y);
+  } else {
+    expect(adjacent.y).toBe(endpoint.y);
+    expect(adjacent.x).toBeLessThan(endpoint.x);
+  }
 }
 
 describe("owner-defined orthogonal connector geometry", () => {
@@ -111,17 +141,41 @@ describe("owner-defined orthogonal connector geometry", () => {
     expect(points.at(-1)).toEqual(terminalPoint(target, moved.target));
   });
 
-  it("keeps all source and target border combinations orthogonal", () => {
+  it("keeps every source and target side on exact fractional borders with outward approaches", () => {
+    const fractionalSource: ConnectorRect = { left: 21.25, top: 31.5, width: 151.75, height: 31.25 };
+    const fractionalTarget: ConnectorRect = { left: 361.75, top: 189.25, width: 181.5, height: 32.75 };
     const sides = ["top", "right", "bottom", "left"] as const;
     sides.forEach((sourceSide) => {
       sides.forEach((targetSide) => {
-        let route = createDefaultConnector(source, target);
-        route = moveTerminal(route, "source", { side: sourceSide, offset: 0.5 }, source, target);
-        route = moveTerminal(route, "target", { side: targetSide, offset: 0.5 }, source, target);
-        expectOrthogonal(route.points);
-        expectOrthogonal(resolveConnectorPoints(route, source, target));
+        let route = createDefaultConnector(fractionalSource, fractionalTarget);
+        route = moveTerminal(route, "source", { side: sourceSide, offset: 0.13 }, fractionalSource, fractionalTarget);
+        route = moveTerminal(route, "target", { side: targetSide, offset: 0.87 }, fractionalSource, fractionalTarget);
+        const points = resolveConnectorPoints(route, fractionalSource, fractionalTarget);
+        const first = points[0];
+        const second = points[1];
+        const beforeLast = points.at(-2)!;
+        const last = points.at(-1)!;
+
+        expectOrthogonal(points);
+        expectBorderStop(first, fractionalSource, route.source);
+        expectBorderStop(last, fractionalTarget, route.target);
+        expectOutwardApproach(first, second, route.source.side);
+        expectOutwardApproach(last, beforeLast, route.target.side);
       });
     });
+  });
+
+  it("repairs inward terminal segments before they can bleed into either item", () => {
+    const inward = orthogonalizeConnectorPoints([
+      { x: source.left + source.width, y: source.top + 12 },
+      { x: source.left + source.width - 40, y: source.top + 12 },
+      { x: target.left + 40, y: target.top + 12 },
+      { x: target.left, y: target.top + 12 },
+    ], "right", "left");
+
+    expectOutwardApproach(inward[0], inward[1], "right");
+    expectOutwardApproach(inward.at(-1)!, inward.at(-2)!, "left");
+    expectOrthogonal(inward);
   });
 
   it("keeps every draggable segment orthogonal after parallel sliding", () => {
