@@ -324,7 +324,15 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
             <span className="index-mark">[02]</span>
             <h2 id="timeline-heading">The work, in motion</h2>
           </div>
-          <p>Select any bar for context. Hover or select a relationship to trace the system behind the work.</p>
+          <div className="timeline-guide">
+            <p>Select any bar for context. Hover or select a relationship to trace the system behind the work.</p>
+            <div className="timeline-legend" aria-label="Color key">
+              <span className="legend-title">Color key</span>
+              {(Object.entries(COLOR_LABELS) as Array<[PublicTimelineItem["colorToken"], string]>).map(([color, label]) => (
+                <span className="legend-entry" key={color}><i className={`color-${color}`} />{label}</span>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className={`workbench ${displayItem ? "has-detail" : ""}`}>

@@ -253,6 +253,47 @@ select:focus-visible {
   line-height: 1.6;
 }
 
+.timeline-guide {
+  display: grid;
+  gap: 22px;
+}
+
+.timeline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 13px;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.legend-title,
+.legend-entry {
+  font-family: var(--font-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.legend-title {
+  width: 100%;
+  color: var(--muted);
+}
+
+.legend-entry {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--ink);
+}
+
+.legend-entry i {
+  --item-color: var(--graphite);
+  width: 13px;
+  height: 5px;
+  background: var(--item-color);
+}
+
 .workbench {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 0;
