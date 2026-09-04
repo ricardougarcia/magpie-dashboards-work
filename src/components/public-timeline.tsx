@@ -1,11 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ExternalLink, Maximize2, X } from "lucide-react";
+import { ArrowUpRight, ExternalLink, X } from "lucide-react";
 import Image from "next/image";
 import {
   type CSSProperties,
+  type FocusEvent as ReactFocusEvent,
   type MouseEvent as ReactMouseEvent,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -13,6 +15,13 @@ import {
   useState,
 } from "react";
 import { CoordinateCursor } from "@/components/coordinate-cursor";
+import {
+  COLOR_LABELS,
+  LANE_CODES,
+  TelemetryAperture,
+  TelemetryMediaPlaceholder,
+  type TelemetryTab,
+} from "@/components/telemetry-aperture";
 import { MONTHS, placementSpan, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
 const LANE_ORDER = [
@@ -30,24 +39,15 @@ const PHASES = [
   { label: "Prepare for scale", start: 6, span: 3 },
 ];
 
-const LANE_CODES: Record<string, string> = {
-  "Eng Build": "ENG",
-  "Product Build": "BLD",
-  "Product Discovery": "DSC",
-  Processes: "OPS",
-  "Challenges Planned / Unplanned": "CRV",
-};
-
-const COLOR_LABELS: Record<PublicTimelineItem["colorToken"], string> = {
-  graphite: "Discovery-led",
-  signal: "Corrective",
-  steel: "Reliability",
-  umber: "Governance",
-  forest: "Growth",
-};
+const PIXELS = Array.from({ length: 40 }, (_, index) => ({
+  index,
+  delayIn: ((index % 10) * 12) + ((index * 7) % 4) * 7,
+  delayOut: ((9 - (index % 10)) * 8) + ((index * 5) % 4) * 5,
+}));
 
 type PositionedItem = PublicTimelineItem & { row: number };
 type Connection = { id: string; targetId: string; path: string };
+type TelemetrySide = "left" | "right";
 
 function assignRows(items: PublicTimelineItem[]) {
   const result = new Map<string, number>();
@@ -63,143 +63,27 @@ function assignRows(items: PublicTimelineItem[]) {
   return { rows: result, count: Math.max(1, rowEnds.length) };
 }
 
-function MediaPlaceholder({ item }: { item: PublicTimelineItem }) {
-  return (
-    <div className="media-placeholder" aria-label="Media not yet uploaded">
-      <div className="media-placeholder-grid" aria-hidden="true" />
-      <span className="eyebrow">Artifact pending</span>
-      <strong>{item.name}</strong>
-      <span className="media-placeholder-meta">MEDIA SLOT / {item.colorToken.toUpperCase()}</span>
-    </div>
-  );
-}
-
-function DetailPanel({
-  item,
-  allItems,
-  focusedRelation,
-  setFocusedRelation,
-  onClose,
-  onPreview,
-}: {
-  item: PublicTimelineItem;
-  allItems: PublicTimelineItem[];
-  focusedRelation: string | null;
-  setFocusedRelation: (id: string | null) => void;
-  onClose: () => void;
-  onPreview: () => void;
-}) {
-  const index = allItems.findIndex((entry) => entry.id === item.id) + 1;
-  return (
-    <motion.aside
-      className="detail-panel"
-      initial={{ opacity: 0, x: 22 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 22 }}
-      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-      aria-label={`Details for ${item.name}`}
-    >
-      <span className="detail-rail-label">Selected work / record</span>
-      <div className="detail-panel-head">
-        <span className="index-mark">[{String(index).padStart(2, "0")}] / {LANE_CODES[item.lane] ?? "Q4"}</span>
-        <button className="icon-button" type="button" onClick={onClose} aria-label="Close details">
-          <X size={16} />
-        </button>
-      </div>
-
-      <div className="detail-title-block">
-        <span className={`color-notch color-${item.colorToken}`} aria-hidden="true" />
-        <h2>{item.name}</h2>
-      </div>
-
-      <dl className="detail-specs">
-        <div>
-          <dt>Lane</dt>
-          <dd>{item.lane === "Challenges Planned / Unplanned" ? "Curve balls" : item.lane}</dd>
-        </div>
-        <div>
-          <dt>Placement</dt>
-          <dd>{item.placement}</dd>
-        </div>
-        <div>
-          <dt>Signal</dt>
-          <dd>{COLOR_LABELS[item.colorToken]}</dd>
-        </div>
-      </dl>
-
-      <section className="detail-section">
-        <span className="eyebrow">Description</span>
-        <p>{item.description}</p>
-      </section>
-
-      <section className="detail-section value-section">
-        <span className="eyebrow">Value delivered</span>
-        <p>{item.value}</p>
-      </section>
-
-      {item.relations.length > 0 && (
-        <section className="detail-section relations-section">
-          <div className="relations-heading">
-            <span className="eyebrow">Connected work</span>
-            <span>{item.relations.length} visible on timeline</span>
-          </div>
-          <div className="relation-list">
-            {item.relations.map((relation) => {
-              const target = allItems.find((entry) => entry.id === relation.targetId);
-              const isActive = focusedRelation === relation.targetId;
-              return (
-                <div className="relation-entry" key={`${item.id}-${relation.targetId}`}>
-                  <button
-                    type="button"
-                    className={`relation-chip color-${target?.colorToken ?? "graphite"} ${isActive ? "is-active" : ""}`}
-                    onMouseEnter={() => setFocusedRelation(relation.targetId)}
-                    onMouseLeave={() => setFocusedRelation(null)}
-                    onFocus={() => setFocusedRelation(relation.targetId)}
-                    onBlur={() => setFocusedRelation(null)}
-                    onClick={() => setFocusedRelation(isActive ? null : relation.targetId)}
-                  >
-                    <span>{relation.targetName}</span>
-                    <ArrowUpRight size={13} />
-                  </button>
-                  <p>{relation.description}</p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      <button className="detail-media" type="button" onClick={onPreview} aria-label="Open media preview">
-        {item.media ? (
-          item.media.type === "video" ? (
-            <video src={item.media.url} muted playsInline preload="metadata" />
-          ) : (
-            <Image src={item.media.url} alt={item.media.alt} fill sizes="420px" unoptimized />
-          )
-        ) : (
-          <MediaPlaceholder item={item} />
-        )}
-        <span className="preview-label"><Maximize2 size={13} /> Preview artifact</span>
-      </button>
-    </motion.aside>
-  );
-}
-
 export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const reduceMotion = useReducedMotion();
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [focusedRelation, setFocusedRelation] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<TelemetryTab>("context");
+  const [telemetrySide, setTelemetrySide] = useState<TelemetrySide>("right");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [connections, setConnections] = useState<Connection[]>([]);
+  const [tetherPath, setTetherPath] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const apertureRef = useRef<HTMLElement | null>(null);
   const itemRefs = useRef(new Map<string, HTMLElement>());
 
   const publicItems = data.items;
   const selectedItem = publicItems.find((item) => item.id === selectedId) ?? null;
-  const relatedIds = useMemo(
-    () => new Set(selectedItem?.relations.map((relation) => relation.targetId) ?? []),
-    [selectedItem],
-  );
+  const hoveredItem = publicItems.find((item) => item.id === hoveredId) ?? null;
+  const displayItem = hoveredItem ?? selectedItem;
+  const telemetryMode = selectedItem && (!hoveredItem || hoveredItem.id === selectedItem.id) ? "selected" : "hover";
+  const activeLane = displayItem?.lane ?? null;
+  const relatedIds = new Set(selectedItem?.relations.map((relation) => relation.targetId) ?? []);
 
   const laneData = useMemo(() => {
     return LANE_ORDER.map((lane) => {
@@ -221,6 +105,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
       if (event.key !== "Escape") return;
       if (previewOpen) setPreviewOpen(false);
       else {
+        setHoveredId(null);
         setSelectedId(null);
         setFocusedRelation(null);
       }
@@ -282,15 +167,75 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
     };
   }, [selectedItem, laneData]);
 
+  useLayoutEffect(() => {
+    const updateTether = () => {
+      if (!selectedItem || !apertureRef.current) {
+        setTetherPath(null);
+        return;
+      }
+      const source = itemRefs.current.get(selectedItem.id);
+      if (!source) {
+        setTetherPath(null);
+        return;
+      }
+      const sourceRect = source.getBoundingClientRect();
+      const apertureRect = apertureRef.current.getBoundingClientRect();
+      const startX = telemetrySide === "right" ? sourceRect.right : sourceRect.left;
+      const startY = sourceRect.top + sourceRect.height / 2;
+      const endX = telemetrySide === "right" ? apertureRect.left : apertureRect.right;
+      const endY = apertureRect.bottom - 18;
+      const bendX = startX + (endX - startX) * 0.56;
+      setTetherPath(`M ${startX} ${startY} H ${bendX} V ${endY} H ${endX}`);
+    };
+
+    const frame = window.requestAnimationFrame(updateTether);
+    window.addEventListener("resize", updateTether);
+    window.addEventListener("scroll", updateTether, true);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", updateTether);
+      window.removeEventListener("scroll", updateTether, true);
+    };
+  }, [selectedItem, telemetrySide, activeTab]);
+
+  const setApertureNode = useCallback((node: HTMLElement | null) => {
+    apertureRef.current = node;
+  }, []);
+
+  const setSideFromElement = (element: HTMLElement) => {
+    const rect = element.getBoundingClientRect();
+    setTelemetrySide(rect.left + rect.width / 2 > window.innerWidth / 2 ? "left" : "right");
+  };
+
+  const previewItem = (item: PublicTimelineItem, element: HTMLElement) => {
+    setHoveredId(item.id);
+    setSideFromElement(element);
+  };
+
+  const clearPreview = () => {
+    setHoveredId(null);
+    if (!selectedItem) return;
+    const selectedNode = itemRefs.current.get(selectedItem.id);
+    if (selectedNode) setSideFromElement(selectedNode);
+  };
+
+  const handleFocusPreview = (item: PublicTimelineItem, event: ReactFocusEvent<HTMLElement>) => {
+    previewItem(item, event.currentTarget);
+  };
+
   const handleCanvasClick = (event: ReactMouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget || (event.target as HTMLElement).closest("[data-gantt-background]")) {
+      setHoveredId(null);
       setSelectedId(null);
       setFocusedRelation(null);
     }
   };
 
-  const selectItem = (item: PublicTimelineItem) => {
+  const selectItem = (item: PublicTimelineItem, element: HTMLElement) => {
+    setSideFromElement(element);
     setSelectedId(item.id);
+    setHoveredId(null);
+    setActiveTab("context");
     setFocusedRelation(null);
   };
 
@@ -333,7 +278,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
             <h2 id="timeline-heading">The work, in motion</h2>
           </div>
           <div className="timeline-guide">
-            <p>Hover to scan. Select a bar to open its record and trace every connected work item.</p>
+            <p>Hover to scan. Select a bar to pin its record and trace every connected work item.</p>
             <div className="timeline-legend" aria-label="Color key">
               <span className="legend-title">Color key</span>
               {(Object.entries(COLOR_LABELS) as Array<[PublicTimelineItem["colorToken"], string]>).map(([color, label]) => (
@@ -343,7 +288,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
           </div>
         </div>
 
-        <div className={`workbench ${selectedItem ? "has-detail" : ""}`}>
+        <div className="workbench">
           <div className="timeline-scroll" onClick={handleCanvasClick}>
             <div className="timeline-canvas" ref={canvasRef} data-gantt-background>
               <div className="phase-row">
@@ -372,61 +317,91 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
 
               <div className="timeline-body">
                 <div className="lane-stack" data-gantt-background>
-                  {laneData.map((lane, laneIndex) => (
-                    <section
-                      className={`lane-row lane-${laneIndex + 1}`}
-                      key={lane.lane}
-                      style={{ "--lane-height": `${lane.count * 29 + 12}px`, "--lane-index": laneIndex } as CSSProperties}
-                    >
-                      <div className="lane-label" data-gantt-background>
-                        <span className="lane-code">{LANE_CODES[lane.lane]}</span>
-                        <strong>{lane.displayName}</strong>
-                        <small>{String(lane.items.length).padStart(2, "0")} items</small>
-                      </div>
-                      <div className="lane-track" data-gantt-background>
-                        <div className="month-grid" data-gantt-background>
-                          {MONTHS.slice(0, 9).map((month) => <span key={month} data-gantt-background />)}
+                  {laneData.map((lane, laneIndex) => {
+                    const isLaneActive = activeLane === lane.lane;
+                    return (
+                      <section
+                        className={`lane-row lane-${laneIndex + 1} ${isLaneActive ? "is-lane-active" : ""}`}
+                        key={lane.lane}
+                        style={{ "--lane-height": `${lane.count * 29 + 12}px`, "--lane-index": laneIndex } as CSSProperties}
+                      >
+                        <div className="lane-label" data-gantt-background>
+                          <div className="lane-pixel-field" aria-hidden="true">
+                            {PIXELS.map((pixel) => (
+                              <span
+                                key={pixel.index}
+                                style={{
+                                  "--pixel-in": `${pixel.delayIn}ms`,
+                                  "--pixel-out": `${pixel.delayOut}ms`,
+                                } as CSSProperties}
+                              />
+                            ))}
+                          </div>
+                          <span className="lane-code">{LANE_CODES[lane.lane]}</span>
+                          <strong>{lane.displayName}</strong>
+                          <small>{String(lane.items.length).padStart(2, "0")} items</small>
                         </div>
-                        {lane.items.map((item) => {
-                          const isSelected = selectedId === item.id;
-                          const isRelated = relatedIds.has(item.id);
-                          const isFocused = focusedRelation === item.id;
-                          const isMuted = Boolean(focusedRelation) && !isFocused && !isSelected;
-                          const style = {
-                            "--item-left": `${(item.start / 9) * 100}%`,
-                            "--item-width": `${(placementSpan(item.start, item.end) / 9) * 100}%`,
-                            "--item-row": item.row,
-                          } as CSSProperties;
-                          return (
-                            <motion.button
-                              ref={(node) => {
-                                if (node) itemRefs.current.set(item.id, node);
-                                else itemRefs.current.delete(item.id);
-                              }}
-                              layout={!reduceMotion}
-                              type="button"
-                              key={item.id}
-                              className={`timeline-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isMuted ? "is-muted" : ""}`}
-                              style={style}
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                selectItem(item);
-                              }}
-                              aria-pressed={isSelected}
-                              aria-label={`${item.name}, ${item.placement}`}
-                              title={item.name}
-                            >
-                              <span className="item-name">{item.name}</span>
-                            </motion.button>
-                          );
-                        })}
-                      </div>
-                    </section>
-                  ))}
+                        <div className="lane-track" data-gantt-background>
+                          <div className="month-grid" data-gantt-background>
+                            {MONTHS.slice(0, 9).map((month) => <span key={month} data-gantt-background />)}
+                          </div>
+                          {lane.items.map((item) => {
+                            const isSelected = selectedId === item.id;
+                            const isHovered = hoveredId === item.id;
+                            const isRelated = relatedIds.has(item.id);
+                            const isFocused = focusedRelation === item.id;
+                            const isMuted = Boolean(focusedRelation) && !isFocused && !isSelected;
+                            const style = {
+                              "--item-left": `${(item.start / 9) * 100}%`,
+                              "--item-width": `${(placementSpan(item.start, item.end) / 9) * 100}%`,
+                              "--item-row": item.row,
+                            } as CSSProperties;
+                            return (
+                              <motion.button
+                                ref={(node) => {
+                                  if (node) itemRefs.current.set(item.id, node);
+                                  else itemRefs.current.delete(item.id);
+                                }}
+                                layout={!reduceMotion}
+                                type="button"
+                                key={item.id}
+                                className={`timeline-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isHovered ? "is-hovered" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isMuted ? "is-muted" : ""}`}
+                                style={style}
+                                onMouseEnter={(event) => previewItem(item, event.currentTarget)}
+                                onMouseLeave={clearPreview}
+                                onFocus={(event) => handleFocusPreview(item, event)}
+                                onBlur={clearPreview}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  selectItem(item, event.currentTarget);
+                                }}
+                                aria-pressed={isSelected}
+                                aria-label={`${item.name}, ${item.placement}`}
+                                title={item.name}
+                              >
+                                <span className="item-name">{item.name}</span>
+                              </motion.button>
+                            );
+                          })}
+                        </div>
+                      </section>
+                    );
+                  })}
                 </div>
 
-                <aside className="future-rail" aria-label="In-flight and future work">
+                <aside className={`future-rail ${activeLane && !LANE_ORDER.includes(activeLane) ? "is-lane-active" : ""}`} aria-label="In-flight and future work">
                   <div className="future-rail-intro">
+                    <div className="lane-pixel-field" aria-hidden="true">
+                      {PIXELS.map((pixel) => (
+                        <span
+                          key={pixel.index}
+                          style={{
+                            "--pixel-in": `${pixel.delayIn}ms`,
+                            "--pixel-out": `${pixel.delayOut}ms`,
+                          } as CSSProperties}
+                        />
+                      ))}
+                    </div>
                     <span className="index-mark">[06]</span>
                     <h3>Q4 groundwork</h3>
                     <p>Planned. Not yet placed.</p>
@@ -434,6 +409,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                   <div className="future-list">
                     {futureItems.map((item, index) => {
                       const isSelected = selectedId === item.id;
+                      const isHovered = hoveredId === item.id;
                       const isRelated = relatedIds.has(item.id);
                       const isFocused = focusedRelation === item.id;
                       const isMuted = Boolean(focusedRelation) && !isFocused && !isSelected;
@@ -443,12 +419,16 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                             if (node) itemRefs.current.set(item.id, node);
                             else itemRefs.current.delete(item.id);
                           }}
-                          className={`future-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isMuted ? "is-muted" : ""}`}
+                          className={`future-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isHovered ? "is-hovered" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isMuted ? "is-muted" : ""}`}
                           type="button"
                           key={item.id}
+                          onMouseEnter={(event) => previewItem(item, event.currentTarget)}
+                          onMouseLeave={clearPreview}
+                          onFocus={(event) => handleFocusPreview(item, event)}
+                          onBlur={clearPreview}
                           onClick={(event) => {
                             event.stopPropagation();
-                            selectItem(item);
+                            selectItem(item, event.currentTarget);
                           }}
                         >
                           <span>{String(index + 1).padStart(2, "0")}</span>
@@ -475,25 +455,47 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
               </svg>
             </div>
           </div>
-
-          <AnimatePresence mode="wait">
-            {selectedItem && (
-              <DetailPanel
-                key={selectedItem.id}
-                item={selectedItem}
-                allItems={publicItems}
-                focusedRelation={focusedRelation}
-                setFocusedRelation={setFocusedRelation}
-                onClose={() => {
-                  setSelectedId(null);
-                  setFocusedRelation(null);
-                }}
-                onPreview={() => setPreviewOpen(true)}
-              />
-            )}
-          </AnimatePresence>
         </div>
       </section>
+
+      <div className={`telemetry-anchor side-${telemetrySide}`}>
+        <AnimatePresence mode="wait">
+          {displayItem && (
+            <TelemetryAperture
+              key={`${telemetryMode}-${displayItem.id}`}
+              item={displayItem}
+              allItems={publicItems}
+              mode={telemetryMode}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              focusedRelation={focusedRelation}
+              setFocusedRelation={setFocusedRelation}
+              onClose={() => {
+                setHoveredId(null);
+                setSelectedId(null);
+                setFocusedRelation(null);
+              }}
+              onPreview={() => setPreviewOpen(true)}
+              setApertureNode={setApertureNode}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+
+      <AnimatePresence>
+        {selectedItem && tetherPath && (
+          <motion.svg className="telemetry-tether" aria-hidden="true">
+            <motion.path
+              key={selectedItem.id}
+              d={tetherPath}
+              initial={reduceMotion ? { opacity: 0 } : { pathLength: 0, opacity: 0 }}
+              animate={reduceMotion ? { opacity: 0 } : { pathLength: 1, opacity: [0, 0.72, 0] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.82, times: [0, 0.48, 1], ease: [0.22, 1, 0.36, 1] }}
+            />
+          </motion.svg>
+        )}
+      </AnimatePresence>
 
       <section className="outcome-strip">
         <div><span className="index-mark">[03]</span><strong>Build the foundation</strong><p>Moved reporting from a brittle monolith toward a governed, testable architecture.</p></div>
@@ -537,7 +539,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                   <Image src={selectedItem.media.url} alt={selectedItem.media.alt} fill sizes="90vw" unoptimized />
                 )
               ) : (
-                <MediaPlaceholder item={selectedItem} />
+                <TelemetryMediaPlaceholder item={selectedItem} />
               )}
             </motion.div>
           </motion.div>
