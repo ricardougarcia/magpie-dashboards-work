@@ -2,9 +2,9 @@ import "server-only";
 
 import { list, put } from "@vercel/blob";
 import seedData from "@/data/timeline.seed.json";
-import { normalizeStoredConnectorRoute } from "@/lib/orthogonal-connectors";
+import { prepareTimelineSave } from "@/lib/timeline-persistence";
 import { timelineDataSchema } from "@/lib/timeline-schema";
-import { colorTokenForLane, type TimelineData } from "@/lib/timeline-types";
+import type { TimelineData } from "@/lib/timeline-types";
 
 const DATA_PATH = "magpie/timeline.json";
 
@@ -36,20 +36,17 @@ export async function saveTimelineData(input: TimelineData): Promise<TimelineDat
     throw new Error("Vercel Blob is not connected. Set BLOB_READ_WRITE_TOKEN before saving edits.");
   }
 
-  const next = timelineDataSchema.parse({
-    ...input,
-    version: input.version + 1,
-    updatedAt: new Date().toISOString(),
-    items: input.items.map((item) => ({
-      ...item,
-      colorToken: colorTokenForLane(item.lane),
-      relations: item.relations.map((relation) => relation.connector
-        ? { ...relation, connector: normalizeStoredConnectorRoute(relation.connector) }
-        : relation),
-    })),
-  }) as TimelineData;
+  const next = prepareTimelineSave(input);
+  const serialized = JSON.stringify(next);
 
-  await put(DATA_PATH, JSON.stringify(next), {
+  await put(`magpie/history/timeline-v${next.version}.json`, serialized, {
+    access: "public",
+    addRandomSuffix: true,
+    contentType: "application/json",
+    cacheControlMaxAge: 0,
+  });
+
+  await put(DATA_PATH, serialized, {
     access: "public",
     addRandomSuffix: false,
     allowOverwrite: true,

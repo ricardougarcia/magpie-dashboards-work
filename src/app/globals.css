@@ -3693,3 +3693,211 @@ footer {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Editor Connected Work network: automatic visibility and item-level editing */
+.editor-lanes {
+  position: relative;
+}
+
+.editor-network-preview {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.editor-network-preview path {
+  fill: none;
+  stroke: var(--signal);
+  stroke-width: 1.15;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+.editor-bar,
+.editor-future-item {
+  z-index: 5;
+}
+
+.editor-item-label,
+.editor-lane-head {
+  position: relative;
+  z-index: 6;
+  background: var(--paper);
+}
+
+.relation-network-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.relation-network-actions button {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 9px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono), monospace;
+  font-size: 7px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.relation-network-actions .edit-network-button {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper-raised);
+}
+
+.relation-network-note {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.relation-route-status {
+  display: flex;
+  justify-content: flex-end;
+  color: var(--muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 7px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.connector-workspace {
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+}
+
+.connector-network-picker {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(190px, 1fr);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--paper);
+  scrollbar-width: thin;
+}
+
+.connector-network-picker button {
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-content: center;
+  column-gap: 9px;
+  padding: 9px 12px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  text-align: left;
+}
+
+.connector-network-picker button > span {
+  grid-row: 1 / 3;
+  align-self: center;
+  color: var(--signal);
+  font-family: var(--font-mono), monospace;
+  font-size: 8px;
+}
+
+.connector-network-picker button strong,
+.connector-network-picker button small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.connector-network-picker button strong {
+  color: var(--ink);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.connector-network-picker button small {
+  font-family: var(--font-mono), monospace;
+  font-size: 7px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.connector-network-picker button.is-active {
+  background: var(--ink);
+  color: rgba(241, 239, 233, 0.64);
+}
+
+.connector-network-picker button.is-active strong {
+  color: var(--paper-raised);
+}
+
+.connector-board-item {
+  border: 0;
+  text-align: left;
+}
+
+.connector-board-item:disabled {
+  opacity: 0.18;
+}
+
+.connector-board-item.is-source:disabled,
+.connector-board-item.is-target:disabled,
+.connector-board-item.is-active-target {
+  opacity: 1;
+}
+
+.connector-board-item.is-target {
+  opacity: 0.64;
+}
+
+.connector-board-item.is-active-target {
+  box-shadow: 0 0 0 2px var(--signal);
+}
+
+.connector-network-route {
+  opacity: 0.22;
+  transition: opacity 140ms ease;
+}
+
+.connector-network-route.is-active {
+  opacity: 1;
+}
+
+.connector-route-select {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14;
+  pointer-events: stroke;
+}
+
+@media (max-width: 800px) {
+  .relation-network-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .relation-network-actions button {
+    width: 100%;
+  }
+
+  .connector-network-picker {
+    grid-auto-columns: minmax(170px, 78vw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .connector-network-route {
+    transition: none;
+  }
+}

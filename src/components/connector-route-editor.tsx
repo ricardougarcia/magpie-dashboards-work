@@ -47,59 +47,92 @@ type DragIntent =
   | { kind: "elbow"; pointIndex: number };
 
 type DragState = DragIntent & {
+  relationIndex: number;
+  targetId: string;
   start: ConnectorPixelPoint;
   route: OrthogonalConnectorRoute;
+};
+
+type NetworkConnection = {
+  relationIndex: number;
+  relation: TimelineRelation;
+  target: PositionedItem;
+  route: OrthogonalConnectorRoute;
+  points: ConnectorPixelPoint[];
 };
 
 export function ConnectorRouteEditor({
   data,
   source,
-  relation,
   onChange,
   onDone,
 }: {
   data: TimelineData;
   source: TimelineItem;
-  relation: TimelineRelation;
-  onChange: (route: OrthogonalConnectorRoute) => void;
+  onChange: (relationIndex: number, route: OrthogonalConnectorRoute) => void;
   onDone: () => void;
 }) {
-  const target = data.items.find((item) => item.id === relation.targetId) ?? null;
   const boardRef = useRef<HTMLDivElement>(null);
   const [drag, setDrag] = useState<DragState | null>(null);
   const positioned = useMemo(() => positionItems(data), [data]);
   const sourceItem = positioned.items.find((item) => item.id === source.id) ?? null;
-  const targetItem = positioned.items.find((item) => item.id === relation.targetId) ?? null;
-  const defaultRoute = useMemo(() => {
-    if (!sourceItem || !targetItem) return null;
-    return createDefaultConnector(sourceItem.rect, targetItem.rect);
-  }, [sourceItem, targetItem]);
-  const [route, setRoute] = useState<OrthogonalConnectorRoute | null>(() => relation.connector ?? defaultRoute);
-  const latestRoute = useRef<OrthogonalConnectorRoute | null>(route);
+  const eligibleRelations = useMemo(() => source.relations.flatMap((relation, relationIndex) => {
+    const target = positioned.items.find((item) => item.id === relation.targetId);
+    return target ? [{ relation, relationIndex, target }] : [];
+  }), [positioned.items, source.relations]);
+  const [activeTargetId, setActiveTargetId] = useState(() => eligibleRelations[0]?.relation.targetId ?? "");
+  const [routes, setRoutes] = useState<Record<string, OrthogonalConnectorRoute>>(() => {
+    if (!sourceItem) return {};
+    return Object.fromEntries(eligibleRelations.map(({ relation, target }) => [
+      relation.targetId,
+      relation.connector ?? createDefaultConnector(sourceItem.rect, target.rect),
+    ]));
+  });
+  const latestRoutes = useRef(routes);
+
+  const connections = useMemo<NetworkConnection[]>(() => {
+    if (!sourceItem) return [];
+    return eligibleRelations.flatMap(({ relation, relationIndex, target }) => {
+      const route = routes[relation.targetId] ?? relation.connector ?? createDefaultConnector(sourceItem.rect, target.rect);
+      return [{
+        relationIndex,
+        relation,
+        target,
+        route,
+        points: resolveConnectorPoints(route, sourceItem.rect, target.rect),
+      }];
+    });
+  }, [eligibleRelations, routes, sourceItem]);
+  const activeConnection = connections.find((connection) => connection.relation.targetId === activeTargetId)
+    ?? connections[0]
+    ?? null;
 
   useEffect(() => {
-    if (!drag || !sourceItem || !targetItem) return;
+    if (!drag || !sourceItem) return;
+    const target = positioned.items.find((item) => item.id === drag.targetId);
+    if (!target) return;
 
     const onPointerMove = (event: PointerEvent) => {
       const point = pointerInBoard(event, boardRef.current);
       const delta = { x: point.x - drag.start.x, y: point.y - drag.start.y };
       let next = drag.route;
       if (drag.kind === "terminal") {
-        const rect = drag.terminal === "source" ? sourceItem.rect : targetItem.rect;
-        next = moveTerminal(drag.route, drag.terminal, nearestTerminal(rect, point), sourceItem.rect, targetItem.rect);
+        const rect = drag.terminal === "source" ? sourceItem.rect : target.rect;
+        next = moveTerminal(drag.route, drag.terminal, nearestTerminal(rect, point), sourceItem.rect, target.rect);
       } else if (drag.kind === "segment") {
-        next = slideSegment(drag.route, drag.segmentIndex, delta, sourceItem.rect, targetItem.rect);
+        next = slideSegment(drag.route, drag.segmentIndex, delta, sourceItem.rect, target.rect);
       } else if (drag.kind === "inject") {
-        next = injectElbow(drag.route, drag.segmentIndex, delta, sourceItem.rect, targetItem.rect);
+        next = injectElbow(drag.route, drag.segmentIndex, delta, sourceItem.rect, target.rect);
       } else {
-        next = moveElbow(drag.route, drag.pointIndex, delta, sourceItem.rect, targetItem.rect);
+        next = moveElbow(drag.route, drag.pointIndex, delta, sourceItem.rect, target.rect);
       }
-      latestRoute.current = next;
-      setRoute(next);
+      latestRoutes.current = { ...latestRoutes.current, [drag.targetId]: next };
+      setRoutes((current) => ({ ...current, [drag.targetId]: next }));
     };
 
     const onPointerUp = () => {
-      if (latestRoute.current) onChange(latestRoute.current);
+      const route = latestRoutes.current[drag.targetId];
+      if (route) onChange(drag.relationIndex, route);
       setDrag(null);
     };
 
@@ -109,57 +142,88 @@ export function ConnectorRouteEditor({
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
     };
-  }, [drag, onChange, sourceItem, targetItem]);
+  }, [drag, onChange, positioned.items, sourceItem]);
 
-  if (!target || !sourceItem || !targetItem || !route) {
+  if (!sourceItem || connections.length === 0 || !activeConnection) {
     return (
       <section className="connector-workspace connector-workspace-empty">
-        <p>The selected Connected Work item is not available in the timeline.</p>
+        <p>This item has no available Connected Work lines to edit.</p>
         <button type="button" onClick={onDone}>Return to item editor</button>
       </section>
     );
   }
 
-  const points = resolveConnectorPoints(route, sourceItem.rect, targetItem.rect);
-  const sourceTerminalPoint = terminalPoint(sourceItem.rect, route.source);
-  const targetTerminalPoint = terminalPoint(targetItem.rect, route.target);
-
-  const commitRoute = (next: OrthogonalConnectorRoute) => {
-    latestRoute.current = next;
-    setRoute(next);
-    onChange(next);
+  const commitRoute = (connection: NetworkConnection, next: OrthogonalConnectorRoute) => {
+    latestRoutes.current = { ...latestRoutes.current, [connection.relation.targetId]: next };
+    setRoutes((current) => ({ ...current, [connection.relation.targetId]: next }));
+    onChange(connection.relationIndex, next);
   };
 
   const beginDrag = (
     event: ReactPointerEvent<SVGElement>,
+    connection: NetworkConnection,
     nextDrag: DragIntent,
   ) => {
     event.preventDefault();
     event.stopPropagation();
+    setActiveTargetId(connection.relation.targetId);
     const start = pointerInBoard(event.nativeEvent, boardRef.current);
-    setDrag({ ...nextDrag, start, route } as DragState);
-    latestRoute.current = route;
+    setDrag({
+      ...nextDrag,
+      relationIndex: connection.relationIndex,
+      targetId: connection.relation.targetId,
+      start,
+      route: connection.route,
+    } as DragState);
+    latestRoutes.current = { ...latestRoutes.current, [connection.relation.targetId]: connection.route };
   };
 
   const setTerminal = (terminal: "source" | "target", nextTerminal: ConnectorTerminal) => {
-    commitRoute(moveTerminal(route, terminal, nextTerminal, sourceItem.rect, targetItem.rect));
+    const next = moveTerminal(
+      activeConnection.route,
+      terminal,
+      nextTerminal,
+      sourceItem.rect,
+      activeConnection.target.rect,
+    );
+    commitRoute(activeConnection, next);
   };
 
   return (
-    <section className="connector-workspace" aria-label={`Edit connector from ${source.name} to ${target.name}`}>
+    <section className="connector-workspace" aria-label={`Edit Connected Work lines for ${source.name}`}>
       <header className="connector-workspace-header">
         <div>
-          <span className="index-mark">[LINE / EDIT]</span>
-          <h2>Orthogonal connector</h2>
-          <p><strong>{source.name}</strong><CornerDownRight size={13} /><strong>{target.name}</strong></p>
+          <span className="index-mark">[LINE NETWORK / EDIT]</span>
+          <h2>Orthogonal line network</h2>
+          <p><strong>{source.name}</strong><CornerDownRight size={13} /><strong>{connections.length} connected item{connections.length === 1 ? "" : "s"}</strong></p>
         </div>
         <div className="connector-workspace-actions">
-          <button type="button" onClick={() => defaultRoute && commitRoute(defaultRoute)}><RotateCcw size={14} /> Reset route</button>
+          <button
+            type="button"
+            onClick={() => commitRoute(activeConnection, createDefaultConnector(sourceItem.rect, activeConnection.target.rect))}
+          ><RotateCcw size={14} /> Reset active line</button>
           <button type="button" className="primary-button" onClick={onDone}><Check size={14} /> Done</button>
         </div>
       </header>
 
+      <div className="connector-network-picker" aria-label="Connected Work lines">
+        {connections.map((connection, index) => (
+          <button
+            type="button"
+            key={connection.relation.targetId}
+            className={connection.relation.targetId === activeConnection.relation.targetId ? "is-active" : ""}
+            aria-pressed={connection.relation.targetId === activeConnection.relation.targetId}
+            onClick={() => setActiveTargetId(connection.relation.targetId)}
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <strong>{connection.target.name}</strong>
+            <small>{connection.relation.connector ? "Custom route" : "Default route"}</small>
+          </button>
+        ))}
+      </div>
+
       <div className="connector-instructions">
+        <span>Select a line or Connected Work item to make it active</span>
         <span><i className="instruction-terminal" /> Drag a square terminal to another border</span>
         <span><i className="instruction-segment" /> Drag a segment perpendicular to its direction</span>
         <span><i className="instruction-node" /> Drag a midpoint node to inject an elbow</span>
@@ -182,24 +246,49 @@ export function ConnectorRouteEditor({
 
           {positioned.items.map((item) => {
             const isSource = item.id === source.id;
-            const isTarget = item.id === target.id;
+            const isTarget = connections.some((connection) => connection.target.id === item.id);
+            const isActiveTarget = item.id === activeConnection.target.id;
             return (
-              <div
-                className={`connector-board-item color-${item.colorToken} ${isSource ? "is-source" : ""} ${isTarget ? "is-target" : ""} ${!isSource && !isTarget ? "is-context" : ""}`}
+              <button
+                type="button"
+                className={`connector-board-item color-${item.colorToken} ${isSource ? "is-source" : ""} ${isTarget ? "is-target" : ""} ${isActiveTarget ? "is-active-target" : ""} ${!isSource && !isTarget ? "is-context" : ""}`}
                 key={item.id}
                 style={{ left: item.rect.left, top: item.rect.top, width: item.rect.width, height: item.rect.height }}
+                onClick={() => {
+                  if (isTarget) setActiveTargetId(item.id);
+                }}
+                disabled={!isTarget}
               >
                 <span>{item.name}</span>
-              </div>
+              </button>
             );
           })}
 
-          <svg className="connector-editor-svg" width={positioned.width} height={positioned.height} aria-label="Editable orthogonal connector">
-            <path className="connector-route-shadow" d={connectorPath(points)} />
-            <path className="connector-route-line" d={connectorPath(points)} />
+          <svg className="connector-editor-svg" width={positioned.width} height={positioned.height} aria-label="Editable Connected Work line network">
+            {connections.map((connection) => {
+              const active = connection.relation.targetId === activeConnection.relation.targetId;
+              return (
+                <g
+                  className={`connector-network-route ${active ? "is-active" : ""}`}
+                  key={connection.relation.targetId}
+                >
+                  <path className="connector-route-shadow" d={connectorPath(connection.points)} />
+                  <path className="connector-route-line" d={connectorPath(connection.points)} />
+                  <path
+                    className="connector-route-select"
+                    d={connectorPath(connection.points)}
+                    onPointerDown={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      setActiveTargetId(connection.relation.targetId);
+                    }}
+                  />
+                </g>
+              );
+            })}
 
-            {points.slice(1).map((point, segmentIndex) => {
-              const start = points[segmentIndex];
+            {activeConnection.points.slice(1).map((point, segmentIndex) => {
+              const start = activeConnection.points[segmentIndex];
               const horizontal = start.y === point.y;
               const middle = { x: (start.x + point.x) / 2, y: (start.y + point.y) / 2 };
               return (
@@ -210,7 +299,7 @@ export function ConnectorRouteEditor({
                     y1={start.y}
                     x2={point.x}
                     y2={point.y}
-                    onPointerDown={(event) => beginDrag(event, { kind: "segment", segmentIndex })}
+                    onPointerDown={(event) => beginDrag(event, activeConnection, { kind: "segment", segmentIndex })}
                   />
                   <rect
                     className="connector-mid-handle"
@@ -218,13 +307,13 @@ export function ConnectorRouteEditor({
                     y={middle.y - 4}
                     width={8}
                     height={8}
-                    onPointerDown={(event) => beginDrag(event, { kind: "inject", segmentIndex })}
+                    onPointerDown={(event) => beginDrag(event, activeConnection, { kind: "inject", segmentIndex })}
                   />
                 </g>
               );
             })}
 
-            {points.slice(1, -1).map((point, index) => (
+            {activeConnection.points.slice(1, -1).map((point, index) => (
               <rect
                 className="connector-elbow-handle"
                 key={`elbow-${index + 1}`}
@@ -232,33 +321,33 @@ export function ConnectorRouteEditor({
                 y={point.y - 3.5}
                 width={7}
                 height={7}
-                onPointerDown={(event) => beginDrag(event, { kind: "elbow", pointIndex: index + 1 })}
+                onPointerDown={(event) => beginDrag(event, activeConnection, { kind: "elbow", pointIndex: index + 1 })}
               />
             ))}
 
             <rect
               className="connector-terminal-handle is-source"
-              x={sourceTerminalPoint.x - 5}
-              y={sourceTerminalPoint.y - 5}
+              x={terminalPoint(sourceItem.rect, activeConnection.route.source).x - 5}
+              y={terminalPoint(sourceItem.rect, activeConnection.route.source).y - 5}
               width={10}
               height={10}
-              onPointerDown={(event) => beginDrag(event, { kind: "terminal", terminal: "source" })}
+              onPointerDown={(event) => beginDrag(event, activeConnection, { kind: "terminal", terminal: "source" })}
             />
             <rect
               className="connector-terminal-handle is-target"
-              x={targetTerminalPoint.x - 5}
-              y={targetTerminalPoint.y - 5}
+              x={terminalPoint(activeConnection.target.rect, activeConnection.route.target).x - 5}
+              y={terminalPoint(activeConnection.target.rect, activeConnection.route.target).y - 5}
               width={10}
               height={10}
-              onPointerDown={(event) => beginDrag(event, { kind: "terminal", terminal: "target" })}
+              onPointerDown={(event) => beginDrag(event, activeConnection, { kind: "terminal", terminal: "target" })}
             />
           </svg>
         </div>
       </div>
 
       <div className="connector-terminal-controls">
-        <TerminalControl label="Start border" value={route.source} onChange={(terminal) => setTerminal("source", terminal)} />
-        <TerminalControl label="End border" value={route.target} onChange={(terminal) => setTerminal("target", terminal)} />
+        <TerminalControl label="Start border" value={activeConnection.route.source} onChange={(terminal) => setTerminal("source", terminal)} />
+        <TerminalControl label="End border" value={activeConnection.route.target} onChange={(terminal) => setTerminal("target", terminal)} />
         <button className="connector-close-mobile" type="button" onClick={onDone}><X size={13} /> Close line editor</button>
       </div>
     </section>

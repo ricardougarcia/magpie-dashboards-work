@@ -17,6 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ConnectorRouteEditor } from "@/components/connector-route-editor";
+import { EditorConnectionPreview } from "@/components/editor-connection-preview";
 import {
   GUIDING_LIGHTS,
   MONTHS,
@@ -34,6 +35,7 @@ import {
 const DISPLAY_MONTHS = MONTHS.slice(0, 9);
 const TIMELINE_POINTS = monthPointOptions(0, 8);
 const FUTURE_POINTS = monthPointOptions(9, 11);
+const EDITOR_NETWORK_ID = "editor-selected-network";
 
 function cloneData(data: TimelineData): TimelineData {
   return JSON.parse(JSON.stringify(data)) as TimelineData;
@@ -47,12 +49,9 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
   const [saveState, setSaveState] = useState<"idle" | "saved" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [editingRelationIndex, setEditingRelationIndex] = useState<number | null>(null);
+  const [editingConnections, setEditingConnections] = useState(false);
 
   const selected = data.items.find((item) => item.id === selectedId) ?? null;
-  const editingRelation = selected && editingRelationIndex !== null
-    ? selected.relations[editingRelationIndex] ?? null
-    : null;
   const timelineItems = data.items.filter((item) => !item.planned);
   const futureItems = data.items.filter((item) => item.planned);
 
@@ -73,7 +72,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
   }
 
   function chooseItem(id: string) {
-    setEditingRelationIndex(null);
+    setEditingConnections(false);
     setSelectedId(id);
   }
 
@@ -245,15 +244,14 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
         </div>
       </header>
 
-      <div className={`editor-layout ${editingRelation ? "is-connector-mode" : ""}`}>
-        {editingRelation && selected && editingRelationIndex !== null ? (
+      <div className={`editor-layout ${editingConnections ? "is-connector-mode" : ""}`}>
+        {editingConnections && selected ? (
           <ConnectorRouteEditor
-            key={`${selected.id}-${editingRelation.targetId}`}
+            key={selected.id}
             data={data}
             source={selected}
-            relation={editingRelation}
-            onChange={(route) => updateRelationConnector(editingRelationIndex, route)}
-            onDone={() => setEditingRelationIndex(null)}
+            onChange={updateRelationConnector}
+            onDone={() => setEditingConnections(false)}
           />
         ) : (
         <section className="editor-board" aria-label="Editable timeline">
@@ -267,7 +265,8 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
             <div>{DISPLAY_MONTHS.map((month) => <strong key={month}>{month}</strong>)}</div>
           </div>
 
-          <div className="editor-lanes">
+          <div className="editor-lanes" id={EDITOR_NETWORK_ID}>
+            <EditorConnectionPreview data={data} selected={selected} containerId={EDITOR_NETWORK_ID} />
             {itemsByLane.filter((lane) => lane.name !== "In-Flight / Future").map((lane) => (
               <section className="editor-lane" key={lane.id}>
                 <div className="editor-lane-head"><span>[{String(lane.index).padStart(2, "0")}]</span><strong>{lane.displayName}</strong></div>
@@ -290,6 +289,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
                           moveItem(item, info.offset.x, target?.parentElement?.clientWidth ?? 900);
                         }}
                         type="button"
+                        data-editor-item-id={item.id}
                         className={`editor-bar color-${item.colorToken} ${selectedId === item.id ? "is-selected" : ""}`}
                         style={{
                           left: `calc(${(item.start / 9) * 100}% + 4px)`,
@@ -313,6 +313,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
                   <button
                     type="button"
                     key={item.id}
+                    data-editor-item-id={item.id}
                     className={`editor-future-item color-${item.colorToken} ${selectedId === item.id ? "is-selected" : ""}`}
                     onClick={() => chooseItem(item.id)}
                   >
@@ -396,23 +397,34 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
                 </fieldset>
 
                 <fieldset className="form-section relation-editor">
-                  <div className="legend-row"><legend>Connected Work</legend><button type="button" onClick={addRelation}><Plus size={13} /> Add</button></div>
+                  <div className="legend-row">
+                    <legend>Connected Work</legend>
+                    <div className="relation-network-actions">
+                      {selected.relations.length > 0 && (
+                        <button
+                          type="button"
+                          className="edit-network-button"
+                          aria-label={`Edit all Connected Work lines for ${selected.name}`}
+                          onClick={() => setEditingConnections(true)}
+                        ><GripHorizontal size={13} /> Edit orthogonal lines</button>
+                      )}
+                      <button type="button" onClick={addRelation}><Plus size={13} /> Add</button>
+                    </div>
+                  </div>
+                  {selected.relations.length > 0 && <p className="relation-network-note">All Connected Work lines are shown on the timeline. Enter line editing once to adjust the complete network.</p>}
                   {selected.relations.length === 0 && <p className="empty-note">No connected work items.</p>}
                   {selected.relations.map((relation, index) => (
-                    <div className={`relation-form ${editingRelationIndex === index ? "is-editing-route" : ""}`} key={`${relation.targetId}-${index}`}>
+                    <div className="relation-form" key={`${relation.targetId}-${index}`}>
                       <button type="button" className="remove-relation" aria-label="Remove relation" onClick={() => {
-                        setEditingRelationIndex(null);
                         updateSelected({ relations: selected.relations.filter((_, relationIndex) => relationIndex !== index) });
                       }}><X size={13} /></button>
                       <label>Related item<select value={relation.targetId} onChange={(event) => {
                         const target = data.items.find((item) => item.id === event.target.value);
                         if (!target) return;
-                        setEditingRelationIndex(null);
                         updateSelected({ relations: selected.relations.map((entry, relationIndex) => relationIndex === index ? { ...entry, targetId: target.id, targetName: target.name, connector: undefined } : entry) });
                       }}>{data.items.filter((item) => item.id !== selected.id).map((item) => <option key={item.id} value={item.id}>{item.name} / {item.lane}</option>)}</select></label>
                       <label>Connection<textarea rows={3} value={relation.description} onChange={(event) => updateSelected({ relations: selected.relations.map((entry, relationIndex) => relationIndex === index ? { ...entry, description: event.target.value } : entry) })} /></label>
-                      <div className="relation-route-control">
-                        <button type="button" onClick={() => setEditingRelationIndex(index)}><GripHorizontal size={13} /> Edit orthogonal line</button>
+                      <div className="relation-route-status">
                         <span>{relation.connector ? "Custom route saved" : "Default route"}</span>
                       </div>
                     </div>

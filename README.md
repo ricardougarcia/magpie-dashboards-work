@@ -43,7 +43,9 @@ Never commit real values. Configure all three variables for Production, Preview,
 
 The owner workspace supports horizontal drag-to-move placement, start and end month controls, lane changes, new item creation, deletion, every detail-card field, one or two Guiding Light tags, constrained color tokens, Connected Work targets and descriptions, and image, GIF, or video uploads up to 25 MB. Saving increments the persisted timeline version and updates its timestamp.
 
-Each existing Connected Work entry includes **Edit orthogonal line**. The line workspace is restricted to that source and already-linked target. Owners can drag either terminal around its item border, slide horizontal or vertical segments in the perpendicular direction, drag visible elbows, or drag a segment midpoint to inject a new right-angle bend. Routes are stored as normalized control points, so endpoints continue tracking their items when placement changes or the timeline responds to another viewport size. Relations without a saved route continue using the established public connector behavior.
+Selecting an item in the editor automatically shows every line in that item’s Connected Work network. One item-level **Edit orthogonal lines** button opens the complete network workspace, where all eligible routes remain visible and only the active line exposes terminals, segments, midpoint injection handles, and elbows. Each route remains a strict source-item-to-related-item connection; the line editor cannot create links between Connected Work targets or add relationships outside the item’s Connected Work fields. Routes are stored as normalized control points, so endpoints continue tracking their items when placement changes or the timeline responds to another viewport size.
+
+Production editor data lives in Vercel Blob rather than the code repository, so normal GitHub pushes and Vercel deployments do not replace owner edits. Every successful save also writes an append-only, randomly suffixed history snapshot before updating the canonical timeline record. Future schema changes must pass the save-preservation regression before deployment.
 
 ## Data source and integrity
 

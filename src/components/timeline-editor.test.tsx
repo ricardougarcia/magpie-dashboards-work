@@ -30,7 +30,10 @@ const data: TimelineData = {
       description: "Source context.",
       placement: "Jan - Feb",
       value: "Source value.",
-      relations: [{ targetId: "target-item", targetName: "Target item", description: "Existing connected work." }],
+      relations: [
+        { targetId: "target-item", targetName: "Target item", description: "Existing connected work." },
+        { targetId: "second-target-item", targetName: "Second target item", description: "Second connected work." },
+      ],
       guidingLights: ["Learn"],
       start: 0,
       end: 1,
@@ -56,6 +59,22 @@ const data: TimelineData = {
       media: null,
     },
     {
+      id: "second-target-item",
+      name: "Second target item",
+      lane: "Product Build",
+      description: "Second target context.",
+      placement: "Apr - May",
+      value: "Second target value.",
+      relations: [],
+      guidingLights: ["Stabilize"],
+      start: 3,
+      end: 4,
+      planned: false,
+      ongoing: false,
+      colorToken: "forest",
+      media: null,
+    },
+    {
       id: "unconnected-item",
       name: "Unconnected item",
       lane: "Product Build",
@@ -76,6 +95,8 @@ const data: TimelineData = {
 
 beforeEach(() => {
   vi.stubGlobal("ResizeObserver", ResizeObserverMock);
+  vi.stubGlobal("requestAnimationFrame", vi.fn((callback: FrameRequestCallback) => window.setTimeout(() => callback(0), 0)));
+  vi.stubGlobal("cancelAnimationFrame", vi.fn((id: number) => window.clearTimeout(id)));
   vi.stubGlobal("matchMedia", vi.fn().mockImplementation((query: string) => ({
     matches: false,
     media: query,
@@ -95,18 +116,25 @@ afterEach(() => {
 });
 
 describe("TimelineEditor orthogonal connector workflow", () => {
-  it("opens a line editor only for the selected item’s existing Connected Work relation", () => {
-    render(<TimelineEditor initialData={data} />);
+  it("shows the selected item’s complete network and opens one item-level line editor", async () => {
+    const { container } = render(<TimelineEditor initialData={data} />);
 
-    expect(screen.getAllByRole("button", { name: /Edit orthogonal line/ })).toHaveLength(1);
-    fireEvent.click(screen.getByRole("button", { name: /Edit orthogonal line/ }));
+    await waitFor(() => expect(screen.getByLabelText("Connected Work lines for Source item")).toBeTruthy());
+    expect(container.querySelectorAll(".editor-network-preview path")).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: /Edit all Connected Work lines/ })).toHaveLength(1);
+    expect(screen.queryByRole("button", { name: /^Edit orthogonal line$/ })).toBeNull();
 
-    const workspace = screen.getByLabelText("Edit connector from Source item to Target item");
+    fireEvent.click(screen.getByRole("button", { name: /Edit all Connected Work lines/ }));
+
+    const workspace = screen.getByLabelText("Edit Connected Work lines for Source item");
     const boardItems = Array.from(workspace.querySelectorAll<HTMLElement>(".connector-board-item"));
     const boardItem = (name: string) => boardItems.find((item) => item.textContent === name);
     expect(boardItem("Source item")?.classList.contains("is-source")).toBe(true);
     expect(boardItem("Target item")?.classList.contains("is-target")).toBe(true);
+    expect(boardItem("Second target item")?.classList.contains("is-target")).toBe(true);
     expect(boardItem("Unconnected item")?.classList.contains("is-context")).toBe(true);
+    expect(workspace.querySelectorAll(".connector-network-route")).toHaveLength(2);
+    expect(workspace.querySelectorAll(".connector-terminal-handle")).toHaveLength(2);
   });
 
   it("derives the Color Signal from the selected lane instead of exposing a manual palette", () => {
@@ -131,7 +159,7 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     }));
     const { container } = render(<TimelineEditor initialData={data} />);
 
-    fireEvent.click(screen.getByRole("button", { name: /Edit orthogonal line/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Edit all Connected Work lines/ }));
     fireEvent.click(screen.getAllByRole("button", { name: "top" })[0]);
     const midpoint = container.querySelector<SVGRectElement>(".connector-mid-handle");
     expect(midpoint).toBeTruthy();
@@ -145,10 +173,10 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     const connector = (saved as TimelineData | null)?.items[0].relations[0].connector;
     expect(connector?.source.side).toBe("top");
     expect(connector?.points.length).toBeGreaterThan(4);
-    expect((saved as TimelineData | null)?.items.map((item) => item.colorToken)).toEqual(["steel", "forest", "forest"]);
+    expect((saved as TimelineData | null)?.items.map((item) => item.colorToken)).toEqual(["steel", "forest", "forest", "forest"]);
   });
 
-  it("persists an owner-defined route in the existing relation save payload", async () => {
+  it("edits one active route while preserving every 1:1 relationship and unrelated item", async () => {
     let saved: TimelineData | null = null;
     vi.stubGlobal("fetch", vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
       saved = JSON.parse(String(init?.body)) as TimelineData;
@@ -157,19 +185,30 @@ describe("TimelineEditor orthogonal connector workflow", () => {
         headers: { "Content-Type": "application/json" },
       });
     }));
-    render(<TimelineEditor initialData={data} />);
+    const { container } = render(<TimelineEditor initialData={data} />);
 
-    fireEvent.click(screen.getByRole("button", { name: /Edit orthogonal line/ }));
-    fireEvent.click(screen.getByRole("button", { name: /Reset route/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Edit all Connected Work lines/ }));
+    const secondRoutePicker = Array.from(container.querySelectorAll<HTMLButtonElement>(".connector-network-picker button"))
+      .find((button) => button.textContent?.includes("Second target item"));
+    expect(secondRoutePicker).toBeTruthy();
+    fireEvent.click(secondRoutePicker!);
+    expect(container.querySelectorAll(".connector-network-route.is-active")).toHaveLength(1);
+    expect(container.querySelector(".connector-board-item.is-active-target")?.textContent).toBe("Second target item");
+    expect(container.querySelectorAll(".connector-terminal-handle")).toHaveLength(2);
+
+    fireEvent.click(screen.getByRole("button", { name: /Reset active line/ }));
     fireEvent.click(screen.getByRole("button", { name: /^Done$/ }));
     expect(screen.getByText("Custom route saved")).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: /Save changes/ }));
     await waitFor(() => expect(saved).not.toBeNull());
 
-    const connector = (saved as TimelineData | null)?.items[0].relations[0].connector;
-    expect(connector?.points.length).toBeGreaterThanOrEqual(2);
-    expect(connector?.source.side).toBeTruthy();
-    expect(connector?.target.side).toBeTruthy();
+    const savedData = saved as TimelineData | null;
+    expect(savedData?.items[0].relations.map((relation) => relation.targetId)).toEqual(["target-item", "second-target-item"]);
+    expect(savedData?.items[0].relations[0].connector).toBeUndefined();
+    expect(savedData?.items[0].relations[1].connector?.points.length).toBeGreaterThanOrEqual(2);
+    expect(savedData?.items[1].relations).toEqual([]);
+    expect(savedData?.items[2].relations).toEqual([]);
+    expect(savedData?.items[3]).toEqual({ ...data.items[3], colorToken: "forest" });
   });
 });
