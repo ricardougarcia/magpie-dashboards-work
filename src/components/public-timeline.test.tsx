@@ -162,6 +162,33 @@ describe("PublicTimeline presentation safeguards", () => {
 });
 
 describe("PublicTimeline telemetry ownership", () => {
+  it("omits the Artifact field entirely when the selected item has no media", async () => {
+    render(<PublicTimeline data={data} />);
+    fireEvent.click(getTimelineItem("First item"));
+    await waitFor(() => expect(screen.getByLabelText("Selected details for First item")).toBeTruthy());
+
+    expect(screen.queryByRole("button", { name: "Open media preview" })).toBeNull();
+    expect(screen.queryByText("Artifact")).toBeNull();
+    expect(screen.queryByText("Media pending")).toBeNull();
+  });
+
+  it("retains the Artifact preview control when the selected item has media", async () => {
+    const mediaData: PublicTimelineData = {
+      ...data,
+      items: data.items.map((item) => item.id === "first-item"
+        ? { ...item, media: { url: "/icon.svg", type: "image", alt: "First item artifact" } }
+        : item),
+    };
+    render(<PublicTimeline data={mediaData} />);
+    fireEvent.click(getTimelineItem("First item"));
+    await waitFor(() => expect(screen.getByLabelText("Selected details for First item")).toBeTruthy());
+
+    expect(screen.getByRole("button", { name: "Open media preview" })).toBeTruthy();
+    expect(screen.getByText("Artifact")).toBeTruthy();
+    expect(screen.getByText("First item artifact")).toBeTruthy();
+    expect(screen.queryByText("Media pending")).toBeNull();
+  });
+
   it("keeps only the purposeful top-left and bottom-right aperture corners", async () => {
     const { container } = render(<PublicTimeline data={data} />);
     fireEvent.click(getTimelineItem("First item"));

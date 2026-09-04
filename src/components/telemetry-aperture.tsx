@@ -181,21 +181,19 @@ export function TelemetryAperture({
               </AnimatePresence>
             </div>
 
-            <button className="telemetry-media" type="button" onClick={onPreview} aria-label="Open media preview">
-              <span className="telemetry-media-thumb">
-                {item.media ? (
-                  item.media.type === "video" ? (
+            {item.media && (
+              <button className="telemetry-media" type="button" onClick={onPreview} aria-label="Open media preview">
+                <span className="telemetry-media-thumb">
+                  {item.media.type === "video" ? (
                     <video src={item.media.url} muted playsInline preload="metadata" />
                   ) : (
                     <Image src={item.media.url} alt={item.media.alt} fill sizes="58px" unoptimized />
-                  )
-                ) : (
-                  <span>Ø</span>
-                )}
-              </span>
-              <span><small>Artifact</small>{item.media ? item.media.alt : "Media pending"}</span>
-              <Maximize2 size={13} />
-            </button>
+                  )}
+                </span>
+                <span><small>Artifact</small>{item.media.alt}</span>
+                <Maximize2 size={13} />
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
