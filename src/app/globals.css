@@ -2342,15 +2342,14 @@ footer {
 .coordinate-cursor {
   position: fixed;
   z-index: 90;
-  bottom: 18px;
-  left: 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 1px;
-  color: rgba(17, 19, 17, 0.74);
+  color: rgba(17, 19, 17, 0.36);
   opacity: 0;
   pointer-events: none;
+  transform: translate(calc(-100% - 11px), 11px);
   font-family: var(--font-mono), monospace;
   font-size: 9px;
   font-variant-numeric: tabular-nums;
@@ -2358,11 +2357,25 @@ footer {
   letter-spacing: -0.055em;
   line-height: 1.18;
   text-transform: uppercase;
+  white-space: nowrap;
   transition: opacity 140ms ease;
+  will-change: left, top;
 }
 
 .coordinate-cursor.is-visible {
   opacity: 1;
+}
+
+.coordinate-cursor.is-right-of-cursor {
+  transform: translate(11px, 11px);
+}
+
+.coordinate-cursor.is-above-cursor {
+  transform: translate(calc(-100% - 11px), calc(-100% - 11px));
+}
+
+.coordinate-cursor.is-right-of-cursor.is-above-cursor {
+  transform: translate(11px, calc(-100% - 11px));
 }
 
 .cursor-guides {

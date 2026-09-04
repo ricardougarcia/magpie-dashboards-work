@@ -1,3 +1,5 @@
+export const TELEMETRY_TETHER_DURATION = 1.7;
+
 export type ViewportRect = {
   left: number;
   top: number;

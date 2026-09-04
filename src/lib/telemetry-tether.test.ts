@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { telemetryTetherGeometry, type ViewportRect } from "@/lib/telemetry-tether";
+import { TELEMETRY_TETHER_DURATION, telemetryTetherGeometry, type ViewportRect } from "@/lib/telemetry-tether";
 
 function onBorder(point: { x: number; y: number }, rect: ViewportRect) {
   const right = rect.left + rect.width;
@@ -22,6 +22,10 @@ describe("telemetry tether geometry", () => {
     { left: 14, top: 530, width: 740, height: 290 },
     { left: 14, top: 14, width: 310, height: 480 },
   ];
+
+  it("uses the approved gently extended animation duration", () => {
+    expect(TELEMETRY_TETHER_DURATION).toBe(1.7);
+  });
 
   it.each(modalPlacements)("terminates on the live source and modal borders for %#", (modal) => {
     const geometry = telemetryTetherGeometry(source, modal);

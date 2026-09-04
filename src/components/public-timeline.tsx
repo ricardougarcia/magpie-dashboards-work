@@ -22,7 +22,7 @@ import {
   type TelemetryTab,
 } from "@/components/telemetry-aperture";
 import { connectorPath, resolveConnectorPoints, type ConnectorRect } from "@/lib/orthogonal-connectors";
-import { telemetryTetherGeometry } from "@/lib/telemetry-tether";
+import { TELEMETRY_TETHER_DURATION, telemetryTetherGeometry } from "@/lib/telemetry-tether";
 import { MONTHS, placementSpan, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
 const LANE_ORDER = [
@@ -603,7 +603,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
               initial={reduceMotion ? { opacity: 0 } : { pathLength: 0, opacity: 0 }}
               animate={reduceMotion ? { opacity: 0 } : { pathLength: 1, opacity: [0, 0.72, 0] }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 1.55, times: [0, 0.6, 1], ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: TELEMETRY_TETHER_DURATION, times: [0, 0.6, 1], ease: [0.22, 1, 0.36, 1] }}
             />
           </motion.svg>
         )}

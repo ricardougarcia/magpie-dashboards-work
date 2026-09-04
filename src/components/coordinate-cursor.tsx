@@ -5,11 +5,18 @@ import { useEffect, useRef, useState } from "react";
 type CursorPosition = {
   x: number;
   y: number;
+  viewportHeight: number;
   visible: boolean;
   inGantt: boolean;
 };
 
-const INITIAL_POSITION: CursorPosition = { x: 0, y: 0, visible: false, inGantt: false };
+const INITIAL_POSITION: CursorPosition = {
+  x: 0,
+  y: 0,
+  viewportHeight: 0,
+  visible: false,
+  inGantt: false,
+};
 
 export function CoordinateCursor() {
   const [position, setPosition] = useState(INITIAL_POSITION);
@@ -28,7 +35,13 @@ export function CoordinateCursor() {
       if (event.pointerType && event.pointerType !== "mouse") return;
       const target = event.target;
       const inGantt = target instanceof Element && Boolean(target.closest("[data-gantt-region]"));
-      nextRef.current = { x: event.clientX, y: event.clientY, visible: true, inGantt };
+      nextRef.current = {
+        x: event.clientX,
+        y: event.clientY,
+        viewportHeight: window.innerHeight,
+        visible: true,
+        inGantt,
+      };
       schedule();
     };
     const onLeave = () => {
@@ -57,7 +70,8 @@ export function CoordinateCursor() {
         <span className="cursor-guide-vertical" style={{ left: position.x }} />
       </div>
       <div
-        className={`coordinate-cursor ${position.visible ? "is-visible" : ""}`}
+        className={`coordinate-cursor ${position.visible ? "is-visible" : ""} ${position.x < 96 ? "is-right-of-cursor" : ""} ${position.y > position.viewportHeight - 48 ? "is-above-cursor" : ""}`}
+        style={{ left: position.x, top: position.y }}
         aria-hidden="true"
       >
         <span>X:{Math.round(position.x)}PX</span>

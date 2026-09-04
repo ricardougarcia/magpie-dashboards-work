@@ -30,9 +30,13 @@ describe("public timeline visual tokens", () => {
     expect(pickerCursor).not.toContain('<rect');
   });
 
-  it("uses a borderless stacked lower-left coordinate display with faint viewport guides", () => {
-    expect(css).toMatch(/\.coordinate-cursor\s*\{[\s\S]*?bottom:\s*18px[\s\S]*?left:\s*20px[\s\S]*?flex-direction:\s*column/);
+  it("uses a light borderless stacked readout on the cursor’s lower-left side with faint viewport guides", () => {
+    expect(css).toMatch(/\.coordinate-cursor\s*\{[\s\S]*?position:\s*fixed[\s\S]*?flex-direction:\s*column/);
+    expect(css).toMatch(/\.coordinate-cursor\s*\{[\s\S]*?color:\s*rgba\(17, 19, 17, 0\.36\)/);
+    expect(css).toMatch(/\.coordinate-cursor\s*\{[\s\S]*?transform:\s*translate\(calc\(-100% - 11px\), 11px\)/);
     expect(css).toMatch(/\.coordinate-cursor\s*\{[\s\S]*?letter-spacing:\s*-0\.055em/);
+    expect(css).toContain(".coordinate-cursor.is-right-of-cursor");
+    expect(css).toContain(".coordinate-cursor.is-above-cursor");
     expect(css).toMatch(/\.cursor-guides\s*\{[\s\S]*?position:\s*fixed[\s\S]*?pointer-events:\s*none/);
     expect(css).toContain("background: rgba(17, 19, 17, 0.11)");
     expect(css).not.toMatch(/\.coordinate-cursor\s*\{[^}]*border:/);
