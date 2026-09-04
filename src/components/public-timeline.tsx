@@ -16,14 +16,13 @@ import {
 } from "react";
 import { CoordinateCursor } from "@/components/coordinate-cursor";
 import {
-  COLOR_LABELS,
   LANE_CODES,
   TelemetryAperture,
   TelemetryMediaPlaceholder,
   type TelemetryTab,
 } from "@/components/telemetry-aperture";
 import { connectorPath, resolveConnectorPoints, type ConnectorRect } from "@/lib/orthogonal-connectors";
-import { MONTHS, placementSpan, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
+import { MONTHS, colorTokenForLane, placementSpan, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
 const LANE_ORDER = [
   "Eng Build",
@@ -40,15 +39,31 @@ const PHASES = [
   { label: "Prepare for scale", start: 6, span: 3 },
 ];
 
-const PIXELS = Array.from({ length: 256 }, (_, index) => {
-  const column = index % 16;
-  const row = Math.floor(index / 16);
-  return {
-    index,
-    delayIn: column * 24 + ((row * 7) % 5) * 20,
-    delayOut: (15 - column) * 15 + ((row * 5) % 4) * 14,
-  };
-});
+const PIXEL_TONES = ["#111311", "#191b19", "#2b2d2b", "#3d3f3d"] as const;
+
+function seededUnit(index: number, seed: number, salt: number) {
+  let value = Math.imul(index + 1 + salt * 97, 0x9e3779b1) ^ Math.imul(seed + 11, 0x5f356495);
+  value ^= value >>> 16;
+  value = Math.imul(value, 0x85ebca6b);
+  value ^= value >>> 13;
+  return (value >>> 0) / 0xffffffff;
+}
+
+function createPixelField(seed: number) {
+  return Array.from({ length: 256 }, (_, index) => {
+    const column = index % 16;
+    return {
+      index,
+      delayIn: Math.round(column * 34 + seededUnit(index, seed, 1) * 190),
+      durationIn: Math.round(190 + seededUnit(index, seed, 2) * 260),
+      delayOut: Math.round((15 - column) * 24 + seededUnit(index, seed, 3) * 130),
+      durationOut: Math.round(150 + seededUnit(index, seed, 4) * 170),
+      tone: PIXEL_TONES[Math.floor(seededUnit(index, seed, 5) * PIXEL_TONES.length)],
+    };
+  });
+}
+
+const PIXEL_FIELDS = Array.from({ length: 6 }, (_, seed) => createPixelField(seed));
 
 type PositionedItem = PublicTimelineItem & { row: number };
 type Connection = { id: string; targetId: string; path: string };
@@ -346,8 +361,11 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
           <div className="timeline-guide">
             <div className="timeline-legend" aria-label="Color key">
               <span className="legend-title">Color key</span>
-              {(Object.entries(COLOR_LABELS) as Array<[PublicTimelineItem["colorToken"], string]>).map(([color, label]) => (
-                <span className="legend-entry" key={color}><i className={`color-${color}`} />{label}</span>
+              {LANE_ORDER.map((lane) => (
+                <span className="legend-entry" key={lane}>
+                  <i className={`color-${colorTokenForLane(lane)}`} />
+                  {lane === "Challenges Planned / Unplanned" ? "Curve balls" : lane}
+                </span>
               ))}
             </div>
           </div>
@@ -392,12 +410,15 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                       >
                         <div className="lane-label" data-gantt-background>
                           <div className="lane-pixel-field" aria-hidden="true">
-                            {PIXELS.map((pixel) => (
+                            {PIXEL_FIELDS[laneIndex].map((pixel) => (
                               <span
                                 key={pixel.index}
                                 style={{
                                   "--pixel-in": `${pixel.delayIn}ms`,
+                                  "--pixel-in-duration": `${pixel.durationIn}ms`,
                                   "--pixel-out": `${pixel.delayOut}ms`,
+                                  "--pixel-out-duration": `${pixel.durationOut}ms`,
+                                  "--pixel-tone": pixel.tone,
                                 } as CSSProperties}
                               />
                             ))}
@@ -463,12 +484,15 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                 <aside className={`future-rail ${activeLane && !LANE_ORDER.includes(activeLane) ? "is-lane-active" : ""}`} aria-label="In-flight and future work">
                   <div className="future-rail-intro">
                     <div className="lane-pixel-field" aria-hidden="true">
-                      {PIXELS.map((pixel) => (
+                      {PIXEL_FIELDS[5].map((pixel) => (
                         <span
                           key={pixel.index}
                           style={{
                             "--pixel-in": `${pixel.delayIn}ms`,
+                            "--pixel-in-duration": `${pixel.durationIn}ms`,
                             "--pixel-out": `${pixel.delayOut}ms`,
+                            "--pixel-out-duration": `${pixel.durationOut}ms`,
+                            "--pixel-tone": pixel.tone,
                           } as CSSProperties}
                         />
                       ))}

@@ -76,9 +76,7 @@ export function TelemetryAperture({
       aria-live="polite"
     >
       <span className="aperture-corner corner-nw" aria-hidden="true" />
-      <span className="aperture-corner corner-ne" aria-hidden="true" />
       <span className="aperture-corner corner-se" aria-hidden="true" />
-      <span className="aperture-corner corner-sw" aria-hidden="true" />
       <span className="aperture-scan-line" aria-hidden="true" />
 
       <div className="telemetry-head">

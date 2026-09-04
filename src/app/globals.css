@@ -16,6 +16,8 @@
   --future-width: 250px;
   --month-width: 120px;
   --timeline-width: 1080px;
+  --cursor-default: url("/cursor-plus.svg") 16 16, crosshair;
+  --cursor-action: url("/cursor-plus-pick.svg") 16 16, pointer;
 }
 
 * {
@@ -37,6 +39,7 @@ body {
   color: var(--ink);
   font-family: var(--font-sans), Arial, sans-serif;
   min-width: 320px;
+  cursor: var(--cursor-default);
 }
 
 button,
@@ -44,6 +47,18 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+input,
+textarea {
+  cursor: text;
+}
+
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"],
+select {
+  cursor: var(--cursor-action);
 }
 
 button,
@@ -487,7 +502,7 @@ select:focus-visible {
   border-radius: 1px;
   background: var(--paper-raised);
   color: var(--ink);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   text-align: left;
   box-shadow: inset 3px 0 0 var(--item-color);
   transition: transform 150ms ease, box-shadow 150ms ease, opacity 180ms ease, background-color 180ms ease, color 180ms ease;
@@ -590,7 +605,7 @@ select:focus-visible {
   border-bottom: 1px solid var(--line);
   background: transparent;
   color: var(--ink);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   text-align: left;
   transition: opacity 180ms ease, padding 160ms ease, color 160ms ease, background-color 160ms ease;
 }
@@ -669,7 +684,7 @@ select:focus-visible {
   border: 1px solid var(--line-strong);
   background: transparent;
   color: inherit;
-  cursor: pointer;
+  cursor: var(--cursor-action);
 }
 
 .icon-button:hover,
@@ -688,7 +703,7 @@ select:focus-visible {
   border: 1px solid var(--line-strong);
   background: var(--paper);
   color: inherit;
-  cursor: zoom-in;
+  cursor: var(--cursor-action);
 }
 
 .detail-media img,
@@ -849,7 +864,7 @@ select:focus-visible {
   border: 1px solid var(--item-color);
   background: transparent;
   color: var(--item-color);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   font-family: var(--font-mono), monospace;
   font-size: 9px;
   line-height: 1.3;
@@ -1215,7 +1230,7 @@ footer {
   border: 1px solid var(--ink);
   background: var(--ink);
   color: var(--paper);
-  cursor: pointer;
+  cursor: var(--cursor-action);
 }
 
 .login-input-row button:disabled {
@@ -1291,7 +1306,7 @@ footer {
   gap: 8px;
   padding: 0 13px;
   border: 1px solid var(--ink);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   font-family: var(--font-mono), monospace;
   font-size: 9px;
   letter-spacing: 0.05em;
@@ -1456,7 +1471,7 @@ footer {
   border-right: 1px solid var(--line-strong);
   background: transparent;
   color: var(--ink);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   text-align: left;
 }
 
@@ -1543,7 +1558,7 @@ footer {
   border: 1px dashed var(--item-color);
   background: var(--paper-raised);
   color: var(--ink);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   text-align: left;
 }
 
@@ -1670,7 +1685,7 @@ footer {
   border: 1px solid var(--line);
   background: transparent;
   color: var(--ink);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   font-family: var(--font-mono), monospace;
   font-size: 8px;
   text-transform: uppercase;
@@ -1692,7 +1707,7 @@ footer {
   border: 1px solid var(--line-strong);
   background: transparent;
   color: var(--ink);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   font-family: var(--font-mono), monospace;
   font-size: 8px;
   text-transform: uppercase;
@@ -1712,7 +1727,7 @@ footer {
   border: 1px dashed var(--line-strong);
   background: var(--paper);
   color: var(--ink) !important;
-  cursor: pointer;
+  cursor: var(--cursor-action);
   text-align: center;
 }
 
@@ -1754,7 +1769,7 @@ footer {
   border: 0;
   background: var(--signal);
   color: #fff;
-  cursor: pointer;
+  cursor: var(--cursor-action);
   font-family: var(--font-mono), monospace;
   font-size: 8px;
   text-transform: uppercase;
@@ -1774,7 +1789,7 @@ footer {
   border: 1px solid var(--ink);
   background: transparent;
   color: var(--ink);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   font-family: var(--font-mono), monospace;
   font-size: 8px;
   text-transform: uppercase;
@@ -1801,7 +1816,7 @@ footer {
   border: 0;
   background: transparent;
   color: var(--muted);
-  cursor: pointer;
+  cursor: var(--cursor-action);
 }
 
 .empty-note,
@@ -2481,14 +2496,9 @@ footer {
   background: transparent;
   opacity: 0;
   transition:
-    background-color 90ms steps(2, end) var(--pixel-out),
-    opacity 90ms steps(2, end) var(--pixel-out);
+    background-color var(--pixel-out-duration, 220ms) steps(3, end) var(--pixel-out, 0ms),
+    opacity var(--pixel-out-duration, 220ms) steps(3, end) var(--pixel-out, 0ms);
 }
-
-.lane-pixel-field span:nth-child(4n + 1) { --pixel-tone: #191b19; }
-.lane-pixel-field span:nth-child(4n + 2) { --pixel-tone: #2b2d2b; }
-.lane-pixel-field span:nth-child(4n + 3) { --pixel-tone: #111311; }
-.lane-pixel-field span:nth-child(4n) { --pixel-tone: #3d3f3d; }
 
 .lane-row.is-lane-active .lane-label {
   color: var(--paper-raised);
@@ -2585,9 +2595,7 @@ footer {
 }
 
 .corner-nw { top: 7px; left: 7px; border-top: 1px solid #fff; border-left: 1px solid #fff; }
-.corner-ne { top: 7px; right: 19px; border-top: 1px solid #fff; border-right: 1px solid #fff; animation-delay: 30ms; }
 .corner-se { right: 7px; bottom: 7px; border-right: 1px solid #fff; border-bottom: 1px solid #fff; animation-delay: 60ms; }
-.corner-sw { bottom: 7px; left: 19px; border-bottom: 1px solid #fff; border-left: 1px solid #fff; animation-delay: 90ms; }
 
 .aperture-scan-line {
   position: absolute;
@@ -2638,7 +2646,7 @@ footer {
   border: 1px solid rgba(241, 239, 233, 0.26);
   background: transparent;
   color: var(--paper-raised);
-  cursor: pointer;
+  cursor: var(--cursor-action);
 }
 
 .telemetry-close:hover,
@@ -2747,7 +2755,7 @@ footer {
   border-right: 1px solid var(--aperture-line);
   background: transparent;
   color: rgba(241, 239, 233, 0.5);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   font-family: var(--font-mono), monospace;
   font-size: 7px;
   letter-spacing: 0.03em;
@@ -2821,7 +2829,7 @@ footer {
   background: transparent;
   color: var(--paper-raised);
   box-shadow: inset 2px 0 0 var(--item-color);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   font-family: var(--font-mono), monospace;
   font-size: 8px;
   text-align: left;
@@ -2858,7 +2866,7 @@ footer {
   border: 1px solid rgba(241, 239, 233, 0.25);
   background: transparent;
   color: var(--paper-raised);
-  cursor: pointer;
+  cursor: var(--cursor-action);
   text-align: left;
 }
 
@@ -3003,7 +3011,7 @@ footer {
 
 .lane-row.is-lane-active .lane-pixel-field span,
 .future-rail.is-lane-active .lane-pixel-field span {
-  animation: lane-pixel-acquire 155ms steps(3, end) var(--pixel-in) both;
+  animation: lane-pixel-acquire var(--pixel-in-duration, 320ms) steps(4, end) var(--pixel-in, 0ms) both;
 }
 
 .future-rail-intro {
@@ -3063,13 +3071,6 @@ footer {
 
 .lane-pixel-field span {
   aspect-ratio: 1;
-  transition-duration: 150ms;
-}
-
-.lane-row.is-lane-active .lane-pixel-field span,
-.future-rail.is-lane-active .lane-pixel-field span {
-  animation-duration: 220ms;
-  animation-timing-function: steps(4, end);
 }
 
 .telemetry-head {
@@ -3252,7 +3253,7 @@ footer {
   font-size: 8px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  cursor: pointer;
+  cursor: var(--cursor-action);
 }
 
 .connector-workspace-actions .primary-button {
@@ -3465,7 +3466,7 @@ footer {
 
 .connector-mid-handle {
   opacity: 0;
-  cursor: crosshair;
+  cursor: var(--cursor-action);
   transform-box: fill-box;
   transform-origin: center;
   transform: rotate(45deg) scale(0.75);
@@ -3631,4 +3632,39 @@ footer {
     display: inline-flex !important;
     margin-left: auto;
   }
+}
+
+/* Lane-assigned Color Signal */
+.lane-color-assignment {
+  display: grid;
+  grid-template-columns: 10px auto minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  min-height: 34px;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  background: rgba(17, 19, 17, 0.025);
+  font-family: var(--font-mono), monospace;
+  text-transform: uppercase;
+}
+
+.lane-color-assignment > span {
+  width: 10px;
+  height: 10px;
+  background: var(--item-color);
+}
+
+.lane-color-assignment strong {
+  color: var(--item-color);
+  font-size: 8px;
+  letter-spacing: 0.07em;
+}
+
+.lane-color-assignment small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 8px;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

@@ -18,14 +18,13 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ConnectorRouteEditor } from "@/components/connector-route-editor";
 import {
-  COLOR_TOKENS,
   GUIDING_LIGHTS,
   MONTHS,
+  colorTokenForLane,
   createItemId,
   formatPlacement,
   monthPointOptions,
   placementSpan,
-  type ColorToken,
   type GuidingLight,
   type OrthogonalConnectorRoute,
   type TimelineData,
@@ -130,7 +129,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
       end: 0,
       planned: false,
       ongoing: false,
-      colorToken: "graphite",
+      colorToken: colorTokenForLane(lane),
       media: null,
     };
     commit((draft) => draft.items.push(next));
@@ -202,10 +201,14 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
   async function save() {
     setSaving(true);
     setStatusMessage("");
+    const normalizedData = {
+      ...data,
+      items: data.items.map((item) => ({ ...item, colorToken: colorTokenForLane(item.lane) })),
+    };
     const response = await fetch("/api/timeline", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify(normalizedData),
     });
     const payload = (await response.json().catch(() => null)) as TimelineData | { error?: string } | null;
     if (!response.ok || !payload || !("items" in payload)) {
@@ -335,8 +338,9 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
                   <legend>Core details</legend>
                   <label>Item name<input value={selected.name} onChange={(event) => updateSelected({ name: event.target.value })} /></label>
                   <label>Lane<select value={selected.lane} onChange={(event) => {
-                    const planned = event.target.value === "In-Flight / Future";
-                    updateSelected({ lane: event.target.value, planned, start: planned ? 9 : Math.min(selected.start, 8), end: planned ? 11 : Math.min(selected.end, 8) });
+                    const lane = event.target.value;
+                    const planned = lane === "In-Flight / Future";
+                    updateSelected({ lane, colorToken: colorTokenForLane(lane), planned, start: planned ? 9 : Math.min(selected.start, 8), end: planned ? 11 : Math.min(selected.end, 8) });
                   }}>{data.lanes.map((lane) => <option key={lane.id} value={lane.name}>{lane.displayName}</option>)}</select></label>
                   <label>Description<textarea rows={4} value={selected.description} onChange={(event) => updateSelected({ description: event.target.value })} /></label>
                   <label>Value<textarea rows={5} value={selected.value} onChange={(event) => updateSelected({ value: event.target.value })} /></label>
@@ -356,16 +360,11 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
 
                 <fieldset className="form-section">
                   <legend>Design controls</legend>
-                  <span className="field-label">Color signal</span>
-                  <div className="palette-grid">
-                    {COLOR_TOKENS.map((color) => (
-                      <button
-                        key={color}
-                        type="button"
-                        className={`palette-chip color-${color} ${selected.colorToken === color ? "is-active" : ""}`}
-                        onClick={() => updateSelected({ colorToken: color as ColorToken })}
-                      ><span />{color}</button>
-                    ))}
+                  <span className="field-label">Color signal <small>Assigned by lane</small></span>
+                  <div className={`lane-color-assignment color-${colorTokenForLane(selected.lane)}`}>
+                    <span aria-hidden="true" />
+                    <strong>{colorTokenForLane(selected.lane)}</strong>
+                    <small>{selected.lane}</small>
                   </div>
                   <span className="field-label">Guiding Light <small>Private / choose up to two</small></span>
                   <div className="tag-grid">

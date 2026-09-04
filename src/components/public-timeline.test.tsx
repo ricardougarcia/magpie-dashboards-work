@@ -105,19 +105,46 @@ describe("PublicTimeline presentation safeguards", () => {
 
     const legend = screen.getByLabelText("Color key");
     expect(Array.from(legend.querySelectorAll("i")).map((swatch) => swatch.className)).toEqual([
-      "color-graphite",
-      "color-signal",
       "color-steel",
-      "color-umber",
       "color-forest",
+      "color-graphite",
+      "color-umber",
+      "color-signal",
     ]);
     container.querySelectorAll("[data-timeline-item]").forEach((item) => {
       expect(item.hasAttribute("title")).toBe(false);
     });
   });
+
+  it("uses varied per-pixel timing while preserving the overall left-to-right acquisition", () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    const pixels = Array.from(container.querySelectorAll<HTMLElement>(".lane-row .lane-pixel-field span")).slice(0, 256);
+    const delayAt = (index: number) => Number.parseFloat(pixels[index].style.getPropertyValue("--pixel-in"));
+    const durationAt = (index: number) => Number.parseFloat(pixels[index].style.getPropertyValue("--pixel-in-duration"));
+    const averageColumnDelay = (column: number) => {
+      const values = Array.from({ length: 16 }, (_, row) => delayAt(row * 16 + column));
+      return values.reduce((sum, value) => sum + value, 0) / values.length;
+    };
+
+    expect(pixels).toHaveLength(256);
+    expect(new Set(pixels.map((_, index) => delayAt(index))).size).toBeGreaterThan(180);
+    expect(new Set(pixels.map((_, index) => durationAt(index))).size).toBeGreaterThan(120);
+    expect(averageColumnDelay(15) - averageColumnDelay(0)).toBeGreaterThan(450);
+  });
 });
 
 describe("PublicTimeline telemetry ownership", () => {
+  it("keeps only the purposeful top-left and bottom-right aperture corners", async () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    fireEvent.click(getTimelineItem("First item"));
+    await waitFor(() => expect(screen.getByLabelText("Selected details for First item")).toBeTruthy());
+
+    expect(container.querySelector(".corner-nw")).toBeTruthy();
+    expect(container.querySelector(".corner-se")).toBeTruthy();
+    expect(container.querySelector(".corner-ne")).toBeNull();
+    expect(container.querySelector(".corner-sw")).toBeNull();
+  });
+
   it("dismisses a hover-only preview when the page is clicked outside it", async () => {
     render(<PublicTimeline data={data} />);
     fireEvent.pointerEnter(getTimelineItem("First item"), { pointerType: "mouse" });

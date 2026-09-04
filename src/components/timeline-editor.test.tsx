@@ -109,6 +109,17 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     expect(boardItem("Unconnected item")?.classList.contains("is-context")).toBe(true);
   });
 
+  it("derives the Color Signal from the selected lane instead of exposing a manual palette", () => {
+    render(<TimelineEditor initialData={data} />);
+
+    expect(screen.getByText("Assigned by lane")).toBeTruthy();
+    expect(screen.getByText("steel")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "graphite" })).toBeNull();
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Lane" }), { target: { value: "Product Build" } });
+    expect(screen.getByText("forest")).toBeTruthy();
+  });
+
   it("persists terminal changes and a dragged midpoint elbow", async () => {
     let saved: TimelineData | null = null;
     vi.stubGlobal("fetch", vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
@@ -134,6 +145,7 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     const connector = (saved as TimelineData | null)?.items[0].relations[0].connector;
     expect(connector?.source.side).toBe("top");
     expect(connector?.points.length).toBeGreaterThan(4);
+    expect((saved as TimelineData | null)?.items.map((item) => item.colorToken)).toEqual(["steel", "forest", "forest"]);
   });
 
   it("persists an owner-defined route in the existing relation save payload", async () => {

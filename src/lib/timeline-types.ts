@@ -4,6 +4,19 @@ export const COLOR_TOKENS = ["graphite", "signal", "steel", "umber", "forest"] a
 export type GuidingLight = (typeof GUIDING_LIGHTS)[number];
 export type ColorToken = (typeof COLOR_TOKENS)[number];
 
+export const LANE_COLOR_TOKENS: Record<string, ColorToken> = {
+  "Eng Build": "steel",
+  "Product Build": "forest",
+  "Product Discovery": "graphite",
+  Processes: "umber",
+  "Challenges Planned / Unplanned": "signal",
+  "In-Flight / Future": "signal",
+};
+
+export function colorTokenForLane(lane: string): ColorToken {
+  return LANE_COLOR_TOKENS[lane] ?? "graphite";
+}
+
 export type ConnectorTerminalSide = "top" | "right" | "bottom" | "left";
 
 export type ConnectorTerminal = {

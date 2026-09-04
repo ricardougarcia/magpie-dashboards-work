@@ -30,12 +30,13 @@ LANE_DISPLAY = {
     "In-Flight / Future": "In-Flight / Future",
 }
 
-LIGHT_TO_COLOR = {
-    "Learn": "graphite",
-    "Fix": "signal",
-    "Stabilize": "steel",
-    "Govern": "umber",
-    "Grow": "forest",
+LANE_TO_COLOR = {
+    "Eng Build": "steel",
+    "Product Build": "forest",
+    "Product Discovery": "graphite",
+    "Processes": "umber",
+    "Challenges Planned / Unplanned": "signal",
+    "In-Flight / Future": "signal",
 }
 
 
@@ -75,7 +76,7 @@ def parse_source(source_path: Path) -> dict:
         current["end"] = end
         current["planned"] = planned
         current["ongoing"] = ongoing
-        current["colorToken"] = LIGHT_TO_COLOR[current["guidingLights"][0]]
+        current["colorToken"] = LANE_TO_COLOR[current["lane"]]
         current["media"] = None
         current["relations"] = current.get("relations", [])
         items.append(current)

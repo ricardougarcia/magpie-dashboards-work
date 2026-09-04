@@ -3,7 +3,7 @@ import "server-only";
 import { list, put } from "@vercel/blob";
 import seedData from "@/data/timeline.seed.json";
 import { timelineDataSchema } from "@/lib/timeline-schema";
-import type { TimelineData } from "@/lib/timeline-types";
+import { colorTokenForLane, type TimelineData } from "@/lib/timeline-types";
 
 const DATA_PATH = "magpie/timeline.json";
 
@@ -39,6 +39,7 @@ export async function saveTimelineData(input: TimelineData): Promise<TimelineDat
     ...input,
     version: input.version + 1,
     updatedAt: new Date().toISOString(),
+    items: input.items.map((item) => ({ ...item, colorToken: colorTokenForLane(item.lane) })),
   }) as TimelineData;
 
   await put(DATA_PATH, JSON.stringify(next), {
