@@ -17,8 +17,6 @@ export function CoordinateCursor() {
   const nextRef = useRef(INITIAL_POSITION);
 
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-
     const flush = () => {
       frameRef.current = null;
       setPosition(nextRef.current);
@@ -27,6 +25,7 @@ export function CoordinateCursor() {
       if (frameRef.current === null) frameRef.current = window.requestAnimationFrame(flush);
     };
     const onMove = (event: PointerEvent) => {
+      if (event.pointerType && event.pointerType !== "mouse") return;
       const target = event.target;
       const inGantt = target instanceof Element && Boolean(target.closest("[data-gantt-region]"));
       nextRef.current = { x: event.clientX, y: event.clientY, visible: true, inGantt };

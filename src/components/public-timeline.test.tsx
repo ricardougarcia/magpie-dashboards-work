@@ -198,6 +198,47 @@ describe("PublicTimeline telemetry ownership", () => {
     });
   });
 
+  it("reanchors the tether to the live modal border after its position changes", async () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    const first = getTimelineItem("First item");
+    const sourceRect = { left: 120, top: 420, width: 220, height: 36 };
+    let modalRect = { left: 930, top: 76, width: 340, height: 390 };
+    vi.spyOn(first, "getBoundingClientRect").mockImplementation(() => ({
+      ...sourceRect,
+      right: sourceRect.left + sourceRect.width,
+      bottom: sourceRect.top + sourceRect.height,
+      x: sourceRect.left,
+      y: sourceRect.top,
+      toJSON: () => sourceRect,
+    } as DOMRect));
+
+    fireEvent.click(first);
+    const modal = await screen.findByLabelText("Selected details for First item");
+    vi.spyOn(modal, "getBoundingClientRect").mockImplementation(() => ({
+      ...modalRect,
+      right: modalRect.left + modalRect.width,
+      bottom: modalRect.top + modalRect.height,
+      x: modalRect.left,
+      y: modalRect.top,
+      toJSON: () => modalRect,
+    } as DOMRect));
+    fireEvent(window, new Event("resize"));
+
+    const tether = await waitFor(() => {
+      const path = container.querySelector<SVGPathElement>(".telemetry-tether path");
+      expect(path?.getAttribute("d")).toBeTruthy();
+      return path!;
+    });
+    const firstPath = tether.getAttribute("d");
+    expect(firstPath).toMatch(/H 930$/);
+
+    modalRect = { left: 14, top: 510, width: 740, height: 290 };
+    fireEvent(window, new Event("resize"));
+    await waitFor(() => expect(tether.getAttribute("d")).not.toBe(firstPath));
+    const movedPath = tether.getAttribute("d");
+    expect(movedPath).toMatch(/V 510$/);
+  });
+
   it("closes a pinned record when the page is clicked outside the telemetry surface", async () => {
     render(<PublicTimeline data={data} />);
     fireEvent.click(getTimelineItem("First item"));

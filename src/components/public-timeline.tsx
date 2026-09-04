@@ -22,6 +22,7 @@ import {
   type TelemetryTab,
 } from "@/components/telemetry-aperture";
 import { connectorPath, resolveConnectorPoints, type ConnectorRect } from "@/lib/orthogonal-connectors";
+import { telemetryTetherGeometry } from "@/lib/telemetry-tether";
 import { MONTHS, placementSpan, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
 const LANE_ORDER = [
@@ -94,6 +95,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [tetherPath, setTetherPath] = useState<string | null>(null);
+  const [apertureNode, setApertureNode] = useState<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const apertureRef = useRef<HTMLElement | null>(null);
   const itemRefs = useRef(new Map<string, HTMLElement>());
@@ -241,38 +243,59 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   }, [selectedItem, laneData]);
 
   useLayoutEffect(() => {
+    if (!selectedItem || !apertureNode) {
+      const frame = window.requestAnimationFrame(() => setTetherPath(null));
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    const source = itemRefs.current.get(selectedItem.id);
+    if (!source) {
+      const frame = window.requestAnimationFrame(() => setTetherPath(null));
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    let trackingFrame: number | null = null;
+    let settleFrame: number | null = null;
+    const settleUntil = performance.now() + 650;
     const updateTether = () => {
-      if (!selectedItem || !apertureRef.current) {
-        setTetherPath(null);
-        return;
-      }
-      const source = itemRefs.current.get(selectedItem.id);
-      if (!source) {
-        setTetherPath(null);
-        return;
-      }
       const sourceRect = source.getBoundingClientRect();
-      const apertureRect = apertureRef.current.getBoundingClientRect();
-      const startX = telemetrySide === "right" ? sourceRect.right : sourceRect.left;
-      const startY = sourceRect.top + sourceRect.height / 2;
-      const endX = telemetrySide === "right" ? apertureRect.left : apertureRect.right;
-      const endY = apertureRect.bottom - 18;
-      const bendX = startX + (endX - startX) * 0.56;
-      setTetherPath(`M ${startX} ${startY} H ${bendX} V ${endY} H ${endX}`);
+      const modalRect = apertureNode.getBoundingClientRect();
+      if (sourceRect.width === 0 || sourceRect.height === 0 || modalRect.width === 0 || modalRect.height === 0) {
+        setTetherPath(null);
+        return;
+      }
+      setTetherPath(telemetryTetherGeometry(sourceRect, modalRect).path);
+    };
+    const scheduleUpdate = () => {
+      if (trackingFrame !== null) return;
+      trackingFrame = window.requestAnimationFrame(() => {
+        trackingFrame = null;
+        updateTether();
+      });
+    };
+    const trackEntrance = () => {
+      updateTether();
+      if (performance.now() < settleUntil) settleFrame = window.requestAnimationFrame(trackEntrance);
     };
 
-    const frame = window.requestAnimationFrame(updateTether);
-    window.addEventListener("resize", updateTether);
-    window.addEventListener("scroll", updateTether, true);
+    settleFrame = window.requestAnimationFrame(trackEntrance);
+    const observer = new ResizeObserver(scheduleUpdate);
+    observer.observe(source);
+    observer.observe(apertureNode);
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("scroll", scheduleUpdate, true);
     return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("resize", updateTether);
-      window.removeEventListener("scroll", updateTether, true);
+      if (trackingFrame !== null) window.cancelAnimationFrame(trackingFrame);
+      if (settleFrame !== null) window.cancelAnimationFrame(settleFrame);
+      observer.disconnect();
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("scroll", scheduleUpdate, true);
     };
-  }, [selectedItem, telemetrySide, activeTab]);
+  }, [selectedItem, apertureNode, telemetrySide, activeTab]);
 
-  const setApertureNode = useCallback((node: HTMLElement | null) => {
+  const registerApertureNode = useCallback((node: HTMLElement | null) => {
     apertureRef.current = node;
+    setApertureNode(node);
   }, []);
 
   const setSideFromElement = (element: HTMLElement) => {
@@ -565,7 +588,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
               setRelationPreview={setFocusedRelation}
               toggleRelation={toggleRelation}
               onPreview={() => setPreviewOpen(true)}
-              setApertureNode={setApertureNode}
+              setApertureNode={registerApertureNode}
             />
           )}
         </AnimatePresence>

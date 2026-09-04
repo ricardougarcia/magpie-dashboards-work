@@ -2450,10 +2450,6 @@ footer {
     display: none;
   }
 
-  .coordinate-cursor,
-  .cursor-guides {
-    display: none;
-  }
 }
 
 .timeline-item {

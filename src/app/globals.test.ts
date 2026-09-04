@@ -36,6 +36,7 @@ describe("public timeline visual tokens", () => {
     expect(css).toMatch(/\.cursor-guides\s*\{[\s\S]*?position:\s*fixed[\s\S]*?pointer-events:\s*none/);
     expect(css).toContain("background: rgba(17, 19, 17, 0.11)");
     expect(css).not.toMatch(/\.coordinate-cursor\s*\{[^}]*border:/);
+    expect(css).not.toMatch(/@media[^{}]*\{[\s\S]*?\.coordinate-cursor,[\s\S]*?display:\s*none/);
   });
 
   it("uses the matching signal-red plus favicon", () => {
