@@ -122,7 +122,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   }, [previewOpen]);
 
   useEffect(() => {
-    if (!selectedId || previewOpen) return;
+    if ((!selectedId && !hoveredId) || previewOpen) return;
     const dismissOnOutsidePointer = (event: PointerEvent) => {
       const target = event.target as Element | null;
       if (!target || apertureRef.current?.contains(target)) return;
@@ -134,7 +134,26 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
     };
     document.addEventListener("pointerdown", dismissOnOutsidePointer, true);
     return () => document.removeEventListener("pointerdown", dismissOnOutsidePointer, true);
-  }, [selectedId, previewOpen]);
+  }, [hoveredId, selectedId, previewOpen]);
+
+  useEffect(() => {
+    const clearTransientPreview = () => setHoveredId(null);
+    const clearHiddenPreview = () => {
+      if (document.visibilityState === "hidden") clearTransientPreview();
+    };
+    window.addEventListener("blur", clearTransientPreview);
+    window.addEventListener("resize", clearTransientPreview);
+    window.addEventListener("scroll", clearTransientPreview, true);
+    document.documentElement.addEventListener("pointerleave", clearTransientPreview);
+    document.addEventListener("visibilitychange", clearHiddenPreview);
+    return () => {
+      window.removeEventListener("blur", clearTransientPreview);
+      window.removeEventListener("resize", clearTransientPreview);
+      window.removeEventListener("scroll", clearTransientPreview, true);
+      document.documentElement.removeEventListener("pointerleave", clearTransientPreview);
+      document.removeEventListener("visibilitychange", clearHiddenPreview);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const updateLines = () => {
@@ -397,8 +416,12 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                                 key={item.id}
                                 className={`timeline-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isHovered ? "is-hovered" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isMuted ? "is-muted" : ""}`}
                                 style={style}
-                                onMouseEnter={(event) => previewItem(item, event.currentTarget)}
-                                onMouseLeave={clearPreview}
+                                onPointerEnter={(event) => {
+                                  if (event.pointerType !== "touch") previewItem(item, event.currentTarget);
+                                }}
+                                onPointerLeave={(event) => {
+                                  if (event.pointerType !== "touch") clearPreview();
+                                }}
                                 onFocus={(event) => handleFocusPreview(item, event)}
                                 onBlur={clearPreview}
                                 onClick={(event) => {
@@ -456,8 +479,12 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                           type="button"
                           data-timeline-item
                           key={item.id}
-                          onMouseEnter={(event) => previewItem(item, event.currentTarget)}
-                          onMouseLeave={clearPreview}
+                          onPointerEnter={(event) => {
+                            if (event.pointerType !== "touch") previewItem(item, event.currentTarget);
+                          }}
+                          onPointerLeave={(event) => {
+                            if (event.pointerType !== "touch") clearPreview();
+                          }}
                           onFocus={(event) => handleFocusPreview(item, event)}
                           onBlur={clearPreview}
                           onClick={(event) => {
