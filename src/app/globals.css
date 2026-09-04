@@ -3053,3 +3053,98 @@ footer {
 .future-rail-intro {
   position: relative;
 }
+
+/* Telemetry refinement: denser acquisition, consolidated overview, network focus */
+.lane-pixel-field {
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  grid-template-rows: none;
+  align-content: start;
+}
+
+.lane-pixel-field span {
+  aspect-ratio: 1;
+  transition-duration: 150ms;
+}
+
+.lane-row.is-lane-active .lane-pixel-field span,
+.future-rail.is-lane-active .lane-pixel-field span {
+  animation-duration: 220ms;
+  animation-timing-function: steps(4, end);
+}
+
+.telemetry-head {
+  grid-template-columns: 1fr auto;
+}
+
+.telemetry-tabs-compact {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+}
+
+.telemetry-tabs-compact button {
+  padding: 10px 10px;
+}
+
+.telemetry-overview {
+  display: grid;
+}
+
+.telemetry-overview section {
+  padding: 14px 16px 15px;
+}
+
+.telemetry-context {
+  border-bottom: 1px solid var(--aperture-line);
+}
+
+.telemetry-overview section > p {
+  margin: 0;
+  color: rgba(241, 239, 233, 0.82);
+  font-size: 11px;
+  line-height: 1.52;
+}
+
+.telemetry-overview .telemetry-value {
+  border-left: 3px solid var(--signal);
+  border-top: 1px solid rgba(214, 69, 47, 0.24);
+  border-bottom: 1px solid rgba(214, 69, 47, 0.18);
+  background: rgba(214, 69, 47, 0.105);
+  box-shadow: inset 24px 0 40px rgba(214, 69, 47, 0.035);
+}
+
+.telemetry-tab-panel {
+  min-height: 210px;
+  max-height: min(300px, calc(100vh - 292px));
+}
+
+.timeline-item,
+.future-item {
+  transition: opacity 180ms ease, transform 180ms ease, border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.timeline-item.is-muted,
+.future-item.is-muted {
+  opacity: 0.12;
+}
+
+.timeline-item.is-selected,
+.timeline-item.is-related,
+.timeline-item.is-relation-focus,
+.future-item.is-selected,
+.future-item.is-related,
+.future-item.is-relation-focus {
+  opacity: 1;
+}
+
+@media (max-width: 700px) {
+  .telemetry-tab-panel {
+    min-height: 188px;
+    max-height: min(280px, calc(58vh - 182px));
+  }
+}
+
+.telemetry-relations > div > button.is-selected {
+  border-color: var(--signal);
+  background: var(--signal);
+  color: #fff;
+  box-shadow: none;
+}

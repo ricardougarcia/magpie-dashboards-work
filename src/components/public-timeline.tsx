@@ -39,11 +39,15 @@ const PHASES = [
   { label: "Prepare for scale", start: 6, span: 3 },
 ];
 
-const PIXELS = Array.from({ length: 40 }, (_, index) => ({
-  index,
-  delayIn: ((index % 10) * 12) + ((index * 7) % 4) * 7,
-  delayOut: ((9 - (index % 10)) * 8) + ((index * 5) % 4) * 5,
-}));
+const PIXELS = Array.from({ length: 256 }, (_, index) => {
+  const column = index % 16;
+  const row = Math.floor(index / 16);
+  return {
+    index,
+    delayIn: column * 24 + ((row * 7) % 5) * 20,
+    delayOut: (15 - column) * 15 + ((row * 5) % 4) * 14,
+  };
+});
 
 type PositionedItem = PublicTimelineItem & { row: number };
 type Connection = { id: string; targetId: string; path: string };
@@ -68,7 +72,8 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [focusedRelation, setFocusedRelation] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<TelemetryTab>("context");
+  const [selectedRelation, setSelectedRelation] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<TelemetryTab>("overview");
   const [telemetrySide, setTelemetrySide] = useState<TelemetrySide>("right");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [connections, setConnections] = useState<Connection[]>([]);
@@ -83,6 +88,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const displayItem = hoveredItem ?? selectedItem;
   const telemetryMode = selectedItem && (!hoveredItem || hoveredItem.id === selectedItem.id) ? "selected" : "hover";
   const activeLane = displayItem?.lane ?? null;
+  const activeRelation = focusedRelation ?? selectedRelation;
   const relatedIds = new Set(selectedItem?.relations.map((relation) => relation.targetId) ?? []);
 
   const laneData = useMemo(() => {
@@ -108,11 +114,27 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         setHoveredId(null);
         setSelectedId(null);
         setFocusedRelation(null);
+        setSelectedRelation(null);
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [previewOpen]);
+
+  useEffect(() => {
+    if (!selectedId || previewOpen) return;
+    const dismissOnOutsidePointer = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (!target || apertureRef.current?.contains(target)) return;
+      if (target.closest("[data-timeline-item]")) return;
+      setHoveredId(null);
+      setSelectedId(null);
+      setFocusedRelation(null);
+      setSelectedRelation(null);
+    };
+    document.addEventListener("pointerdown", dismissOnOutsidePointer, true);
+    return () => document.removeEventListener("pointerdown", dismissOnOutsidePointer, true);
+  }, [selectedId, previewOpen]);
 
   useLayoutEffect(() => {
     const updateLines = () => {
@@ -228,6 +250,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
       setHoveredId(null);
       setSelectedId(null);
       setFocusedRelation(null);
+      setSelectedRelation(null);
     }
   };
 
@@ -235,8 +258,13 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
     setSideFromElement(element);
     setSelectedId(item.id);
     setHoveredId(null);
-    setActiveTab("context");
+    setActiveTab("overview");
     setFocusedRelation(null);
+    setSelectedRelation(null);
+  };
+
+  const toggleRelation = (relationId: string) => {
+    setSelectedRelation((current) => current === relationId ? null : relationId);
   };
 
   return (
@@ -349,8 +377,10 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                             const isSelected = selectedId === item.id;
                             const isHovered = hoveredId === item.id;
                             const isRelated = relatedIds.has(item.id);
-                            const isFocused = focusedRelation === item.id;
-                            const isMuted = Boolean(focusedRelation) && !isFocused && !isSelected;
+                            const isFocused = activeRelation === item.id;
+                            const isMuted = Boolean(selectedItem) && (activeRelation
+                              ? !isSelected && !isFocused
+                              : !isSelected && !isRelated);
                             const style = {
                               "--item-left": `${(item.start / 9) * 100}%`,
                               "--item-width": `${(placementSpan(item.start, item.end) / 9) * 100}%`,
@@ -375,6 +405,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                                   event.stopPropagation();
                                   selectItem(item, event.currentTarget);
                                 }}
+                                data-timeline-item
                                 aria-pressed={isSelected}
                                 aria-label={`${item.name}, ${item.placement}`}
                                 title={item.name}
@@ -411,8 +442,10 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                       const isSelected = selectedId === item.id;
                       const isHovered = hoveredId === item.id;
                       const isRelated = relatedIds.has(item.id);
-                      const isFocused = focusedRelation === item.id;
-                      const isMuted = Boolean(focusedRelation) && !isFocused && !isSelected;
+                      const isFocused = activeRelation === item.id;
+                      const isMuted = Boolean(selectedItem) && (activeRelation
+                        ? !isSelected && !isFocused
+                        : !isSelected && !isRelated);
                       return (
                         <button
                           ref={(node) => {
@@ -421,6 +454,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                           }}
                           className={`future-item color-${item.colorToken} ${isSelected ? "is-selected" : ""} ${isHovered ? "is-hovered" : ""} ${isRelated ? "is-related" : ""} ${isFocused ? "is-relation-focus" : ""} ${isMuted ? "is-muted" : ""}`}
                           type="button"
+                          data-timeline-item
                           key={item.id}
                           onMouseEnter={(event) => previewItem(item, event.currentTarget)}
                           onMouseLeave={clearPreview}
@@ -445,7 +479,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                 {connections.map((connection) => (
                   <motion.path
                     key={connection.id}
-                    className={`${focusedRelation === connection.targetId ? "is-focused" : ""} ${focusedRelation && focusedRelation !== connection.targetId ? "is-dimmed" : ""}`}
+                    className={`${activeRelation === connection.targetId ? "is-focused" : ""} ${activeRelation && activeRelation !== connection.targetId ? "is-dimmed" : ""}`}
                     d={connection.path}
                     initial={reduceMotion ? false : { pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: 1 }}
@@ -468,13 +502,10 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
               mode={telemetryMode}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
-              focusedRelation={focusedRelation}
-              setFocusedRelation={setFocusedRelation}
-              onClose={() => {
-                setHoveredId(null);
-                setSelectedId(null);
-                setFocusedRelation(null);
-              }}
+              activeRelation={activeRelation}
+              selectedRelation={selectedRelation}
+              setRelationPreview={setFocusedRelation}
+              toggleRelation={toggleRelation}
               onPreview={() => setPreviewOpen(true)}
               setApertureNode={setApertureNode}
             />
@@ -491,7 +522,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
               initial={reduceMotion ? { opacity: 0 } : { pathLength: 0, opacity: 0 }}
               animate={reduceMotion ? { opacity: 0 } : { pathLength: 1, opacity: [0, 0.72, 0] }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.82, times: [0, 0.48, 1], ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 1.55, times: [0, 0.6, 1], ease: [0.22, 1, 0.36, 1] }}
             />
           </motion.svg>
         )}

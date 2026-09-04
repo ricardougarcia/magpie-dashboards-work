@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Maximize2, X } from "lucide-react";
+import { ArrowUpRight, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import type { PublicTimelineItem } from "@/lib/timeline-types";
 
@@ -21,7 +21,7 @@ export const COLOR_LABELS: Record<PublicTimelineItem["colorToken"], string> = {
   forest: "Growth",
 };
 
-export type TelemetryTab = "context" | "value" | "connections";
+export type TelemetryTab = "overview" | "connections";
 
 export function TelemetryMediaPlaceholder({ item }: { item: PublicTimelineItem }) {
   return (
@@ -40,9 +40,10 @@ export function TelemetryAperture({
   mode,
   activeTab,
   setActiveTab,
-  focusedRelation,
-  setFocusedRelation,
-  onClose,
+  activeRelation,
+  selectedRelation,
+  setRelationPreview,
+  toggleRelation,
   onPreview,
   setApertureNode,
 }: {
@@ -51,9 +52,10 @@ export function TelemetryAperture({
   mode: "hover" | "selected";
   activeTab: TelemetryTab;
   setActiveTab: (tab: TelemetryTab) => void;
-  focusedRelation: string | null;
-  setFocusedRelation: (id: string | null) => void;
-  onClose: () => void;
+  activeRelation: string | null;
+  selectedRelation: string | null;
+  setRelationPreview: (id: string | null) => void;
+  toggleRelation: (id: string) => void;
   onPreview: () => void;
   setApertureNode: (node: HTMLElement | null) => void;
 }) {
@@ -82,11 +84,6 @@ export function TelemetryAperture({
       <div className="telemetry-head">
         <span>{mode === "hover" ? "Target acquired" : "Pinned record"}</span>
         <span>[{String(index).padStart(2, "0")}] / {LANE_CODES[item.lane] ?? "Q4"}</span>
-        {mode === "selected" && (
-          <button type="button" className="telemetry-close" onClick={onClose} aria-label="Close selected details">
-            <X size={14} />
-          </button>
-        )}
       </div>
 
       <AnimatePresence mode="wait" initial={false}>
@@ -123,35 +120,40 @@ export function TelemetryAperture({
               </div>
             </div>
 
-            <div className="telemetry-tabs" role="tablist" aria-label="Item detail sections">
-              {(["context", "value", "connections"] as TelemetryTab[]).map((tab, tabIndex) => (
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === tab}
-                  className={activeTab === tab ? "is-active" : ""}
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  <span>0{tabIndex + 1}</span>{tab}
-                  {tab === "connections" && <sup>{item.relations.length}</sup>}
-                </button>
-              ))}
+            <div className="telemetry-tabs telemetry-tabs-compact" role="tablist" aria-label="Item detail sections">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === "overview"}
+                className={activeTab === "overview" ? "is-active" : ""}
+                onClick={() => setActiveTab("overview")}
+              >
+                <span>01</span>Overview
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === "connections"}
+                className={activeTab === "connections" ? "is-active" : ""}
+                onClick={() => setActiveTab("connections")}
+              >
+                <span>02</span>Connected work<sup>{item.relations.length}</sup>
+              </button>
             </div>
 
             <div className="telemetry-tab-panel">
               <AnimatePresence mode="wait" initial={false}>
-                {activeTab === "context" && (
-                  <motion.section {...panelMotion(reduceMotion)} key="context" role="tabpanel">
-                    <span className="eyebrow">Description</span>
-                    <p>{item.description}</p>
-                  </motion.section>
-                )}
-                {activeTab === "value" && (
-                  <motion.section {...panelMotion(reduceMotion)} className="telemetry-value" key="value" role="tabpanel">
-                    <span className="eyebrow">Value delivered</span>
-                    <p>{item.value}</p>
-                  </motion.section>
+                {activeTab === "overview" && (
+                  <motion.div {...panelMotion(reduceMotion)} className="telemetry-overview" key="overview" role="tabpanel">
+                    <section className="telemetry-context">
+                      <span className="eyebrow">Context</span>
+                      <p>{item.description}</p>
+                    </section>
+                    <section className="telemetry-value">
+                      <span className="eyebrow">Value delivered</span>
+                      <p>{item.value}</p>
+                    </section>
+                  </motion.div>
                 )}
                 {activeTab === "connections" && (
                   <motion.section {...panelMotion(reduceMotion)} key="connections" role="tabpanel">
@@ -160,17 +162,19 @@ export function TelemetryAperture({
                       <div className="telemetry-relations">
                         {item.relations.map((relation) => {
                           const target = allItems.find((entry) => entry.id === relation.targetId);
-                          const isActive = focusedRelation === relation.targetId;
+                          const isActive = activeRelation === relation.targetId;
+                          const isSelected = selectedRelation === relation.targetId;
                           return (
                             <div key={`${item.id}-${relation.targetId}`}>
                               <button
                                 type="button"
-                                className={`color-${target?.colorToken ?? "graphite"} ${isActive ? "is-active" : ""}`}
-                                onMouseEnter={() => setFocusedRelation(relation.targetId)}
-                                onMouseLeave={() => setFocusedRelation(null)}
-                                onFocus={() => setFocusedRelation(relation.targetId)}
-                                onBlur={() => setFocusedRelation(null)}
-                                onClick={() => setFocusedRelation(isActive ? null : relation.targetId)}
+                                className={`color-${target?.colorToken ?? "graphite"} ${isActive ? "is-active" : ""} ${isSelected ? "is-selected" : ""}`}
+                                aria-pressed={isSelected}
+                                onMouseEnter={() => setRelationPreview(relation.targetId)}
+                                onMouseLeave={() => setRelationPreview(null)}
+                                onFocus={() => setRelationPreview(relation.targetId)}
+                                onBlur={() => setRelationPreview(null)}
+                                onClick={() => toggleRelation(relation.targetId)}
                               >
                                 <span>{relation.targetName}</span>
                                 <ArrowUpRight size={12} />
