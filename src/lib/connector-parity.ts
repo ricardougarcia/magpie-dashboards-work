@@ -1,3 +1,5 @@
+import { createDefaultConnector } from "@/lib/orthogonal-connectors";
+import { createConnectorTimelineLayout } from "@/lib/timeline-layout";
 import type {
   OrthogonalConnectorRoute,
   TimelineData,
@@ -52,6 +54,35 @@ export function setReciprocalConnector(
 
   const reverseRelation = target.relations.find((relation) => relation.targetId === sourceId);
   if (reverseRelation) reverseRelation.connector = reverseConnectorRoute(route);
+}
+
+export function materializeMissingConnectors(data: TimelineData) {
+  const layout = createConnectorTimelineLayout(data);
+  const rects = new Map(layout.items.map((item) => [item.id, item.rect]));
+  const visited = new Set<string>();
+  let created = 0;
+
+  data.items.forEach((source, sourceIndex) => {
+    source.relations.forEach((relation) => {
+      const targetIndex = data.items.findIndex((item) => item.id === relation.targetId);
+      if (targetIndex < 0) return;
+      const key = sourceIndex < targetIndex
+        ? `${source.id}\u0000${relation.targetId}`
+        : `${relation.targetId}\u0000${source.id}`;
+      if (visited.has(key)) return;
+      visited.add(key);
+      if (connectorForRelation(data, source.id, relation)) return;
+
+      const sourceRect = rects.get(source.id);
+      const targetRect = rects.get(relation.targetId);
+      if (!sourceRect || !targetRect) return;
+      const route = createDefaultConnector(sourceRect, targetRect);
+      setReciprocalConnector(data, source.id, relation.targetId, route);
+      created += 1;
+    });
+  });
+
+  return created;
 }
 
 export function synchronizeReciprocalConnectors(data: TimelineData) {

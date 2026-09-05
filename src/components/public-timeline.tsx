@@ -27,8 +27,12 @@ import { guidingLightTetherGeometry } from "@/lib/guiding-light-tethers";
 import { connectorForRelation } from "@/lib/connector-parity";
 import {
   connectorPath,
- resolveConnectorPoints, type ConnectorRect } from "@/lib/orthogonal-connectors";
+  createDefaultConnector,
+  resolveConnectorPoints,
+  type ConnectorRect,
+} from "@/lib/orthogonal-connectors";
 import { TELEMETRY_TETHER_DURATION, telemetryTetherGeometry } from "@/lib/telemetry-tether";
+import { assignTimelineRows } from "@/lib/timeline-layout";
 import { GUIDING_LIGHTS, MONTHS, placementSpan, type GuidingLight, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
 const LANE_ORDER = [
@@ -70,20 +74,6 @@ type Connection = { id: string; targetId: string; path: string };
 type GuidingLightTether = { id: string; path: string };
 type TelemetrySide = "left" | "right";
 
-function assignRows(items: PublicTimelineItem[]) {
-  const result = new Map<string, number>();
-  const rowEnds: number[] = [];
-  [...items]
-    .sort((a, b) => a.start - b.start || a.end - b.end)
-    .forEach((item) => {
-      let row = rowEnds.findIndex((end) => end < item.start);
-      if (row === -1) row = rowEnds.length;
-      rowEnds[row] = item.end;
-      result.set(item.id, row);
-    });
-  return { rows: result, count: Math.max(1, rowEnds.length) };
-}
-
 export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const reduceMotion = useReducedMotion();
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -121,11 +111,11 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const laneData = useMemo(() => {
     return LANE_ORDER.map((lane) => {
       const items = publicItems.filter((item) => item.lane === lane && !item.planned);
-      const assignment = assignRows(items);
+      const assignment = assignTimelineRows(items);
       return {
         lane,
         displayName: data.lanes.find((entry) => entry.name === lane)?.displayName ?? lane,
-        count: assignment.count,
+        count: Math.max(1, assignment.count),
         items: items.map((item) => ({ ...item, row: assignment.rows.get(item.id) ?? 0 })) as PositionedItem[],
       };
     });
@@ -263,40 +253,18 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         height: rect.height,
       });
       const sourceConnectorRect = relativeRect(sourceRect);
-      const sourceCenterX = sourceConnectorRect.left + sourceConnectorRect.width / 2;
-      const sourceCenterY = sourceConnectorRect.top + sourceConnectorRect.height / 2;
-
       const nextConnections = selectedItem.relations.flatMap((relation) => {
         const target = itemRefs.current.get(relation.targetId);
         if (!target) return [];
         const targetRect = target.getBoundingClientRect();
         const targetConnectorRect = relativeRect(targetRect);
-        const savedConnector = connectorForRelation(data, selectedItem.id, relation);
-        if (savedConnector) {
-          const points = resolveConnectorPoints(savedConnector, sourceConnectorRect, targetConnectorRect);
-          return [{
-            id: `${selectedItem.id}-${relation.targetId}`,
-            targetId: relation.targetId,
-            path: connectorPath(points),
-          }];
-        }
-        const targetCenterX = targetConnectorRect.left + targetConnectorRect.width / 2;
-        const targetCenterY = targetConnectorRect.top + targetConnectorRect.height / 2;
-        const sameBand = Math.abs(targetCenterY - sourceCenterY) < 34;
-        const movesDown = targetCenterY >= sourceCenterY;
-        const sourceY = movesDown
-          ? sourceRect.bottom - canvasRect.top
-          : sourceRect.top - canvasRect.top;
-        const targetY = movesDown
-          ? targetRect.top - canvasRect.top
-          : targetRect.bottom - canvasRect.top;
-        const railY = sameBand
-          ? Math.max(sourceRect.bottom, targetRect.bottom) - canvasRect.top + 8
-          : sourceY + (targetY - sourceY) / 2;
+        const route = connectorForRelation(data, selectedItem.id, relation)
+          ?? createDefaultConnector(sourceConnectorRect, targetConnectorRect);
+        const points = resolveConnectorPoints(route, sourceConnectorRect, targetConnectorRect);
         return [{
           id: `${selectedItem.id}-${relation.targetId}`,
           targetId: relation.targetId,
-          path: `M ${sourceCenterX} ${sourceY} V ${railY} H ${targetCenterX} V ${targetY}`,
+          path: connectorPath(points),
         }];
       });
       setConnections(nextConnections);

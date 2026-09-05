@@ -357,7 +357,7 @@ describe("PublicTimeline telemetry ownership", () => {
       expect(path?.getAttribute("d")).toBeTruthy();
       return path!;
     });
-    expect(connection.getAttribute("d")).toBe("M 210.625 131.75 V 176 H 490.75 V 220.25");
+    expect(connection.getAttribute("d")).toBe("M 321 116.125 H 360 V 236.5 H 400.5");
   });
 
   it("reanchors the tether to the live modal border after its position changes", async () => {

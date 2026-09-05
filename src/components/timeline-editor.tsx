@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import {
   ArrowLeft,
   Check,
-  ChevronRight,
   GripHorizontal,
   ImagePlus,
   LogOut,
@@ -18,8 +17,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ConnectorRouteEditor } from "@/components/connector-route-editor";
-import { setReciprocalConnector } from "@/lib/connector-parity";
+import { materializeMissingConnectors, setReciprocalConnector } from "@/lib/connector-parity";
 import { EditorConnectionPreview } from "@/components/editor-connection-preview";
+import { assignTimelineRows } from "@/lib/timeline-layout";
 import { readMediaDimensions } from "@/lib/media-dimensions.client";
 import {
   lowResolutionGifMessage,
@@ -67,7 +67,15 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
   const futureItems = data.items.filter((item) => item.planned);
 
   const itemsByLane = useMemo(
-    () => data.lanes.map((lane) => ({ ...lane, items: timelineItems.filter((item) => item.lane === lane.name) })),
+    () => data.lanes.map((lane) => {
+      const items = timelineItems.filter((item) => item.lane === lane.name);
+      const assignment = assignTimelineRows(items);
+      return {
+        ...lane,
+        rowCount: Math.max(1, assignment.count),
+        items: items.map((item) => ({ ...item, row: assignment.rows.get(item.id) ?? 0 })),
+      };
+    }),
     [data.lanes, timelineItems],
   );
 
@@ -166,6 +174,19 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
       : [...selected.guidingLights, light].slice(-2);
     if (next.length === 0) return;
     updateSelected({ guidingLights: next });
+  }
+
+  function openConnectionEditor() {
+    if (!selected) return;
+    const next = cloneData(data);
+    const created = materializeMissingConnectors(next);
+    if (created > 0) {
+      setData(next);
+      setDirty(true);
+      setSaveState("idle");
+      setStatusMessage("Default Connected Work routes are ready to save.");
+    }
+    setEditingConnections(true);
   }
 
   function updateRelationConnector(index: number, connector: OrthogonalConnectorRoute) {
@@ -311,15 +332,17 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
             {itemsByLane.filter((lane) => lane.name !== "In-Flight / Future").map((lane) => (
               <section className="editor-lane" key={lane.id}>
                 <div className="editor-lane-head"><span>[{String(lane.index).padStart(2, "0")}]</span><strong>{lane.displayName}</strong></div>
-                {lane.items.map((item) => (
-                  <div className="editor-item-row" key={item.id}>
-                    <button type="button" className="editor-item-label" onClick={() => chooseItem(item.id)}>
-                      <span className={`editor-swatch color-${item.colorToken}`} />
-                      <span>{item.name}</span>
-                      <ChevronRight size={13} />
-                    </button>
-                    <div className="editor-track">
-                      <div className="editor-track-grid">{DISPLAY_MONTHS.map((month) => <span key={month} />)}</div>
+                <div
+                  className="editor-packed-lane"
+                  style={{ "--editor-row-count": lane.rowCount } as React.CSSProperties}
+                >
+                  <div className="editor-packed-lane-meta">
+                    <span>{String(lane.items.length).padStart(2, "0")} items</span>
+                    <small>Select or drag a timeline bar</small>
+                  </div>
+                  <div className="editor-track editor-packed-track">
+                    <div className="editor-track-grid">{DISPLAY_MONTHS.map((month) => <span key={month} />)}</div>
+                    {lane.items.map((item) => (
                       <motion.button
                         drag="x"
                         dragElastic={0.05}
@@ -330,20 +353,23 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
                           moveItem(item, info.offset.x, target?.parentElement?.clientWidth ?? 900);
                         }}
                         type="button"
+                        key={item.id}
                         data-editor-item-id={item.id}
+                        aria-label={`Edit ${item.name}`}
                         className={`editor-bar color-${item.colorToken} ${selectedId === item.id ? "is-selected" : ""}`}
                         style={{
+                          "--editor-item-row": item.row,
                           left: `calc(${(item.start / 9) * 100}% + 4px)`,
                           width: `calc(${(placementSpan(item.start, item.end) / 9) * 100}% - 8px)`,
-                        }}
+                        } as React.CSSProperties}
                         onClick={() => chooseItem(item.id)}
                       >
                         <GripHorizontal size={12} />
-                        <span>{item.placement.replace(" (ongoing)", "")}</span>
+                        <span>{item.name}</span>
                       </motion.button>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </section>
             ))}
 
@@ -458,7 +484,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
                           type="button"
                           className="edit-network-button"
                           aria-label={`Edit all Connected Work lines for ${selected.name}`}
-                          onClick={() => setEditingConnections(true)}
+                          onClick={openConnectionEditor}
                         ><GripHorizontal size={13} /> Edit orthogonal lines</button>
                       )}
                       <button type="button" onClick={addRelation}><Plus size={13} /> Add</button>

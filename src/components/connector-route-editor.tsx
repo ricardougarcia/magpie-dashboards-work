@@ -22,11 +22,10 @@ import {
   straightenConnector,
   terminalPoint,
   type ConnectorPixelPoint,
-  type ConnectorRect,
 } from "@/lib/orthogonal-connectors";
+import { createConnectorTimelineLayout, type PositionedTimelineItem } from "@/lib/timeline-layout";
 import {
   MONTHS,
-  placementSpan,
   type ConnectorTerminal,
   type OrthogonalConnectorRoute,
   type TimelineData,
@@ -36,12 +35,7 @@ import {
 
 const LABEL_WIDTH = 190;
 const MONTH_WIDTH = 92;
-const LANE_HEADER_HEIGHT = 34;
-const ROW_HEIGHT = 38;
-const BAR_HEIGHT = 27;
-const CANVAS_PADDING = 18;
-
-type PositionedItem = TimelineItem & { rect: ConnectorRect };
+type PositionedItem = PositionedTimelineItem;
 type DragIntent =
   | { kind: "terminal"; terminal: "source" | "target" }
   | { kind: "segment"; segmentIndex: number }
@@ -391,50 +385,7 @@ function TerminalControl({
 }
 
 function positionItems(data: TimelineData) {
-  const lanes: Array<{ name: string; displayName: string; top: number; height: number }> = [];
-  const items: PositionedItem[] = [];
-  let top = 42;
-
-  data.lanes.forEach((lane) => {
-    const laneItems = data.items.filter((item) => item.lane === lane.name);
-    const rows = assignRows(laneItems);
-    const height = LANE_HEADER_HEIGHT + Math.max(1, rows.count) * ROW_HEIGHT + 8;
-    lanes.push({ name: lane.name, displayName: lane.displayName, top, height });
-    laneItems.forEach((item) => {
-      const row = rows.rows.get(item.id) ?? 0;
-      const left = LABEL_WIDTH + item.start * MONTH_WIDTH + 5;
-      const width = Math.max(34, placementSpan(item.start, item.end) * MONTH_WIDTH - 10);
-      items.push({
-        ...item,
-        rect: {
-          left,
-          top: top + LANE_HEADER_HEIGHT + row * ROW_HEIGHT + 5,
-          width,
-          height: BAR_HEIGHT,
-        },
-      });
-    });
-    top += height;
-  });
-
-  return {
-    lanes,
-    items,
-    width: LABEL_WIDTH + MONTH_WIDTH * 12 + CANVAS_PADDING,
-    height: top + CANVAS_PADDING,
-  };
-}
-
-function assignRows(items: TimelineItem[]) {
-  const rows = new Map<string, number>();
-  const rowEnds: number[] = [];
-  [...items].sort((a, b) => a.start - b.start || a.end - b.end).forEach((item) => {
-    let row = rowEnds.findIndex((end) => end < item.start);
-    if (row === -1) row = rowEnds.length;
-    rowEnds[row] = item.end;
-    rows.set(item.id, row);
-  });
-  return { rows, count: rowEnds.length };
+  return createConnectorTimelineLayout(data);
 }
 
 function pointerInBoard(event: PointerEvent, board: HTMLDivElement | null) {

@@ -243,7 +243,7 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     expect(points).toEqual([{ x: 369, y: 100 }, { x: 432, y: 100 }, { x: 432, y: 161 }]);
   });
 
-  it("straightens only the active route to no more than one elbow and persists it", async () => {
+  it("straightens the active route while materializing every displayed default for persistence", async () => {
     let saved: TimelineData | null = null;
     vi.stubGlobal("fetch", vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
       saved = JSON.parse(String(init?.body)) as TimelineData;
@@ -272,7 +272,7 @@ describe("TimelineEditor orthogonal connector workflow", () => {
 
     const relations = (saved as unknown as TimelineData).items[0].relations;
     expect(relations[0].connector?.points.length).toBeLessThanOrEqual(3);
-    expect(relations[1].connector).toBeUndefined();
+    expect(relations[1].connector?.points.length).toBeGreaterThanOrEqual(2);
     expect(relations.map((relation) => relation.targetId)).toEqual(["target-item", "second-target-item"]);
   });
 
@@ -334,14 +334,14 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     expect(screen.queryByRole("button", { name: /Reset active line/ })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /Straighten active line/ }));
     fireEvent.click(screen.getByRole("button", { name: /^Done$/ }));
-    expect(screen.getByText("Custom route saved")).toBeTruthy();
+    expect(screen.getAllByText("Custom route saved")).toHaveLength(2);
 
     fireEvent.click(screen.getByRole("button", { name: /Save changes/ }));
     await waitFor(() => expect(saved).not.toBeNull());
 
     const savedData = saved as TimelineData | null;
     expect(savedData?.items[0].relations.map((relation) => relation.targetId)).toEqual(["target-item", "second-target-item"]);
-    expect(savedData?.items[0].relations[0].connector).toBeUndefined();
+    expect(savedData?.items[0].relations[0].connector?.points.length).toBeGreaterThanOrEqual(2);
     expect(savedData?.items[0].relations[1].connector?.points.length).toBeGreaterThanOrEqual(2);
     expect(savedData?.items[1].relations).toEqual([]);
     expect(savedData?.items[2].relations).toEqual([]);

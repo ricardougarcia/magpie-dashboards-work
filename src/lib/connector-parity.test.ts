@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   connectorForRelation,
+  materializeMissingConnectors,
   reverseConnectorRoute,
   setReciprocalConnector,
   synchronizeReciprocalConnectors,
@@ -91,6 +92,20 @@ describe("reciprocal connector parity", () => {
 
     expect(data.items[1].relations[0].connector).toEqual(editedFromReverse);
     expect(data.items[0].relations[0].connector).toEqual(reverseConnectorRoute(editedFromReverse));
+  });
+
+  it("materializes a missing displayed route once and mirrors it reciprocally", () => {
+    const data = fixture();
+    data.items[0].relations[0].connector = undefined;
+    data.items[1].relations[0].connector = undefined;
+
+    expect(materializeMissingConnectors(data)).toBe(1);
+    const forward = connectorForRelation(data, "deltas", data.items[0].relations[0]);
+    const reverse = connectorForRelation(data, "quality", data.items[1].relations[0]);
+    expect(forward).toBeDefined();
+    expect(forward!.points.length).toBeGreaterThanOrEqual(2);
+    expect(reverse).toEqual(reverseConnectorRoute(forward!));
+    expect(materializeMissingConnectors(data)).toBe(0);
   });
 
   it("repairs conflicting legacy records using stable item-order authority", () => {

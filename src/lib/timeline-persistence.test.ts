@@ -87,6 +87,26 @@ describe("timeline save preservation", () => {
     expect(saved.items[1]).toEqual(original.items[1]);
   });
 
+  it("materializes missing displayed routes before writing the next timeline version", () => {
+    const missing = structuredClone(data);
+    missing.items[0].relations[0].connector = undefined;
+    missing.items[1].relations = [{
+      targetId: "source",
+      targetName: "Source",
+      description: "Reverse relation",
+    }];
+
+    const saved = prepareTimelineSave(missing, "2026-09-04T12:00:00.000Z");
+    const forward = saved.items[0].relations[0].connector;
+    const reverse = saved.items[1].relations[0].connector;
+
+    expect(forward).toBeDefined();
+    expect(reverse).toEqual(reverseConnectorRoute(forward!));
+    expect(saved.items[0].description).toBe(missing.items[0].description);
+    expect(saved.items[1].description).toBe(missing.items[1].description);
+    expect(missing.items[0].relations[0].connector).toBeUndefined();
+  });
+
   it("repairs reciprocal connector mismatches before writing the next timeline version", () => {
     const reciprocal = structuredClone(data);
     reciprocal.items[1].relations = [{

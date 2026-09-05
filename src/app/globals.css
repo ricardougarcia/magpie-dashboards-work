@@ -1517,6 +1517,48 @@ footer {
   border-bottom: 1px solid var(--line);
 }
 
+.editor-packed-lane {
+  --editor-row-count: 1;
+  display: grid;
+  grid-template-columns: 280px minmax(640px, 1fr);
+  min-width: 920px;
+  min-height: calc(var(--editor-row-count) * 48px);
+  border-bottom: 1px solid var(--line);
+}
+
+.editor-packed-lane-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 0 14px;
+  border-right: 1px solid var(--line-strong);
+  background: rgba(17, 19, 17, 0.012);
+  color: var(--ink);
+}
+
+.editor-packed-lane-meta span,
+.editor-packed-lane-meta small {
+  font-family: var(--font-mono), monospace;
+  text-transform: uppercase;
+}
+
+.editor-packed-lane-meta span {
+  font-size: 9px;
+  font-weight: 620;
+}
+
+.editor-packed-lane-meta small {
+  color: var(--muted);
+  font-size: 7px;
+  letter-spacing: 0.05em;
+}
+
+.editor-packed-track {
+  min-height: calc(var(--editor-row-count) * 48px);
+}
+
 .editor-item-label {
   min-width: 0;
   display: grid;
@@ -1567,7 +1609,7 @@ footer {
   --item-color: var(--graphite);
   position: absolute;
   z-index: 1;
-  top: 8px;
+  top: calc(8px + var(--editor-item-row, 0) * 48px);
   height: 31px;
   display: flex;
   align-items: center;
