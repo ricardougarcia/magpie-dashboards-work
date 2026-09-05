@@ -95,6 +95,38 @@ describe("GuidingLightInkTrail", () => {
     expect(container.querySelector("canvas.guiding-light-ink-canvas")).toBeNull();
   });
 
+  it("consumes coalesced input but deposits only from the frame-driven nib", () => {
+    const { getByTestId } = render(<TestHost />);
+    const track = getByTestId("track");
+    const coalesced = vi.fn(() => ([
+      { clientX: 220, clientY: 64 },
+      { clientX: 300, clientY: 66 },
+    ] as PointerEvent[]));
+
+    fireEvent.pointerEnter(track, { pointerType: "mouse", clientX: 140, clientY: 58, isPrimary: true });
+    act(() => frameCallbacks.get(1)?.(0));
+    const fillsAfterEntryFrame = vi.mocked(context.fill).mock.calls.length;
+
+    const moveEvent = new Event("pointermove", { bubbles: true });
+    Object.defineProperties(moveEvent, {
+      pointerType: { value: "mouse" },
+      clientX: { value: 380 },
+      clientY: { value: 68 },
+      isPrimary: { value: true },
+      getCoalescedEvents: { value: coalesced },
+    });
+    fireEvent(track, moveEvent);
+    expect(coalesced).toHaveBeenCalledTimes(1);
+    expect(context.fill).toHaveBeenCalledTimes(fillsAfterEntryFrame);
+
+    act(() => frameCallbacks.get(2)?.(1000 / 60));
+    expect(vi.mocked(context.fill).mock.calls.length).toBeGreaterThan(fillsAfterEntryFrame);
+
+    const fillsAfterMovement = vi.mocked(context.fill).mock.calls.length;
+    act(() => frameCallbacks.get(3)?.((1000 / 60) * 2));
+    expect(vi.mocked(context.fill).mock.calls.length).toBeGreaterThan(fillsAfterMovement);
+  });
+
   it("ignores touch, renders mouse deposits, and keeps animating their dry-out after exit", () => {
     const { getByTestId } = render(<TestHost />);
     const track = getByTestId("track");

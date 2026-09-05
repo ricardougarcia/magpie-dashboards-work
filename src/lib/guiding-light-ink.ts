@@ -1,6 +1,7 @@
-export const GUIDING_LIGHT_INK_SPACING = 8;
-export const GUIDING_LIGHT_INK_STATIONARY_INTERVAL = 92;
+export const GUIDING_LIGHT_INK_SPACING = 5;
 export const GUIDING_LIGHT_INK_PARTICLE_CAP = 520;
+export const GUIDING_LIGHT_INK_NIB_RESPONSE = 0.24;
+export const GUIDING_LIGHT_INK_DRIP_SPEED_THRESHOLD = 72;
 
 export type InkPoint = {
   x: number;
@@ -32,11 +33,55 @@ export type SegmentSample = {
   carry: number;
 };
 
+export type InkDrip = {
+  point: InkPoint;
+  radiusScale: number;
+};
+
 const clampUnit = (value: number) => Math.min(1, Math.max(0, value));
 
 export function easeOutCubic(value: number) {
   const t = clampUnit(value);
   return 1 - (1 - t) ** 3;
+}
+
+export function nibResponseFactor(
+  deltaMs: number,
+  responseAt60Fps = GUIDING_LIGHT_INK_NIB_RESPONSE,
+) {
+  const frameUnits = Math.min(3, Math.max(0, deltaMs / (1000 / 60)));
+  return 1 - (1 - responseAt60Fps) ** frameUnits;
+}
+
+export function headExtensionRatio(speed: number) {
+  if (speed <= GUIDING_LIGHT_INK_DRIP_SPEED_THRESHOLD * 0.45) return 0;
+  return 0.5 + clampUnit((speed - GUIDING_LIGHT_INK_DRIP_SPEED_THRESHOLD) / 620) * 0.5;
+}
+
+export function dripEmissionProbability(speed: number, deltaMs: number) {
+  if (speed <= GUIDING_LIGHT_INK_DRIP_SPEED_THRESHOLD || deltaMs <= 0) return 0;
+  const ratePerSecond = 1.05 + clampUnit((speed - GUIDING_LIGHT_INK_DRIP_SPEED_THRESHOLD) / 900) * 1.55;
+  return clampUnit(ratePerSecond * (deltaMs / 1000));
+}
+
+export function createAdvanceDrip(
+  origin: InkPoint,
+  direction: InkPoint,
+  stampRadius: number,
+  random: () => number = Math.random,
+): InkDrip {
+  const magnitude = Math.hypot(direction.x, direction.y) || 1;
+  const unitX = direction.x / magnitude;
+  const unitY = direction.y / magnitude;
+  const distance = stampRadius * (1 + random() * 2);
+  const lateral = stampRadius * (random() - 0.5);
+  return {
+    point: {
+      x: origin.x + unitX * distance - unitY * lateral,
+      y: origin.y + unitY * distance + unitX * lateral,
+    },
+    radiusScale: 0.3 + random() * 0.3,
+  };
 }
 
 export function sampleInkSegment(
@@ -120,13 +165,12 @@ export function resolveInkParticleVisual(particle: InkParticle, now: number): In
 export function particleVertexRadius(
   particle: InkParticle,
   vertexIndex: number,
-  now: number,
+  morphTime: number,
   scale: number,
 ) {
   const vertexCount = particle.radialProfile.length;
   const angle = (vertexIndex / vertexCount) * Math.PI * 2;
-  const elapsed = Math.max(0, now - particle.bornAt);
-  const slowMorph = Math.sin(angle * 2 + particle.seed + elapsed * 0.00105) * 0.145;
-  const secondaryMorph = Math.sin(angle * 3 - particle.seed * 0.7 - elapsed * 0.00071) * 0.075;
+  const slowMorph = Math.sin(angle * 2 + particle.seed + morphTime * 0.00105) * 0.145;
+  const secondaryMorph = Math.sin(angle * 3 - particle.seed * 0.7 - morphTime * 0.00071) * 0.075;
   return particle.radius * scale * particle.radialProfile[vertexIndex] * (1 + slowMorph + secondaryMorph);
 }

@@ -2,11 +2,14 @@
 
 import { useEffect, useRef, type RefObject } from "react";
 import {
+  GUIDING_LIGHT_INK_DRIP_SPEED_THRESHOLD,
   GUIDING_LIGHT_INK_PARTICLE_CAP,
   GUIDING_LIGHT_INK_SPACING,
-  GUIDING_LIGHT_INK_STATIONARY_INTERVAL,
+  createAdvanceDrip,
   createInkParticle,
-  easeOutCubic,
+  dripEmissionProbability,
+  headExtensionRatio,
+  nibResponseFactor,
   particleVertexRadius,
   resolveInkParticleVisual,
   sampleInkSegment,
@@ -24,8 +27,15 @@ type Surface = {
   context: CanvasRenderingContext2D;
 };
 
+type ForwardDeformation = {
+  direction: InkPoint;
+  extension: number;
+};
+
 const CORE_COLOR = "#111311";
 const RESIDUE_COLOR = "#d6d5d0";
+const NOMINAL_FRAME_MS = 1000 / 60;
+const MAX_POINTER_SAMPLES = 96;
 
 function createBufferSurface(): Surface | null {
   const canvas = document.createElement("canvas");
@@ -36,17 +46,29 @@ function createBufferSurface(): Surface | null {
 function drawParticle(
   context: CanvasRenderingContext2D,
   particle: InkParticle,
-  now: number,
+  morphTime: number,
   scale: number,
   opacity: number,
+  deformation?: ForwardDeformation,
 ) {
   const vertexCount = particle.radialProfile.length;
+  const directionMagnitude = deformation
+    ? Math.hypot(deformation.direction.x, deformation.direction.y) || 1
+    : 1;
+  const directionX = deformation ? deformation.direction.x / directionMagnitude : 0;
+  const directionY = deformation ? deformation.direction.y / directionMagnitude : 0;
   const points = particle.radialProfile.map((_, index) => {
     const angle = (index / vertexCount) * Math.PI * 2;
-    const radius = particleVertexRadius(particle, index, now, scale);
+    const radius = particleVertexRadius(particle, index, morphTime, scale);
+    const normalX = Math.cos(angle);
+    const normalY = Math.sin(angle);
+    const forwardWeight = deformation
+      ? Math.max(0, normalX * directionX + normalY * directionY) ** 1.45
+      : 0;
+    const forwardOffset = deformation ? deformation.extension * forwardWeight : 0;
     return {
-      x: particle.x + Math.cos(angle) * radius,
-      y: particle.y + Math.sin(angle) * radius,
+      x: particle.x + normalX * radius + directionX * forwardOffset,
+      y: particle.y + normalY * radius + directionY * forwardOffset,
     };
   });
   const first = points[0];
@@ -63,36 +85,6 @@ function drawParticle(
   context.fill();
 }
 
-function thresholdSurface(surface: Surface, mode: "core" | "residue") {
-  const { canvas, context } = surface;
-  const image = context.getImageData(0, 0, canvas.width, canvas.height);
-  const pixels = image.data;
-  for (let index = 0; index < pixels.length; index += 4) {
-    const alpha = pixels[index + 3] / 255;
-    const threshold = mode === "core" ? 0.005 : 0.003;
-    const range = mode === "core" ? 0.06 : 0.025;
-    const level = Math.min(1, Math.max(0, (alpha - threshold) / range));
-    if (level === 0) {
-      pixels[index + 3] = 0;
-      continue;
-    }
-    const eased = easeOutCubic(level);
-    if (mode === "core") {
-      pixels[index] = 17;
-      pixels[index + 1] = 19;
-      pixels[index + 2] = 17;
-      pixels[index + 3] = Math.round(eased * 255);
-    } else {
-      pixels[index] = 214;
-      pixels[index + 1] = 213;
-      pixels[index + 2] = 208;
-      pixels[index + 3] = Math.round(eased * 112);
-    }
-  }
-  context.setTransform(1, 0, 0, 1, 0, 0);
-  context.putImageData(image, 0, 0);
-}
-
 export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLightInkTrailProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -106,11 +98,15 @@ export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLigh
     let residueSurface: Surface | null = null;
     let frame: number | null = null;
     let pointerInside = false;
-    let latestPoint: InkPoint | null = null;
-    let sampledPoint: InkPoint | null = null;
+    let pointerTarget: InkPoint | null = null;
+    let nibPoint: InkPoint | null = null;
+    let headParticle: InkParticle | null = null;
+    let previousDirection: InkPoint = { x: 1, y: 0 };
+    let pointerSamples: InkPoint[] = [];
     let needsInitialDeposit = false;
     let distanceCarry = 0;
-    let lastDepositAt = 0;
+    let lastFrameAt: number | null = null;
+    let morphTime = 0;
     let cssWidth = 0;
     let cssHeight = 0;
     let pixelRatio = 1;
@@ -120,6 +116,7 @@ export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLigh
     const configureContext = (context: CanvasRenderingContext2D) => {
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
       context.imageSmoothingEnabled = true;
+      context.globalAlpha = 1;
     };
 
     const resizeSurface = () => {
@@ -154,8 +151,9 @@ export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLigh
       return true;
     };
 
-    const deposit = (point: InkPoint, now: number) => {
+    const deposit = (point: InkPoint, now: number, radiusScale = 1) => {
       const next = createInkParticle(point, now);
+      next.radius *= radiusScale;
       const recycled = particlePool.pop();
       if (recycled) {
         Object.assign(recycled, next);
@@ -166,51 +164,86 @@ export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLigh
       if (particles.length > GUIDING_LIGHT_INK_PARTICLE_CAP) {
         particlePool.push(...particles.splice(0, particles.length - GUIDING_LIGHT_INK_PARTICLE_CAP));
       }
-      lastDepositAt = now;
+    };
+
+    const depositNibSegment = (from: InkPoint, to: InkPoint, now: number) => {
+      const sampled = sampleInkSegment(from, to, GUIDING_LIGHT_INK_SPACING, distanceCarry);
+      sampled.points.forEach((point) => deposit(point, now));
+      distanceCarry = sampled.carry;
     };
 
     const render = (now: number) => {
       frame = null;
       if (!visibleContext || !coreSurface || !residueSurface) return;
 
-      if (pointerInside && latestPoint) {
-        if (!sampledPoint) {
-          sampledPoint = latestPoint;
-          needsInitialDeposit = true;
-        }
+      const deltaMs = lastFrameAt === null
+        ? NOMINAL_FRAME_MS
+        : Math.min(50, Math.max(1, now - lastFrameAt));
+      lastFrameAt = now;
+      morphTime += deltaMs;
+      let frameSpeed = 0;
+
+      if (pointerInside && pointerTarget && nibPoint) {
+        const frameStart = nibPoint;
+        const targets = pointerSamples.length > 0 ? pointerSamples.splice(0) : [pointerTarget];
+        const subDelta = deltaMs / Math.max(1, targets.length);
+
+        targets.forEach((target) => {
+          if (!nibPoint) return;
+          const response = nibResponseFactor(subDelta);
+          const nextNib = {
+            x: nibPoint.x + (target.x - nibPoint.x) * response,
+            y: nibPoint.y + (target.y - nibPoint.y) * response,
+          };
+          depositNibSegment(nibPoint, nextNib, now);
+          nibPoint = nextNib;
+        });
+
         if (needsInitialDeposit) {
-          deposit(sampledPoint, now);
+          deposit(nibPoint, now);
           needsInitialDeposit = false;
         }
-        if (sampledPoint) {
-          const sampled = sampleInkSegment(sampledPoint, latestPoint, GUIDING_LIGHT_INK_SPACING, distanceCarry);
-          sampled.points.forEach((point) => deposit(point, now));
-          if (sampled.points.length > 0 || sampledPoint.x !== latestPoint.x || sampledPoint.y !== latestPoint.y) {
-            sampledPoint = latestPoint;
-            distanceCarry = sampled.carry;
-          }
+
+        const velocity = {
+          x: nibPoint.x - frameStart.x,
+          y: nibPoint.y - frameStart.y,
+        };
+        const frameDistance = Math.hypot(velocity.x, velocity.y);
+        frameSpeed = frameDistance / (deltaMs / 1000);
+        if (frameDistance > 0.01) {
+          previousDirection = {
+            x: velocity.x / frameDistance,
+            y: velocity.y / frameDistance,
+          };
         }
 
-        if (now - lastDepositAt >= GUIDING_LIGHT_INK_STATIONARY_INTERVAL) {
-          const poolAngle = Math.random() * Math.PI * 2;
-          const poolDistance = Math.random() * 3.5;
+        if (
+          frameSpeed > GUIDING_LIGHT_INK_DRIP_SPEED_THRESHOLD
+          && Math.random() < dripEmissionProbability(frameSpeed, deltaMs)
+        ) {
+          const drip = createAdvanceDrip(nibPoint, previousDirection, headParticle?.radius ?? 20);
           deposit({
-            x: latestPoint.x + Math.cos(poolAngle) * poolDistance,
-            y: latestPoint.y + Math.sin(poolAngle) * poolDistance,
-          }, now);
+            x: Math.min(cssWidth, Math.max(0, drip.point.x)),
+            y: Math.min(cssHeight, Math.max(0, drip.point.y)),
+          }, now, drip.radiusScale);
+        }
+
+        if (headParticle) {
+          headParticle.x = nibPoint.x;
+          headParticle.y = nibPoint.y;
         }
       }
 
       coreSurface.context.setTransform(1, 0, 0, 1, 0, 0);
+      coreSurface.context.filter = "none";
       coreSurface.context.clearRect(0, 0, coreSurface.canvas.width, coreSurface.canvas.height);
       residueSurface.context.setTransform(1, 0, 0, 1, 0, 0);
+      residueSurface.context.filter = "none";
       residueSurface.context.clearRect(0, 0, residueSurface.canvas.width, residueSurface.canvas.height);
       configureContext(coreSurface.context);
       configureContext(residueSurface.context);
       coreSurface.context.fillStyle = CORE_COLOR;
-      coreSurface.context.filter = "blur(1px)";
       residueSurface.context.fillStyle = RESIDUE_COLOR;
-      residueSurface.context.filter = "blur(1.35px)";
       const coreContext = coreSurface.context;
       const residueContext = residueSurface.context;
 
@@ -224,27 +257,42 @@ export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLigh
       particles.forEach((particle) => {
         const visual = resolveInkParticleVisual(particle, now);
         if (visual.residueOpacity > 0) {
-          drawParticle(residueContext, particle, now, visual.residueScale, visual.residueOpacity);
+          const residuePresence = Math.sqrt(Math.min(1, visual.residueOpacity / particle.residuePeak));
+          drawParticle(residueContext, particle, morphTime, visual.residueScale * residuePresence, 1);
         }
         if (visual.coreOpacity > 0) {
-          drawParticle(coreContext, particle, now, visual.coreScale, visual.coreOpacity);
+          const corePresence = 0.42 + Math.sqrt(visual.coreOpacity) * 0.58;
+          drawParticle(coreContext, particle, morphTime, visual.coreScale * corePresence, 1);
         }
       });
-      thresholdSurface(residueSurface, "residue");
-      thresholdSurface(coreSurface, "core");
+
+      if (pointerInside && pointerTarget && nibPoint && headParticle) {
+        const targetGap = Math.hypot(pointerTarget.x - nibPoint.x, pointerTarget.y - nibPoint.y);
+        const extensionRatio = headExtensionRatio(frameSpeed);
+        const forwardExtension = Math.max(0, targetGap + headParticle.radius * (extensionRatio - 1));
+        drawParticle(coreContext, headParticle, morphTime, 1, 1, {
+          direction: previousDirection,
+          extension: forwardExtension,
+        });
+      }
 
       visibleContext.setTransform(1, 0, 0, 1, 0, 0);
+      visibleContext.filter = "none";
       visibleContext.clearRect(0, 0, canvas.width, canvas.height);
-      visibleContext.globalAlpha = 1;
+      visibleContext.filter = "blur(1.55px)";
+      visibleContext.globalAlpha = 0.34;
       visibleContext.drawImage(residueSurface.canvas, 0, 0);
+      visibleContext.filter = "blur(1.15px)";
       visibleContext.globalAlpha = 1;
       visibleContext.drawImage(coreSurface.canvas, 0, 0);
+      visibleContext.filter = "none";
 
       if (pointerInside || particles.length > 0) frame = window.requestAnimationFrame(render);
     };
 
     const startLoop = () => {
       if (frame !== null || !ensureSurfaces()) return;
+      lastFrameAt = null;
       frame = window.requestAnimationFrame(render);
     };
 
@@ -258,32 +306,52 @@ export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLigh
 
     const acceptsPointer = (event: PointerEvent) => event.isPrimary !== false && event.pointerType !== "touch";
 
-    const onPointerEnter = (event: PointerEvent) => {
-      if (!acceptsPointer(event)) return;
+    const collectPointerSamples = (event: PointerEvent) => {
+      const coalesced = typeof event.getCoalescedEvents === "function" ? event.getCoalescedEvents() : [];
+      const source = coalesced.length > 0 ? [...coalesced, event] : [event];
+      const points = source.map(localPoint);
+      const deduplicated = points.filter((point, index) => (
+        index === 0 || point.x !== points[index - 1].x || point.y !== points[index - 1].y
+      ));
+      pointerSamples.push(...deduplicated);
+      if (pointerSamples.length > MAX_POINTER_SAMPLES) {
+        pointerSamples.splice(0, pointerSamples.length - MAX_POINTER_SAMPLES);
+      }
+      return deduplicated[deduplicated.length - 1] ?? localPoint(event);
+    };
+
+    const initializePointer = (point: InkPoint) => {
       pointerInside = true;
-      latestPoint = localPoint(event);
-      sampledPoint = latestPoint;
+      pointerTarget = point;
+      nibPoint = point;
+      headParticle = createInkParticle(point, 0);
+      headParticle.radius = 20;
+      pointerSamples = [];
       needsInitialDeposit = true;
       distanceCarry = 0;
+    };
+
+    const onPointerEnter = (event: PointerEvent) => {
+      if (!acceptsPointer(event)) return;
+      initializePointer(localPoint(event));
       startLoop();
     };
     const onPointerMove = (event: PointerEvent) => {
       if (!acceptsPointer(event)) return;
-      const point = localPoint(event);
-      if (!pointerInside || !sampledPoint) {
-        sampledPoint = point;
-        needsInitialDeposit = true;
-        distanceCarry = 0;
-      }
+      const point = collectPointerSamples(event);
+      if (!pointerInside || !nibPoint) initializePointer(point);
       pointerInside = true;
-      latestPoint = point;
+      pointerTarget = point;
       startLoop();
     };
     const onPointerLeave = (event: PointerEvent) => {
       if (!acceptsPointer(event)) return;
+      if (nibPoint) deposit(nibPoint, performance.now());
       pointerInside = false;
-      latestPoint = null;
-      sampledPoint = null;
+      pointerTarget = null;
+      nibPoint = null;
+      headParticle = null;
+      pointerSamples = [];
       needsInitialDeposit = false;
       distanceCarry = 0;
       startLoop();

@@ -13,7 +13,7 @@ An interactive portfolio timeline presenting Rico Garcia’s Magpie Dashboards p
 | Source data | Forty-five validated items generated from the source handoff document |
 | Hosting | GitHub-connected Vercel project only |
 
-**Guiding Light tags power the public focus row.** Its decorative pointer treatment uses one high-DPI canvas across the Learn-to-Grow span to deposit a morphing dark ink trail with a trailing gray dry-out stain and partial text inversion. The canvas is non-interactive, stops emitting outside the row, ignores touch input, and is removed when reduced motion is preferred. The raw timeline API and all editor write operations still require an authenticated editor session.
+**Guiding Light tags power the public focus row.** Its decorative pointer treatment uses one high-DPI canvas across the Learn-to-Grow span. A frame-driven nib interpolates coalesced pointer input into a densely overlapping, morphing dark stroke with a persistent forward wet head, sparse advancing leak blots, a trailing gray dry-out stain, and partial text inversion. The canvas is non-interactive, stops emitting outside the row, ignores touch input, and is removed when reduced motion is preferred. The raw timeline API and all editor write operations still require an authenticated editor session.
 
 ## Local development
 
