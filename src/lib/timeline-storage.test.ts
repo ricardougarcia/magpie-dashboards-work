@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fetchTimelineBlob, versionedBlobUrl } from "@/lib/timeline-storage-cache";
+import { fetchTimelineBlob, latestTimelineSnapshot, versionedBlobUrl } from "@/lib/timeline-storage-cache";
 import type { TimelineData } from "@/lib/timeline-types";
 
 const data: TimelineData = {
@@ -83,17 +83,30 @@ describe("timeline Blob cache safety", () => {
     )).toBe(`https://store.public.blob.vercel-storage.com/magpie/timeline.json?v=${uploadedAt.getTime()}`);
   });
 
-  it("returns the exact newly written connector version through a cache-busted read", async () => {
+  it("selects the highest immutable snapshot version regardless of listing order", () => {
+    const snapshots = [
+      { pathname: "magpie/history/timeline-v8-old.json", url: "https://store/v8", uploadedAt: new Date("2026-09-05T17:00:00.000Z") },
+      { pathname: "magpie/history/timeline-v10-new.json", url: "https://store/v10", uploadedAt: new Date("2026-09-05T17:02:00.000Z") },
+      { pathname: "magpie/history/timeline-v9-middle.json", url: "https://store/v9", uploadedAt: new Date("2026-09-05T17:01:00.000Z") },
+    ];
+
+    expect(latestTimelineSnapshot(snapshots)).toMatchObject({
+      pathname: "magpie/history/timeline-v10-new.json",
+      version: 10,
+    });
+  });
+
+  it("returns the exact newly written connector version from its immutable snapshot URL", async () => {
     const fetchMock = vi.fn(async () => timelineResponse(data));
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(fetchTimelineBlob(
       "https://store.public.blob.vercel-storage.com/magpie/timeline.json",
-      data.version,
+      undefined,
       data.version,
     )).resolves.toEqual(data);
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://store.public.blob.vercel-storage.com/magpie/timeline.json?v=8",
+      "https://store.public.blob.vercel-storage.com/magpie/timeline.json",
       { cache: "no-store" },
     );
   });
@@ -104,7 +117,7 @@ describe("timeline Blob cache safety", () => {
 
     await expect(fetchTimelineBlob(
       "https://store.public.blob.vercel-storage.com/magpie/timeline.json",
-      data.version,
+      undefined,
       data.version,
     )).rejects.toThrow("older timeline version");
   });
