@@ -18,6 +18,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ConnectorRouteEditor } from "@/components/connector-route-editor";
+import { setReciprocalConnector } from "@/lib/connector-parity";
 import { EditorConnectionPreview } from "@/components/editor-connection-preview";
 import { readMediaDimensions } from "@/lib/media-dimensions.client";
 import {
@@ -169,11 +170,9 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
 
   function updateRelationConnector(index: number, connector: OrthogonalConnectorRoute) {
     if (!selected) return;
-    updateSelected({
-      relations: selected.relations.map((relation, relationIndex) => relationIndex === index
-        ? { ...relation, connector }
-        : relation),
-    });
+    const relation = selected.relations[index];
+    if (!relation) return;
+    commit((draft) => setReciprocalConnector(draft, selected.id, relation.targetId, connector));
   }
 
   function addRelation() {

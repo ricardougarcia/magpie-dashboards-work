@@ -1,9 +1,10 @@
+import { synchronizeReciprocalConnectors } from "@/lib/connector-parity";
 import { normalizeStoredConnectorRoute } from "@/lib/orthogonal-connectors";
 import { timelineDataSchema } from "@/lib/timeline-schema";
 import { colorTokenForLane, type TimelineData } from "@/lib/timeline-types";
 
 export function prepareTimelineSave(input: TimelineData, updatedAt = new Date().toISOString()): TimelineData {
-  return timelineDataSchema.parse({
+  const next: TimelineData = {
     ...input,
     version: input.version + 1,
     updatedAt,
@@ -14,5 +15,6 @@ export function prepareTimelineSave(input: TimelineData, updatedAt = new Date().
         ? { ...relation, connector: normalizeStoredConnectorRoute(relation.connector) }
         : relation),
     })),
-  }) as TimelineData;
+  };
+  return timelineDataSchema.parse(synchronizeReciprocalConnectors(next)) as TimelineData;
 }

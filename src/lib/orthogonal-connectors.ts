@@ -25,6 +25,7 @@ type StraightConnectorCandidate = Pick<OrthogonalConnectorRoute, "source" | "tar
 
 const FRAME_PADDING = 28;
 const GRID = 4;
+const BORDER_EPSILON = 0.001;
 
 export function createDefaultConnector(sourceRect: ConnectorRect, targetRect: ConnectorRect): OrthogonalConnectorRoute {
   const sourceCenter = rectCenter(sourceRect);
@@ -95,6 +96,10 @@ export function resolveConnectorPoints(
 
   points[0] = terminalPoint(sourceRect, route.source);
   points[points.length - 1] = terminalPoint(targetRect, route.target);
+  if (route.points.length === 2) {
+    const direct = responsiveDirectPoints(route, sourceRect, targetRect);
+    if (direct) return direct;
+  }
   if (route.points.length <= 3) {
     const start = points[0];
     const end = points.at(-1)!;
@@ -427,6 +432,53 @@ function simplifyOrthogonalPoints(points: ConnectorPixelPoint[]) {
   });
 }
 
+function responsiveDirectPoints(
+  route: OrthogonalConnectorRoute,
+  sourceRect: ConnectorRect,
+  targetRect: ConnectorRect,
+): ConnectorPixelPoint[] | null {
+  const [storedStart, storedEnd] = route.points;
+  if (!storedStart || !storedEnd) return null;
+
+  const vertical = storedStart.x === storedEnd.x
+    && (route.source.side === "top" || route.source.side === "bottom")
+    && (route.target.side === "top" || route.target.side === "bottom");
+  const horizontal = storedStart.y === storedEnd.y
+    && (route.source.side === "left" || route.source.side === "right")
+    && (route.target.side === "left" || route.target.side === "right");
+  let source = route.source;
+  let target = route.target;
+
+  if (vertical) {
+    const sourceBottom = sourceRect.top + sourceRect.height;
+    const targetBottom = targetRect.top + targetRect.height;
+    const separated = (source.side === "bottom" && target.side === "top" && sourceBottom <= targetRect.top)
+      || (source.side === "top" && target.side === "bottom" && targetBottom <= sourceRect.top);
+    const sharedX = sharedTerminalCoordinate(sourceRect.left, sourceRect.width, targetRect.left, targetRect.width);
+    if (!separated || sharedX === null) return null;
+    source = terminalAtCoordinate(sourceRect, source.side, sharedX);
+    target = terminalAtCoordinate(targetRect, target.side, sharedX);
+  } else if (horizontal) {
+    const sourceRight = sourceRect.left + sourceRect.width;
+    const targetRight = targetRect.left + targetRect.width;
+    const separated = (source.side === "right" && target.side === "left" && sourceRight <= targetRect.left)
+      || (source.side === "left" && target.side === "right" && targetRight <= sourceRect.left);
+    const sharedY = sharedTerminalCoordinate(sourceRect.top, sourceRect.height, targetRect.top, targetRect.height);
+    if (!separated || sharedY === null) return null;
+    source = terminalAtCoordinate(sourceRect, source.side, sharedY);
+    target = terminalAtCoordinate(targetRect, target.side, sharedY);
+  } else {
+    return null;
+  }
+
+  const direct = [terminalPoint(sourceRect, source), terminalPoint(targetRect, target)];
+  return terminalApproachIsOutward(direct[0], direct[1], source.side)
+    && terminalApproachIsOutward(direct[1], direct[0], target.side)
+    && routeAvoidsRectInteriors(direct, [sourceRect, targetRect])
+    ? direct
+    : null;
+}
+
 function oneElbowPointSets(start: ConnectorPixelPoint, end: ConnectorPixelPoint) {
   if (start.x === end.x || start.y === end.y) return [[start, end]];
   return [
@@ -567,12 +619,18 @@ function segmentPenetratesRect(
   if (start.y === end.y) {
     const minimum = Math.min(start.x, end.x);
     const maximum = Math.max(start.x, end.x);
-    return start.y > rect.top && start.y < bottom && maximum > rect.left && minimum < right;
+    return start.y > rect.top + BORDER_EPSILON
+      && start.y < bottom - BORDER_EPSILON
+      && maximum > rect.left + BORDER_EPSILON
+      && minimum < right - BORDER_EPSILON;
   }
   if (start.x === end.x) {
     const minimum = Math.min(start.y, end.y);
     const maximum = Math.max(start.y, end.y);
-    return start.x > rect.left && start.x < right && maximum > rect.top && minimum < bottom;
+    return start.x > rect.left + BORDER_EPSILON
+      && start.x < right - BORDER_EPSILON
+      && maximum > rect.top + BORDER_EPSILON
+      && minimum < bottom - BORDER_EPSILON;
   }
   return true;
 }

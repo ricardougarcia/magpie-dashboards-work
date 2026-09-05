@@ -47,15 +47,16 @@ function routeLength(points: ConnectorPixelPoint[]) {
 }
 
 function expectNoInteriorPenetration(points: ConnectorPixelPoint[], rect: ConnectorRect) {
+  const epsilon = 0.001;
   const right = rect.left + rect.width;
   const bottom = rect.top + rect.height;
   points.slice(1).forEach((point, index) => {
     const previous = points[index];
-    if (previous.y === point.y && previous.y > rect.top && previous.y < bottom) {
-      expect(Math.max(previous.x, point.x) <= rect.left || Math.min(previous.x, point.x) >= right).toBe(true);
+    if (previous.y === point.y && previous.y > rect.top + epsilon && previous.y < bottom - epsilon) {
+      expect(Math.max(previous.x, point.x) <= rect.left + epsilon || Math.min(previous.x, point.x) >= right - epsilon).toBe(true);
     }
-    if (previous.x === point.x && previous.x > rect.left && previous.x < right) {
-      expect(Math.max(previous.y, point.y) <= rect.top || Math.min(previous.y, point.y) >= bottom).toBe(true);
+    if (previous.x === point.x && previous.x > rect.left + epsilon && previous.x < right - epsilon) {
+      expect(Math.max(previous.y, point.y) <= rect.top + epsilon || Math.min(previous.y, point.y) >= bottom - epsilon).toBe(true);
     }
   });
 }
@@ -213,6 +214,40 @@ describe("owner-defined orthogonal connector geometry", () => {
     expectOrthogonal(points);
     expectNoInteriorPenetration(points, wideSource);
     expectNoInteriorPenetration(points, shiftedTarget);
+  });
+
+  it("preserves a saved zero-elbow route across connector workspace, editor preview, and public rectangles", () => {
+    const saved = {
+      source: { side: "bottom", offset: 0.7855172413793103 } as const,
+      target: { side: "top", offset: 0.1679699248120301 } as const,
+      points: [
+        { x: 0.3978, y: 0.2792 },
+        { x: 0.3978, y: 0.7208 },
+      ],
+    };
+    const viewRects = [
+      {
+        source: { left: 195, top: 380.53125, width: 174, height: 27 },
+        target: { left: 287, top: 494.53125, width: 266, height: 27 },
+      },
+      {
+        source: { left: 284, top: 387.1875, width: 163.109375, height: 31 },
+        target: { left: 369.546875, top: 483.1875, width: 248.65625, height: 31 },
+      },
+      {
+        source: { left: 195, top: 933.53125, width: 220.390625, height: 23 },
+        target: { left: 310.1875, top: 1019.53125, width: 335.59375, height: 23 },
+      },
+    ];
+
+    viewRects.forEach((view) => {
+      const points = resolveConnectorPoints(saved, view.source, view.target);
+      expect(points).toHaveLength(2);
+      expect(points[0].x).toBe(points[1].x);
+      expectOrthogonal(points);
+      expectNoInteriorPenetration(points, view.source);
+      expectNoInteriorPenetration(points, view.target);
+    });
   });
 
   it("uses a zero-elbow direct route when item borders can be aligned", () => {

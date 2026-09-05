@@ -2,6 +2,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { upload } from "@vercel/blob/client";
 import { TimelineEditor } from "@/components/timeline-editor";
+import { reverseConnectorRoute } from "@/lib/connector-parity";
 import { readMediaDimensions } from "@/lib/media-dimensions.client";
 import type { TimelineData } from "@/lib/timeline-types";
 
@@ -217,6 +218,41 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     expect(relations[0].connector?.points.length).toBeLessThanOrEqual(3);
     expect(relations[1].connector).toBeUndefined();
     expect(relations.map((relation) => relation.targetId)).toEqual(["target-item", "second-target-item"]);
+  });
+
+  it("saves one canonical route into both directions of reciprocal Connected Work", async () => {
+    let saved: TimelineData | null = null;
+    vi.stubGlobal("fetch", vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      saved = JSON.parse(String(init?.body)) as TimelineData;
+      return new Response(JSON.stringify(saved), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    }));
+    const reciprocalData = structuredClone(data);
+    reciprocalData.items[1].relations = [{
+      targetId: "source-item",
+      targetName: "Source item",
+      description: "Reverse connected work.",
+      connector: {
+        source: { side: "left", offset: 0.5 },
+        target: { side: "bottom", offset: 0.4 },
+        points: [{ x: 0.8, y: 0.7 }, { x: 0.3, y: 0.7 }, { x: 0.3, y: 0.2 }],
+      },
+    }];
+    render(<TimelineEditor initialData={reciprocalData} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Edit all Connected Work lines/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Straighten active line/ }));
+    fireEvent.click(screen.getByRole("button", { name: /^Done$/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Save changes/ }));
+    await waitFor(() => expect(saved).not.toBeNull());
+
+    const savedData = saved as TimelineData | null;
+    const forward = savedData?.items[0].relations[0].connector;
+    const reverse = savedData?.items[1].relations[0].connector;
+    expect(forward).toBeDefined();
+    expect(reverse).toEqual(reverseConnectorRoute(forward!));
   });
 
   it("edits one active route while preserving every 1:1 relationship and unrelated item", async () => {

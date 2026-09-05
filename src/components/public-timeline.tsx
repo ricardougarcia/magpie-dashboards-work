@@ -24,7 +24,10 @@ import {
   type TelemetryTab,
 } from "@/components/telemetry-aperture";
 import { guidingLightTetherGeometry } from "@/lib/guiding-light-tethers";
-import { connectorPath, resolveConnectorPoints, type ConnectorRect } from "@/lib/orthogonal-connectors";
+import { connectorForRelation } from "@/lib/connector-parity";
+import {
+  connectorPath,
+ resolveConnectorPoints, type ConnectorRect } from "@/lib/orthogonal-connectors";
 import { TELEMETRY_TETHER_DURATION, telemetryTetherGeometry } from "@/lib/telemetry-tether";
 import { GUIDING_LIGHTS, MONTHS, placementSpan, type GuidingLight, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
@@ -268,8 +271,9 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         if (!target) return [];
         const targetRect = target.getBoundingClientRect();
         const targetConnectorRect = relativeRect(targetRect);
-        if (relation.connector) {
-          const points = resolveConnectorPoints(relation.connector, sourceConnectorRect, targetConnectorRect);
+        const savedConnector = connectorForRelation(data, selectedItem.id, relation);
+        if (savedConnector) {
+          const points = resolveConnectorPoints(savedConnector, sourceConnectorRect, targetConnectorRect);
           return [{
             id: `${selectedItem.id}-${relation.targetId}`,
             targetId: relation.targetId,
@@ -306,7 +310,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
       window.removeEventListener("resize", updateLines);
       observer.disconnect();
     };
-  }, [selectedItem, laneData]);
+  }, [data, selectedItem, laneData]);
 
   useLayoutEffect(() => {
     if (!activeGuidingLight || !canvasRef.current) {

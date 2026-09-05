@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { connectorForRelation } from "@/lib/connector-parity";
 import {
   connectorPath,
   createDefaultConnector,
@@ -55,7 +56,7 @@ export function EditorConnectionPreview({
         const target = container.querySelector<HTMLElement>(`[data-editor-item-id="${CSS.escape(relation.targetId)}"]`);
         if (!target) return [];
         const targetRect = relativeRect(target);
-        const route = relation.connector ?? createDefaultConnector(sourceRect, targetRect);
+        const route = connectorForRelation(data, selected.id, relation) ?? createDefaultConnector(sourceRect, targetRect);
         return [{
           id: `${selected.id}-${relation.targetId}`,
           path: connectorPath(resolveConnectorPoints(route, sourceRect, targetRect)),

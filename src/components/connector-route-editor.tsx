@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { connectorForRelation } from "@/lib/connector-parity";
 import {
   borderTerminalOptions,
   connectorPath,
@@ -86,7 +87,7 @@ export function ConnectorRouteEditor({
     if (!sourceItem) return {};
     return Object.fromEntries(eligibleRelations.map(({ relation, target }) => [
       relation.targetId,
-      relation.connector ?? createDefaultConnector(sourceItem.rect, target.rect),
+      connectorForRelation(data, source.id, relation) ?? createDefaultConnector(sourceItem.rect, target.rect),
     ]));
   });
   const latestRoutes = useRef(routes);
@@ -94,7 +95,9 @@ export function ConnectorRouteEditor({
   const connections = useMemo<NetworkConnection[]>(() => {
     if (!sourceItem) return [];
     return eligibleRelations.flatMap(({ relation, relationIndex, target }) => {
-      const route = routes[relation.targetId] ?? relation.connector ?? createDefaultConnector(sourceItem.rect, target.rect);
+      const route = routes[relation.targetId]
+        ?? connectorForRelation(data, source.id, relation)
+        ?? createDefaultConnector(sourceItem.rect, target.rect);
       return [{
         relationIndex,
         relation,
@@ -103,7 +106,7 @@ export function ConnectorRouteEditor({
         points: resolveConnectorPoints(route, sourceItem.rect, target.rect),
       }];
     });
-  }, [eligibleRelations, routes, sourceItem]);
+  }, [data, eligibleRelations, routes, source.id, sourceItem]);
   const activeConnection = connections.find((connection) => connection.relation.targetId === activeTargetId)
     ?? connections[0]
     ?? null;

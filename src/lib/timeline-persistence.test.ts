@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { reverseConnectorRoute } from "@/lib/connector-parity";
 import { prepareTimelineSave } from "@/lib/timeline-persistence";
 import type { TimelineData } from "@/lib/timeline-types";
 
@@ -84,5 +85,28 @@ describe("timeline save preservation", () => {
     expect(saved.items[0].guidingLights).toEqual(original.items[0].guidingLights);
     expect(saved.items[0].relations).toEqual(original.items[0].relations);
     expect(saved.items[1]).toEqual(original.items[1]);
+  });
+
+  it("repairs reciprocal connector mismatches before writing the next timeline version", () => {
+    const reciprocal = structuredClone(data);
+    reciprocal.items[1].relations = [{
+      targetId: "source",
+      targetName: "Source",
+      description: "Reverse relation",
+      connector: {
+        source: { side: "left", offset: 0.5 },
+        target: { side: "bottom", offset: 0.4 },
+        points: [{ x: 0.8, y: 0.7 }, { x: 0.3, y: 0.7 }, { x: 0.3, y: 0.2 }],
+      },
+    }];
+
+    const saved = prepareTimelineSave(reciprocal, "2026-09-04T12:00:00.000Z");
+    const forward = saved.items[0].relations[0].connector;
+    const reverse = saved.items[1].relations[0].connector;
+
+    expect(forward).toBeDefined();
+    expect(reverse).toEqual(reverseConnectorRoute(forward!));
+    expect(saved.items[0].description).toBe(reciprocal.items[0].description);
+    expect(saved.items[1].description).toBe(reciprocal.items[1].description);
   });
 });
