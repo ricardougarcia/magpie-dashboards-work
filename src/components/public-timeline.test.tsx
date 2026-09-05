@@ -101,27 +101,6 @@ function getTimelineItem(name: string) {
 }
 
 describe("PublicTimeline presentation safeguards", () => {
-  it("renders one stable lane-accent graphite surface below gridlines and Gantt items", () => {
-    const { container } = render(<PublicTimeline data={data} />);
-    const canvases = Array.from(container.querySelectorAll<HTMLCanvasElement>(".lane-graphite-shadow"));
-
-    expect(canvases).toHaveLength(5);
-    expect(canvases.map((canvas) => canvas.dataset.laneGraphite)).toEqual([
-      "Eng Build",
-      "Product Build",
-      "Product Discovery",
-      "Processes",
-      "Challenges Planned / Unplanned",
-    ]);
-    canvases.forEach((canvas) => expect(canvas.getAttribute("aria-hidden")).toBe("true"));
-    const firstTrack = canvases[0].closest(".lane-track");
-    const grid = firstTrack?.querySelector(".month-grid");
-    const item = firstTrack?.querySelector(".timeline-item");
-    expect(firstTrack?.children[0]).toBe(canvases[0]);
-    expect(canvases[0].compareDocumentPosition(grid!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(grid!.compareDocumentPosition(item!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  });
-
   it("renders the simplified copy and role without public Color Signal keys or native Gantt tooltips", () => {
     const { container } = render(<PublicTimeline data={data} />);
 

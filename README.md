@@ -39,10 +39,6 @@ Without a `BLOB_READ_WRITE_TOKEN`, the public experience reads the committed see
 
 Never commit real values. Configure all three variables for Production, Preview, and Development in Vercel.
 
-## Public visual treatment
-
-Each public timeline swimlane has a static, deterministic graphite inner-shadow along its top, bottom, and left edges. The grain is tinted with the lane’s assigned accent token and generated as a noise-thinned density field rather than a CSS gradient, so it dissolves into irregular specks with no visible stop. One high-DPI canvas is cached per lane and size, redraws only when that size changes, and never schedules an animation loop. The canvases are decorative and pointer-transparent; they render below month gridlines and Gantt cards without changing layout, scrolling, accessibility, or existing interactions.
-
 ## Editor capabilities
 
 The owner workspace supports horizontal drag-to-move placement, start and end month controls, lane changes, new item creation, deletion, every detail-card field, one or two Guiding Light tags, constrained color tokens, Connected Work targets and descriptions, and image, GIF, or video uploads up to 25 MB. Media uploads use a short-lived authenticated token and travel directly from the browser to Vercel Blob, avoiding the Vercel Function request-body limit while retaining editor-only authorization, progress feedback, and server-enforced file policies. Intrinsic dimensions are stored when available; low-resolution GIFs receive editor guidance and are never enlarged in public or editor previews. Saving increments the persisted timeline version and updates its timestamp.
