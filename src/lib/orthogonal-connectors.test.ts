@@ -198,6 +198,23 @@ describe("owner-defined orthogonal connector geometry", () => {
     });
   });
 
+  it("keeps shared fractional terminal coordinates exact instead of expanding them into micro-doglegs", () => {
+    const wideSource: ConnectorRect = { left: 195, top: 119, width: 266, height: 27 };
+    const shiftedTarget: ConnectorRect = { left: 379, top: 271, width: 266, height: 27 };
+    let route = createDefaultConnector(wideSource, shiftedTarget);
+    route = injectElbow(route, 1, { x: 72, y: 64 }, wideSource, shiftedTarget);
+
+    const straightened = straightenConnector(route, wideSource, shiftedTarget);
+    const points = resolveConnectorPoints(straightened, wideSource, shiftedTarget);
+
+    expect(straightened.points.length).toBeLessThanOrEqual(4);
+    expect(points.length).toBeLessThanOrEqual(4);
+    expect(points[0].x).toBe(points.at(-1)!.x);
+    expectOrthogonal(points);
+    expectNoInteriorPenetration(points, wideSource);
+    expectNoInteriorPenetration(points, shiftedTarget);
+  });
+
   it("uses a zero-elbow direct route when item borders can be aligned", () => {
     const alignedTarget: ConnectorRect = { left: 360, top: 30, width: 180, height: 30 };
     const straightened = straightenConnector(createDefaultConnector(source, alignedTarget), source, alignedTarget);

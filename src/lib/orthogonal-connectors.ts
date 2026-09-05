@@ -537,7 +537,7 @@ function terminalAtCoordinate(
   const offset = side === "top" || side === "bottom"
     ? (coordinate - rect.left) / rect.width
     : (coordinate - rect.top) / rect.height;
-  return { side, offset: round(clamp(offset, 0.08, 0.92)) };
+  return { side, offset: clamp(offset, 0.08, 0.92) };
 }
 
 function terminalChangeCount(

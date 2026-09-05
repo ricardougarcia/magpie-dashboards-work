@@ -417,6 +417,7 @@ select:focus-visible {
   color: var(--ink);
   background: transparent;
   border: 0;
+  cursor: var(--cursor-action);
   border-right: 1px solid var(--line);
   font: inherit;
   font-size: 10px;
