@@ -3,6 +3,7 @@ import "server-only";
 import { list, put } from "@vercel/blob";
 import seedData from "@/data/timeline.seed.json";
 import { prepareTimelineSave } from "@/lib/timeline-persistence";
+import { fetchTimelineBlob } from "@/lib/timeline-storage-cache";
 import { timelineDataSchema } from "@/lib/timeline-schema";
 import type { TimelineData } from "@/lib/timeline-types";
 
@@ -22,9 +23,7 @@ export async function getTimelineData(): Promise<TimelineData> {
     const stored = result.blobs.find((blob) => blob.pathname === DATA_PATH);
     if (!stored) return timelineDataSchema.parse(seedData) as TimelineData;
 
-    const response = await fetch(stored.url, { cache: "no-store" });
-    if (!response.ok) throw new Error(`Blob read failed with ${response.status}`);
-    return timelineDataSchema.parse(await response.json()) as TimelineData;
+    return await fetchTimelineBlob(stored.url, stored.uploadedAt);
   } catch (error) {
     console.error("Falling back to timeline seed data", error);
     return timelineDataSchema.parse(seedData) as TimelineData;
@@ -46,7 +45,7 @@ export async function saveTimelineData(input: TimelineData): Promise<TimelineDat
     cacheControlMaxAge: 0,
   });
 
-  await put(DATA_PATH, serialized, {
+  const canonical = await put(DATA_PATH, serialized, {
     access: "public",
     addRandomSuffix: false,
     allowOverwrite: true,
@@ -54,5 +53,5 @@ export async function saveTimelineData(input: TimelineData): Promise<TimelineDat
     cacheControlMaxAge: 0,
   });
 
-  return next;
+  return await fetchTimelineBlob(canonical.url, next.version, next.version);
 }
