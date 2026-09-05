@@ -73,7 +73,7 @@ export function createInkParticle(
   const coreHold = (500 + random() * 200) * lifetimeJitter;
   const coreFade = (900 + random() * 300) * lifetimeJitter;
   const residueStart = coreHold + coreFade * (0.56 + random() * 0.08);
-  const residueFade = (1750 + random() * 650) * lifetimeJitter;
+  const residueFade = (1800 + random() * 600) * lifetimeJitter;
   const vertexCount = 14 + Math.floor(random() * 5);
   const rawProfile = Array.from({ length: vertexCount }, () => 0.68 + random() * 0.64);
   const radialProfile = rawProfile.map((value, index) => {
