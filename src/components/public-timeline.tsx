@@ -853,7 +853,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                 selectedItem.media.type === "video" ? (
                   <video src={selectedItem.media.url} controls autoPlay />
                 ) : (
-                  <Image src={selectedItem.media.url} alt={selectedItem.media.alt} fill sizes="90vw" unoptimized />
+                  <Image className={selectedItem.media.type === "gif" ? "media-no-upscale" : undefined} src={selectedItem.media.url} alt={selectedItem.media.alt} fill sizes="90vw" unoptimized />
                 )
               ) : (
                 <TelemetryMediaPlaceholder item={selectedItem} />

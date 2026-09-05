@@ -46,6 +46,8 @@ export type TimelineMedia = {
   url: string;
   type: "image" | "video" | "gif";
   alt: string;
+  width?: number;
+  height?: number;
 };
 
 export type TimelineItem = {

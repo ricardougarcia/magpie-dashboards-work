@@ -1,22 +1,26 @@
-import { put } from "@vercel/blob";
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
+
 import { isEditorAuthenticated } from "@/lib/auth";
+import {
+  MEDIA_ALLOWED_CONTENT_TYPES,
+  MEDIA_MAX_SIZE_BYTES,
+  safeMediaPath,
+} from "@/lib/media-upload";
 import { hasBlobStorage } from "@/lib/timeline-storage";
 
-const MAX_FILE_SIZE = 25 * 1024 * 1024;
-const ALLOWED_TYPES = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/gif",
-  "video/mp4",
-  "video/webm",
-]);
+class MediaUploadAuthenticationError extends Error {}
+
+function parseClientPayload(value: string | null): { itemId: string; filename: string } {
+  if (!value) throw new Error("Missing upload context.");
+  const parsed = JSON.parse(value) as { itemId?: unknown; filename?: unknown };
+  if (typeof parsed.itemId !== "string" || typeof parsed.filename !== "string") {
+    throw new Error("Invalid upload context.");
+  }
+  return { itemId: parsed.itemId, filename: parsed.filename };
+}
 
 export async function POST(request: Request) {
-  if (!(await isEditorAuthenticated())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
   if (!hasBlobStorage()) {
     return NextResponse.json(
       { error: "Vercel Blob is not connected. Set BLOB_READ_WRITE_TOKEN before uploading media." },
@@ -24,27 +28,39 @@ export async function POST(request: Request) {
     );
   }
 
-  const form = await request.formData();
-  const file = form.get("file");
-  if (!(file instanceof File)) {
-    return NextResponse.json({ error: "Choose an image, GIF, or video." }, { status: 400 });
-  }
-  if (!ALLOWED_TYPES.has(file.type)) {
-    return NextResponse.json({ error: "Unsupported media type." }, { status: 415 });
-  }
-  if (file.size > MAX_FILE_SIZE) {
-    return NextResponse.json({ error: "Media must be 25 MB or smaller." }, { status: 413 });
-  }
+  try {
+    const body = (await request.json()) as HandleUploadBody;
+    const response = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async (pathname, clientPayload) => {
+        if (!(await isEditorAuthenticated())) {
+          throw new MediaUploadAuthenticationError("Not authenticated.");
+        }
 
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "-").toLowerCase();
-  const blob = await put(`magpie/media/${safeName}`, file, {
-    access: "public",
-    addRandomSuffix: true,
-    contentType: file.type,
-  });
+        const { itemId, filename } = parseClientPayload(clientPayload);
+        const expectedPath = safeMediaPath(itemId, filename);
+        if (pathname !== expectedPath) {
+          throw new Error("Upload path does not match the selected item.");
+        }
 
-  return NextResponse.json({
-    url: blob.url,
-    type: file.type.startsWith("video/") ? "video" : file.type === "image/gif" ? "gif" : "image",
-  });
+        return {
+          allowedContentTypes: [...MEDIA_ALLOWED_CONTENT_TYPES],
+          maximumSizeInBytes: MEDIA_MAX_SIZE_BYTES,
+          addRandomSuffix: true,
+          cacheControlMaxAge: 31_536_000,
+          tokenPayload: JSON.stringify({ itemId }),
+        };
+      },
+      onUploadCompleted: async () => undefined,
+    });
+
+    return NextResponse.json(response);
+  } catch (error) {
+    const status = error instanceof MediaUploadAuthenticationError ? 401 : 400;
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Media upload could not start." },
+      { status },
+    );
+  }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { upload } from "@vercel/blob/client";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -18,6 +19,13 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ConnectorRouteEditor } from "@/components/connector-route-editor";
 import { EditorConnectionPreview } from "@/components/editor-connection-preview";
+import { readMediaDimensions } from "@/lib/media-dimensions.client";
+import {
+  lowResolutionGifMessage,
+  mediaTypeFromContentType,
+  mediaValidationError,
+  safeMediaPath,
+} from "@/lib/media-upload";
 import {
   GUIDING_LIGHTS,
   MONTHS,
@@ -49,9 +57,11 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
   const [saveState, setSaveState] = useState<"idle" | "saved" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [editingConnections, setEditingConnections] = useState(false);
 
   const selected = data.items.find((item) => item.id === selectedId) ?? null;
+  const mediaQualityMessage = selected?.media ? lowResolutionGifMessage(selected.media) : null;
   const timelineItems = data.items.filter((item) => !item.planned);
   const futureItems = data.items.filter((item) => item.planned);
 
@@ -182,19 +192,51 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
 
   async function uploadMedia(file: File) {
     if (!selected) return;
-    setUploading(true);
-    setStatusMessage("");
-    const form = new FormData();
-    form.append("file", file);
-    const response = await fetch("/api/media", { method: "POST", body: form });
-    const payload = (await response.json().catch(() => null)) as { url?: string; type?: "image" | "video" | "gif"; error?: string } | null;
-    if (!response.ok || !payload?.url || !payload.type) {
-      setStatusMessage(payload?.error ?? "Media upload failed.");
-      setUploading(false);
+
+    const validationError = mediaValidationError(file);
+    if (validationError) {
+      setStatusMessage(validationError);
       return;
     }
-    updateSelected({ media: { url: payload.url, type: payload.type, alt: selected.name } });
-    setUploading(false);
+
+    const mediaType = mediaTypeFromContentType(file.type);
+    if (!mediaType) {
+      setStatusMessage("Use a JPEG, PNG, WEBP, GIF, MP4, or WEBM file.");
+      return;
+    }
+
+    setUploading(true);
+    setUploadProgress(0);
+    setStatusMessage("");
+
+    try {
+      const dimensions = await readMediaDimensions(file);
+      const blob = await upload(safeMediaPath(selected.id, file.name), file, {
+        access: "public",
+        handleUploadUrl: "/api/media",
+        contentType: file.type,
+        clientPayload: JSON.stringify({ itemId: selected.id, filename: file.name }),
+        onUploadProgress: ({ percentage }) => setUploadProgress(percentage),
+      });
+
+      updateSelected({
+        media: {
+          url: blob.url,
+          type: mediaType,
+          alt: selected.name,
+          ...(dimensions ?? {}),
+        },
+      });
+      setStatusMessage("Upload complete. Save changes to publish this artifact.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Media upload failed.";
+      setStatusMessage(message.includes("401") || /unauth/i.test(message)
+        ? "Your editor session expired. Sign in again before uploading."
+        : message);
+    } finally {
+      setUploading(false);
+      setUploadProgress(null);
+    }
   }
 
   async function save() {
@@ -379,21 +421,33 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
                   <legend>Media artifact</legend>
                   {selected.media ? (
                     <div className="media-editor-preview">
-                      {selected.media.type === "video" ? <video src={selected.media.url} controls /> : <Image src={selected.media.url} alt={selected.media.alt} fill sizes="340px" unoptimized />}
+                      {selected.media.type === "video" ? <video src={selected.media.url} controls /> : <Image className={selected.media.type === "gif" ? "media-no-upscale" : undefined} src={selected.media.url} alt={selected.media.alt} fill sizes="340px" unoptimized />}
                       <button type="button" onClick={() => updateSelected({ media: null })}><X size={14} /> Remove</button>
                     </div>
                   ) : (
                     <label className="upload-drop">
                       <ImagePlus size={18} />
-                      <strong>{uploading ? "Uploading…" : "Add image, GIF, or video"}</strong>
+                      <strong>{uploading && uploadProgress !== null ? `Uploading ${Math.round(uploadProgress)}%` : "Add image, GIF, or video"}</strong>
                       <span>JPEG, PNG, WEBP, GIF, MP4, or WEBM / 25 MB max</span>
+                      {uploading && uploadProgress !== null && (
+                        <span
+                          className="media-upload-progress"
+                          role="progressbar"
+                          aria-label="Media upload progress"
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-valuenow={Math.round(uploadProgress)}
+                        ><span style={{ width: `${uploadProgress}%` }} /></span>
+                      )}
                       <input type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm" disabled={uploading} onChange={(event) => {
-                        const file = event.target.files?.[0];
+                        const file = event.currentTarget.files?.[0];
                         if (file) void uploadMedia(file);
+                        event.currentTarget.value = "";
                       }} />
                     </label>
                   )}
                   {selected.media && <label>Alternative text<input value={selected.media.alt} onChange={(event) => updateSelected({ media: selected.media ? { ...selected.media, alt: event.target.value } : null })} /></label>}
+                  {mediaQualityMessage && <p className="media-quality-note">{mediaQualityMessage}</p>}
                 </fieldset>
 
                 <fieldset className="form-section relation-editor">

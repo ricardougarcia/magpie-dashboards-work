@@ -187,7 +187,7 @@ export function TelemetryAperture({
                   {item.media.type === "video" ? (
                     <video src={item.media.url} muted playsInline preload="metadata" />
                   ) : (
-                    <Image src={item.media.url} alt={item.media.alt} fill sizes="58px" unoptimized />
+                    <Image className={item.media.type === "gif" ? "media-no-upscale" : undefined} src={item.media.url} alt={item.media.alt} fill sizes="58px" unoptimized />
                   )}
                 </span>
                 <span><small>Artifact</small>{item.media.alt}</span>

@@ -267,16 +267,19 @@ describe("PublicTimeline telemetry ownership", () => {
     const mediaData: PublicTimelineData = {
       ...data,
       items: data.items.map((item) => item.id === "first-item"
-        ? { ...item, media: { url: "/icon.svg", type: "image", alt: "First item artifact" } }
+        ? { ...item, media: { url: "/icon.svg", type: "gif", alt: "First item artifact", width: 170, height: 136 } }
         : item),
     };
-    render(<PublicTimeline data={mediaData} />);
+    const { container } = render(<PublicTimeline data={mediaData} />);
     fireEvent.click(getTimelineItem("First item"));
     await waitFor(() => expect(screen.getByLabelText("Selected details for First item")).toBeTruthy());
 
     expect(screen.getByRole("button", { name: "Open media preview" })).toBeTruthy();
     expect(screen.getByText("Artifact")).toBeTruthy();
     expect(screen.getByText("First item artifact")).toBeTruthy();
+    expect(container.querySelector(".telemetry-media-thumb img.media-no-upscale")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Open media preview" }));
+    await waitFor(() => expect(container.querySelector(".preview-content img.media-no-upscale")).toBeTruthy());
     expect(screen.queryByText("Media pending")).toBeNull();
   });
 

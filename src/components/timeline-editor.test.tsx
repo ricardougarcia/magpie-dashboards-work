@@ -1,7 +1,15 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { upload } from "@vercel/blob/client";
 import { TimelineEditor } from "@/components/timeline-editor";
+import { readMediaDimensions } from "@/lib/media-dimensions.client";
 import type { TimelineData } from "@/lib/timeline-types";
+
+vi.mock("@vercel/blob/client", () => ({ upload: vi.fn() }));
+vi.mock("@/lib/media-dimensions.client", () => ({ readMediaDimensions: vi.fn() }));
+
+const uploadMock = vi.mocked(upload);
+const readMediaDimensionsMock = vi.mocked(readMediaDimensions);
 
 class ResizeObserverMock implements ResizeObserver {
   observe() {}
@@ -94,6 +102,8 @@ const data: TimelineData = {
 };
 
 beforeEach(() => {
+  uploadMock.mockReset();
+  readMediaDimensionsMock.mockReset();
   vi.stubGlobal("ResizeObserver", ResizeObserverMock);
   vi.stubGlobal("requestAnimationFrame", vi.fn((callback: FrameRequestCallback) => window.setTimeout(() => callback(0), 0)));
   vi.stubGlobal("cancelAnimationFrame", vi.fn((id: number) => window.clearTimeout(id)));
@@ -245,5 +255,93 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     expect(savedData?.items[1].relations).toEqual([]);
     expect(savedData?.items[2].relations).toEqual([]);
     expect(savedData?.items[3]).toEqual({ ...data.items[3], colorToken: "forest" });
+  });
+});
+
+
+describe("TimelineEditor direct media uploads", () => {
+  it("uploads a file above the former Function limit directly to Blob and reports progress", async () => {
+    let finishUpload: (() => void) | null = null;
+    const result = {
+      url: "https://example.public.blob.vercel-storage.com/demo.mp4",
+      downloadUrl: "https://example.public.blob.vercel-storage.com/demo.mp4?download=1",
+      pathname: "magpie/media/source-item/demo.mp4-random",
+      contentType: "video/mp4",
+      contentDisposition: "inline",
+    } as Awaited<ReturnType<typeof upload>>;
+    uploadMock.mockImplementation(async () => {
+      await new Promise<void>((resolve) => { finishUpload = resolve; });
+      return result;
+    });
+    readMediaDimensionsMock.mockResolvedValue({ width: 1280, height: 720 });
+
+    const { container } = render(<TimelineEditor initialData={data} />);
+    const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+    const file = new File(["video"], "Demo Clip.MP4", { type: "video/mp4" });
+    Object.defineProperty(file, "size", { value: 6_300_000 });
+    fireEvent.change(input!, { target: { files: [file] } });
+
+    await waitFor(() => expect(uploadMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(screen.getByText("Uploading 0%")).toBeTruthy());
+    expect(uploadMock.mock.calls[0][2].onUploadProgress).toBeTypeOf("function");
+    act(() => uploadMock.mock.calls[0][2].onUploadProgress?.({ loaded: 2_330_000, total: 6_300_000, percentage: 37 }));
+    await waitFor(() => expect(screen.getByRole("progressbar", { name: "Media upload progress" }).getAttribute("aria-valuenow")).toBe("37"));
+    expect(screen.getByText("Uploading 37%")).toBeTruthy();
+    expect(uploadMock.mock.calls[0][0]).toBe("magpie/media/source-item/demo-clip.mp4");
+    expect(uploadMock.mock.calls[0][2]).toMatchObject({
+      access: "public",
+      handleUploadUrl: "/api/media",
+      contentType: "video/mp4",
+      clientPayload: JSON.stringify({ itemId: "source-item", filename: "Demo Clip.MP4" }),
+    });
+
+    finishUpload!();
+    await waitFor(() => expect(screen.getByText(/Upload complete/)).toBeTruthy());
+    expect(screen.queryByRole("progressbar")).toBeNull();
+  });
+
+  it("captures GIF dimensions, warns about low resolution, and persists the metadata on save", async () => {
+    let saved: TimelineData | null = null;
+    vi.stubGlobal("fetch", vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      saved = JSON.parse(String(init?.body)) as TimelineData;
+      return new Response(JSON.stringify(saved), { status: 200, headers: { "Content-Type": "application/json" } });
+    }));
+    uploadMock.mockResolvedValue({
+      url: "https://example.public.blob.vercel-storage.com/tiny.gif",
+      downloadUrl: "https://example.public.blob.vercel-storage.com/tiny.gif?download=1",
+      pathname: "magpie/media/source-item/tiny.gif-random",
+      contentType: "image/gif",
+      contentDisposition: "inline",
+    } as Awaited<ReturnType<typeof upload>>);
+    readMediaDimensionsMock.mockResolvedValue({ width: 170, height: 136 });
+
+    const { container } = render(<TimelineEditor initialData={data} />);
+    const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+    fireEvent.change(input!, { target: { files: [new File(["gif"], "tiny.gif", { type: "image/gif" })] } });
+
+    await waitFor(() => expect(screen.getByText(/This animation is 170×136/)).toBeTruthy());
+    expect(container.querySelector(".media-editor-preview img.media-no-upscale")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /Save changes/ }));
+    await waitFor(() => expect(saved).not.toBeNull());
+
+    expect((saved as TimelineData | null)?.items[0].media).toEqual({
+      url: "https://example.public.blob.vercel-storage.com/tiny.gif",
+      type: "gif",
+      alt: "Source item",
+      width: 170,
+      height: 136,
+    });
+  });
+
+  it("rejects files above 25 MB before requesting an upload token", async () => {
+    const { container } = render(<TimelineEditor initialData={data} />);
+    const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+    const file = new File(["video"], "too-large.mp4", { type: "video/mp4" });
+    Object.defineProperty(file, "size", { value: 25 * 1024 * 1024 + 1 });
+    fireEvent.change(input!, { target: { files: [file] } });
+
+    await waitFor(() => expect(screen.getByText("Media must be 25 MB or smaller.")).toBeTruthy());
+    expect(uploadMock).not.toHaveBeenCalled();
+    expect(readMediaDimensionsMock).not.toHaveBeenCalled();
   });
 });

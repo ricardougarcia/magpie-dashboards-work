@@ -13,7 +13,7 @@ An interactive portfolio timeline presenting Rico Garcia’s Magpie Dashboards p
 | Source data | Forty-five validated items generated from the source handoff document |
 | Hosting | GitHub-connected Vercel project only |
 
-**Guiding Light tags remain private.** The public page receives a server-filtered payload that omits the field, and the raw timeline API requires an authenticated editor session.
+**Guiding Light tags power the public focus row.** The raw timeline API and all editor write operations still require an authenticated editor session.
 
 ## Local development
 
@@ -41,7 +41,7 @@ Never commit real values. Configure all three variables for Production, Preview,
 
 ## Editor capabilities
 
-The owner workspace supports horizontal drag-to-move placement, start and end month controls, lane changes, new item creation, deletion, every detail-card field, one or two Guiding Light tags, constrained color tokens, Connected Work targets and descriptions, and image, GIF, or video uploads up to 25 MB. Saving increments the persisted timeline version and updates its timestamp.
+The owner workspace supports horizontal drag-to-move placement, start and end month controls, lane changes, new item creation, deletion, every detail-card field, one or two Guiding Light tags, constrained color tokens, Connected Work targets and descriptions, and image, GIF, or video uploads up to 25 MB. Media uploads use a short-lived authenticated token and travel directly from the browser to Vercel Blob, avoiding the Vercel Function request-body limit while retaining editor-only authorization, progress feedback, and server-enforced file policies. Intrinsic dimensions are stored when available; low-resolution GIFs receive editor guidance and are never enlarged in public or editor previews. Saving increments the persisted timeline version and updates its timestamp.
 
 Selecting an item in the editor automatically shows every line in that item’s Connected Work network. One item-level **Edit orthogonal lines** button opens the complete network workspace, where all eligible routes remain visible and only the active line exposes terminals, segments, midpoint injection handles, and elbows. Each route remains a strict source-item-to-related-item connection; the line editor cannot create links between Connected Work targets or add relationships outside the item’s Connected Work fields. Routes are stored as normalized control points, so endpoints continue tracking their items when placement changes or the timeline responds to another viewport size.
 

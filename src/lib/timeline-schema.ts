@@ -33,7 +33,12 @@ const mediaSchema = z.object({
   url: z.string().url(),
   type: z.enum(["image", "video", "gif"]),
   alt: z.string().min(1),
-});
+  width: z.number().int().positive().max(20_000).optional(),
+  height: z.number().int().positive().max(20_000).optional(),
+}).refine(
+  (media) => (media.width === undefined) === (media.height === undefined),
+  "Media width and height must be provided together.",
+);
 
 export const timelineItemSchema = z
   .object({

@@ -79,4 +79,11 @@ describe("public timeline visual tokens", () => {
     expect(css).toContain('var(--pixel-out-duration, 220ms)');
     expect(css).toContain('.lane-color-assignment');
   });
+
+  it("shows designed upload progress and prevents low-resolution GIFs from being enlarged", () => {
+    expect(css).toMatch(/\.media-upload-progress\s*\{[\s\S]*?height:\s*3px[\s\S]*?background:\s*rgba\(17, 19, 17, 0\.12\)/);
+    expect(css).toMatch(/\.media-upload-progress > span\s*\{[\s\S]*?background:\s*var\(--signal\)/);
+    expect(css).toMatch(/\.media-quality-note\s*\{[\s\S]*?border-left:\s*2px solid var\(--signal\)/);
+    expect(css).toMatch(/\.media-editor-preview img\.media-no-upscale,[\s\S]*?\.preview-content img\.media-no-upscale,[\s\S]*?object-fit:\s*scale-down/);
+  });
 });
