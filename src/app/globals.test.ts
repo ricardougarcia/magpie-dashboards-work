@@ -56,6 +56,15 @@ describe("public timeline visual tokens", () => {
     expect(css).toMatch(/\.timeline-scroll-shell\[data-scrolled="true"\] \.timeline-depth-veil\s*\{\s*opacity:\s*1/);
   });
 
+  it("layers deterministic lane graphite below month gridlines and Gantt items", () => {
+    expect(css).toMatch(/\.lane-track\s*\{[\s\S]*?position:\s*relative[\s\S]*?overflow:\s*hidden/);
+    expect(css).toMatch(/\.lane-graphite-shadow\s*\{[\s\S]*?position:\s*absolute[\s\S]*?z-index:\s*0[\s\S]*?inset:\s*0[\s\S]*?pointer-events:\s*none/);
+    expect(css).toMatch(/\.month-grid\s*\{[\s\S]*?z-index:\s*1/);
+    expect(css).toMatch(/\.timeline-item\s*\{[\s\S]*?z-index:\s*2/);
+    expect(css).not.toMatch(/\.lane-graphite-shadow\s*\{[^}]*background:/);
+    expect(css).not.toMatch(/\.lane-graphite-shadow\s*\{[^}]*mix-blend-mode:/);
+  });
+
   it("renders Guiding Light focus as five equal cells with black matching items and faint orthogonal tethers", () => {
     expect(css).toMatch(/\.guiding-light-track\s*\{[\s\S]*?grid-template-columns:\s*repeat\(5, minmax\(0, 1fr\)\)/);
     expect(css).toMatch(/\.timeline-item\.is-guiding-match,[\s\S]*?\.future-item\.is-guiding-match\s*\{[\s\S]*?color:\s*var\(--paper-raised\)[\s\S]*?background:\s*var\(--ink\)/);

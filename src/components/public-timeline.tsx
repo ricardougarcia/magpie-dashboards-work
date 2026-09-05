@@ -17,6 +17,7 @@ import {
 } from "react";
 import { CoordinateCursor } from "@/components/coordinate-cursor";
 import { GuidingLightInkTrail } from "@/components/guiding-light-ink-trail";
+import { LaneGraphiteShadow } from "@/components/lane-graphite-shadow";
 import {
   LANE_CODES,
   TelemetryAperture,
@@ -29,7 +30,7 @@ import {
   connectorPath,
  resolveConnectorPoints, type ConnectorRect } from "@/lib/orthogonal-connectors";
 import { TELEMETRY_TETHER_DURATION, telemetryTetherGeometry } from "@/lib/telemetry-tether";
-import { GUIDING_LIGHTS, MONTHS, placementSpan, type GuidingLight, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
+import { colorTokenForLane, GUIDING_LIGHTS, MONTHS, placementSpan, type GuidingLight, type PublicTimelineData, type PublicTimelineItem } from "@/lib/timeline-types";
 
 const LANE_ORDER = [
   "Eng Build",
@@ -631,6 +632,11 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                           <small>{String(lane.items.length).padStart(2, "0")} items</small>
                         </div>
                         <div className="lane-track" data-gantt-background>
+                          <LaneGraphiteShadow
+                            laneName={lane.lane}
+                            laneIndex={laneIndex}
+                            colorToken={colorTokenForLane(lane.lane)}
+                          />
                           <div className="month-grid" data-gantt-background>
                             {MONTHS.slice(0, 9).map((month) => <span key={month} data-gantt-background />)}
                           </div>
