@@ -43,6 +43,19 @@ describe("public timeline visual tokens", () => {
     expect(css).not.toMatch(/@media[^{}]*\{[\s\S]*?\.coordinate-cursor,[\s\S]*?display:\s*none/);
   });
 
+  it("contains responsive Gantt scrolling behind an opaque frozen pane with a technical rail and graphite veil", () => {
+    expect(css).toMatch(/html,\s*body\s*\{[\s\S]*?max-width:\s*100%[\s\S]*?overflow-x:\s*clip/);
+    expect(css).toMatch(/\.timeline-scroll\s*\{[\s\S]*?isolation:\s*isolate[\s\S]*?overflow-x:\s*auto/);
+    expect(css).toMatch(/\.axis-spacer,\s*\.lane-label\s*\{[\s\S]*?position:\s*sticky[\s\S]*?overflow:\s*hidden[\s\S]*?background:\s*var\(--paper\)/);
+    expect(css).toContain("--label-width: clamp(176px, 15vw, 190px)");
+    expect(css).toContain("--timeline-width: clamp(930px, 72vw, 1080px)");
+    expect(css).toContain("--future-width: clamp(198px, 17vw, 220px)");
+    expect(css).toMatch(/\.timeline-scroll-window\s*\{[\s\S]*?left:\s*calc\([\s\S]*?var\(--scroll-progress\)[\s\S]*?background:\s*var\(--ink\)[\s\S]*?box-shadow:\s*inset 3px 0 0 var\(--signal\)/);
+    expect(css).toMatch(/\.timeline-scroll::-webkit-scrollbar-thumb\s*\{[\s\S]*?background:\s*var\(--ink\)/);
+    expect(css).toMatch(/\.timeline-depth-veil\s*\{[\s\S]*?left:\s*var\(--label-width\)[\s\S]*?opacity:\s*0[\s\S]*?pointer-events:\s*none/);
+    expect(css).toMatch(/\.timeline-scroll-shell\[data-scrolled="true"\] \.timeline-depth-veil\s*\{\s*opacity:\s*1/);
+  });
+
   it("renders Guiding Light focus as five equal cells with black matching items and faint orthogonal tethers", () => {
     expect(css).toMatch(/\.guiding-light-track\s*\{[\s\S]*?grid-template-columns:\s*repeat\(5, minmax\(0, 1fr\)\)/);
     expect(css).toMatch(/\.timeline-item\.is-guiding-match,[\s\S]*?\.future-item\.is-guiding-match\s*\{[\s\S]*?color:\s*var\(--paper-raised\)[\s\S]*?background:\s*var\(--ink\)/);

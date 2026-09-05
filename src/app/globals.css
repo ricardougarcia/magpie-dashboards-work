@@ -3984,3 +3984,253 @@ footer {
   stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
 }
+
+/* Responsive Gantt containment and frozen-pane isolation */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+.site-shell,
+.timeline-section,
+.workbench,
+.timeline-scroll {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.site-shell {
+  overflow-x: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.timeline-scroll {
+  position: relative;
+  isolation: isolate;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.timeline-canvas {
+  isolation: isolate;
+}
+
+.axis-spacer,
+.lane-label {
+  position: sticky;
+  left: 0;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: 1px 0 0 var(--line-strong);
+}
+
+.axis-spacer {
+  z-index: 22;
+}
+
+.month-row .axis-spacer {
+  background: var(--paper);
+}
+
+.lane-label {
+  z-index: 20;
+}
+
+:root {
+  --label-width: clamp(176px, 15vw, 190px);
+  --timeline-width: clamp(930px, 72vw, 1080px);
+  --future-width: clamp(198px, 17vw, 220px);
+  --month-width: calc(var(--timeline-width) / 9);
+}
+
+.timeline-scroll-shell {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.timeline-scroll-rail {
+  --scroll-viewport: 30%;
+  position: relative;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--paper);
+  font-family: var(--font-mono), monospace;
+  font-size: 7px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.timeline-scroll-label,
+.timeline-scroll-percent {
+  color: var(--muted);
+}
+
+.timeline-scroll-percent {
+  min-width: 28px;
+  text-align: right;
+}
+
+.timeline-scroll-control {
+  position: relative;
+  height: 22px;
+}
+
+.timeline-scroll-control::before {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--line-strong);
+  content: "";
+}
+
+.timeline-scroll-window {
+  position: absolute;
+  z-index: 1;
+  top: 7px;
+  left: calc((100% - max(28px, var(--scroll-viewport))) * var(--scroll-progress));
+  width: max(28px, var(--scroll-viewport));
+  height: 7px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  box-shadow: inset 3px 0 0 var(--signal);
+  pointer-events: none;
+}
+
+.timeline-scroll-range {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  background: transparent;
+  cursor: var(--cursor-action);
+  opacity: 0.001;
+}
+
+.timeline-scroll-range::-webkit-slider-runnable-track {
+  height: 22px;
+  background: transparent;
+}
+
+.timeline-scroll-range::-webkit-slider-thumb {
+  width: 1px;
+  height: 22px;
+  appearance: none;
+  border: 0;
+  background: transparent;
+}
+
+.timeline-scroll-range::-moz-range-track {
+  height: 22px;
+  background: transparent;
+}
+
+.timeline-scroll-range::-moz-range-thumb {
+  width: 1px;
+  height: 22px;
+  border: 0;
+  background: transparent;
+}
+
+.timeline-scroll-control:has(.timeline-scroll-range:focus-visible) .timeline-scroll-window {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+.timeline-scroll-range:disabled {
+  cursor: var(--cursor-default);
+}
+
+.timeline-scroll-shell[data-scrollable="false"] .timeline-scroll-window {
+  opacity: 0.3;
+}
+
+.timeline-scroll-months {
+  position: absolute;
+  z-index: 1;
+  inset: 0 2px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  color: rgba(17, 19, 17, 0.34);
+  font-family: var(--font-mono), monospace;
+  font-size: 6px;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+}
+
+.timeline-scroll-shell[data-scrollable="false"] .timeline-scroll-percent {
+  opacity: 0.45;
+}
+
+.timeline-scroll::-webkit-scrollbar {
+  height: 7px;
+}
+
+.timeline-scroll::-webkit-scrollbar-track {
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+}
+
+.timeline-scroll::-webkit-scrollbar-thumb {
+  border: 2px solid var(--paper);
+  border-radius: 0;
+  background: var(--ink);
+}
+
+.timeline-depth-veil {
+  position: absolute;
+  z-index: 19;
+  top: 32px;
+  bottom: 0;
+  left: var(--label-width);
+  width: 24px;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(17, 19, 17, 0.055) 0 0.7px, transparent 0.9px),
+    radial-gradient(circle at 62% 34%, rgba(17, 19, 17, 0.042) 0 0.6px, transparent 0.9px),
+    repeating-linear-gradient(96deg, rgba(17, 19, 17, 0.014) 0 1px, transparent 1px 5px),
+    linear-gradient(90deg, rgba(17, 19, 17, 0.075), rgba(17, 19, 17, 0.025) 48%, transparent);
+  background-size: 9px 13px, 13px 17px, auto, auto;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.timeline-scroll-shell[data-scrolled="true"] .timeline-depth-veil {
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .timeline-depth-veil {
+    width: 18px;
+    background:
+      radial-gradient(circle at 24% 18%, rgba(17, 19, 17, 0.045) 0 0.6px, transparent 0.8px),
+      repeating-linear-gradient(96deg, rgba(17, 19, 17, 0.012) 0 1px, transparent 1px 5px),
+      linear-gradient(90deg, rgba(17, 19, 17, 0.064), rgba(17, 19, 17, 0.02) 48%, transparent);
+    background-size: 9px 13px, auto, auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline-depth-veil {
+    transition: none;
+  }
+}

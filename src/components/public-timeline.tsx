@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, ExternalLink, X } from "lucide-react";
 import Image from "next/image";
 import {
+  type ChangeEvent as ReactChangeEvent,
   type CSSProperties,
   type FocusEvent as ReactFocusEvent,
   type MouseEvent as ReactMouseEvent,
@@ -93,7 +94,9 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const [guidingLightTethers, setGuidingLightTethers] = useState<GuidingLightTether[]>([]);
   const [tetherPath, setTetherPath] = useState<string | null>(null);
   const [apertureNode, setApertureNode] = useState<HTMLElement | null>(null);
+  const [scrollMetrics, setScrollMetrics] = useState({ progress: 0, viewport: 1, canScroll: false });
   const canvasRef = useRef<HTMLDivElement>(null);
+  const timelineScrollRef = useRef<HTMLDivElement>(null);
   const apertureRef = useRef<HTMLElement | null>(null);
   const itemRefs = useRef(new Map<string, HTMLElement>());
   const guidingLightRefs = useRef(new Map<GuidingLight, HTMLButtonElement>());
@@ -124,6 +127,54 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   }, [data.lanes, publicItems]);
 
   const futureItems = publicItems.filter((item) => item.planned);
+
+  useLayoutEffect(() => {
+    const scrollNode = timelineScrollRef.current;
+    if (!scrollNode) return;
+    let frame: number | null = null;
+    const updateMetrics = () => {
+      const maxScroll = Math.max(0, scrollNode.scrollWidth - scrollNode.clientWidth);
+      const progress = maxScroll > 0 ? scrollNode.scrollLeft / maxScroll : 0;
+      const viewport = scrollNode.scrollWidth > 0 ? scrollNode.clientWidth / scrollNode.scrollWidth : 1;
+      const next = {
+        progress: Math.min(1, Math.max(0, Math.round(progress * 10000) / 10000)),
+        viewport: Math.min(1, Math.max(0.08, Math.round(viewport * 10000) / 10000)),
+        canScroll: maxScroll > 1,
+      };
+      setScrollMetrics((current) => (
+        current.progress === next.progress && current.viewport === next.viewport && current.canScroll === next.canScroll
+          ? current
+          : next
+      ));
+    };
+    const scheduleUpdate = () => {
+      if (frame !== null) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = null;
+        updateMetrics();
+      });
+    };
+
+    updateMetrics();
+    scrollNode.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    const observer = new ResizeObserver(scheduleUpdate);
+    observer.observe(scrollNode);
+    if (canvasRef.current) observer.observe(canvasRef.current);
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      scrollNode.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      observer.disconnect();
+    };
+  }, []);
+
+  const setTimelineProgress = (event: ReactChangeEvent<HTMLInputElement>) => {
+    const scrollNode = timelineScrollRef.current;
+    if (!scrollNode) return;
+    const maxScroll = Math.max(0, scrollNode.scrollWidth - scrollNode.clientWidth);
+    scrollNode.scrollLeft = (Number(event.currentTarget.value) / 1000) * maxScroll;
+  };
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -469,7 +520,43 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         </div>
 
         <div className="workbench">
-          <div className="timeline-scroll" data-gantt-region onClick={handleCanvasClick}>
+          <div
+            className="timeline-scroll-shell"
+            data-scrollable={scrollMetrics.canScroll ? "true" : "false"}
+            data-scrolled={scrollMetrics.progress > 0.006 ? "true" : "false"}
+          >
+            <div
+              className="timeline-scroll-rail"
+              aria-label="Timeline horizontal scroll position"
+              style={{
+                "--scroll-viewport": `${scrollMetrics.viewport * 100}%`,
+                "--scroll-progress": scrollMetrics.progress,
+              } as CSSProperties}
+            >
+              <span className="timeline-scroll-label">Scroll</span>
+              <div className="timeline-scroll-control">
+                <div className="timeline-scroll-window" aria-hidden="true" />
+                <input
+                  className="timeline-scroll-range"
+                  type="range"
+                  min="0"
+                  max="1000"
+                  step="1"
+                  value={Math.round(scrollMetrics.progress * 1000)}
+                  onChange={setTimelineProgress}
+                  disabled={!scrollMetrics.canScroll}
+                  aria-label="Scroll the timeline horizontally"
+                  aria-controls="portfolio-timeline-scroll"
+                  aria-valuetext={`${Math.round(scrollMetrics.progress * 100)} percent`}
+                />
+                <div className="timeline-scroll-months" aria-hidden="true">
+                  <span>JAN</span><span>MAY</span><span>SEP</span>
+                </div>
+              </div>
+              <span className="timeline-scroll-percent">{String(Math.round(scrollMetrics.progress * 100)).padStart(2, "0")}%</span>
+            </div>
+            <div className="timeline-depth-veil" aria-hidden="true" />
+            <div id="portfolio-timeline-scroll" ref={timelineScrollRef} className="timeline-scroll" data-gantt-region onClick={handleCanvasClick}>
             <div className="timeline-canvas" ref={canvasRef} data-gantt-background>
               <div className="phase-row guiding-light-row">
                 <div className="axis-spacer"><span>Guiding Light</span></div>
@@ -685,6 +772,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                   />
                 ))}
               </svg>
+            </div>
             </div>
           </div>
         </div>

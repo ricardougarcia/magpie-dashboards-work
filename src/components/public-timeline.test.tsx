@@ -147,6 +147,36 @@ describe("PublicTimeline presentation safeguards", () => {
     expect(readout!.textContent).toContain("Y:44PX");
   });
 
+  it("contains horizontal movement in the Gantt and synchronizes the accessible technical rail and veil", async () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    const scroller = container.querySelector<HTMLElement>("#portfolio-timeline-scroll")!;
+    const shell = container.querySelector<HTMLElement>(".timeline-scroll-shell")!;
+    const slider = screen.getByRole("slider", { name: "Scroll the timeline horizontally" }) as HTMLInputElement;
+
+    Object.defineProperties(scroller, {
+      scrollWidth: { configurable: true, value: 1200 },
+      clientWidth: { configurable: true, value: 600 },
+      scrollLeft: { configurable: true, value: 0, writable: true },
+    });
+    fireEvent.scroll(scroller);
+
+    await waitFor(() => expect(shell.dataset.scrollable).toBe("true"));
+    expect(slider.disabled).toBe(false);
+    expect(slider.getAttribute("aria-controls")).toBe("portfolio-timeline-scroll");
+    expect(slider.value).toBe("0");
+    expect(shell.dataset.scrolled).toBe("false");
+
+    scroller.scrollLeft = 300;
+    fireEvent.scroll(scroller);
+    await waitFor(() => expect(slider.value).toBe("500"));
+    expect(slider.getAttribute("aria-valuetext")).toBe("50 percent");
+    expect(screen.getByText("50%")).toBeTruthy();
+    expect(shell.dataset.scrolled).toBe("true");
+
+    fireEvent.change(slider, { target: { value: "1000" } });
+    expect(scroller.scrollLeft).toBe(600);
+  });
+
   it("replaces the Phase row with five evenly ordered Guiding Light controls", () => {
     render(<PublicTimeline data={data} />);
     const group = screen.getByRole("group", { name: "Focus timeline by Guiding Light" });
