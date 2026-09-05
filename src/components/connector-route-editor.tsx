@@ -251,27 +251,7 @@ export function ConnectorRouteEditor({
             </div>
           ))}
 
-          {positioned.items.map((item) => {
-            const isSource = item.id === source.id;
-            const isTarget = connections.some((connection) => connection.target.id === item.id);
-            const isActiveTarget = item.id === activeConnection.target.id;
-            return (
-              <button
-                type="button"
-                className={`connector-board-item color-${item.colorToken} ${isSource ? "is-source" : ""} ${isTarget ? "is-target" : ""} ${isActiveTarget ? "is-active-target" : ""} ${!isSource && !isTarget ? "is-context" : ""}`}
-                key={item.id}
-                style={{ left: item.rect.left, top: item.rect.top, width: item.rect.width, height: item.rect.height }}
-                onClick={() => {
-                  if (isTarget) setActiveTargetId(item.id);
-                }}
-                disabled={!isTarget}
-              >
-                <span>{item.name}</span>
-              </button>
-            );
-          })}
-
-          <svg className="connector-editor-svg" width={positioned.width} height={positioned.height} aria-label="Editable Connected Work line network">
+          <svg className="connector-editor-svg connector-editor-routes" width={positioned.width} height={positioned.height} aria-label="Editable Connected Work line network">
             {connections.map((connection) => {
               const active = connection.relation.targetId === activeConnection.relation.targetId;
               return (
@@ -293,7 +273,29 @@ export function ConnectorRouteEditor({
                 </g>
               );
             })}
+          </svg>
 
+          {positioned.items.map((item) => {
+            const isSource = item.id === source.id;
+            const isTarget = connections.some((connection) => connection.target.id === item.id);
+            const isActiveTarget = item.id === activeConnection.target.id;
+            return (
+              <button
+                type="button"
+                className={`connector-board-item color-${item.colorToken} ${isSource ? "is-source" : ""} ${isTarget ? "is-target" : ""} ${isActiveTarget ? "is-active-target" : ""} ${!isSource && !isTarget ? "is-context" : ""}`}
+                key={item.id}
+                style={{ left: item.rect.left, top: item.rect.top, width: item.rect.width, height: item.rect.height }}
+                onClick={() => {
+                  if (isTarget) setActiveTargetId(item.id);
+                }}
+                disabled={!isTarget}
+              >
+                <span>{item.name}</span>
+              </button>
+            );
+          })}
+
+          <svg className="connector-editor-svg connector-editor-controls" width={positioned.width} height={positioned.height} aria-hidden="true">
             {activeConnection.points.slice(1).map((point, segmentIndex) => {
               const start = activeConnection.points[segmentIndex];
               const horizontal = start.y === point.y;

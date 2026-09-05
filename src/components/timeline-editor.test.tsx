@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { upload } from "@vercel/blob/client";
 import { TimelineEditor } from "@/components/timeline-editor";
 import { reverseConnectorRoute } from "@/lib/connector-parity";
+import { resolveConnectorPoints, routeFromPixelPoints } from "@/lib/orthogonal-connectors";
 import { readMediaDimensions } from "@/lib/media-dimensions.client";
 import type { TimelineData } from "@/lib/timeline-types";
 
@@ -146,6 +147,16 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     expect(boardItem("Unconnected item")?.classList.contains("is-context")).toBe(true);
     expect(workspace.querySelectorAll(".connector-network-route")).toHaveLength(2);
     expect(workspace.querySelectorAll(".connector-terminal-handle")).toHaveLength(2);
+    const routeLayer = workspace.querySelector(".connector-editor-routes");
+    const firstBoardItem = workspace.querySelector(".connector-board-item");
+    const controlLayer = workspace.querySelector(".connector-editor-controls");
+    expect(routeLayer).toBeTruthy();
+    expect(firstBoardItem).toBeTruthy();
+    expect(controlLayer).toBeTruthy();
+    if (!routeLayer || !firstBoardItem || !controlLayer) throw new Error("Expected split connector layers and board items");
+    expect(routeLayer.compareDocumentPosition(firstBoardItem) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(firstBoardItem.compareDocumentPosition(controlLayer) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(controlLayer.querySelectorAll(".connector-terminal-handle")).toHaveLength(2);
   });
 
   it("derives the Color Signal from the selected lane instead of exposing a manual palette", () => {
@@ -185,6 +196,51 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     expect(connector?.source.side).toBe("top");
     expect(connector?.points.length).toBeGreaterThan(4);
     expect((saved as TimelineData | null)?.items.map((item) => item.colorToken)).toEqual(["steel", "forest", "forest", "forest"]);
+  });
+
+  it("snaps a dragged square terminal to a nearby parallel segment and saves the collapsed route", async () => {
+    let saved: TimelineData | null = null;
+    vi.stubGlobal("fetch", vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      saved = JSON.parse(String(init?.body)) as TimelineData;
+      return new Response(JSON.stringify(saved), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    }));
+    const sourceRect = { left: 195, top: 81, width: 174, height: 27 };
+    const targetRect = { left: 379, top: 161, width: 174, height: 27 };
+    const snapData = structuredClone(data);
+    snapData.items[0].relations[0].connector = routeFromPixelPoints({
+      source: { side: "right", offset: 0.5 },
+      target: { side: "top", offset: (432 - targetRect.left) / targetRect.width },
+      points: [
+        { x: 369, y: 94.5 },
+        { x: 420, y: 94.5 },
+        { x: 420, y: 100 },
+        { x: 432, y: 100 },
+        { x: 432, y: 140 },
+        { x: 432, y: 161 },
+      ],
+    }, sourceRect, targetRect);
+    const { container } = render(<TimelineEditor initialData={snapData} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Edit all Connected Work lines/ }));
+    expect(container.querySelectorAll(".connector-elbow-handle").length).toBeGreaterThan(1);
+    const sourceTerminal = container.querySelector<SVGRectElement>(".connector-terminal-handle.is-source");
+    expect(sourceTerminal).toBeTruthy();
+    fireEvent.pointerDown(sourceTerminal!, { clientX: 369, clientY: 95, pointerId: 1 });
+    fireEvent.pointerMove(window, { clientX: 369, clientY: 99, pointerId: 1 });
+    fireEvent.pointerUp(window, { clientX: 369, clientY: 99, pointerId: 1 });
+
+    await waitFor(() => expect(container.querySelectorAll(".connector-elbow-handle")).toHaveLength(1));
+    fireEvent.click(screen.getByRole("button", { name: /^Done$/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Save changes/ }));
+    await waitFor(() => expect(saved).not.toBeNull());
+
+    const connector = (saved as TimelineData | null)?.items[0].relations[0].connector;
+    expect(connector).toBeDefined();
+    const points = resolveConnectorPoints(connector!, sourceRect, targetRect);
+    expect(points).toEqual([{ x: 369, y: 100 }, { x: 432, y: 100 }, { x: 432, y: 161 }]);
   });
 
   it("straightens only the active route to no more than one elbow and persists it", async () => {

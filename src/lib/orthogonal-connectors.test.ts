@@ -10,8 +10,10 @@ import {
   normalizeStoredConnectorRoute,
   orthogonalizeConnectorPoints,
   resolveConnectorPoints,
+  routeFromPixelPoints,
   slideSegment,
   straightenConnector,
+  TERMINAL_ALIGNMENT_SNAP_THRESHOLD,
   terminalPoint,
   type ConnectorPixelPoint,
   type ConnectorRect,
@@ -261,6 +263,105 @@ describe("owner-defined orthogonal connector geometry", () => {
     expectBorderStop(points[1], alignedTarget, straightened.target);
     expectNoInteriorPenetration(points, source);
     expectNoInteriorPenetration(points, alignedTarget);
+  });
+
+  it("snaps a near-collinear vertical terminal and removes the redundant dogleg", () => {
+    const upper: ConnectorRect = { left: 0, top: 0, width: 100, height: 40 };
+    const lower: ConnectorRect = { left: 20, top: 120, width: 100, height: 40 };
+    const route = routeFromPixelPoints({
+      source: { side: "bottom", offset: 0.5 },
+      target: { side: "top", offset: 0.36 },
+      points: [
+        { x: 50, y: 40 },
+        { x: 50, y: 80 },
+        { x: 56, y: 80 },
+        { x: 56, y: 120 },
+      ],
+    }, upper, lower);
+
+    const moved = moveTerminal(route, "source", { side: "bottom", offset: 0.51 }, upper, lower);
+    const points = resolveConnectorPoints(moved, upper, lower);
+
+    expect(TERMINAL_ALIGNMENT_SNAP_THRESHOLD).toBe(6);
+    expect(points).toEqual([{ x: 56, y: 40 }, { x: 56, y: 120 }]);
+    expect(moved.source.offset).toBe(0.56);
+    expectOrthogonal(points);
+    expectBorderStop(points[0], upper, moved.source);
+    expectBorderStop(points[1], lower, moved.target);
+    expectOutwardApproach(points[0], points[1], moved.source.side);
+    expectOutwardApproach(points[1], points[0], moved.target.side);
+    expectNoInteriorPenetration(points, upper);
+    expectNoInteriorPenetration(points, lower);
+  });
+
+  it("snaps a near-collinear horizontal terminal and removes the redundant dogleg", () => {
+    const left: ConnectorRect = { left: 0, top: 0, width: 40, height: 100 };
+    const right: ConnectorRect = { left: 120, top: 20, width: 40, height: 100 };
+    const route = routeFromPixelPoints({
+      source: { side: "right", offset: 0.5 },
+      target: { side: "left", offset: 0.36 },
+      points: [
+        { x: 40, y: 50 },
+        { x: 80, y: 50 },
+        { x: 80, y: 56 },
+        { x: 120, y: 56 },
+      ],
+    }, left, right);
+
+    const moved = moveTerminal(route, "source", { side: "right", offset: 0.51 }, left, right);
+    const points = resolveConnectorPoints(moved, left, right);
+
+    expect(points).toEqual([{ x: 40, y: 56 }, { x: 120, y: 56 }]);
+    expect(moved.source.offset).toBe(0.56);
+    expectOrthogonal(points);
+    expectNoInteriorPenetration(points, left);
+    expectNoInteriorPenetration(points, right);
+  });
+
+  it("does not snap a terminal just outside the narrow alignment threshold", () => {
+    const upper: ConnectorRect = { left: 0, top: 0, width: 100, height: 40 };
+    const lower: ConnectorRect = { left: 20, top: 120, width: 100, height: 40 };
+    const route = routeFromPixelPoints({
+      source: { side: "bottom", offset: 0.5 },
+      target: { side: "top", offset: 0.36 },
+      points: [
+        { x: 50, y: 40 },
+        { x: 50, y: 80 },
+        { x: 56, y: 80 },
+        { x: 56, y: 120 },
+      ],
+    }, upper, lower);
+
+    const moved = moveTerminal(route, "source", { side: "bottom", offset: 0.49 }, upper, lower);
+    const points = resolveConnectorPoints(moved, upper, lower);
+
+    expect(moved.source.offset).toBe(0.49);
+    expect(points.length).toBeGreaterThan(2);
+    expectOrthogonal(points);
+  });
+
+  it("applies the same near-collinear snap from the target endpoint", () => {
+    const upper: ConnectorRect = { left: 0, top: 0, width: 100, height: 40 };
+    const lower: ConnectorRect = { left: 20, top: 120, width: 100, height: 40 };
+    const route = routeFromPixelPoints({
+      source: { side: "bottom", offset: 0.5 },
+      target: { side: "top", offset: 0.36 },
+      points: [
+        { x: 50, y: 40 },
+        { x: 50, y: 80 },
+        { x: 56, y: 80 },
+        { x: 56, y: 120 },
+      ],
+    }, upper, lower);
+
+    const moved = moveTerminal(route, "target", { side: "top", offset: 0.35 }, upper, lower);
+    const points = resolveConnectorPoints(moved, upper, lower);
+
+    expect(points).toEqual([{ x: 50, y: 40 }, { x: 50, y: 120 }]);
+    expect(moved.target.offset).toBe(0.3);
+    expectOrthogonal(points);
+    expectNoInteriorPenetration(points, upper);
+    expectNoInteriorPenetration(points, lower);
   });
 
   it("moves either terminal to a new border while preserving a right-angle path", () => {

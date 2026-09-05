@@ -2127,6 +2127,7 @@ footer {
 }
 
 .lane-track {
+  z-index: 3;
   isolation: isolate;
 }
 
@@ -3507,10 +3508,19 @@ footer {
 
 .connector-editor-svg {
   position: absolute;
-  z-index: 8;
+  z-index: 2;
   inset: 0;
   overflow: visible;
   touch-action: none;
+}
+
+.connector-editor-routes {
+  z-index: 2;
+}
+
+.connector-editor-controls {
+  z-index: 8;
+  pointer-events: none;
 }
 
 .connector-route-shadow,
@@ -3553,6 +3563,7 @@ footer {
   stroke: var(--signal);
   stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
+  pointer-events: all;
 }
 
 .connector-mid-handle {

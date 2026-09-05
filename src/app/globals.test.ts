@@ -77,6 +77,17 @@ describe("public timeline visual tokens", () => {
     expect(css).toMatch(/\.editor-network-preview path\s*\{[\s\S]*?stroke-linecap:\s*butt/);
   });
 
+  it("keeps connector strokes behind opaque Gantt items while editor controls remain above them", () => {
+    expect(css).toMatch(/\.lane-track\s*\{[\s\S]*?z-index:\s*3[\s\S]*?isolation:\s*isolate/);
+    expect(css).toMatch(/\.connection-layer\s*\{[\s\S]*?z-index:\s*2/);
+    expect(css).toMatch(/\.editor-network-preview\s*\{[\s\S]*?z-index:\s*4/);
+    expect(css).toMatch(/\.editor-bar,\s*\.editor-future-item\s*\{[\s\S]*?z-index:\s*5/);
+    expect(css).toMatch(/\.connector-editor-routes\s*\{[\s\S]*?z-index:\s*2/);
+    expect(css).toMatch(/\.connector-board-item\s*\{[\s\S]*?z-index:\s*3/);
+    expect(css).toMatch(/\.connector-editor-controls\s*\{[\s\S]*?z-index:\s*8[\s\S]*?pointer-events:\s*none/);
+    expect(css).toMatch(/\.connector-mid-handle,\s*\.connector-elbow-handle,\s*\.connector-terminal-handle\s*\{[\s\S]*?pointer-events:\s*all/);
+  });
+
   it("uses the matching signal-red plus favicon", () => {
     expect(favicon).toContain('#D6452F');
     expect(favicon).toContain('<path');

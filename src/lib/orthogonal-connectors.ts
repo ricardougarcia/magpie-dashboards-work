@@ -26,6 +26,7 @@ type StraightConnectorCandidate = Pick<OrthogonalConnectorRoute, "source" | "tar
 const FRAME_PADDING = 28;
 const GRID = 4;
 const BORDER_EPSILON = 0.001;
+export const TERMINAL_ALIGNMENT_SNAP_THRESHOLD = 6;
 
 export function createDefaultConnector(sourceRect: ConnectorRect, targetRect: ConnectorRect): OrthogonalConnectorRoute {
   const sourceCenter = rectCenter(sourceRect);
@@ -197,6 +198,25 @@ export function moveTerminal(
   sourceRect: ConnectorRect,
   targetRect: ConnectorRect,
 ) {
+  const moved = routeWithMovedTerminal(route, terminal, nextTerminal, sourceRect, targetRect);
+  const movedPoints = resolveConnectorPoints(moved, sourceRect, targetRect);
+  const terminalRect = terminal === "source" ? sourceRect : targetRect;
+  const snappedTerminal = nearCollinearTerminal(moved, terminal, movedPoints, terminalRect);
+  if (!snappedTerminal) return moved;
+
+  const snapped = routeWithMovedTerminal(route, terminal, snappedTerminal, sourceRect, targetRect);
+  const snappedPoints = resolveConnectorPoints(snapped, sourceRect, targetRect);
+  if (!routeIsSafe(snapped, snappedPoints, sourceRect, targetRect)) return moved;
+  return snapped;
+}
+
+function routeWithMovedTerminal(
+  route: OrthogonalConnectorRoute,
+  terminal: "source" | "target",
+  nextTerminal: ConnectorTerminal,
+  sourceRect: ConnectorRect,
+  targetRect: ConnectorRect,
+) {
   const next = structuredClone(route);
   next[terminal] = nextTerminal;
   const points = resolveConnectorPoints(next, sourceRect, targetRect);
@@ -204,6 +224,54 @@ export function moveTerminal(
   points[endpointIndex] = terminalPoint(terminal === "source" ? sourceRect : targetRect, nextTerminal);
   alignTerminalApproach(points, nextTerminal.side, terminal);
   return routeFromPixelPoints({ ...next, points }, sourceRect, targetRect);
+}
+
+function nearCollinearTerminal(
+  route: OrthogonalConnectorRoute,
+  terminal: "source" | "target",
+  points: ConnectorPixelPoint[],
+  rect: ConnectorRect,
+): ConnectorTerminal | null {
+  const ordered = terminal === "source" ? points : [...points].reverse();
+  const [endpoint, firstElbow, secondElbow, continuation] = ordered;
+  if (!endpoint || !firstElbow || !secondElbow || !continuation) return null;
+
+  const side = route[terminal].side;
+  const verticalTerminal = side === "top" || side === "bottom";
+  const matchingPattern = verticalTerminal
+    ? endpoint.x === firstElbow.x
+      && firstElbow.y === secondElbow.y
+      && secondElbow.x === continuation.x
+    : endpoint.y === firstElbow.y
+      && firstElbow.x === secondElbow.x
+      && secondElbow.y === continuation.y;
+  if (!matchingPattern) return null;
+
+  const currentAxis = verticalTerminal ? endpoint.x : endpoint.y;
+  const continuationAxis = verticalTerminal ? secondElbow.x : secondElbow.y;
+  const separation = Math.abs(currentAxis - continuationAxis);
+  if (separation <= BORDER_EPSILON || separation > TERMINAL_ALIGNMENT_SNAP_THRESHOLD) return null;
+
+  const candidate = terminalAtCoordinate(rect, side, continuationAxis);
+  const candidatePoint = terminalPoint(rect, candidate);
+  const candidateAxis = verticalTerminal ? candidatePoint.x : candidatePoint.y;
+  return Math.abs(candidateAxis - continuationAxis) <= BORDER_EPSILON ? candidate : null;
+}
+
+function routeIsSafe(
+  route: OrthogonalConnectorRoute,
+  points: ConnectorPixelPoint[],
+  sourceRect: ConnectorRect,
+  targetRect: ConnectorRect,
+) {
+  if (points.length < 2) return false;
+  const orthogonal = points.slice(1).every((point, index) => (
+    points[index].x === point.x || points[index].y === point.y
+  ));
+  return orthogonal
+    && terminalApproachIsOutward(points[0], points[1], route.source.side)
+    && terminalApproachIsOutward(points.at(-1)!, points.at(-2)!, route.target.side)
+    && routeAvoidsRectInteriors(points, [sourceRect, targetRect]);
 }
 
 export function slideSegment(
@@ -454,8 +522,19 @@ function responsiveDirectPoints(
     const targetBottom = targetRect.top + targetRect.height;
     const separated = (source.side === "bottom" && target.side === "top" && sourceBottom <= targetRect.top)
       || (source.side === "top" && target.side === "bottom" && targetBottom <= sourceRect.top);
+    if (!separated) return null;
+    const storedSource = terminalPoint(sourceRect, source);
+    const storedTarget = terminalPoint(targetRect, target);
+    if (Math.abs(storedSource.x - storedTarget.x) <= BORDER_EPSILON) {
+      const direct = [storedSource, storedTarget];
+      return terminalApproachIsOutward(direct[0], direct[1], source.side)
+        && terminalApproachIsOutward(direct[1], direct[0], target.side)
+        && routeAvoidsRectInteriors(direct, [sourceRect, targetRect])
+        ? direct
+        : null;
+    }
     const sharedX = sharedTerminalCoordinate(sourceRect.left, sourceRect.width, targetRect.left, targetRect.width);
-    if (!separated || sharedX === null) return null;
+    if (sharedX === null) return null;
     source = terminalAtCoordinate(sourceRect, source.side, sharedX);
     target = terminalAtCoordinate(targetRect, target.side, sharedX);
   } else if (horizontal) {
@@ -463,8 +542,19 @@ function responsiveDirectPoints(
     const targetRight = targetRect.left + targetRect.width;
     const separated = (source.side === "right" && target.side === "left" && sourceRight <= targetRect.left)
       || (source.side === "left" && target.side === "right" && targetRight <= sourceRect.left);
+    if (!separated) return null;
+    const storedSource = terminalPoint(sourceRect, source);
+    const storedTarget = terminalPoint(targetRect, target);
+    if (Math.abs(storedSource.y - storedTarget.y) <= BORDER_EPSILON) {
+      const direct = [storedSource, storedTarget];
+      return terminalApproachIsOutward(direct[0], direct[1], source.side)
+        && terminalApproachIsOutward(direct[1], direct[0], target.side)
+        && routeAvoidsRectInteriors(direct, [sourceRect, targetRect])
+        ? direct
+        : null;
+    }
     const sharedY = sharedTerminalCoordinate(sourceRect.top, sourceRect.height, targetRect.top, targetRect.height);
-    if (!separated || sharedY === null) return null;
+    if (sharedY === null) return null;
     source = terminalAtCoordinate(sourceRect, source.side, sharedY);
     target = terminalAtCoordinate(targetRect, target.side, sharedY);
   } else {
