@@ -19,6 +19,10 @@ export type ConnectorPixelPoint = {
 
 type RouteFrame = ConnectorRect;
 
+type StraightConnectorCandidate = Pick<OrthogonalConnectorRoute, "source" | "target"> & {
+  points: ConnectorPixelPoint[];
+};
+
 const FRAME_PADDING = 28;
 const GRID = 4;
 
@@ -43,52 +47,41 @@ export function straightenConnector(
   sourceRect: ConnectorRect,
   targetRect: ConnectorRect,
 ): OrthogonalConnectorRoute {
-  const start = terminalPoint(sourceRect, route.source);
-  const end = terminalPoint(targetRect, route.target);
-  const clearance = GRID * 4;
-  const sourceOutside = outwardPoint(start, route.source.side, clearance);
-  const targetOutside = outwardPoint(end, route.target.side, clearance);
-  const leftCorridor = Math.min(sourceRect.left, targetRect.left) - clearance;
-  const rightCorridor = Math.max(
-    sourceRect.left + sourceRect.width,
-    targetRect.left + targetRect.width,
-  ) + clearance;
-  const topCorridor = Math.min(sourceRect.top, targetRect.top) - clearance;
-  const bottomCorridor = Math.max(
-    sourceRect.top + sourceRect.height,
-    targetRect.top + targetRect.height,
-  ) + clearance;
+  const candidates: StraightConnectorCandidate[] = [];
+  const addCandidate = (
+    source: ConnectorTerminal,
+    target: ConnectorTerminal,
+    points: ConnectorPixelPoint[],
+  ) => {
+    const simplified = simplifyOrthogonalPoints(points);
+    if (simplified.length > 3 || simplified.length < 2) return;
+    if (!terminalApproachIsOutward(simplified[0], simplified[1], source.side)) return;
+    if (!terminalApproachIsOutward(simplified.at(-1)!, simplified.at(-2)!, target.side)) return;
+    if (!routeAvoidsRectInteriors(simplified, [sourceRect, targetRect])) return;
+    candidates.push({ source, target, points: simplified });
+  };
 
-  const coreCandidates: ConnectorPixelPoint[][] = [];
-  if (sourceOutside.x === targetOutside.x || sourceOutside.y === targetOutside.y) {
-    coreCandidates.push([sourceOutside, targetOutside]);
-  }
-  coreCandidates.push(
-    [sourceOutside, { x: targetOutside.x, y: sourceOutside.y }, targetOutside],
-    [sourceOutside, { x: sourceOutside.x, y: targetOutside.y }, targetOutside],
-    [sourceOutside, { x: leftCorridor, y: sourceOutside.y }, { x: leftCorridor, y: targetOutside.y }, targetOutside],
-    [sourceOutside, { x: rightCorridor, y: sourceOutside.y }, { x: rightCorridor, y: targetOutside.y }, targetOutside],
-    [sourceOutside, { x: sourceOutside.x, y: topCorridor }, { x: targetOutside.x, y: topCorridor }, targetOutside],
-    [sourceOutside, { x: sourceOutside.x, y: bottomCorridor }, { x: targetOutside.x, y: bottomCorridor }, targetOutside],
-  );
+  const addTerminalPair = (source: ConnectorTerminal, target: ConnectorTerminal) => {
+    const start = terminalPoint(sourceRect, source);
+    const end = terminalPoint(targetRect, target);
+    oneElbowPointSets(start, end).forEach((points) => addCandidate(source, target, points));
+  };
 
-  const candidates = coreCandidates
-    .map((core) => simplifyOrthogonalPoints([start, ...core, end]))
-    .filter((points) => routeAvoidsRectInteriors(points, [sourceRect, targetRect]))
-    .sort((first, second) => {
-      const lengthDifference = routeLength(first) - routeLength(second);
-      return lengthDifference || first.length - second.length;
-    });
+  addTerminalPair(route.source, route.target);
+  automaticStraightCandidates(sourceRect, targetRect).forEach((candidate) => {
+    addCandidate(candidate.source, candidate.target, candidate.points);
+  });
 
-  const points = candidates[0] ?? [
-    start,
-    sourceOutside,
-    { x: sourceOutside.x, y: topCorridor },
-    { x: targetOutside.x, y: topCorridor },
-    targetOutside,
-    end,
-  ];
-  return routeFromPixelPoints({ source: route.source, target: route.target, points }, sourceRect, targetRect);
+  candidates.sort((first, second) => {
+    const lengthDifference = routeLength(first.points) - routeLength(second.points);
+    const elbowDifference = first.points.length - second.points.length;
+    const terminalDifference = terminalChangeCount(first, route) - terminalChangeCount(second, route);
+    return lengthDifference || elbowDifference || terminalDifference;
+  });
+
+  const selected = candidates[0] ?? automaticStraightCandidates(sourceRect, targetRect)[0];
+  if (!selected) return route;
+  return routeFromPixelPoints(selected, sourceRect, targetRect);
 }
 
 export function resolveConnectorPoints(
@@ -102,6 +95,19 @@ export function resolveConnectorPoints(
 
   points[0] = terminalPoint(sourceRect, route.source);
   points[points.length - 1] = terminalPoint(targetRect, route.target);
+  if (route.points.length <= 3) {
+    const start = points[0];
+    const end = points.at(-1)!;
+    const compact = oneElbowPointSets(start, end)
+      .map(simplifyOrthogonalPoints)
+      .find((candidate) => (
+        candidate.length >= 2
+        && terminalApproachIsOutward(candidate[0], candidate[1], route.source.side)
+        && terminalApproachIsOutward(candidate.at(-1)!, candidate.at(-2)!, route.target.side)
+        && routeAvoidsRectInteriors(candidate, [sourceRect, targetRect])
+      ));
+    if (compact) return compact;
+  }
   if (points.length >= 3) {
     alignTerminalApproach(points, route.source.side, "source");
     alignTerminalApproach(points, route.target.side, "target");
@@ -115,13 +121,23 @@ export function routeFromPixelPoints(
   targetRect: ConnectorRect,
 ): OrthogonalConnectorRoute {
   const frame = routeFrame(sourceRect, targetRect);
-  const points = orthogonalizeConnectorPoints(route.points, route.source.side, route.target.side)
-    .map((point) => toNormalized(point, frame));
+  const compact = route.points.length <= 3 && route.points.slice(1).every((point, index) => (
+    route.points[index].x === point.x || route.points[index].y === point.y
+  ));
+  const pixelPoints = compact
+    ? simplifyOrthogonalPoints(route.points.map((point) => ({ x: round(point.x), y: round(point.y) })))
+    : orthogonalizeConnectorPoints(route.points, route.source.side, route.target.side);
+  const points = pixelPoints.map((point) => toNormalized(point, frame));
   return { source: route.source, target: route.target, points };
 }
 
 export function connectorPath(points: ConnectorPixelPoint[]) {
-  const orthogonal = orthogonalizeConnectorPoints(points);
+  const alreadyOrthogonal = points.slice(1).every((point, index) => (
+    points[index].x === point.x || points[index].y === point.y
+  ));
+  const orthogonal = alreadyOrthogonal
+    ? simplifyOrthogonalPoints(points.map((point) => ({ x: round(point.x), y: round(point.y) })))
+    : orthogonalizeConnectorPoints(points);
   if (orthogonal.length === 0) return "";
   return orthogonal.slice(1).reduce((path, point, index) => {
     const previous = orthogonal[index];
@@ -411,15 +427,128 @@ function simplifyOrthogonalPoints(points: ConnectorPixelPoint[]) {
   });
 }
 
-function outwardPoint(
-  endpoint: ConnectorPixelPoint,
+function oneElbowPointSets(start: ConnectorPixelPoint, end: ConnectorPixelPoint) {
+  if (start.x === end.x || start.y === end.y) return [[start, end]];
+  return [
+    [start, { x: end.x, y: start.y }, end],
+    [start, { x: start.x, y: end.y }, end],
+  ];
+}
+
+function automaticStraightCandidates(
+  sourceRect: ConnectorRect,
+  targetRect: ConnectorRect,
+): StraightConnectorCandidate[] {
+  const candidates: StraightConnectorCandidate[] = [];
+  const sourceCenter = rectCenter(sourceRect);
+  const targetCenter = rectCenter(targetRect);
+  const targetIsRight = targetCenter.x >= sourceCenter.x;
+  const targetIsBelow = targetCenter.y >= sourceCenter.y;
+  const horizontalGap = targetIsRight
+    ? targetRect.left >= sourceRect.left + sourceRect.width
+    : sourceRect.left >= targetRect.left + targetRect.width;
+  const verticalGap = targetIsBelow
+    ? targetRect.top >= sourceRect.top + sourceRect.height
+    : sourceRect.top >= targetRect.top + targetRect.height;
+
+  const sharedY = sharedTerminalCoordinate(
+    sourceRect.top,
+    sourceRect.height,
+    targetRect.top,
+    targetRect.height,
+  );
+  if (horizontalGap && sharedY !== null) {
+    const source = terminalAtCoordinate(sourceRect, targetIsRight ? "right" : "left", sharedY);
+    const target = terminalAtCoordinate(targetRect, targetIsRight ? "left" : "right", sharedY);
+    candidates.push({
+      source,
+      target,
+      points: [terminalPoint(sourceRect, source), terminalPoint(targetRect, target)],
+    });
+  }
+
+  const sharedX = sharedTerminalCoordinate(
+    sourceRect.left,
+    sourceRect.width,
+    targetRect.left,
+    targetRect.width,
+  );
+  if (verticalGap && sharedX !== null) {
+    const source = terminalAtCoordinate(sourceRect, targetIsBelow ? "bottom" : "top", sharedX);
+    const target = terminalAtCoordinate(targetRect, targetIsBelow ? "top" : "bottom", sharedX);
+    candidates.push({
+      source,
+      target,
+      points: [terminalPoint(sourceRect, source), terminalPoint(targetRect, target)],
+    });
+  }
+
+  const horizontalSource: ConnectorTerminal = {
+    side: targetIsRight ? "right" : "left",
+    offset: targetIsBelow ? 0.92 : 0.08,
+  };
+  const verticalTarget: ConnectorTerminal = {
+    side: targetIsBelow ? "top" : "bottom",
+    offset: targetIsRight ? 0.08 : 0.92,
+  };
+  const horizontalStart = terminalPoint(sourceRect, horizontalSource);
+  const verticalEnd = terminalPoint(targetRect, verticalTarget);
+  candidates.push({
+    source: horizontalSource,
+    target: verticalTarget,
+    points: [horizontalStart, { x: verticalEnd.x, y: horizontalStart.y }, verticalEnd],
+  });
+
+  const verticalSource: ConnectorTerminal = {
+    side: targetIsBelow ? "bottom" : "top",
+    offset: targetIsRight ? 0.92 : 0.08,
+  };
+  const horizontalTarget: ConnectorTerminal = {
+    side: targetIsRight ? "left" : "right",
+    offset: targetIsBelow ? 0.08 : 0.92,
+  };
+  const verticalStart = terminalPoint(sourceRect, verticalSource);
+  const horizontalEnd = terminalPoint(targetRect, horizontalTarget);
+  candidates.push({
+    source: verticalSource,
+    target: horizontalTarget,
+    points: [verticalStart, { x: verticalStart.x, y: horizontalEnd.y }, horizontalEnd],
+  });
+
+  return candidates;
+}
+
+function sharedTerminalCoordinate(
+  firstStart: number,
+  firstLength: number,
+  secondStart: number,
+  secondLength: number,
+) {
+  const minimum = Math.max(firstStart + firstLength * 0.08, secondStart + secondLength * 0.08);
+  const maximum = Math.min(firstStart + firstLength * 0.92, secondStart + secondLength * 0.92);
+  return minimum <= maximum ? round(midpoint(minimum, maximum)) : null;
+}
+
+function terminalAtCoordinate(
+  rect: ConnectorRect,
   side: ConnectorTerminalSide,
-  distance: number,
-): ConnectorPixelPoint {
-  if (side === "top") return { x: endpoint.x, y: endpoint.y - distance };
-  if (side === "right") return { x: endpoint.x + distance, y: endpoint.y };
-  if (side === "bottom") return { x: endpoint.x, y: endpoint.y + distance };
-  return { x: endpoint.x - distance, y: endpoint.y };
+  coordinate: number,
+): ConnectorTerminal {
+  const offset = side === "top" || side === "bottom"
+    ? (coordinate - rect.left) / rect.width
+    : (coordinate - rect.top) / rect.height;
+  return { side, offset: round(clamp(offset, 0.08, 0.92)) };
+}
+
+function terminalChangeCount(
+  candidate: Pick<OrthogonalConnectorRoute, "source" | "target">,
+  route: Pick<OrthogonalConnectorRoute, "source" | "target">,
+) {
+  const sourceChanged = candidate.source.side !== route.source.side
+    || candidate.source.offset !== route.source.offset;
+  const targetChanged = candidate.target.side !== route.target.side
+    || candidate.target.offset !== route.target.offset;
+  return Number(sourceChanged) + Number(targetChanged);
 }
 
 function routeAvoidsRectInteriors(points: ConnectorPixelPoint[], rects: ConnectorRect[]) {

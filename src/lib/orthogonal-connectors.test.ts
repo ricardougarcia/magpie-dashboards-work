@@ -121,19 +121,20 @@ describe("owner-defined orthogonal connector geometry", () => {
     expect(points.at(-1)).toEqual(terminalPoint(movedTarget, route.target));
   });
 
-  it("straightens a manipulated route to the shortest border-safe path while preserving its terminals", () => {
+  it("straightens a manipulated route to the shortest border-safe path with no more than one elbow", () => {
     let route = createDefaultConnector(source, target);
     route = injectElbow(route, 1, { x: 0, y: 80 }, source, target);
     route = injectElbow(route, 2, { x: 64, y: 0 }, source, target);
     const before = resolveConnectorPoints(route, source, target);
     const straightened = straightenConnector(route, source, target);
     const after = resolveConnectorPoints(straightened, source, target);
-    const start = terminalPoint(source, route.source);
-    const end = terminalPoint(target, route.target);
+    const start = terminalPoint(source, straightened.source);
+    const end = terminalPoint(target, straightened.target);
 
-    expect(straightened.source).toEqual(route.source);
-    expect(straightened.target).toEqual(route.target);
     expect(after.length).toBeLessThan(before.length);
+    expect(after.length).toBeLessThanOrEqual(3);
+    const pathCommands = connectorPath(after).split(/\s+/).filter((token) => token === "H" || token === "V");
+    expect(pathCommands.length).toBeLessThanOrEqual(2);
     expect(routeLength(after)).toBe(Math.abs(end.x - start.x) + Math.abs(end.y - start.y));
     expectOrthogonal(after);
     expectBorderStop(after[0], source, straightened.source);
@@ -144,7 +145,7 @@ describe("owner-defined orthogonal connector geometry", () => {
     expectNoInteriorPenetration(after, target);
   });
 
-  it("preserves every chosen terminal side and offset when straightening", () => {
+  it("reselects incompatible terminals as needed while keeping every straightened route to one elbow", () => {
     const sides = ["top", "right", "bottom", "left"] as const;
     sides.forEach((sourceSide, sourceIndex) => {
       sides.forEach((targetSide, targetIndex) => {
@@ -157,17 +158,57 @@ describe("owner-defined orthogonal connector geometry", () => {
         const straightened = straightenConnector(route, source, target);
         const points = resolveConnectorPoints(straightened, source, target);
 
-        expect(straightened.source).toEqual(sourceTerminal);
-        expect(straightened.target).toEqual(targetTerminal);
+        expect(points.length).toBeLessThanOrEqual(3);
         expectOrthogonal(points);
-        expectBorderStop(points[0], source, sourceTerminal);
-        expectBorderStop(points.at(-1)!, target, targetTerminal);
-        expectOutwardApproach(points[0], points[1], sourceSide);
-        expectOutwardApproach(points.at(-1)!, points.at(-2)!, targetSide);
+        expectBorderStop(points[0], source, straightened.source);
+        expectBorderStop(points.at(-1)!, target, straightened.target);
+        expectOutwardApproach(points[0], points[1], straightened.source.side);
+        expectOutwardApproach(points.at(-1)!, points.at(-2)!, straightened.target.side);
         expectNoInteriorPenetration(points, source);
         expectNoInteriorPenetration(points, target);
       });
     });
+  });
+
+  it("keeps one-elbow straightening border-safe in every relative item quadrant", () => {
+    const centeredSource: ConnectorRect = { left: 300, top: 200, width: 150, height: 30 };
+    const targets: ConnectorRect[] = [
+      { left: 600, top: 360, width: 180, height: 30 },
+      { left: 20, top: 360, width: 180, height: 30 },
+      { left: 600, top: 20, width: 180, height: 30 },
+      { left: 20, top: 20, width: 180, height: 30 },
+    ];
+
+    targets.forEach((quadrantTarget) => {
+      const straightened = straightenConnector(
+        createDefaultConnector(centeredSource, quadrantTarget),
+        centeredSource,
+        quadrantTarget,
+      );
+      const points = resolveConnectorPoints(straightened, centeredSource, quadrantTarget);
+
+      expect(points.length).toBeLessThanOrEqual(3);
+      expectOrthogonal(points);
+      expectBorderStop(points[0], centeredSource, straightened.source);
+      expectBorderStop(points.at(-1)!, quadrantTarget, straightened.target);
+      expectOutwardApproach(points[0], points[1], straightened.source.side);
+      expectOutwardApproach(points.at(-1)!, points.at(-2)!, straightened.target.side);
+      expectNoInteriorPenetration(points, centeredSource);
+      expectNoInteriorPenetration(points, quadrantTarget);
+    });
+  });
+
+  it("uses a zero-elbow direct route when item borders can be aligned", () => {
+    const alignedTarget: ConnectorRect = { left: 360, top: 30, width: 180, height: 30 };
+    const straightened = straightenConnector(createDefaultConnector(source, alignedTarget), source, alignedTarget);
+    const points = resolveConnectorPoints(straightened, source, alignedTarget);
+
+    expect(points).toHaveLength(2);
+    expectOrthogonal(points);
+    expectBorderStop(points[0], source, straightened.source);
+    expectBorderStop(points[1], alignedTarget, straightened.target);
+    expectNoInteriorPenetration(points, source);
+    expectNoInteriorPenetration(points, alignedTarget);
   });
 
   it("moves either terminal to a new border while preserving a right-angle path", () => {
