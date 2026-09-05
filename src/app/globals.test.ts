@@ -63,6 +63,13 @@ describe("public timeline visual tokens", () => {
     expect(css).toMatch(/\.guiding-light-tether-layer path\s*\{[\s\S]*?stroke-linecap:\s*butt/);
   });
 
+  it("layers one continuous non-interactive ink surface under partially inverted Guiding Light labels", () => {
+    expect(css).toMatch(/\.guiding-light-track\s*\{[\s\S]*?position:\s*relative[\s\S]*?isolation:\s*isolate/);
+    expect(css).toMatch(/\.guiding-light-ink-canvas\s*\{[\s\S]*?position:\s*absolute[\s\S]*?inset:\s*0[\s\S]*?pointer-events:\s*none/);
+    expect(css).toMatch(/\.guiding-light-cell \.guiding-light-name\s*\{[\s\S]*?mix-blend-mode:\s*difference/);
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.guiding-light-ink-canvas\s*\{\s*display:\s*none/);
+  });
+
   it("stops every visible connector stroke at its calculated item-border endpoint", () => {
     expect(css).toMatch(/\.connection-layer path:not\(\[d\^="M 0"\]\)\s*\{[\s\S]*?stroke-linecap:\s*butt/);
     expect(css).toMatch(/\.connector-route-shadow,\s*\.connector-route-line\s*\{[\s\S]*?stroke-linecap:\s*butt/);

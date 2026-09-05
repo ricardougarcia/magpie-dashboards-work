@@ -16,6 +16,7 @@ import {
   useState,
 } from "react";
 import { CoordinateCursor } from "@/components/coordinate-cursor";
+import { GuidingLightInkTrail } from "@/components/guiding-light-ink-trail";
 import {
   LANE_CODES,
   TelemetryAperture,
@@ -100,6 +101,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const apertureRef = useRef<HTMLElement | null>(null);
   const itemRefs = useRef(new Map<string, HTMLElement>());
   const guidingLightRefs = useRef(new Map<GuidingLight, HTMLButtonElement>());
+  const guidingLightTrackRef = useRef<HTMLDivElement>(null);
 
   const publicItems = data.items;
   const selectedItem = publicItems.find((item) => item.id === selectedId) ?? null;
@@ -560,7 +562,8 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
             <div className="timeline-canvas" ref={canvasRef} data-gantt-background>
               <div className="phase-row guiding-light-row">
                 <div className="axis-spacer"><span>Guiding Light</span></div>
-                <div className="guiding-light-track" role="group" aria-label="Focus timeline by Guiding Light">
+                <div ref={guidingLightTrackRef} className="guiding-light-track" role="group" aria-label="Focus timeline by Guiding Light">
+                  <GuidingLightInkTrail trackRef={guidingLightTrackRef} disabled={Boolean(reduceMotion)} />
                   {GUIDING_LIGHTS.map((guidingLight, index) => (
                     <button
                       ref={(node) => {
@@ -574,7 +577,8 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
                       aria-pressed={activeGuidingLight === guidingLight}
                       onClick={() => selectGuidingLight(guidingLight)}
                     >
-                      <span>[0{index + 1}]</span>{guidingLight}
+                      <span className="guiding-light-index">[0{index + 1}]</span>
+                      <span className="guiding-light-name">{guidingLight}</span>
                     </button>
                   ))}
                 </div>

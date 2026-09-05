@@ -391,10 +391,23 @@ select:focus-visible {
 }
 
 .guiding-light-track {
+  position: relative;
+  isolation: isolate;
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
+.guiding-light-ink-canvas {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 .guiding-light-cell {
+  position: relative;
   display: flex;
   gap: 9px;
   align-items: center;
@@ -414,11 +427,22 @@ select:focus-visible {
   transition: color 160ms ease, background-color 160ms ease;
 }
 
-.guiding-light-cell span {
+.guiding-light-cell .guiding-light-index,
+.guiding-light-cell .guiding-light-name {
+  position: relative;
+  z-index: 2;
   flex: 0 0 auto;
+}
+
+.guiding-light-cell .guiding-light-index {
   color: var(--signal);
   font-family: var(--font-mono), monospace;
   font-size: 9px;
+}
+
+.guiding-light-cell .guiding-light-name {
+  color: var(--paper);
+  mix-blend-mode: difference;
 }
 
 .guiding-light-cell:hover,
@@ -431,7 +455,7 @@ select:focus-visible {
   background: var(--ink);
 }
 
-.guiding-light-cell.is-active span {
+.guiding-light-cell.is-active .guiding-light-index {
   color: var(--signal);
 }
 
@@ -3963,6 +3987,10 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .guiding-light-cell {
     transition: none;
+  }
+
+  .guiding-light-ink-canvas {
+    display: none;
   }
 }
 

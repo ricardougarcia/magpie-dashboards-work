@@ -182,6 +182,10 @@ describe("PublicTimeline presentation safeguards", () => {
     const group = screen.getByRole("group", { name: "Focus timeline by Guiding Light" });
     const labels = Array.from(group.querySelectorAll("button")).map((button) => button.textContent?.replace(/\[\d+\]/, ""));
 
+    expect(group.querySelectorAll("canvas.guiding-light-ink-canvas")).toHaveLength(1);
+    expect(group.querySelector("canvas.guiding-light-ink-canvas")?.getAttribute("aria-hidden")).toBe("true");
+    expect(group.querySelectorAll("button.guiding-light-cell")).toHaveLength(5);
+    expect(group.querySelectorAll(".guiding-light-name")).toHaveLength(5);
     expect(labels).toEqual(["Learn", "Fix", "Stabilize", "Govern", "Grow"]);
     expect(screen.queryByText("Phase")).toBeNull();
     expect(screen.queryByText("Learn fast, stabilize faster")).toBeNull();
