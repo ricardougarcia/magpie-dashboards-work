@@ -11,6 +11,7 @@ import {
   orthogonalizeConnectorPoints,
   resolveConnectorPoints,
   slideSegment,
+  straightenConnector,
   terminalPoint,
   type ConnectorPixelPoint,
   type ConnectorRect,
@@ -37,6 +38,26 @@ function expectBorderStop(point: ConnectorPixelPoint, rect: ConnectorRect, termi
   expect(point.x).toBeLessThanOrEqual(right);
   expect(point.y).toBeGreaterThanOrEqual(rect.top);
   expect(point.y).toBeLessThanOrEqual(bottom);
+}
+
+function routeLength(points: ConnectorPixelPoint[]) {
+  return points.slice(1).reduce((total, point, index) => (
+    total + Math.abs(point.x - points[index].x) + Math.abs(point.y - points[index].y)
+  ), 0);
+}
+
+function expectNoInteriorPenetration(points: ConnectorPixelPoint[], rect: ConnectorRect) {
+  const right = rect.left + rect.width;
+  const bottom = rect.top + rect.height;
+  points.slice(1).forEach((point, index) => {
+    const previous = points[index];
+    if (previous.y === point.y && previous.y > rect.top && previous.y < bottom) {
+      expect(Math.max(previous.x, point.x) <= rect.left || Math.min(previous.x, point.x) >= right).toBe(true);
+    }
+    if (previous.x === point.x && previous.x > rect.left && previous.x < right) {
+      expect(Math.max(previous.y, point.y) <= rect.top || Math.min(previous.y, point.y) >= bottom).toBe(true);
+    }
+  });
 }
 
 function expectOutwardApproach(endpoint: ConnectorPixelPoint, adjacent: ConnectorPixelPoint, side: ConnectorTerminal["side"]) {
@@ -98,6 +119,55 @@ describe("owner-defined orthogonal connector geometry", () => {
     expectOrthogonal(points);
     expect(points[0]).toEqual(terminalPoint(movedSource, route.source));
     expect(points.at(-1)).toEqual(terminalPoint(movedTarget, route.target));
+  });
+
+  it("straightens a manipulated route to the shortest border-safe path while preserving its terminals", () => {
+    let route = createDefaultConnector(source, target);
+    route = injectElbow(route, 1, { x: 0, y: 80 }, source, target);
+    route = injectElbow(route, 2, { x: 64, y: 0 }, source, target);
+    const before = resolveConnectorPoints(route, source, target);
+    const straightened = straightenConnector(route, source, target);
+    const after = resolveConnectorPoints(straightened, source, target);
+    const start = terminalPoint(source, route.source);
+    const end = terminalPoint(target, route.target);
+
+    expect(straightened.source).toEqual(route.source);
+    expect(straightened.target).toEqual(route.target);
+    expect(after.length).toBeLessThan(before.length);
+    expect(routeLength(after)).toBe(Math.abs(end.x - start.x) + Math.abs(end.y - start.y));
+    expectOrthogonal(after);
+    expectBorderStop(after[0], source, straightened.source);
+    expectBorderStop(after.at(-1)!, target, straightened.target);
+    expectOutwardApproach(after[0], after[1], straightened.source.side);
+    expectOutwardApproach(after.at(-1)!, after.at(-2)!, straightened.target.side);
+    expectNoInteriorPenetration(after, source);
+    expectNoInteriorPenetration(after, target);
+  });
+
+  it("preserves every chosen terminal side and offset when straightening", () => {
+    const sides = ["top", "right", "bottom", "left"] as const;
+    sides.forEach((sourceSide, sourceIndex) => {
+      sides.forEach((targetSide, targetIndex) => {
+        let route = createDefaultConnector(source, target);
+        const sourceTerminal = { side: sourceSide, offset: 0.2 + sourceIndex * 0.17 };
+        const targetTerminal = { side: targetSide, offset: 0.23 + targetIndex * 0.16 };
+        route = moveTerminal(route, "source", sourceTerminal, source, target);
+        route = moveTerminal(route, "target", targetTerminal, source, target);
+        route = injectElbow(route, 1, { x: 44, y: 56 }, source, target);
+        const straightened = straightenConnector(route, source, target);
+        const points = resolveConnectorPoints(straightened, source, target);
+
+        expect(straightened.source).toEqual(sourceTerminal);
+        expect(straightened.target).toEqual(targetTerminal);
+        expectOrthogonal(points);
+        expectBorderStop(points[0], source, sourceTerminal);
+        expectBorderStop(points.at(-1)!, target, targetTerminal);
+        expectOutwardApproach(points[0], points[1], sourceSide);
+        expectOutwardApproach(points.at(-1)!, points.at(-2)!, targetSide);
+        expectNoInteriorPenetration(points, source);
+        expectNoInteriorPenetration(points, target);
+      });
+    });
   });
 
   it("moves either terminal to a new border while preserving a right-angle path", () => {

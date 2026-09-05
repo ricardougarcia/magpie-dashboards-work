@@ -38,6 +38,59 @@ export function createDefaultConnector(sourceRect: ConnectorRect, targetRect: Co
   return routeFromPixelPoints({ source, target, points }, sourceRect, targetRect);
 }
 
+export function straightenConnector(
+  route: OrthogonalConnectorRoute,
+  sourceRect: ConnectorRect,
+  targetRect: ConnectorRect,
+): OrthogonalConnectorRoute {
+  const start = terminalPoint(sourceRect, route.source);
+  const end = terminalPoint(targetRect, route.target);
+  const clearance = GRID * 4;
+  const sourceOutside = outwardPoint(start, route.source.side, clearance);
+  const targetOutside = outwardPoint(end, route.target.side, clearance);
+  const leftCorridor = Math.min(sourceRect.left, targetRect.left) - clearance;
+  const rightCorridor = Math.max(
+    sourceRect.left + sourceRect.width,
+    targetRect.left + targetRect.width,
+  ) + clearance;
+  const topCorridor = Math.min(sourceRect.top, targetRect.top) - clearance;
+  const bottomCorridor = Math.max(
+    sourceRect.top + sourceRect.height,
+    targetRect.top + targetRect.height,
+  ) + clearance;
+
+  const coreCandidates: ConnectorPixelPoint[][] = [];
+  if (sourceOutside.x === targetOutside.x || sourceOutside.y === targetOutside.y) {
+    coreCandidates.push([sourceOutside, targetOutside]);
+  }
+  coreCandidates.push(
+    [sourceOutside, { x: targetOutside.x, y: sourceOutside.y }, targetOutside],
+    [sourceOutside, { x: sourceOutside.x, y: targetOutside.y }, targetOutside],
+    [sourceOutside, { x: leftCorridor, y: sourceOutside.y }, { x: leftCorridor, y: targetOutside.y }, targetOutside],
+    [sourceOutside, { x: rightCorridor, y: sourceOutside.y }, { x: rightCorridor, y: targetOutside.y }, targetOutside],
+    [sourceOutside, { x: sourceOutside.x, y: topCorridor }, { x: targetOutside.x, y: topCorridor }, targetOutside],
+    [sourceOutside, { x: sourceOutside.x, y: bottomCorridor }, { x: targetOutside.x, y: bottomCorridor }, targetOutside],
+  );
+
+  const candidates = coreCandidates
+    .map((core) => simplifyOrthogonalPoints([start, ...core, end]))
+    .filter((points) => routeAvoidsRectInteriors(points, [sourceRect, targetRect]))
+    .sort((first, second) => {
+      const lengthDifference = routeLength(first) - routeLength(second);
+      return lengthDifference || first.length - second.length;
+    });
+
+  const points = candidates[0] ?? [
+    start,
+    sourceOutside,
+    { x: sourceOutside.x, y: topCorridor },
+    { x: targetOutside.x, y: topCorridor },
+    targetOutside,
+    end,
+  ];
+  return routeFromPixelPoints({ source: route.source, target: route.target, points }, sourceRect, targetRect);
+}
+
 export function resolveConnectorPoints(
   route: OrthogonalConnectorRoute,
   sourceRect: ConnectorRect,
@@ -286,11 +339,23 @@ export function orthogonalizeConnectorPoints(
   targetSide?: ConnectorTerminalSide,
 ) {
   if (points.length === 0) return [];
+  const lastIndex = points.length - 1;
   const candidates = points.map((point, index) => {
-    const endpoint = index === 0 || index === points.length - 1;
-    return endpoint
-      ? { x: round(point.x), y: round(point.y) }
-      : { x: snap(point.x), y: snap(point.y) };
+    const endpoint = index === 0 || index === lastIndex;
+    if (endpoint) return { x: round(point.x), y: round(point.y) };
+    if (index === 1 && sourceSide) {
+      const start = points[0];
+      return sourceSide === "top" || sourceSide === "bottom"
+        ? { x: round(start.x), y: snap(point.y) }
+        : { x: snap(point.x), y: round(start.y) };
+    }
+    if (index === lastIndex - 1 && targetSide) {
+      const end = points[lastIndex];
+      return targetSide === "top" || targetSide === "bottom"
+        ? { x: round(end.x), y: snap(point.y) }
+        : { x: snap(point.x), y: round(end.y) };
+    }
+    return { x: snap(point.x), y: snap(point.y) };
   });
   const orthogonal: ConnectorPixelPoint[] = [candidates[0]];
 
@@ -344,6 +409,49 @@ function simplifyOrthogonalPoints(points: ConnectorPixelPoint[]) {
     const next = deduplicated[index + 1];
     return !((previous.x === point.x && point.x === next.x) || (previous.y === point.y && point.y === next.y));
   });
+}
+
+function outwardPoint(
+  endpoint: ConnectorPixelPoint,
+  side: ConnectorTerminalSide,
+  distance: number,
+): ConnectorPixelPoint {
+  if (side === "top") return { x: endpoint.x, y: endpoint.y - distance };
+  if (side === "right") return { x: endpoint.x + distance, y: endpoint.y };
+  if (side === "bottom") return { x: endpoint.x, y: endpoint.y + distance };
+  return { x: endpoint.x - distance, y: endpoint.y };
+}
+
+function routeAvoidsRectInteriors(points: ConnectorPixelPoint[], rects: ConnectorRect[]) {
+  return points.slice(1).every((point, index) => rects.every((rect) => (
+    !segmentPenetratesRect(points[index], point, rect)
+  )));
+}
+
+function segmentPenetratesRect(
+  start: ConnectorPixelPoint,
+  end: ConnectorPixelPoint,
+  rect: ConnectorRect,
+) {
+  const right = rect.left + rect.width;
+  const bottom = rect.top + rect.height;
+  if (start.y === end.y) {
+    const minimum = Math.min(start.x, end.x);
+    const maximum = Math.max(start.x, end.x);
+    return start.y > rect.top && start.y < bottom && maximum > rect.left && minimum < right;
+  }
+  if (start.x === end.x) {
+    const minimum = Math.min(start.y, end.y);
+    const maximum = Math.max(start.y, end.y);
+    return start.x > rect.left && start.x < right && maximum > rect.top && minimum < bottom;
+  }
+  return true;
+}
+
+function routeLength(points: ConnectorPixelPoint[]) {
+  return points.slice(1).reduce((total, point, index) => (
+    total + Math.abs(point.x - points[index].x) + Math.abs(point.y - points[index].y)
+  ), 0);
 }
 
 function exteriorTerminalDogleg(

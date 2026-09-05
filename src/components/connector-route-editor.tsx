@@ -18,6 +18,7 @@ import {
   nearestTerminal,
   resolveConnectorPoints,
   slideSegment,
+  straightenConnector,
   terminalPoint,
   type ConnectorPixelPoint,
   type ConnectorRect,
@@ -200,8 +201,11 @@ export function ConnectorRouteEditor({
         <div className="connector-workspace-actions">
           <button
             type="button"
-            onClick={() => commitRoute(activeConnection, createDefaultConnector(sourceItem.rect, activeConnection.target.rect))}
-          ><RotateCcw size={14} /> Reset active line</button>
+            onClick={() => commitRoute(
+              activeConnection,
+              straightenConnector(activeConnection.route, sourceItem.rect, activeConnection.target.rect),
+            )}
+          ><RotateCcw size={14} /> Straighten active line</button>
           <button type="button" className="primary-button" onClick={onDone}><Check size={14} /> Done</button>
         </div>
       </header>

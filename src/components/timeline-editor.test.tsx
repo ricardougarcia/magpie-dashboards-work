@@ -176,6 +176,40 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     expect((saved as TimelineData | null)?.items.map((item) => item.colorToken)).toEqual(["steel", "forest", "forest", "forest"]);
   });
 
+  it("straightens only the active route, preserves its selected border terminal, and persists fewer elbows", async () => {
+    let saved: TimelineData | null = null;
+    vi.stubGlobal("fetch", vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      saved = JSON.parse(String(init?.body)) as TimelineData;
+      return new Response(JSON.stringify(saved), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    }));
+    const { container } = render(<TimelineEditor initialData={data} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Edit all Connected Work lines/ }));
+    fireEvent.click(screen.getAllByRole("button", { name: "top" })[0]);
+    const midpoint = container.querySelector<SVGRectElement>(".connector-mid-handle");
+    expect(midpoint).toBeTruthy();
+    fireEvent.pointerDown(midpoint!, { clientX: 280, clientY: 90, pointerId: 1 });
+    fireEvent.pointerMove(window, { clientX: 280, clientY: 170, pointerId: 1 });
+    fireEvent.pointerUp(window, { clientX: 280, clientY: 170, pointerId: 1 });
+    const elbowsBefore = container.querySelectorAll(".connector-elbow-handle").length;
+    expect(elbowsBefore).toBeGreaterThan(2);
+
+    fireEvent.click(screen.getByRole("button", { name: /Straighten active line/ }));
+    expect(container.querySelectorAll(".connector-elbow-handle").length).toBeLessThan(elbowsBefore);
+    fireEvent.click(screen.getByRole("button", { name: /^Done$/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Save changes/ }));
+    await waitFor(() => expect(saved).not.toBeNull());
+
+    const relations = (saved as unknown as TimelineData).items[0].relations;
+    expect(relations[0].connector?.source.side).toBe("top");
+    expect(relations[0].connector?.points.length).toBeLessThan(elbowsBefore + 2);
+    expect(relations[1].connector).toBeUndefined();
+    expect(relations.map((relation) => relation.targetId)).toEqual(["target-item", "second-target-item"]);
+  });
+
   it("edits one active route while preserving every 1:1 relationship and unrelated item", async () => {
     let saved: TimelineData | null = null;
     vi.stubGlobal("fetch", vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
@@ -196,7 +230,8 @@ describe("TimelineEditor orthogonal connector workflow", () => {
     expect(container.querySelector(".connector-board-item.is-active-target")?.textContent).toBe("Second target item");
     expect(container.querySelectorAll(".connector-terminal-handle")).toHaveLength(2);
 
-    fireEvent.click(screen.getByRole("button", { name: /Reset active line/ }));
+    expect(screen.queryByRole("button", { name: /Reset active line/ })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /Straighten active line/ }));
     fireEvent.click(screen.getByRole("button", { name: /^Done$/ }));
     expect(screen.getByText("Custom route saved")).toBeTruthy();
 
