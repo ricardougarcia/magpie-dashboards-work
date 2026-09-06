@@ -15,6 +15,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { PanelReplacement } from "@/components/panel-replacement";
 import { CoordinateCursor } from "@/components/coordinate-cursor";
 import { GuidingLightInkTrail } from "@/components/guiding-light-ink-trail";
 import {
@@ -453,7 +454,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
 
   return (
     <main className="site-shell">
-      <header className="masthead">
+      <header className="masthead" data-panel="0">
         <a className="wordmark" href="#top" aria-label="Magpie Dashboards timeline home">
           <span className="wordmark-mark">M/D</span>
           <span>Rico Garcia</span>
@@ -467,24 +468,26 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         </a>
       </header>
 
-      <section className="hero" id="top">
-        <div className="hero-kicker"><span>[01]</span> Magpie Literacy / Platform Data</div>
-        <h1>
-          Rebuild the system.<br />
-          <span>Restore the trust.</span>
-        </h1>
-        <div className="hero-bottom">
-                      <p className="hero-summary">{data.meta.subtitle}. A nine-month record of product leadership across engineering, research, operations, and the curve balls in between to migrate all three dashboards, restore partner trust, and prepare the platform for K–8.</p>
-
-          <dl className="hero-metrics">
-            <div><dt>Window</dt><dd>09 months</dd></div>
-            <div><dt>Work items</dt><dd>{publicItems.length}</dd></div>
-            <div><dt>Role</dt><dd>Principal Product Manager</dd></div>
-          </dl>
-        </div>
-      </section>
-
-      <section className="timeline-section" aria-labelledby="timeline-heading">
+      <PanelReplacement outgoing={
+        <section className="hero" id="top" data-panel="1">
+          <div data-panel-content>
+            <div className="hero-kicker"><span>[01]</span> Magpie Literacy / Platform Data</div>
+            <h1>
+              Rebuild the system.<br />
+              <span>Restore the trust.</span>
+            </h1>
+            <div className="hero-bottom">
+              <p className="hero-summary">{data.meta.subtitle}. A nine-month record of product leadership across engineering, research, operations, and the curve balls in between to migrate all three dashboards, restore partner trust, and prepare the platform for K–8.</p>
+              <dl className="hero-metrics" data-panel-part="tri-shelf">
+                <div><dt>Window</dt><dd>09 months</dd></div>
+                <div><dt>Work items</dt><dd>{publicItems.length}</dd></div>
+                <div><dt>Role</dt><dd>Principal Product Manager</dd></div>
+              </dl>
+            </div>
+          </div>
+        </section>
+      }>
+      <section className="timeline-section" aria-labelledby="timeline-heading" data-panel="2">
         <div className="section-heading">
           <div>
             <span className="index-mark">[02]</span>
@@ -754,6 +757,18 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         </div>
       </section>
 
+      <section className="outcome-strip">
+        <div data-panel="3"><span className="index-mark">[03]</span><strong>Build the foundation</strong><p>Moved reporting from a brittle monolith toward a governed, testable architecture.</p></div>
+        <div data-panel="4"><span className="index-mark">[04]</span><strong>Make the work legible</strong><p>Connected product decisions, customer evidence, operations, and technical delivery.</p></div>
+        <div data-panel="5"><span className="index-mark">[05]</span><strong>Prepare for scale</strong><p>Turned stabilization work into the runway for K–8, self-service research, and Q4 growth.</p></div>
+      </section>
+
+      <footer>
+        <span>{data.meta.owner} / {data.meta.period}</span>
+        <span>Product leadership case record</span>
+      </footer>
+      </PanelReplacement>
+
       <div className={`telemetry-anchor side-${telemetrySide}`}>
         <AnimatePresence mode="wait">
           {displayItem && (
@@ -789,17 +804,6 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
           </motion.svg>
         )}
       </AnimatePresence>
-
-      <section className="outcome-strip">
-        <div><span className="index-mark">[03]</span><strong>Build the foundation</strong><p>Moved reporting from a brittle monolith toward a governed, testable architecture.</p></div>
-        <div><span className="index-mark">[04]</span><strong>Make the work legible</strong><p>Connected product decisions, customer evidence, operations, and technical delivery.</p></div>
-        <div><span className="index-mark">[05]</span><strong>Prepare for scale</strong><p>Turned stabilization work into the runway for K–8, self-service research, and Q4 growth.</p></div>
-      </section>
-
-      <footer>
-        <span>{data.meta.owner} / {data.meta.period}</span>
-        <span>Product leadership case record</span>
-      </footer>
 
       <CoordinateCursor />
 

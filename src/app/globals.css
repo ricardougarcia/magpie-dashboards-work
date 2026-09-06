@@ -4404,3 +4404,118 @@ body {
     transition: none;
   }
 }
+
+/* Panel 1 is replaced by the opaque Panel 2 sheet; Panels 3, 4, 5 travel with it. */
+.panel-replacement {
+  --panel-shift: 0px;
+  --panel-opacity: 1;
+  --panel-progress: 0;
+  --panel-pin-shift: 0px;
+  position: relative;
+  isolation: isolate;
+}
+
+.panel-outgoing {
+  position: relative;
+  z-index: 0;
+}
+
+.panel-outgoing-motion {
+  transform: translate3d(0, var(--panel-shift), 0);
+}
+
+.panel-outgoing [data-panel-content] {
+  opacity: var(--panel-opacity);
+}
+
+.panel-replacement[data-panel-replaced="true"] .panel-outgoing [data-panel-content] {
+  visibility: hidden;
+}
+
+/* Panel 0's bottom line is Panel 1's top line. Panel 2 owns the sweeping shared line. */
+.masthead[data-panel="0"] {
+  border-top: 1px solid var(--line-strong);
+}
+
+.panel-outgoing .hero {
+  border-bottom: 0;
+}
+
+.panel-incoming-sheet {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--line-strong);
+  background:
+    linear-gradient(rgba(17, 19, 17, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 19, 17, 0.018) 1px, transparent 1px),
+    var(--paper);
+  background-size: 28px 28px;
+}
+
+.panel-incoming-sheet .outcome-strip {
+  border-top: 1px solid var(--line-strong);
+}
+
+.panel-persistence-layer {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+}
+
+.panel-persistent-element {
+  position: absolute;
+  transform: translate3d(0, var(--panel-pin-shift), 0);
+  pointer-events: auto;
+}
+
+[data-panel-persistence-slot="active"] {
+  visibility: hidden;
+}
+
+.panel-morph-content {
+  display: grid;
+}
+
+.panel-morph-content > div {
+  grid-area: 1 / 1;
+}
+
+[data-panel-morph-before] {
+  opacity: calc(1 - var(--panel-progress));
+}
+
+[data-panel-morph-after] {
+  opacity: var(--panel-progress);
+}
+
+.panel-morph-content > [inert] {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel-outgoing-motion,
+  .panel-persistent-element {
+    transform: none;
+  }
+
+  .panel-outgoing [data-panel-content] {
+    opacity: 1;
+    visibility: visible !important;
+  }
+
+  [data-panel-morph-before] { opacity: 1; }
+  [data-panel-morph-after] { opacity: 0; }
+}
+
+@media print {
+  .panel-outgoing-motion,
+  .panel-persistent-element {
+    transform: none;
+  }
+
+  .panel-outgoing [data-panel-content] {
+    opacity: 1;
+    visibility: visible !important;
+  }
+}
