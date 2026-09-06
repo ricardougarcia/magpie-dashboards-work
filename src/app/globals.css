@@ -3217,12 +3217,8 @@ footer {
 /* Telemetry refinement: denser acquisition, consolidated overview, network focus */
 .lane-pixel-field {
   grid-template-columns: repeat(16, minmax(0, 1fr));
-  grid-template-rows: none;
-  align-content: start;
-}
-
-.lane-pixel-field span {
-  aspect-ratio: 1;
+  /* Fill the label height without aspect-ratio gaps between fractional tiles. */
+  grid-template-rows: repeat(16, minmax(0, 1fr));
 }
 
 .telemetry-head {
