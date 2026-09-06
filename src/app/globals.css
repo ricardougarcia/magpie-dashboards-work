@@ -330,7 +330,7 @@ select:focus-visible {
 .timeline-scroll {
   min-width: 0;
   overflow-x: auto;
-  overscroll-behavior-inline: contain;
+  overscroll-behavior-inline: none;
   scrollbar-width: thin;
   scrollbar-color: var(--line-strong) transparent;
 }
@@ -4107,7 +4107,7 @@ body {
   position: relative;
   isolation: isolate;
   overflow-x: auto;
-  overscroll-behavior-x: contain;
+  overscroll-behavior-x: none;
 }
 
 .timeline-canvas {
