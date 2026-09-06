@@ -60,7 +60,7 @@ describe("public timeline visual tokens", () => {
     expect(css).toContain("--timeline-width: clamp(930px, 72vw, 1080px)");
     expect(css).toContain("--future-width: clamp(198px, 17vw, 220px)");
     expect(css).toMatch(/\.timeline-scroll-window\s*\{[\s\S]*?left:\s*calc\([\s\S]*?var\(--scroll-progress\)[\s\S]*?background:\s*var\(--ink\)[\s\S]*?box-shadow:\s*inset 3px 0 0 var\(--signal\)/);
-    expect(css).toMatch(/\.timeline-scroll::-webkit-scrollbar-thumb\s*\{[\s\S]*?background:\s*var\(--ink\)/);
+    expect(css).toMatch(/\.timeline-scroll::-webkit-scrollbar\s*\{\s*display:\s*none/);
     expect(css).toMatch(/\.timeline-depth-veil\s*\{[\s\S]*?left:\s*var\(--label-width\)[\s\S]*?opacity:\s*0[\s\S]*?pointer-events:\s*none/);
     expect(css).toMatch(/\.timeline-scroll-shell\[data-scrolled="true"\] \.timeline-depth-veil\s*\{\s*opacity:\s*1/);
   });

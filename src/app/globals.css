@@ -99,8 +99,8 @@ select:focus-visible {
   min-height: 72px;
   padding: 0 40px;
   border-bottom: 1px solid var(--line-strong);
-  background: rgba(241, 239, 233, 0.88);
-  backdrop-filter: blur(14px);
+  background: var(--paper);
+  transform: translateZ(0);
 }
 
 .wordmark,
@@ -4278,18 +4278,7 @@ body {
 }
 
 .timeline-scroll::-webkit-scrollbar {
-  height: 7px;
-}
-
-.timeline-scroll::-webkit-scrollbar-track {
-  background: var(--paper);
-  border-top: 1px solid var(--line);
-}
-
-.timeline-scroll::-webkit-scrollbar-thumb {
-  border: 2px solid var(--paper);
-  border-radius: 0;
-  background: var(--ink);
+  display: none;
 }
 
 .timeline-depth-veil {
@@ -4422,10 +4411,12 @@ body {
 
 .panel-outgoing-motion {
   transform: translate3d(0, var(--panel-shift), 0);
+  will-change: transform;
 }
 
 .panel-outgoing [data-panel-content] {
   opacity: var(--panel-opacity);
+  will-change: opacity;
 }
 
 .panel-replacement[data-panel-replaced="true"] .panel-outgoing [data-panel-content] {
@@ -4491,6 +4482,93 @@ body {
 
 .panel-morph-content > [inert] {
   pointer-events: none;
+}
+
+/* Panel 1 keeps fractional scroll motion in the browser's compositor. */
+@keyframes panel-1-travel {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, var(--panel-shift-end), 0); }
+}
+
+@keyframes panel-1-fade {
+  from { opacity: 1; }
+  to { opacity: var(--panel-opacity-floor); }
+}
+
+@keyframes panel-persistent-travel {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, var(--panel-pin-end), 0); }
+}
+
+@keyframes panel-morph-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes panel-morph-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.panel-replacement[data-panel-driver="native"] .panel-outgoing-motion,
+.panel-replacement[data-panel-driver="native"] [data-panel-content],
+.panel-replacement[data-panel-driver="native"] .panel-persistent-element,
+.panel-replacement[data-panel-driver="native"] [data-panel-morph-before],
+.panel-replacement[data-panel-driver="native"] [data-panel-morph-after] {
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: scroll(root block);
+  animation-range: var(--panel-range-start) var(--panel-range-end);
+}
+
+.panel-replacement[data-panel-driver="native"] .panel-outgoing-motion {
+  animation-name: panel-1-travel;
+}
+
+.panel-replacement[data-panel-driver="native"] [data-panel-content] {
+  animation-name: panel-1-fade;
+  animation-range-end: var(--panel-fade-end);
+}
+
+.panel-replacement[data-panel-driver="native"] .panel-persistent-element {
+  animation-name: panel-persistent-travel;
+}
+
+.panel-replacement[data-panel-driver="native"] [data-panel-morph-before] {
+  animation-name: panel-morph-out;
+}
+
+.panel-replacement[data-panel-driver="native"] [data-panel-morph-after] {
+  animation-name: panel-morph-in;
+}
+
+/* Native bars stay hidden across the public page; wheel, touch and keys still scroll. */
+html:has(.site-shell),
+body:has(.site-shell),
+.site-shell,
+.site-shell * {
+  scrollbar-width: none;
+}
+
+html:has(.site-shell)::-webkit-scrollbar,
+body:has(.site-shell)::-webkit-scrollbar,
+.site-shell::-webkit-scrollbar,
+.site-shell ::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+@media (prefers-reduced-motion: reduce), print {
+  .panel-replacement[data-panel-driver="native"] .panel-outgoing-motion,
+  .panel-replacement[data-panel-driver="native"] [data-panel-content],
+  .panel-replacement[data-panel-driver="native"] .panel-persistent-element,
+  .panel-replacement[data-panel-driver="native"] [data-panel-morph-before],
+  .panel-replacement[data-panel-driver="native"] [data-panel-morph-after] {
+    animation: none;
+    will-change: auto;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
