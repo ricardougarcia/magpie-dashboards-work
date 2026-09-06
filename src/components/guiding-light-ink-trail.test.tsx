@@ -90,9 +90,10 @@ describe("GuidingLightInkTrail", () => {
     expect(container.querySelectorAll("button")).toHaveLength(2);
   });
 
-  it("does not render the effect when reduced motion disables it", () => {
+  it("keeps Panel 2 markup stable while hiding and disabling reduced-motion ink", () => {
     const { container } = render(<TestHost disabled />);
-    expect(container.querySelector("canvas.guiding-light-ink-canvas")).toBeNull();
+    expect(container.querySelector<HTMLCanvasElement>("canvas.guiding-light-ink-canvas")?.hidden).toBe(true);
+    expect(window.requestAnimationFrame).not.toHaveBeenCalled();
   });
 
   it("consumes coalesced input but deposits only from the frame-driven nib", () => {

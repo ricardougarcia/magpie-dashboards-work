@@ -91,6 +91,7 @@ export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLigh
   useEffect(() => {
     const track = trackRef.current;
     const canvas = canvasRef.current;
+    if (canvas) canvas.hidden = disabled;
     if (!track || !canvas || disabled) return;
 
     let visibleContext: CanvasRenderingContext2D | null = null;
@@ -375,6 +376,5 @@ export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLigh
     };
   }, [disabled, trackRef]);
 
-  if (disabled) return null;
   return <canvas ref={canvasRef} className="guiding-light-ink-canvas" aria-hidden="true" />;
 }
