@@ -50,7 +50,7 @@ This is an operator checklist; no background service automatically merges or rel
 4. Fetch the resulting `main` SHA. Fast-forward `uat` to that exact SHA with `force: false`. If concurrent UAT commits prevent the fast-forward, stop and reconcile them without discarding work; do not report the release complete while the branches differ.
 5. Verify `main` and `uat` point to the **same commit SHA** and both Vercel environments have READY deployments of it. A ref update may require explicitly triggering a UAT deployment; verify instead of assuming the webhook ran. Never point UAT at the production deployment because that would share production credentials.
 6. Compare the public timeline data and displayed behavior at both stable URLs. For a code-only release, refresh the isolated UAT snapshot from the current public production data if needed, after checking for UAT-only content that must be preserved. Do not overwrite production content with a UAT snapshot unless Rico separately authorized that content release. Resolve any content difference before declaring the environments matched.
-7. Report completion only when code and public content match. Keep environment-specific URLs, storage credentials, and editor access isolated. Leave the task checkout clean and synchronized.
+7. Report completion only when code and public content match. Keep environment-specific URLs, storage credentials, and editor access isolated. The favicon is intentionally white in UAT and signal red elsewhere, selected using `VERCEL_TARGET_ENV` from identical application code. Leave the task checkout clean and synchronized.
 
 ## Failure handling
 
