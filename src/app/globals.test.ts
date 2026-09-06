@@ -7,11 +7,16 @@ const pickerCursor = readFileSync(`${process.cwd()}/public/cursor-plus-pick.svg`
 const favicon = readFileSync(`${process.cwd()}/src/app/icon.svg`, "utf8");
 
 describe("public timeline visual tokens", () => {
-  it("maps every legend color class to its item-color variable", () => {
+  it("maps every legend color class to its distinct lane accent", () => {
     ["graphite", "signal", "steel", "umber", "forest"].forEach((token) => {
       expect(css).toContain(`.legend-entry i.color-${token}`);
     });
     expect(css).toMatch(/\.legend-entry i\.color-forest[\s\S]*?background:\s*var\(--item-color\)/);
+    expect(css).toContain(".color-graphite { --item-color: var(--lane-violet); }");
+    expect(css).toContain(".color-signal { --item-color: var(--lane-coral); }");
+    expect(css).toContain(".color-steel { --item-color: var(--lane-steel); }");
+    expect(css).toContain(".color-umber { --item-color: var(--lane-umber); }");
+    expect(css).toContain(".color-forest { --item-color: var(--lane-forest); }");
   });
 
   it("applies only subtle condensed tracking to the hero summary", () => {
@@ -69,7 +74,9 @@ describe("public timeline visual tokens", () => {
     expect(css).toMatch(/\.guiding-light-track\s*\{[\s\S]*?position:\s*relative[\s\S]*?isolation:\s*isolate[\s\S]*?background:\s*var\(--paper\)/);
     expect(css).toMatch(/\.guiding-light-ink-canvas\s*\{[\s\S]*?position:\s*absolute[\s\S]*?inset:\s*0[\s\S]*?pointer-events:\s*none/);
     expect(css).toMatch(/\.guiding-light-cell\s*\{[\s\S]*?cursor:\s*var\(--cursor-action\)/);
-    expect(css).toMatch(/\.guiding-light-cell \.guiding-light-name\s*\{[\s\S]*?mix-blend-mode:\s*difference/);
+    expect(css).toMatch(/\.guiding-light-cell \.guiding-light-name\s*\{[\s\S]*?opacity:\s*0\.62[\s\S]*?mix-blend-mode:\s*difference/);
+    expect(css).toMatch(/\.guiding-light-cell:hover \.guiding-light-name,[\s\S]*?\.guiding-light-cell:focus-visible \.guiding-light-name\s*\{[\s\S]*?opacity:\s*0\.82/);
+    expect(css).toMatch(/\.guiding-light-cell\.is-active \.guiding-light-name\s*\{[\s\S]*?opacity:\s*1/);
     expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.guiding-light-ink-canvas\s*\{\s*display:\s*none/);
   });
 

@@ -12,6 +12,11 @@
   --steel: #59646a;
   --umber: #86644f;
   --forest: #4f6859;
+  --lane-steel: #365f73;
+  --lane-forest: #426b4f;
+  --lane-violet: #65517b;
+  --lane-umber: #87583b;
+  --lane-coral: #bd4034;
   --label-width: 220px;
   --future-width: 250px;
   --month-width: 120px;
@@ -444,12 +449,19 @@ select:focus-visible {
 
 .guiding-light-cell .guiding-light-name {
   color: var(--paper);
+  opacity: 0.62;
   mix-blend-mode: difference;
+  transition: opacity 160ms ease;
 }
 
 .guiding-light-cell:hover,
 .guiding-light-cell:focus-visible {
   background: rgba(17, 19, 17, 0.06);
+}
+
+.guiding-light-cell:hover .guiding-light-name,
+.guiding-light-cell:focus-visible .guiding-light-name {
+  opacity: 0.82;
 }
 
 .guiding-light-cell.is-active {
@@ -459,6 +471,10 @@ select:focus-visible {
 
 .guiding-light-cell.is-active .guiding-light-index {
   color: var(--signal);
+}
+
+.guiding-light-cell.is-active .guiding-light-name {
+  opacity: 1;
 }
 
 .month {
@@ -613,11 +629,11 @@ select:focus-visible {
   text-transform: uppercase;
 }
 
-.color-graphite { --item-color: var(--graphite); }
-.color-signal { --item-color: var(--signal); }
-.color-steel { --item-color: var(--steel); }
-.color-umber { --item-color: var(--umber); }
-.color-forest { --item-color: var(--forest); }
+.color-graphite { --item-color: var(--lane-violet); }
+.color-signal { --item-color: var(--lane-coral); }
+.color-steel { --item-color: var(--lane-steel); }
+.color-umber { --item-color: var(--lane-umber); }
+.color-forest { --item-color: var(--lane-forest); }
 
 .future-rail {
   position: relative;

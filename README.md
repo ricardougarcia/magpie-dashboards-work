@@ -13,7 +13,9 @@ An interactive portfolio timeline presenting Rico Garcia’s Magpie Dashboards p
 | Source data | Forty-five validated items generated from the source handoff document |
 | Hosting | GitHub-connected Vercel project only |
 
-**Guiding Light tags power the public focus row.** Its decorative pointer treatment uses one high-DPI canvas across the Learn-to-Grow span. A frame-driven nib interpolates coalesced pointer input into a densely overlapping, morphing dark stroke with a persistent forward wet head, sparse advancing leak blots, a trailing gray dry-out stain, and partial text inversion. The canvas is non-interactive, stops emitting outside the row, ignores touch input, and is removed when reduced motion is preferred. The raw timeline API and all editor write operations still require an authenticated editor session.
+**Guiding Light tags power the public focus row.** Its decorative pointer treatment uses one high-DPI canvas across the Learn-to-Grow span. A frame-driven nib interpolates coalesced pointer input into a densely overlapping, morphing dark stroke with a persistent forward wet head, sparse advancing leak blots, a trailing gray dry-out stain, and partial text inversion. The labels use a muted resting opacity, strengthen on hover or focus, and return to full contrast when selected while preserving difference-based inversion over the ink. The canvas is non-interactive, stops emitting outside the row, ignores touch input, and is removed when reduced motion is preferred. The raw timeline API and all editor write operations still require an authenticated editor session.
+
+The five work lanes use a restrained, perceptually separated accent set: technical blue for Eng Build, botanical green for Product Build, archival violet for Product Discovery, drafting umber for Processes, and dark coral for Challenges. These lane-only accents are applied through the existing color-token classes so public bars, editor bars, relation chips, and telemetry notches remain synchronized. The global signal red continues to own focus, selection, connector, cursor, and warning interactions and must not be replaced by the lane coral.
 
 ## Local development
 
