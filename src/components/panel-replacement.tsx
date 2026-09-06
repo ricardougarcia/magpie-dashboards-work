@@ -35,6 +35,7 @@ export function PanelReplacement({
   const rootRef = useRef<HTMLDivElement>(null);
   const outgoingRef = useRef<HTMLDivElement>(null);
   const incomingRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const entries = useRef(new Set<PersistentEntry>());
   const scheduleMeasurement = useRef(() => {});
   const [layer, setLayer] = useState<HTMLDivElement | null>(null);
@@ -54,7 +55,8 @@ export function PanelReplacement({
     const root = rootRef.current;
     const outgoingPanel = outgoingRef.current;
     const incoming = incomingRef.current;
-    if (!root || !outgoingPanel || !incoming) return;
+    const viewport = viewportRef.current;
+    if (!root || !outgoingPanel || !incoming || !viewport) return;
     const content = outgoingPanel.querySelector<HTMLElement>("[data-panel-content]") ?? outgoingPanel;
     const motion = outgoingPanel.querySelector<HTMLElement>(".panel-outgoing-motion")!;
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -78,7 +80,9 @@ export function PanelReplacement({
         // Measure Panel 1's current rendered offset, including browser-driven animation.
         const renderedShift = motion.getBoundingClientRect().top - outgoingPanel.getBoundingClientRect().top;
         contentTop = content.getBoundingClientRect().top + scrollY - renderedShift;
-        viewportHeight = window.innerHeight;
+        // Mobile browser chrome changes innerHeight during a gesture. Use the
+        // small viewport so that revealing the toolbar cannot retime Panel 1.
+        viewportHeight = viewport.getBoundingClientRect().height;
         const geometry = panelReplacementGeometry({ incomingTop, contentTop, viewportHeight, outgoingSpeed, opacityFloor });
         // Panel 1 slots stay in flow; their live content belongs to a separate, unfaded layer.
         const positions = [...entries.current].map(({ slot, surface }) => {
@@ -137,6 +141,7 @@ export function PanelReplacement({
     observer.observe(root);
     observer.observe(outgoingPanel);
     observer.observe(content);
+    observer.observe(viewport);
     update();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", measure);
@@ -165,6 +170,7 @@ export function PanelReplacement({
   return (
     <PanelPersistenceContext value={context}>
       <div className="panel-replacement" ref={rootRef}>
+        <div className="panel-viewport-measure" ref={viewportRef} aria-hidden="true" />
         <div className="panel-outgoing" ref={outgoingRef}>
           <div className="panel-outgoing-motion">{outgoing}</div>
         </div>
