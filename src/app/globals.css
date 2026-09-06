@@ -4556,6 +4556,12 @@ body {
   animation-name: panel-morph-in;
 }
 
+/* Stop vertical bounce at page edges without intercepting native scroll input. */
+html:has(.site-shell),
+body:has(.site-shell) {
+  overscroll-behavior-y: none;
+}
+
 /* Native bars stay hidden across the public page; wheel, touch and keys still scroll. */
 html:has(.site-shell),
 body:has(.site-shell),
