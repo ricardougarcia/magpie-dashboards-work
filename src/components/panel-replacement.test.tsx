@@ -5,6 +5,7 @@ import { PanelPersistentElement, PanelReplacement } from "./panel-replacement";
 
 let frames: Map<number, FrameRequestCallback>;
 let nextFrame: number;
+let stableViewportHeight: number;
 let preference: { matches: boolean; addEventListener: ReturnType<typeof vi.fn>; removeEventListener: ReturnType<typeof vi.fn> };
 
 function flush() {
@@ -41,6 +42,7 @@ function Fixture() {
 beforeEach(() => {
   frames = new Map();
   nextFrame = 0;
+  stableViewportHeight = 1000;
   preference = { matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() };
   vi.stubGlobal("scrollY", 0);
   vi.stubGlobal("innerHeight", 1000);
@@ -53,6 +55,7 @@ beforeEach(() => {
     const shift = Number.parseFloat(this.closest<HTMLElement>(".panel-replacement")?.style.getPropertyValue("--panel-shift") || "0");
     let top = 72 - window.scrollY;
     let height = 1800;
+    if (this.matches(".panel-viewport-measure")) height = stableViewportHeight;
     if (this.matches(".panel-incoming-sheet")) top = 652 - window.scrollY;
     if (this.matches(".panel-outgoing-motion")) top += shift;
     if (this.matches("[data-panel-content]")) top = 136 - window.scrollY + shift;
@@ -84,6 +87,7 @@ describe("Panel 1 / Panel 2 persistent-element mechanism", () => {
     const { container } = render(<Fixture />);
     flush();
     const root = container.querySelector<HTMLElement>(".panel-replacement")!;
+    stableViewportHeight = 400;
     vi.stubGlobal("innerHeight", 400);
     fireEvent.resize(window);
     flush();
@@ -96,6 +100,29 @@ describe("Panel 1 / Panel 2 persistent-element mechanism", () => {
     flush();
     expect(root.dataset.panelMotion).toBe("reduced");
     expect(container.querySelector<HTMLElement>("[data-panel-content]")?.inert).toBe(false);
+  });
+
+  it.each([true, false])("keeps the animation stable when mobile browser chrome resizes (native: %s)", (native) => {
+    vi.mocked(CSS.supports).mockReturnValue(native);
+    stableViewportHeight = 400;
+    vi.stubGlobal("innerHeight", 400);
+    const { container } = render(<Fixture />);
+    flush();
+    scrollTo(500);
+    const root = container.querySelector<HTMLElement>(".panel-replacement")!;
+    const originalStyle = root.getAttribute("style");
+    for (const height of [464, 428, 400, 464]) {
+      vi.stubGlobal("innerHeight", height);
+      fireEvent.resize(window);
+      flush();
+      expect(root.getAttribute("style")).toBe(originalStyle);
+      expect(root.dataset.panelReplaced).toBe("false");
+    }
+    // Device rotation / a real viewport resize must still update the range.
+    stableViewportHeight = 300;
+    fireEvent.resize(window);
+    flush();
+    expect(root.getAttribute("style")).not.toBe(originalStyle);
   });
 
   it("measures restored scroll positions consistently across Strict Mode remounts", () => {

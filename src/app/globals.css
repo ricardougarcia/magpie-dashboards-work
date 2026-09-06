@@ -4409,6 +4409,19 @@ body {
   z-index: 0;
 }
 
+/* Stable while mobile browser chrome opens/closes; resizes with the device. */
+.panel-viewport-measure {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .panel-outgoing-motion {
   transform: translate3d(0, var(--panel-shift), 0);
   will-change: transform;
