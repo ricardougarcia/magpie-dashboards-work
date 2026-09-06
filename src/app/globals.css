@@ -394,6 +394,7 @@ select:focus-visible {
   position: relative;
   isolation: isolate;
   grid-template-columns: repeat(5, minmax(0, 1fr));
+  background: var(--paper);
 }
 
 .guiding-light-ink-canvas {
@@ -4301,6 +4302,37 @@ body {
 }
 
 @media (max-width: 600px) {
+  :root {
+    --label-width: clamp(112px, 31vw, 124px);
+  }
+
+  .axis-spacer {
+    padding: 0 10px;
+    font-size: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .lane-label {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 4px 7px;
+    padding: 8px;
+  }
+
+  .lane-code {
+    width: 26px;
+    height: 26px;
+    font-size: 7px;
+  }
+
+  .lane-label strong {
+    font-size: 8px;
+    line-height: 1.08;
+  }
+
+  .lane-label small {
+    font-size: 7px;
+  }
+
   .timeline-depth-veil {
     width: 18px;
     background:

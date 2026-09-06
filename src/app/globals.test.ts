@@ -48,6 +48,8 @@ describe("public timeline visual tokens", () => {
     expect(css).toMatch(/\.timeline-scroll\s*\{[\s\S]*?isolation:\s*isolate[\s\S]*?overflow-x:\s*auto/);
     expect(css).toMatch(/\.axis-spacer,\s*\.lane-label\s*\{[\s\S]*?position:\s*sticky[\s\S]*?overflow:\s*hidden[\s\S]*?background:\s*var\(--paper\)/);
     expect(css).toContain("--label-width: clamp(176px, 15vw, 190px)");
+    expect(css).toMatch(/@media \(max-width: 600px\)\s*\{[\s\S]*?:root\s*\{[\s\S]*?--label-width:\s*clamp\(112px, 31vw, 124px\)/);
+    expect(css).toMatch(/@media \(max-width: 600px\)\s*\{[\s\S]*?\.lane-label\s*\{[\s\S]*?grid-template-columns:\s*28px minmax\(0, 1fr\)[\s\S]*?padding:\s*8px/);
     expect(css).toContain("--timeline-width: clamp(930px, 72vw, 1080px)");
     expect(css).toContain("--future-width: clamp(198px, 17vw, 220px)");
     expect(css).toMatch(/\.timeline-scroll-window\s*\{[\s\S]*?left:\s*calc\([\s\S]*?var\(--scroll-progress\)[\s\S]*?background:\s*var\(--ink\)[\s\S]*?box-shadow:\s*inset 3px 0 0 var\(--signal\)/);
@@ -64,7 +66,7 @@ describe("public timeline visual tokens", () => {
   });
 
   it("layers one continuous non-interactive ink surface under partially inverted Guiding Light labels", () => {
-    expect(css).toMatch(/\.guiding-light-track\s*\{[\s\S]*?position:\s*relative[\s\S]*?isolation:\s*isolate/);
+    expect(css).toMatch(/\.guiding-light-track\s*\{[\s\S]*?position:\s*relative[\s\S]*?isolation:\s*isolate[\s\S]*?background:\s*var\(--paper\)/);
     expect(css).toMatch(/\.guiding-light-ink-canvas\s*\{[\s\S]*?position:\s*absolute[\s\S]*?inset:\s*0[\s\S]*?pointer-events:\s*none/);
     expect(css).toMatch(/\.guiding-light-cell\s*\{[\s\S]*?cursor:\s*var\(--cursor-action\)/);
     expect(css).toMatch(/\.guiding-light-cell \.guiding-light-name\s*\{[\s\S]*?mix-blend-mode:\s*difference/);
