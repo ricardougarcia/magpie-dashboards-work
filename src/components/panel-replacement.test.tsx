@@ -45,6 +45,7 @@ beforeEach(() => {
   vi.stubGlobal("scrollY", 0);
   vi.stubGlobal("innerHeight", 1000);
   vi.stubGlobal("matchMedia", vi.fn(() => preference));
+  vi.stubGlobal("CSS", { supports: vi.fn(() => false) });
   vi.stubGlobal("ResizeObserver", class { observe() {} disconnect() {} });
   vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => { frames.set(++nextFrame, callback); return nextFrame; });
   vi.stubGlobal("cancelAnimationFrame", (id: number) => frames.delete(id));
@@ -53,6 +54,7 @@ beforeEach(() => {
     let top = 72 - window.scrollY;
     let height = 1800;
     if (this.matches(".panel-incoming-sheet")) top = 652 - window.scrollY;
+    if (this.matches(".panel-outgoing-motion")) top += shift;
     if (this.matches("[data-panel-content]")) top = 136 - window.scrollY + shift;
     if (this.matches("[data-panel-persistence-slot]")) top = 420 - window.scrollY + shift;
     if (this.matches(".panel-persistent-element")) height = 80;
@@ -63,6 +65,39 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 describe("Panel 1 / Panel 2 persistent-element mechanism", () => {
+  it("lets native scroll timelines own visual motion without per-scroll style mutations", () => {
+    vi.mocked(CSS.supports).mockReturnValue(true);
+    const { container } = render(<Fixture />);
+    flush();
+    const root = container.querySelector<HTMLElement>(".panel-replacement")!;
+    const originalStyle = root.getAttribute("style");
+    expect(root.dataset.panelDriver).toBe("native");
+    expect(root.style.getPropertyValue("--panel-range-end")).toBe("688px");
+    for (const position of [0.5, 1, 20.5, 600, 750, 20.5, 0]) scrollTo(position);
+    expect(root.getAttribute("style")).toBe(originalStyle);
+    expect(root.style.getPropertyValue("--panel-shift")).toBe("");
+    expect(container.querySelector<HTMLElement>("[data-panel-content]")?.inert).toBe(false);
+  });
+
+  it("remeasures native ranges on resize and keeps reduced motion readable", () => {
+    vi.mocked(CSS.supports).mockReturnValue(true);
+    const { container } = render(<Fixture />);
+    flush();
+    const root = container.querySelector<HTMLElement>(".panel-replacement")!;
+    vi.stubGlobal("innerHeight", 400);
+    fireEvent.resize(window);
+    flush();
+    expect(root.style.getPropertyValue("--panel-range-start")).toBe("252px");
+    expect(root.style.getPropertyValue("--panel-range-end")).toBe("940px");
+    scrollTo(1000);
+    expect(container.querySelector<HTMLElement>("[data-panel-content]")?.inert).toBe(true);
+    preference.matches = true;
+    act(() => preference.addEventListener.mock.calls[0][1]());
+    flush();
+    expect(root.dataset.panelMotion).toBe("reduced");
+    expect(container.querySelector<HTMLElement>("[data-panel-content]")?.inert).toBe(false);
+  });
+
   it("measures restored scroll positions consistently across Strict Mode remounts", () => {
     vi.stubGlobal("scrollY", 300);
     const { container } = render(<StrictMode><Fixture /></StrictMode>);

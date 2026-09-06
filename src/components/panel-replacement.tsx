@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { PANEL_REPLACEMENT_DEFAULTS, panelReplacementState } from "@/lib/panel-replacement";
+import { PANEL_REPLACEMENT_DEFAULTS, panelReplacementGeometry, panelReplacementState } from "@/lib/panel-replacement";
 
 type PersistentEntry = { slot: HTMLDivElement; surface: HTMLDivElement };
 type PersistenceContext = {
@@ -56,11 +56,13 @@ export function PanelReplacement({
     const incoming = incomingRef.current;
     if (!root || !outgoingPanel || !incoming) return;
     const content = outgoingPanel.querySelector<HTMLElement>("[data-panel-content]") ?? outgoingPanel;
+    const motion = outgoingPanel.querySelector<HTMLElement>(".panel-outgoing-motion")!;
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const nativeTimeline = typeof CSS !== "undefined" && CSS.supports("animation-timeline", "scroll(root block)") && CSS.supports("animation-range", "0px 100px");
+    root.dataset.panelDriver = nativeTimeline ? "native" : "fallback";
     let frame: number | null = null;
     let needsMeasurement = true;
     let disposed = false;
-    let shift = 0;
     let incomingTop = 0;
     let contentTop = 0;
     let viewportHeight = 0;
@@ -73,9 +75,11 @@ export function PanelReplacement({
         needsMeasurement = false;
         const rootRect = root.getBoundingClientRect();
         incomingTop = incoming.getBoundingClientRect().top + scrollY;
-        const renderedShift = preference.matches ? 0 : shift;
+        // Measure Panel 1's current rendered offset, including browser-driven animation.
+        const renderedShift = motion.getBoundingClientRect().top - outgoingPanel.getBoundingClientRect().top;
         contentTop = content.getBoundingClientRect().top + scrollY - renderedShift;
         viewportHeight = window.innerHeight;
+        const geometry = panelReplacementGeometry({ incomingTop, contentTop, viewportHeight, outgoingSpeed, opacityFloor });
         // Panel 1 slots stay in flow; their live content belongs to a separate, unfaded layer.
         const positions = [...entries.current].map(({ slot, surface }) => {
           const rect = slot.getBoundingClientRect();
@@ -87,25 +91,37 @@ export function PanelReplacement({
           position.surface.style.top = `${position.top}px`;
           position.surface.style.width = `${position.width}px`;
         }
+        if (nativeTimeline) {
+          // Panel 1 visual updates now run with native scrolling, not a later JS frame.
+          root.style.setProperty("--panel-range-start", `${geometry.start}px`);
+          root.style.setProperty("--panel-range-end", `${geometry.end}px`);
+          root.style.setProperty("--panel-fade-end", `${geometry.fadeEnd}px`);
+          root.style.setProperty("--panel-shift-end", `${geometry.distance}px`);
+          root.style.setProperty("--panel-pin-end", `${geometry.end - geometry.start}px`);
+          root.style.setProperty("--panel-opacity-floor", String(geometry.floor));
+        }
       }
 
       const state = panelReplacementState({ scrollY, incomingTop, contentTop, viewportHeight, outgoingSpeed, opacityFloor, reducedMotion: preference.matches });
-      shift = state.shift;
-      root.style.setProperty("--panel-shift", `${state.shift}px`);
-      root.style.setProperty("--panel-opacity", String(state.opacity));
-      root.style.setProperty("--panel-progress", String(state.progress));
-      root.style.setProperty("--panel-pin-shift", `${state.pinShift}px`);
-      root.dataset.panelReplaced = String(state.replaced);
-      root.dataset.panelMotion = preference.matches ? "reduced" : "active";
-      content.inert = state.replaced;
+      if (!nativeTimeline) {
+        root.style.setProperty("--panel-shift", `${state.shift}px`);
+        root.style.setProperty("--panel-opacity", String(state.opacity));
+        root.style.setProperty("--panel-progress", String(state.progress));
+        root.style.setProperty("--panel-pin-shift", `${state.pinShift}px`);
+      }
+      if (root.dataset.panelReplaced !== String(state.replaced)) root.dataset.panelReplaced = String(state.replaced);
+      const motionMode = preference.matches ? "reduced" : "active";
+      if (root.dataset.panelMotion !== motionMode) root.dataset.panelMotion = motionMode;
+      if (content.inert !== state.replaced) content.inert = state.replaced;
       for (const { surface } of entries.current) {
         const before = surface.querySelector<HTMLElement>("[data-panel-morph-before]");
         const after = surface.querySelector<HTMLElement>("[data-panel-morph-after]");
         if (before && after) {
-          before.inert = state.progress >= 0.5;
-          after.inert = state.progress < 0.5;
-          before.setAttribute("aria-hidden", String(state.progress >= 0.5));
-          after.setAttribute("aria-hidden", String(state.progress < 0.5));
+          const morphed = state.progress >= 0.5;
+          if (before.inert !== morphed) before.inert = morphed;
+          if (after.inert !== !morphed) after.inert = !morphed;
+          if (before.getAttribute("aria-hidden") !== String(morphed)) before.setAttribute("aria-hidden", String(morphed));
+          if (after.getAttribute("aria-hidden") !== String(!morphed)) after.setAttribute("aria-hidden", String(!morphed));
         }
       }
     };
@@ -137,11 +153,12 @@ export function PanelReplacement({
       preference.removeEventListener("change", measure);
       scheduleMeasurement.current = () => {};
       content.inert = false;
-      for (const property of ["--panel-shift", "--panel-opacity", "--panel-progress", "--panel-pin-shift"]) {
+      for (const property of ["--panel-shift", "--panel-opacity", "--panel-progress", "--panel-pin-shift", "--panel-range-start", "--panel-range-end", "--panel-fade-end", "--panel-shift-end", "--panel-pin-end", "--panel-opacity-floor"]) {
         root.style.removeProperty(property);
       }
       delete root.dataset.panelReplaced;
       delete root.dataset.panelMotion;
+      delete root.dataset.panelDriver;
     };
   }, [outgoingSpeed, opacityFloor]);
 
