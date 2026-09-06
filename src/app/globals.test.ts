@@ -1,12 +1,14 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import Icon from "./icon";
 
 const css = readFileSync(`${process.cwd()}/src/app/globals.css`, "utf8");
 const defaultCursor = readFileSync(`${process.cwd()}/public/cursor-plus.svg`, "utf8");
 const pickerCursor = readFileSync(`${process.cwd()}/public/cursor-plus-pick.svg`, "utf8");
-const favicon = readFileSync(`${process.cwd()}/src/app/icon.svg`, "utf8");
 
 describe("public timeline visual tokens", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
   it("maps every legend color class to its distinct lane accent", () => {
     ["graphite", "signal", "steel", "umber", "forest"].forEach((token) => {
       expect(css).toContain(`.legend-entry i.color-${token}`);
@@ -58,7 +60,7 @@ describe("public timeline visual tokens", () => {
     expect(css).toContain("--timeline-width: clamp(930px, 72vw, 1080px)");
     expect(css).toContain("--future-width: clamp(198px, 17vw, 220px)");
     expect(css).toMatch(/\.timeline-scroll-window\s*\{[\s\S]*?left:\s*calc\([\s\S]*?var\(--scroll-progress\)[\s\S]*?background:\s*var\(--ink\)[\s\S]*?box-shadow:\s*inset 3px 0 0 var\(--signal\)/);
-    expect(css).toMatch(/\.timeline-scroll::-webkit-scrollbar-thumb\s*\{[\s\S]*?background:\s*var\(--ink\)/);
+    expect(css).toMatch(/\.timeline-scroll::-webkit-scrollbar\s*\{\s*display:\s*none/);
     expect(css).toMatch(/\.timeline-depth-veil\s*\{[\s\S]*?left:\s*var\(--label-width\)[\s\S]*?opacity:\s*0[\s\S]*?pointer-events:\s*none/);
     expect(css).toMatch(/\.timeline-scroll-shell\[data-scrolled="true"\] \.timeline-depth-veil\s*\{\s*opacity:\s*1/);
   });
@@ -97,8 +99,17 @@ describe("public timeline visual tokens", () => {
     expect(css).toMatch(/\.connector-mid-handle,\s*\.connector-elbow-handle,\s*\.connector-terminal-handle\s*\{[\s\S]*?pointer-events:\s*all/);
   });
 
-  it("uses the matching signal-red plus favicon", () => {
-    expect(favicon).toContain('#D6452F');
+  it.each([
+    ["uat", "#FFFFFF"],
+    ["production", "#D6452F"],
+    ["preview", "#D6452F"],
+    [undefined, "#D6452F"],
+  ])("uses the appropriate plus favicon for %s", async (environment, color) => {
+    vi.stubEnv("VERCEL_TARGET_ENV", environment);
+    const response = Icon();
+    const favicon = await response.text();
+    expect(response.headers.get("Content-Type")).toBe("image/svg+xml");
+    expect(favicon).toContain(`fill="${color}"`);
     expect(favicon).toContain('<path');
   });
 
