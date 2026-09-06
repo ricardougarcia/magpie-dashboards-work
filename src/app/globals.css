@@ -330,7 +330,7 @@ select:focus-visible {
 .timeline-scroll {
   min-width: 0;
   overflow-x: auto;
-  overscroll-behavior-inline: contain;
+  overscroll-behavior-inline: none;
   scrollbar-width: thin;
   scrollbar-color: var(--line-strong) transparent;
 }
@@ -4107,7 +4107,7 @@ body {
   position: relative;
   isolation: isolate;
   overflow-x: auto;
-  overscroll-behavior-x: contain;
+  overscroll-behavior-x: none;
 }
 
 .timeline-canvas {
@@ -4409,6 +4409,19 @@ body {
   z-index: 0;
 }
 
+/* Stable while mobile browser chrome opens/closes; resizes with the device. */
+.panel-viewport-measure {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .panel-outgoing-motion {
   transform: translate3d(0, var(--panel-shift), 0);
   will-change: transform;
@@ -4541,6 +4554,12 @@ body {
 
 .panel-replacement[data-panel-driver="native"] [data-panel-morph-after] {
   animation-name: panel-morph-in;
+}
+
+/* Stop vertical bounce at page edges without intercepting native scroll input. */
+html:has(.site-shell),
+body:has(.site-shell) {
+  overscroll-behavior-y: none;
 }
 
 /* Native bars stay hidden across the public page; wheel, touch and keys still scroll. */
