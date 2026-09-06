@@ -508,6 +508,7 @@ select:focus-visible {
 }
 
 .lane-row {
+  --lane-padding-block: 3px;
   display: grid;
   grid-template-columns: var(--label-width) var(--timeline-width);
   min-height: var(--lane-height);
@@ -540,7 +541,7 @@ select:focus-visible {
 
 .lane-track {
   position: relative;
-  min-height: var(--lane-height);
+  min-height: calc(var(--lane-height) + 2 * var(--lane-padding-block));
   overflow: hidden;
 }
 
@@ -2195,7 +2196,7 @@ footer {
 }
 
 .timeline-item {
-  top: calc(6px + var(--item-row) * 29px);
+  top: calc(6px + var(--lane-padding-block) + var(--item-row) * 29px);
   height: 23px;
   gap: 0;
   padding: 0 8px 0 9px;
