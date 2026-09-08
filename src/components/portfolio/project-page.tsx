@@ -1,17 +1,22 @@
 import Image from "next/image";
-import Link from "next/link";
+import { PortfolioLink as Link } from "./portfolio-link";
 import { PROJECT_SECTION_TITLES, type Artifact, type PortfolioProject, type ProjectBlock } from "@/lib/portfolio-types";
 import { PortfolioShell } from "./portfolio-shell";
+import { ArtifactViewer } from "./artifact-viewer";
 import styles from "./portfolio.module.css";
 
 function ArtifactFigure({ artifact }: { artifact: Artifact }) {
   return (
-    <figure id={artifact.id} className={styles.artifact}>
-      <a className={artifact.surface === "ink" ? styles.artifactInk : styles.artifactPaper} href={artifact.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size ${artifact.label.toLowerCase()} in a new tab`}>
+    <figure id={artifact.id} className={styles.artifact} aria-label={artifact.label}>
+      {artifact.details?.length ? <>
+        <span className={styles.artifactLabel}>{artifact.label}<span aria-hidden="true">↗</span></span>
+        <ArtifactViewer artifact={artifact} />
+        <a className={styles.fullArtifact} href={artifact.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size ${artifact.label.toLowerCase()} in a new tab`}>Open original at full size ↗</a>
+      </> : <a className={artifact.surface === "ink" ? styles.artifactInk : styles.artifactPaper} href={artifact.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size ${artifact.label.toLowerCase()} in a new tab`}>
         <span className={styles.artifactLabel}>{artifact.label}<span aria-hidden="true">↗</span></span>
         <Image src={artifact.src} alt={artifact.alt} width={artifact.width} height={artifact.height} sizes="(max-width: 900px) 100vw, 900px" />
-      </a>
-      <figcaption><span>{artifact.caption}</span><span className={styles.eyebrow}>Artifact / Open full size ↗</span></figcaption>
+      </a>}
+      {!artifact.details?.length ? <figcaption><span>{artifact.caption}</span><span className={styles.eyebrow}>Artifact / Open full size ↗</span></figcaption> : null}
     </figure>
   );
 }
@@ -84,11 +89,11 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
         <header className={styles.projectHero}>
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}><span>[{project.number}]</span> {project.organization} / Project</p>
-            <h1>{project.title}<span>.</span></h1>
+            <h1 style={{ viewTransitionName: `region-${project.id}-title` }}>{project.title}<span>.</span></h1>
             <p className={styles.heroSummary}>{project.summary}</p>
             {readingStart ? <a className={styles.startReading} href={`#${readingStart.id}`}>{approach ? "Explore the investigation" : "Explore the Project"} <span aria-hidden="true">↓</span></a> : null}
           </div>
-          <a className={styles.heroArtifact} href={coverSection ? `#${cover.id}` : cover.src} target={coverSection ? undefined : "_blank"} rel={coverSection ? undefined : "noopener noreferrer"} aria-label={coverSection ? `View ${cover.label.toLowerCase()} in ${PROJECT_SECTION_TITLES[coverSection.kind]}` : `Open full-size ${cover.label.toLowerCase()} in a new tab`}>
+          <a className={styles.heroArtifact} data-region-landmark="map" style={{ viewTransitionName: `region-${project.id}-map`, background: cover.surface === "paper" ? "var(--paper-raised)" : "var(--ink)" }} href={coverSection ? `#${cover.id}` : cover.src} target={coverSection ? undefined : "_blank"} rel={coverSection ? undefined : "noopener noreferrer"} aria-label={coverSection ? `View ${cover.label.toLowerCase()} in ${PROJECT_SECTION_TITLES[coverSection.kind]}` : `Open full-size ${cover.label.toLowerCase()} in a new tab`}>
             <div className={styles.imageRegister} aria-hidden="true"><span>Artifact / {cover.label}</span><span>↓</span></div>
             <Image src={cover.src} alt={cover.alt} width={cover.width} height={cover.height} sizes="(max-width: 760px) 100vw, 50vw" preload />
           </a>

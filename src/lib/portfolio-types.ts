@@ -18,6 +18,13 @@ export type Artifact = {
   label: string;
   caption: string;
   surface: "ink" | "paper";
+  details?: {
+    id: string;
+    label: string;
+    caption: string;
+    // Fractions of the original image; the archived file is never altered.
+    crop: { x: number; y: number; width: number; height: number };
+  }[];
 };
 
 export type ProjectBlock =
@@ -49,6 +56,12 @@ export type PortfolioProject = {
   team: string;
   coverArtifactId: string;
   boardTakeaway: string;
+  region?: {
+    contextArtifactId: string;
+    contextInsight: string;
+    mapInsight: string;
+    signals: { value: string; label: string; sectionId: string }[];
+  };
   artifacts: Artifact[];
   sections: ProjectSection[];
 };

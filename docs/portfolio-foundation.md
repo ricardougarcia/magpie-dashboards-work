@@ -3,6 +3,7 @@
 ## Shared shorthand and intent
 
 - **Board**: the space containing all portfolio Projects. The first surface is `/drawer`.
+- **Region**: the stable area a Project and its supporting Artifacts occupy on the Board.
 - **Project**: an independently addressable case study, initially `/work/ccp`.
 - **Artifact**: a real supporting image, map, video, or document.
 
@@ -16,7 +17,7 @@ The experience is visual first: large real Artifacts, compact annotations, workf
 
 `src/data/portfolio.ts` contains authored Project records using `src/lib/portfolio-types.ts`. Stable Project, section, block, decision, and Artifact IDs are independent of Board placement. Blocks support Artifacts, metrics, simplified flows, decisions, text, and details. The six section titles are the defaults, not six required database fields. Routes and the Board read the same collection. No timeline schema, Blob data, editor, authentication, environment, or existing `/` changes are needed.
 
-`src/components/portfolio/` renders the shared presentation using scoped CSS and Server Components. Native links, anchor navigation, and details work without bespoke client state. Full-size Artifacts open locally hosted originals in a new tab so the reading position is preserved. `next/image` generates responsive delivery sizes. No external Wix runtime or asset dependency remains on these two pages.
+`src/components/portfolio/` renders the shared presentation using scoped CSS and Server Components. The authored content remains server-rendered. Small client components handle inspection reveals, Artifact magnification, and Board framing; native links and the existing expandable Project details remain available. Full-size Artifacts open locally hosted originals in a new tab so the reading position is preserved. `next/image` generates responsive delivery sizes. No external Wix runtime or asset dependency remains on these two pages.
 
 New portfolio routes remain `noindex, nofollow` during UAT development, matching the previous drawer policy. Review metadata, canonical domain, and indexing when the expanded portfolio is approved for launch. The current Magpie route does not link to the Board yet.
 
@@ -51,3 +52,15 @@ First complete Board → Project → Board for CCP, then validate the same templ
 ## Release boundary
 
 Use an isolated `codex/` branch from fresh `uat`, run `pnpm check`, verify responsive behavior and the exact Vercel preview, and record review evidence in a PR targeting UAT. Production release requires Rico's later explicit approval. Other contributors may push asynchronously; recheck both branch heads and the PR immediately before merge. Do not modify production data to verify a deployment.
+
+## Region composition and inspection — September 7, 2026
+
+Rico approved the Region composition, paper-backed map correction, continuous Project entry, and inspection reveals for UAT only. The Board now composes the full Workflow Map, original request screen, a located detail of the creation handoff, research scope, and an outcome marker. Labels A/B/C refer to the actual local Artifacts/detail; a single drafting tether connects the handoff detail to the outcome. No speculative cross-project relationships or infinite-canvas controls are introduced.
+
+The Workflow Map PNG is approximately 81% transparent with dark connectors. All overview/detail/hero surfaces now paint paper behind it, preserving the original pixels. Normalized crop coordinates select Creation handoff and Matching & merge within that same original. The Project inspector offers Overview, these two located details, and 1–4× magnification with native bounded scrolling, hidden scrollbars and no overscroll bounce. The locator marks the selected detail in the full map.
+
+Hover or keyboard focus reveals an annotation through a brief signal-red tether/pixel sequence. An explicit toggle provides touch access. Reserved annotation space prevents neighboring Artifacts from shifting. Role, outcome, research scope and resting captions are always visible. Reduced motion disables pixel and page transitions while preserving all controls and content.
+
+Board/Project document links opt into native cross-document view transitions: the title and map retain stable unique names derived from the Project ID. A brief 420ms sheet transition moves outgoing and incoming content at different distances. Browsers without support retain standard links. This follows the browser’s [cross-document transition model](https://developer.chrome.com/docs/web-platform/view-transitions/cross-document); no experimental Next.js flags, custom scroll loop or application dependency was added.
+
+Native Back retains browser restoration. Explicit Return-to-Board links restore the recorded Board scroll position only for the matching Project, using best-effort session storage. Modified clicks and blocked storage retain ordinary navigation. The registration marks and Artifact placement establish a Region that future Board navigation can reuse.

@@ -1,10 +1,11 @@
-import Link from "next/link";
+import { PortfolioLink as Link } from "./portfolio-link";
 import type { ReactNode } from "react";
+import "./portfolio-motion.css";
 import styles from "./portfolio.module.css";
 
 export function PortfolioShell({ children, projectNumber, isBoard = false }: { children: ReactNode; projectNumber?: string; isBoard?: boolean }) {
   return (
-    <div className={`site-shell ${styles.shell}`}>
+    <div className={`site-shell ${styles.shell}`} data-portfolio-view={isBoard ? "board" : "project"}>
       <a className={styles.skipLink} href="#portfolio-main">Skip to content</a>
       <header className={styles.masthead}>
         <Link href="/drawer" className={styles.identity} aria-label="Rico Garcia — Board">

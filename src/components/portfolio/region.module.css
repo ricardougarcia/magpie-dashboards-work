@@ -1,0 +1,155 @@
+.board { padding: 0 var(--portfolio-gutter) 48px; }
+.boardHeading { display: flex; align-items: center; justify-content: space-between; gap: 28px; padding: 32px 0; }
+.boardHeading h1 { font-size: clamp(34px, 4vw, 54px); line-height: 1; letter-spacing: -.065em; font-weight: 600; margin-top: 8px; }
+.boardHeading h1 span, .regionHeading h2 span { color: var(--signal); }
+.boardHeading > p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+.register, .plateLabel, .regionFoot, .inspectButton, .viewHint, .viewerControls, .enter, .outcomeLink { font: 10px/1.6 var(--font-mono), monospace; text-transform: uppercase; letter-spacing: .045em; }
+.register { color: var(--muted); }
+.register > span { color: var(--signal); margin-right: 10px; }
+.regions { display: grid; gap: 80px; }
+.region { position: relative; max-width: 1520px; width: 100%; margin: 0 auto; border-block: 1px solid var(--line-strong); }
+.region::before, .region::after { content: "+"; position: absolute; font: 20px/1 var(--font-mono), monospace; color: var(--signal); pointer-events: none; }
+.region::before { top: -11px; left: -7px; }
+.region::after { bottom: -10px; right: -7px; }
+.regionHeading { display: grid; grid-template-columns: 1.6fr 1fr; gap: 48px; align-items: end; padding: 34px 0 38px; }
+.regionHeading h2 { max-width: 700px; font-size: clamp(36px, 4.5vw, 68px); font-weight: 620; line-height: 1; letter-spacing: -.06em; margin-top: 22px; }
+.regionHeading h2 a { text-decoration: none; }
+.regionHeading h2 a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 7px; }
+.summary { font-size: 17px; line-height: 1.5; margin-top: 18px !important; }
+.regionIdentity { border-left: 1px solid var(--line); padding-left: 28px; }
+.regionIdentity > p:nth-child(2) { margin-top: 16px; font-size: 14px; line-height: 1.6; }
+.regionIdentity > p > span { display: block; font-size: 11px; color: var(--muted); margin-top: 5px; }
+.enter { display: flex; justify-content: space-between; align-items: center; gap: 24px; text-decoration: none; padding: 14px 0; margin-top: 16px; border-top: 1px solid var(--line-strong); min-height: 48px; }
+.enter span { font-size: 25px; color: var(--signal); }
+.enter:hover { color: var(--signal); }
+.constellation { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 28px; align-items: start; }
+.mapPlate { grid-column: 1 / 9; grid-row: 1 / 3; }
+.contextPlate { grid-column: 9 / -1; grid-row: 1; margin-top: 28px; }
+.researchPlate { grid-column: 9 / -1; grid-row: 2; padding-left: 20px; border-left: 1px solid var(--line-strong); }
+.detailPlate { grid-column: 2 / 8; grid-row: 3; }
+.outcomePlate { grid-column: 9 / -1; grid-row: 3; padding-top: 24px; border-top: 1px solid var(--line-strong); position: relative; }
+.outcomePlate::before { display: none; content: ""; position: absolute; width: 28px; left: -28px; top: -1px; border-top: 1px solid var(--signal); }
+.mapLink { display: block; text-decoration: none; }
+.mapLandmark { background: var(--paper-raised); view-transition-class: region-map; }
+.mapLandmark > img, .contextPlate img { display: block; width: 100%; height: auto; }
+.plateLabel { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 42px; padding: 10px 14px; color: var(--muted); border-bottom: 1px solid var(--line); background: var(--paper-raised); }
+.plateLabel > span:last-child { color: var(--signal); }
+.contextPlate > div, .detailPlate > div { background: var(--paper-raised); }
+.scopeSignal { display: grid; grid-template-columns: 1fr 20px; gap: 7px; padding: 22px 0; border-bottom: 1px solid var(--line); text-decoration: none; }
+.scopeSignal strong { font-size: clamp(24px, 2.8vw, 42px); line-height: 1.1; letter-spacing: -.06em; font-weight: 550; }
+.scopeSignal > span:nth-child(2) { grid-column: 1; font-size: 11px; line-height: 1.6; color: var(--muted); }
+.scopeSignal > span:last-child { grid-column: 2; grid-row: 1; color: var(--signal); }
+.scopeSignal:hover strong { color: var(--signal); }
+.scopeFootnote { color: var(--muted); font-size: 12px; line-height: 1.6; padding-top: 20px; }
+.outcome { font-size: clamp(26px, 3vw, 44px); letter-spacing: -.055em; line-height: 1.12; margin-top: 24px !important; }
+.outcomeLink { display: flex; justify-content: space-between; align-items: center; gap: 18px; min-height: 48px; margin-top: 26px; text-decoration: none; }
+.outcomeLink span { font-size: 20px; color: var(--signal); }
+.outcomeLink:hover { color: var(--signal); }
+.regionFoot { display: flex; justify-content: space-between; gap: 20px; color: var(--muted); padding: 30px 0 14px; }
+
+/* Inspection adds meaning without moving neighboring Artifacts. */
+.inspection { position: relative; border: 1px solid var(--line-strong); padding-bottom: 104px; background: var(--paper-raised); }
+.inspection::before, .inspection::after { content: ""; position: absolute; width: 14px; height: 14px; border: solid transparent; pointer-events: none; transition: border-color 160ms; z-index: 1; }
+.inspection::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+.inspection::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+.inspection[data-expanded="true"]::before, .inspection[data-expanded="true"]::after { border-color: var(--signal); }
+.inspectButton { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 14px; min-height: 48px; padding: 12px 14px; border: 0; border-top: 1px solid var(--line); background: none; color: var(--ink); text-align: left; cursor: var(--cursor-action); }
+.inspectButton > span:last-child { font-size: 20px; color: var(--signal); }
+.insight { position: absolute; bottom: 0; left: 0; right: 0; height: 104px; display: flex; gap: 14px; align-items: flex-start; padding: 12px 14px 18px; border-top: 1px solid var(--line); }
+.insight[hidden] { display: none; }
+.insight::before { content: ""; position: absolute; top: -1px; left: 0; width: 48px; border-top: 1px solid var(--signal); transform-origin: left; animation: trace-in 180ms ease-out both; }
+.insight p { font-size: 12px; line-height: 1.55; max-width: 590px; }
+.pixelMark { display: grid; grid-template-columns: repeat(2, 4px); gap: 2px; flex: 0 0 10px; margin-top: 5px; }
+.pixelMark i { width: 4px; height: 4px; background: var(--signal); animation: pixel-resolve 240ms steps(3, end) both; }
+.pixelMark i:nth-child(2n) { animation-delay: 50ms; }
+.pixelMark i:nth-child(3n) { animation-delay: 100ms; }
+@keyframes trace-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes pixel-resolve { 0% { opacity: 0; transform: translateY(5px); } 50% { opacity: .3; } 100% { opacity: 1; transform: none; } }
+
+/* All map views keep a paper backing; the source PNG has transparent pixels. */
+.crop { position: relative; overflow: hidden; background: var(--paper-raised); }
+.crop img { position: absolute; display: block; height: auto; }
+.viewer { border: 1px solid var(--line-strong); background: var(--paper-raised); }
+.viewerControls { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--line-strong); }
+.viewerControls button { min-height: 46px; padding: 12px 16px; border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--ink); font: inherit; cursor: var(--cursor-action); }
+.viewerControls button[aria-pressed="true"] { background: var(--ink); color: var(--paper); box-shadow: inset 0 -2px var(--signal); }
+.viewerSurface { background: var(--paper-raised); }
+.viewerSurface > img { display: block; width: 100%; height: auto; }
+.viewerCaption { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding: 18px; border-top: 1px solid var(--line); }
+.viewerCaption p { font-size: 12px; line-height: 1.6; max-width: 610px; }
+.viewHint { color: var(--muted); }
+.locator { position: relative; width: 112px; flex: 0 0 112px; border: 1px solid var(--line-strong); }
+.locator img { display: block; width: 100%; height: auto; }
+.locator span { position: absolute; border: 2px solid var(--signal); background: #d6452f14; }
+
+@media (max-width: 1050px) {
+  .constellation { gap: 20px; }
+  .mapPlate { grid-column: 1 / 8; }
+  .contextPlate, .researchPlate, .outcomePlate { grid-column: 8 / -1; }
+  .detailPlate { grid-column: 1 / 8; }
+  .regionHeading { gap: 28px; }
+  .outcomePlate::before { display: block; width: 20px; left: -20px; }
+  .insight p { font-size: 11px; }
+}
+@media (max-width: 760px) {
+  .boardHeading { flex-wrap: wrap; align-items: flex-end; padding: 28px 0; gap: 20px; }
+  .boardHeading > p { font-size: 12px; }
+  .boardHeading > .register { width: 100%; }
+  .regionHeading { grid-template-columns: 1fr; gap: 24px; padding-top: 30px; }
+  .regionHeading h2 { font-size: 42px; }
+  .regionIdentity { border-left: 0; padding-left: 0; }
+  .regionIdentity > .register { display: none; }
+  .regionIdentity > p:nth-child(2) { margin-top: 0; }
+  .summary { font-size: 15px; }
+  .constellation { display: flex; flex-direction: column; gap: 26px; }
+  .constellation > div { width: 100%; }
+  .contextPlate { margin-top: 0; }
+  .researchPlate { padding-left: 16px; }
+  .scopeSignal strong { font-size: 34px; }
+  .outcomePlate::before { display: none; }
+  .outcome { font-size: 34px; max-width: 420px; }
+  .regionFoot { flex-direction: column; gap: 8px; font-size: 9px; }
+  .plateLabel { font-size: 9px; padding-inline: 12px; }
+  .viewerControls button { flex: 1; font-size: 9px; padding: 12px 8px; }
+  .viewerCaption { flex-direction: column; gap: 18px; }
+  .insight p { font-size: 12px; }
+  .inspection { padding-bottom: 116px; }
+  .insight { height: 116px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .inspection::before, .inspection::after { transition: none; }
+  .pixelMark i, .insight::before { animation: none; }
+}
+@media print {
+  .inspectButton, .viewerControls { display: none; }
+  .inspection { padding-bottom: 0; }
+  .insight { display: flex !important; position: static; height: auto; }
+  .region { break-inside: avoid; }
+}
+
+.insightRest { position: absolute; left: 0; right: 0; bottom: 0; height: 104px; padding: 16px 14px; border-top: 1px solid var(--line); color: var(--muted); }
+.insightRest p { max-width: 570px; font-size: 12px; line-height: 1.6; }
+.viewerViewport { overflow: auto; overscroll-behavior: none; scrollbar-width: none; touch-action: pan-x pan-y pinch-zoom; background: var(--paper-raised); }
+.viewerViewport::-webkit-scrollbar { display: none; }
+.viewerViewport:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+.zoomControls { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); padding: 0 12px; font: 10px/1.5 var(--font-mono), monospace; color: var(--muted); }
+.zoomControls > span { margin-right: auto; }
+.zoomControls button { width: 44px; height: 44px; border: 0; background: none; color: var(--signal); font-size: 22px; cursor: var(--cursor-action); }
+.zoomControls button:disabled { opacity: .3; cursor: default; }
+@media (max-width: 1050px) and (min-width: 761px) {
+  .inspection { padding-bottom: 124px; }
+  .insight, .insightRest { height: 124px; }
+}
+@media (max-width: 760px) {
+  .inspection { padding-bottom: 144px; }
+  .insight, .insightRest { height: 144px; }
+  .zoomControls { gap: 4px; }
+}
+@media print {
+  .inspection { padding-bottom: 0; }
+  .insightRest, .zoomControls { display: none; }
+  .insight { position: static; height: auto; }
+}
+
+.detailTether { grid-column: 8 / 9; grid-row: 3; margin-inline: -28px; border-top: 1px solid var(--signal); }
+@media (max-width: 1050px) { .detailTether { display: none; } }

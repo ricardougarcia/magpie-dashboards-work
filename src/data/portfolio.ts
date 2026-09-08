@@ -16,6 +16,15 @@ export const portfolioProjects: PortfolioProject[] = [
     team: "4 engineers · 2 designers · 3 contractors",
     coverArtifactId: "ccp-workflow",
     boardTakeaway: "~14 days → immediate product creation",
+    region: {
+      contextArtifactId: "ccp-request",
+      contextInsight: "Adding a product was being mistaken for approving it. Language needed to make the district’s vetting step clear.",
+      mapInsight: "Following the request across three roles exposed where creation, matching, and approval needed to separate.",
+      signals: [
+        { value: "2.5 years", label: "Request history investigated", sectionId: "approach" },
+        { value: "4 perspectives", label: "Educators · admins · contractors · CSMs", sectionId: "approach" },
+      ],
+    },
     artifacts: [
       {
         id: "ccp-workflow",
@@ -25,7 +34,11 @@ export const portfolioProjects: PortfolioProject[] = [
         alt: "CCP workflow map across educator, district administrator, and system administrator roles, including product creation, matching, and vetting.",
         label: "Workflow map",
         caption: "The full system: three roles, shared handoffs, and a path from request to creation and matching.",
-        surface: "ink",
+        surface: "paper",
+        details: [
+          { id: "creation-handoff", label: "Creation handoff", caption: "The creation wizard connects the educator’s request to district ownership. Creating a product and approving its use remain separate steps.", crop: { x: 0.30, y: 0.30, width: 0.43, height: 0.30 } },
+          { id: "matching-handoff", label: "Matching & merge", caption: "District administrators review potential matches before replacing a custom product with a provider-managed record.", crop: { x: 0.32, y: 0.67, width: 0.48, height: 0.26 } },
+        ],
       },
       {
         id: "ccp-request",
