@@ -1,0 +1,14 @@
+/* Only portfolio documents load this opt-in. Document links keep native history,
+   URLs and touch scrolling; unsupported browsers navigate without animation. */
+@view-transition { navigation: auto; }
+::view-transition-group(*) { animation-duration: 420ms; animation-timing-function: cubic-bezier(.2, .7, .2, 1); }
+::view-transition-old(root) { animation: portfolio-paper-recede 420ms both; }
+::view-transition-new(root) { animation: portfolio-paper-arrive 420ms both; }
+::view-transition-image-pair(root) { isolation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { mix-blend-mode: normal; }
+@keyframes portfolio-paper-recede { to { transform: translateY(-12px); opacity: .4; } }
+@keyframes portfolio-paper-arrive { from { transform: translateY(36px); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}

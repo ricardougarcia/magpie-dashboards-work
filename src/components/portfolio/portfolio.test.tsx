@@ -1,15 +1,19 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { PortfolioBoard } from "./portfolio-board";
 import { ProjectPage } from "./project-page";
+import { ArtifactViewer } from "./artifact-viewer";
+import { RegionInspection } from "./region-inspection";
+import { PortfolioLink } from "./portfolio-link";
+import { BOARD_POSITION, boardRestorationScript } from "@/lib/portfolio-navigation";
 import { portfolioProjects } from "@/data/portfolio";
 import { PROJECT_SECTION_TITLES } from "@/lib/portfolio-types";
 import WorkProjectPage, { generateMetadata, generateStaticParams } from "@/app/work/[slug]/page";
 
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("NEXT_NOT_FOUND"); } }));
-afterEach(cleanup);
+afterEach(() => { cleanup(); sessionStorage.clear(); vi.restoreAllMocks(); });
 
 describe("Board and Project foundation", () => {
   const project = portfolioProjects[0];
@@ -78,5 +82,62 @@ describe("Board and Project foundation", () => {
 
   it("keeps unreconciled contractor-hour and phase-count claims out of the published content", () => {
     expect(JSON.stringify(portfolioProjects)).not.toMatch(/660|330|3 phases/i);
+  });
+
+  it("lets touch users open and close an inspection without moving its target", () => {
+    render(<RegionInspection label="the handoff" summary="Creation workflow" insight="Creation and approval are separate."><span>Artifact</span></RegionInspection>);
+    const button = screen.getByRole("button", { name: /Inspect/ });
+    const panel = document.getElementById(button.getAttribute("aria-controls")!)!;
+    expect(panel.hidden).toBe(true);
+    fireEvent.click(button);
+    expect(button.getAttribute("aria-expanded")).toBe("true");
+    expect(panel.hidden).toBe(false);
+    fireEvent.click(button);
+    expect(panel.hidden).toBe(true);
+    expect(screen.getByText("Creation workflow")).toBeTruthy();
+  });
+
+  it("switches the map between full overview and located, magnifiable details", () => {
+    const artifact = project.artifacts[0];
+    render(<ArtifactViewer artifact={artifact} />);
+    expect(screen.getByRole("button", { name: "Overview" }).getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: "Creation handoff" }));
+    expect(screen.getByRole("img", { name: /location within the full map/ })).toBeTruthy();
+    const zoomIn = screen.getByRole("button", { name: "Zoom in on map" });
+    fireEvent.click(zoomIn); fireEvent.click(zoomIn); fireEvent.click(zoomIn);
+    expect((zoomIn as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByRole("region", { name: /4 times magnification/ })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Overview" }));
+    expect(screen.queryByRole("img", { name: /location within the full map/ })).toBeNull();
+    expect(screen.getByRole("region", { name: /1 times magnification/ })).toBeTruthy();
+    for (const detail of artifact.details!) {
+      expect(detail.crop.x + detail.crop.width).toBeLessThanOrEqual(1);
+      expect(detail.crop.y + detail.crop.height).toBeLessThanOrEqual(1);
+      expect(detail.crop.width).toBeGreaterThan(0);
+      expect(detail.crop.height).toBeGreaterThan(0);
+    }
+  });
+
+  it("restores framing only when returning from the recorded Project", () => {
+    const scroll = vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+    vi.spyOn(document, "readyState", "get").mockReturnValue("complete");
+    sessionStorage.setItem(BOARD_POSITION, JSON.stringify({ y: 320, project: "/work/ccp" }));
+    sessionStorage.setItem("portfolio-return", "/work/another-project");
+    window.eval(boardRestorationScript);
+    expect(scroll).not.toHaveBeenCalled();
+    sessionStorage.setItem("portfolio-return", "/work/ccp");
+    window.eval(boardRestorationScript);
+    expect(scroll).toHaveBeenCalledWith({ top: 320, behavior: "instant" });
+    expect(sessionStorage.getItem("portfolio-return")).toBeNull();
+  });
+
+  it("preserves modified clicks and navigation when browser storage is unavailable", () => {
+    const setItem = vi.spyOn(Storage.prototype, "setItem");
+    render(<PortfolioLink href="/drawer">Board</PortfolioLink>);
+    fireEvent.click(screen.getByRole("link"), { ctrlKey: true });
+    expect(setItem).not.toHaveBeenCalled();
+    setItem.mockImplementation(() => { throw new Error("Storage unavailable"); });
+    expect(() => fireEvent.click(screen.getByRole("link"))).not.toThrow();
+    expect(screen.getByRole("link").getAttribute("href")).toBe("/drawer");
   });
 });
