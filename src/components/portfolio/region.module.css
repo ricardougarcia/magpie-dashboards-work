@@ -22,16 +22,15 @@
 .enter { display: flex; justify-content: space-between; align-items: center; gap: 24px; text-decoration: none; padding: 14px 0; margin-top: 16px; border-top: 1px solid var(--line-strong); min-height: 48px; }
 .enter span { font-size: 25px; color: var(--signal); }
 .enter:hover { color: var(--signal); }
-.constellation { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 28px; align-items: start; }
+.constellation { position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 28px; align-items: start; }
 .mapPlate { grid-column: 1 / 9; grid-row: 1 / 3; }
 .contextPlate { grid-column: 9 / -1; grid-row: 1; margin-top: 28px; }
 .researchPlate { grid-column: 9 / -1; grid-row: 2; padding-left: 20px; border-left: 1px solid var(--line-strong); }
 .detailPlate { grid-column: 2 / 8; grid-row: 3; }
 .outcomePlate { grid-column: 9 / -1; grid-row: 3; padding-top: 24px; border-top: 1px solid var(--line-strong); position: relative; }
-.outcomePlate::before { display: none; content: ""; position: absolute; width: 28px; left: -28px; top: -1px; border-top: 1px solid var(--signal); }
 .mapLink { display: block; text-decoration: none; }
 .mapLandmark { background: var(--paper-raised); view-transition-class: region-map; }
-.mapLandmark > img, .contextPlate img { display: block; width: 100%; height: auto; }
+.mapImage > img, .contextPlate img { display: block; width: 100%; height: auto; }
 .plateLabel { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 42px; padding: 10px 14px; color: var(--muted); border-bottom: 1px solid var(--line); background: var(--paper-raised); }
 .plateLabel > span:last-child { color: var(--signal); }
 .contextPlate > div, .detailPlate > div { background: var(--paper-raised); }
@@ -48,23 +47,42 @@
 .regionFoot { display: flex; justify-content: space-between; gap: 20px; color: var(--muted); padding: 30px 0 14px; }
 
 /* Inspection adds meaning without moving neighboring Artifacts. */
-.inspection { position: relative; border: 1px solid var(--line-strong); padding-bottom: 104px; background: var(--paper-raised); }
+.inspection { position: relative; border: 1px solid var(--line-strong); background: var(--paper-raised); }
 .inspection::before, .inspection::after { content: ""; position: absolute; width: 14px; height: 14px; border: solid transparent; pointer-events: none; transition: border-color 160ms; z-index: 1; }
-.inspection::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-.inspection::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+.inspection::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+.inspection::after { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
 .inspection[data-expanded="true"]::before, .inspection[data-expanded="true"]::after { border-color: var(--signal); }
 .inspectButton { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 14px; min-height: 48px; padding: 12px 14px; border: 0; border-top: 1px solid var(--line); background: none; color: var(--ink); text-align: left; cursor: var(--cursor-action); }
 .inspectButton > span:last-child { font-size: 20px; color: var(--signal); }
-.insight { position: absolute; bottom: 0; left: 0; right: 0; height: 104px; display: flex; gap: 14px; align-items: flex-start; padding: 12px 14px 18px; border-top: 1px solid var(--line); }
-.insight[hidden] { display: none; }
-.insight::before { content: ""; position: absolute; top: -1px; left: 0; width: 48px; border-top: 1px solid var(--signal); transform-origin: left; animation: trace-in 180ms ease-out both; }
-.insight p { font-size: 12px; line-height: 1.55; max-width: 590px; }
-.pixelMark { display: grid; grid-template-columns: repeat(2, 4px); gap: 2px; flex: 0 0 10px; margin-top: 5px; }
-.pixelMark i { width: 4px; height: 4px; background: var(--signal); animation: pixel-resolve 240ms steps(3, end) both; }
-.pixelMark i:nth-child(2n) { animation-delay: 50ms; }
-.pixelMark i:nth-child(3n) { animation-delay: 100ms; }
+/* Both captions participate in sizing: inspection never changes the frame. */
+.annotation { display: grid; position: relative; border-top: 1px solid var(--line); overflow: hidden; }
+.insight, .insightRest { grid-area: 1 / 1; position: relative; padding: 18px 16px 22px; }
+.insight { display: flex; align-items: flex-start; gap: 18px; }
+.insightRest { color: var(--muted); }
+/* Keep inactive captions in the grid, out of both sight and accessibility. */
+.insight[data-inactive="true"], .insightRest[data-inactive="true"] { visibility: hidden; pointer-events: none; }
+.insight p, .insightRest p { position: relative; z-index: 1; font-size: 12px; line-height: 1.65; max-width: 590px; }
+.insight::before { content: ""; position: absolute; top: 0; left: 16px; width: 32px; border-top: 1px solid var(--signal); transform-origin: left; }
+.inspection[data-expanded="true"] .insight::before { animation: trace-in 220ms ease-out both; }
+.acquisition { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(32, minmax(0, 1fr)); grid-template-rows: repeat(6, minmax(0, 1fr)); pointer-events: none; }
+.acquisition i { background: var(--ink); opacity: 0; }
+.inspection[data-expanded="true"] .acquisition i { animation: acquire-paper 260ms steps(4, end) var(--acquire-delay) both; }
 @keyframes trace-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes pixel-resolve { 0% { opacity: 0; transform: translateY(5px); } 50% { opacity: .3; } 100% { opacity: 1; transform: none; } }
+@keyframes acquire-paper { 0% { opacity: 0; } 35% { opacity: var(--acquire-tone); } 100% { opacity: 0; } }
+
+/* One literal A ↔ C relationship. The paper and original image stay still. */
+.mapImage { position: relative; }
+.sourceWindow { position: absolute; border: 1px solid var(--signal); opacity: 0; pointer-events: none; transition: opacity 160ms ease-out; }
+.sourceWindow > span { position: absolute; bottom: 100%; left: -1px; padding: 3px 6px; background: var(--paper-raised); color: var(--signal); font: 9px/1.4 var(--font-mono), monospace; text-transform: uppercase; white-space: nowrap; }
+.constellation[data-evidence-active="true"] .sourceWindow { opacity: 1; }
+.evidenceTrace { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: -1; }
+.evidenceTrace path { fill: none; stroke: var(--signal); stroke-width: 1; stroke-opacity: .65; stroke-dasharray: 1; stroke-dashoffset: 0; animation: evidence-draw 380ms cubic-bezier(.22, 1, .36, 1) both; }
+@keyframes evidence-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.evidenceLocator { width: 80px; flex: 0 0 80px; position: relative; }
+.evidenceLocator > span { display: block; margin-bottom: 5px; color: var(--muted); font: 8px/1.4 var(--font-mono), monospace; text-transform: uppercase; }
+.evidenceLocator > div { position: relative; }
+.evidenceLocator img { display: block; width: 100%; height: auto; }
+.evidenceLocator > div > span { position: absolute; border: 1px solid var(--signal); }
 
 /* All map views keep a paper backing; the source PNG has transparent pixels. */
 .crop { position: relative; overflow: hidden; background: var(--paper-raised); }
@@ -88,7 +106,6 @@
   .contextPlate, .researchPlate, .outcomePlate { grid-column: 8 / -1; }
   .detailPlate { grid-column: 1 / 8; }
   .regionHeading { gap: 28px; }
-  .outcomePlate::before { display: block; width: 20px; left: -20px; }
   .insight p { font-size: 11px; }
 }
 @media (max-width: 760px) {
@@ -101,34 +118,27 @@
   .regionIdentity > .register { display: none; }
   .regionIdentity > p:nth-child(2) { margin-top: 0; }
   .summary { font-size: 15px; }
-  .constellation { display: flex; flex-direction: column; gap: 26px; }
+  .constellation { position: relative; isolation: isolate; display: flex; flex-direction: column; gap: 26px; }
   .constellation > div { width: 100%; }
   .contextPlate { margin-top: 0; }
   .researchPlate { padding-left: 16px; }
   .scopeSignal strong { font-size: 34px; }
-  .outcomePlate::before { display: none; }
   .outcome { font-size: 34px; max-width: 420px; }
   .regionFoot { flex-direction: column; gap: 8px; font-size: 9px; }
   .plateLabel { font-size: 9px; padding-inline: 12px; }
   .viewerControls button { flex: 1; font-size: 9px; padding: 12px 8px; }
   .viewerCaption { flex-direction: column; gap: 18px; }
   .insight p { font-size: 12px; }
-  .inspection { padding-bottom: 116px; }
-  .insight { height: 116px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .inspection::before, .inspection::after { transition: none; }
-  .pixelMark i, .insight::before { animation: none; }
 }
 @media print {
   .inspectButton, .viewerControls { display: none; }
-  .inspection { padding-bottom: 0; }
-  .insight { display: flex !important; position: static; height: auto; }
+  .insight { display: flex !important; visibility: visible; position: static; }
   .region { break-inside: avoid; }
 }
 
-.insightRest { position: absolute; left: 0; right: 0; bottom: 0; height: 104px; padding: 16px 14px; border-top: 1px solid var(--line); color: var(--muted); }
-.insightRest p { max-width: 570px; font-size: 12px; line-height: 1.6; }
 .viewerViewport { overflow: auto; overscroll-behavior: none; scrollbar-width: none; touch-action: pan-x pan-y pinch-zoom; background: var(--paper-raised); }
 .viewerViewport::-webkit-scrollbar { display: none; }
 .viewerViewport:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
@@ -136,20 +146,29 @@
 .zoomControls > span { margin-right: auto; }
 .zoomControls button { width: 44px; height: 44px; border: 0; background: none; color: var(--signal); font-size: 22px; cursor: var(--cursor-action); }
 .zoomControls button:disabled { opacity: .3; cursor: default; }
-@media (max-width: 1050px) and (min-width: 761px) {
-  .inspection { padding-bottom: 124px; }
-  .insight, .insightRest { height: 124px; }
-}
 @media (max-width: 760px) {
-  .inspection { padding-bottom: 144px; }
-  .insight, .insightRest { height: 144px; }
   .zoomControls { gap: 4px; }
 }
 @media print {
-  .inspection { padding-bottom: 0; }
   .insightRest, .zoomControls { display: none; }
-  .insight { position: static; height: auto; }
+  .insight { position: static; }
 }
 
-.detailTether { grid-column: 8 / 9; grid-row: 3; margin-inline: -28px; border-top: 1px solid var(--signal); }
-@media (max-width: 1050px) { .detailTether { display: none; } }
+
+@media (max-width: 760px) {
+  .evidenceTrace { display: none; }
+  .evidenceLocator { width: 62px; flex-basis: 62px; }
+  .insight { gap: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sourceWindow { transition: none; }
+  .inspection[data-expanded="true"] .acquisition i,
+  .inspection[data-expanded="true"] .insight::before,
+  .evidenceTrace path { animation: none; }
+}
+@media print {
+  .annotation { display: block; }
+  .annotation .insight { visibility: visible; }
+  .annotation .insightRest { display: none !important; }
+  .sourceWindow, .acquisition, .evidenceTrace { display: none; }
+}

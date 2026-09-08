@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -13,7 +13,7 @@ import { PROJECT_SECTION_TITLES } from "@/lib/portfolio-types";
 import WorkProjectPage, { generateMetadata, generateStaticParams } from "@/app/work/[slug]/page";
 
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("NEXT_NOT_FOUND"); } }));
-afterEach(() => { cleanup(); sessionStorage.clear(); vi.restoreAllMocks(); });
+afterEach(() => { cleanup(); sessionStorage.clear(); vi.restoreAllMocks(); vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe("Board and Project foundation", () => {
   const project = portfolioProjects[0];
@@ -88,13 +88,60 @@ describe("Board and Project foundation", () => {
     render(<RegionInspection label="the handoff" summary="Creation workflow" insight="Creation and approval are separate."><span>Artifact</span></RegionInspection>);
     const button = screen.getByRole("button", { name: /Inspect/ });
     const panel = document.getElementById(button.getAttribute("aria-controls")!)!;
-    expect(panel.hidden).toBe(true);
+    expect(panel.getAttribute("aria-hidden")).toBe("true");
     fireEvent.click(button);
     expect(button.getAttribute("aria-expanded")).toBe("true");
-    expect(panel.hidden).toBe(false);
+    expect(panel.getAttribute("aria-hidden")).toBe("false");
     fireEvent.click(button);
-    expect(panel.hidden).toBe(true);
+    expect(panel.getAttribute("aria-hidden")).toBe("true");
     expect(screen.getByText("Creation workflow")).toBeTruthy();
+  });
+
+  it("ignores passing hover, cancels pending acquisition, and dismisses with Escape", () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("PointerEvent", class extends MouseEvent {
+      pointerType: string;
+      constructor(type: string, init: PointerEventInit = {}) { super(type, init); this.pointerType = init.pointerType ?? "mouse"; }
+    });
+    const { container } = render(<RegionInspection label="a detail" summary="Overview" insight="Evidence"><span>Artifact</span></RegionInspection>);
+    const root = container.firstElementChild!;
+    const button = screen.getByRole("button");
+    fireEvent.pointerEnter(root, { pointerType: "mouse" });
+    act(() => { vi.advanceTimersByTime(80); });
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.pointerLeave(root);
+    act(() => { vi.advanceTimersByTime(200); });
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.pointerEnter(root, { pointerType: "touch" });
+    act(() => { vi.advanceTimersByTime(200); });
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.pointerEnter(root, { pointerType: "mouse" });
+    act(() => { vi.advanceTimersByTime(120); });
+    expect(button.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.keyDown(button, { key: "Escape" });
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(button);
+    fireEvent.pointerLeave(root, { pointerType: "touch" });
+    expect(button.getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("ties C inspection to its map locator and clears the trace on outside touch", () => {
+    const disconnect = vi.fn();
+    vi.stubGlobal("ResizeObserver", class { observe() {} disconnect = disconnect; });
+    const { container } = render(<PortfolioBoard projects={portfolioProjects} />);
+    const region = container.querySelector("[data-evidence-active]")!;
+    const detail = screen.getByRole("button", { name: "Inspect / the handoff" });
+    expect(region.getAttribute("data-evidence-active")).toBe("false");
+    fireEvent.click(detail);
+    expect(region.getAttribute("data-evidence-active")).toBe("true");
+    expect(screen.getByRole("img", { name: /location in A/ })).toBeTruthy();
+    expect(region.querySelector("svg path")).toBeTruthy();
+    fireEvent.pointerDown(document.body);
+    expect(region.getAttribute("data-evidence-active")).toBe("false");
+    expect(region.querySelector("svg path")).toBeNull();
+    expect(disconnect).toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Inspect / the starting point" }));
+    expect(region.getAttribute("data-evidence-active")).toBe("false");
   });
 
   it("switches the map between full overview and located, magnifiable details", () => {
