@@ -55,7 +55,7 @@ Use an isolated `codex/` branch from fresh `uat`, run `pnpm check`, verify respo
 
 ## Region composition and inspection — September 7, 2026
 
-Rico approved the Region composition, paper-backed map correction, continuous Project entry, and inspection reveals for UAT only. The Board now composes the full Workflow Map, original request screen, a located detail of the creation handoff, research scope, and an outcome marker. Labels A/B/C refer to the actual local Artifacts/detail; a single drafting tether connects the handoff detail to the outcome. No speculative cross-project relationships or infinite-canvas controls are introduced.
+Rico approved the Region composition, paper-backed map correction, continuous Project entry, and inspection reveals for UAT only. The Board now composes the full Workflow Map, original request screen, a located detail of the creation handoff, research scope, and an outcome marker. Labels A/B/C refer to the actual local Artifacts/detail; the handoff detail is explicitly identified as a crop of the full map. No speculative cross-project relationships or infinite-canvas controls are introduced.
 
 The Workflow Map PNG is approximately 81% transparent with dark connectors. All overview/detail/hero surfaces now paint paper behind it, preserving the original pixels. Normalized crop coordinates select Creation handoff and Matching & merge within that same original. The Project inspector offers Overview, these two located details, and 1–4× magnification with native bounded scrolling, hidden scrollbars and no overscroll bounce. The locator marks the selected detail in the full map.
 
@@ -64,3 +64,14 @@ Hover or keyboard focus reveals an annotation through a brief signal-red tether/
 Board/Project document links opt into native cross-document view transitions: the title and map retain stable unique names derived from the Project ID. A brief 420ms sheet transition moves outgoing and incoming content at different distances. Browsers without support retain standard links. This follows the browser’s [cross-document transition model](https://developer.chrome.com/docs/web-platform/view-transitions/cross-document); no experimental Next.js flags, custom scroll loop or application dependency was added.
 
 Native Back retains browser restoration. Explicit Return-to-Board links restore the recorded Board scroll position only for the matching Project, using best-effort session storage. Modified clicks and blocked storage retain ordinary navigation. The registration marks and Artifact placement establish a Region that future Board navigation can reuse.
+
+
+## Pixel Acquisition and Evidence Trace — September 7, 2026
+
+Rico approved the first two Board refinements with a specific constraint: the paper should feel considered, and motion should remain light. Open Mounts and Board Threshold remain proposals for later; this change is limited to Board inspection.
+
+Pixel Acquisition replaces the six-square icon with one bounded tonal pass across the annotation surface. Deterministic variation in tone and delay recalls the Gantt acquisition language at much lower opacity (2.5–8%). A 120ms mouse dwell suppresses passing hovers; the pass settles in under half a second. Paper stays flat and uniform, with no texture, shadow, scale, tilt or changes to original image pixels. Corners and a short rule identify the active annotation. Touch toggles immediately; keyboard focus, Escape and outside pointer dismissal are supported.
+
+Evidence Trace belongs specifically to C / Creation handoff. Its inspection outlines the existing crop coordinates in A / Workflow Map and draws one orthogonal tether through the outer margin, replacing the former decorative C-to-outcome line. An A / Source locator supplies the same relationship when the full map is off-screen. On narrow layouts the long tether is omitted; the source outline and locator remain. Source files and content claims are unchanged. Reduced motion presents a static relationship without pixel or stroke animation.
+
+Inactive and active captions share a CSS grid cell and both contribute to intrinsic sizing. Inactive content is visually hidden and marked aria-hidden, avoiding layout movement and clipped copy at narrow widths or increased text size. Geometry is measured only during active inspection and resize; no scroll loop or idle animation is introduced. The existing Project pages, Board/Project transitions, and Magpie timeline are unchanged.

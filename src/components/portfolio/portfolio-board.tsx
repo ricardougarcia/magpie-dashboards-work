@@ -4,6 +4,7 @@ import { PortfolioShell } from "./portfolio-shell";
 import { PortfolioLink } from "./portfolio-link";
 import { boardRestorationScript } from "@/lib/portfolio-navigation";
 import { ArtifactCrop } from "./artifact-viewer";
+import { EvidenceRegion } from "./evidence-region";
 import { RegionInspection } from "./region-inspection";
 import styles from "./region.module.css";
 
@@ -38,13 +39,16 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
                   <PortfolioLink href={projectUrl} className={styles.enter}>Enter Project <span aria-hidden="true">↗</span></PortfolioLink>
                 </div>
               </header>
-              <div className={styles.constellation}>
-                <div className={styles.mapPlate}>
+              <EvidenceRegion crop={detail?.crop}>
+                <div className={styles.mapPlate} data-evidence-source>
                   <RegionInspection label="the system" summary={cover.caption} insight={project.region?.mapInsight ?? cover.caption}>
                     <PortfolioLink href={projectUrl} className={styles.mapLink} aria-label={`Enter ${project.title} through the ${cover.label.toLowerCase()}`}>
                       <div className={styles.mapLandmark} data-region-landmark="map" style={{ viewTransitionName: `region-${project.id}-map` }}>
                         <div className={styles.plateLabel}><span>A / {cover.label}</span><span aria-hidden="true">↗</span></div>
-                        <Image src={cover.src} alt={cover.alt} width={cover.width} height={cover.height} sizes="(max-width: 760px) 100vw, 65vw" preload={index === 0} />
+                        <div className={styles.mapImage} data-evidence-map>
+                          <Image src={cover.src} alt={cover.alt} width={cover.width} height={cover.height} sizes="(max-width: 760px) 100vw, 65vw" preload={index === 0} />
+                          {detail ? <span className={styles.sourceWindow} style={{ left: `${detail.crop.x * 100}%`, top: `${detail.crop.y * 100}%`, width: `${detail.crop.width * 100}%`, height: `${detail.crop.height * 100}%` }} aria-hidden="true"><span>C / Detail</span></span> : null}
+                        </div>
                       </div>
                     </PortfolioLink>
                   </RegionInspection>
@@ -64,21 +68,25 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
                   </PortfolioLink>)}
                   <p className={styles.scopeFootnote}>Trace the work behind the outcome.</p>
                 </div>
-                {detail ? <div className={styles.detailPlate}>
-                  <RegionInspection label="the handoff" summary={`${detail.label}. An enlarged detail from the full workflow.`} insight={detail.caption}>
+                {detail ? <div className={styles.detailPlate} data-evidence-detail>
+                  <RegionInspection label="the handoff" summary={`${detail.label}. An enlarged detail from the full workflow.`} insight={detail.caption} evidence locator={
+                    <div className={styles.evidenceLocator} role="img" aria-label={`${detail.label} location in A, the full workflow map`}>
+                      <span>A / Source</span>
+                      <div><Image src={cover.src} alt="" width={cover.width} height={cover.height} sizes="80px" /><span style={{ left: `${detail.crop.x * 100}%`, top: `${detail.crop.y * 100}%`, width: `${detail.crop.width * 100}%`, height: `${detail.crop.height * 100}%` }} /></div>
+                    </div>
+                  }>
                     <div className={styles.plateLabel}><span>C / {detail.label}</span><span>Detail of A</span></div>
                     <PortfolioLink href={`${projectUrl}#${cover.id}`} aria-label={`Inspect ${detail.label.toLowerCase()} in the full map`}>
                       <ArtifactCrop artifact={cover} detail={detail} />
                     </PortfolioLink>
                   </RegionInspection>
                 </div> : null}
-                {detail ? <span className={styles.detailTether} aria-hidden="true" /> : null}
                 <div className={styles.outcomePlate}>
                   <p className={styles.register}>Result / Time to value</p>
                   <p className={styles.outcome}>{project.boardTakeaway}</p>
                   <PortfolioLink href={`${projectUrl}#${project.sections.find((section) => section.kind === "impact")?.id ?? project.sections[0]?.id ?? "portfolio-main"}`} className={styles.outcomeLink}>Explore the outcome <span aria-hidden="true">↗</span></PortfolioLink>
                 </div>
-              </div>
+              </EvidenceRegion>
               <footer className={styles.regionFoot}><span>Region {project.number} / {project.organization}</span><span>Overview → Evidence → Project</span></footer>
             </article>;
           })}
