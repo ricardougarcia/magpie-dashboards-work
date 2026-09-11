@@ -27,15 +27,15 @@ describe("Board and Project foundation", () => {
     }
   });
 
-  it("counts original artifacts and delivery decisions without counting crops or reflections", () => {
+  it("keeps concise specifications and correct A/B source references", () => {
     const { container } = render(<PortfolioBoard projects={portfolioProjects} />);
-    expect(screen.getByText(/02 artifacts/).textContent).toContain("02 delivery decisions");
+    expect(screen.queryByText(/delivery decisions/i)).toBeNull();
     const specifications = screen.getByLabelText(`${project.title} specifications`);
     expect(within(specifications).getByText(project.role)).toBeTruthy();
     expect(within(specifications).getByText(project.duration)).toBeTruthy();
     const entry = screen.getByRole("link", { name: /Begin with CCP/i });
     expect(container.querySelector(entry.getAttribute("href")!)).toBeTruthy();
-    expect(screen.getByText("A.01 / What to notice")).toBeTruthy();
+    expect(screen.getByText("B.01 / What to notice")).toBeTruthy();
     expect(screen.getByText(project.region!.mapInsight)).toBeTruthy();
     expect(container.querySelector("[data-region-code]")?.getAttribute("data-region-code")).toBe("CCP");
   });
@@ -110,7 +110,7 @@ describe("Board and Project foundation", () => {
     expect(screen.getByText("Creation workflow")).toBeTruthy();
   });
 
-  it("ignores passing hover, cancels pending acquisition, and dismisses with Escape", () => {
+  it("opens on mouse hover, ignores touch hover, and dismisses with Escape", () => {
     vi.useFakeTimers();
     vi.stubGlobal("PointerEvent", class extends MouseEvent {
       pointerType: string;
@@ -121,8 +121,8 @@ describe("Board and Project foundation", () => {
     const button = screen.getByRole("button");
     fireEvent.pointerEnter(root, { pointerType: "mouse" });
     act(() => { vi.advanceTimersByTime(80); });
-    expect(button.getAttribute("aria-expanded")).toBe("false");
-    fireEvent.pointerLeave(root);
+    expect(button.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.pointerLeave(root, { pointerType: "mouse" });
     act(() => { vi.advanceTimersByTime(200); });
     expect(button.getAttribute("aria-expanded")).toBe("false");
     fireEvent.pointerEnter(root, { pointerType: "touch" });
@@ -138,7 +138,8 @@ describe("Board and Project foundation", () => {
     expect(button.getAttribute("aria-expanded")).toBe("true");
   });
 
-  it("ties C inspection to its map locator and clears the trace on outside touch", () => {
+  it("ties both B and C inspection to the same crop and clears on outside touch", () => {
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({ left: 0, top: 0, right: 600, bottom: 500, width: 600, height: 500 } as DOMRect);
     const disconnect = vi.fn();
     vi.stubGlobal("ResizeObserver", class { observe() {} disconnect = disconnect; });
     const { container } = render(<PortfolioBoard projects={portfolioProjects} />);
@@ -147,14 +148,18 @@ describe("Board and Project foundation", () => {
     expect(region.getAttribute("data-evidence-active")).toBe("false");
     fireEvent.click(detail);
     expect(region.getAttribute("data-evidence-active")).toBe("true");
-    expect(screen.getByRole("img", { name: /location in A/ })).toBeTruthy();
+    expect(screen.getByRole("img", { name: /location in B/ })).toBeTruthy();
     expect(region.querySelector("svg path")).toBeTruthy();
     expect(region.querySelectorAll("svg rect")).toHaveLength(2);
     expect(screen.getByText("SRC 1734,1518 px")).toBeTruthy();
+    const path = region.querySelector("svg path")!.getAttribute("d");
     fireEvent.pointerDown(document.body);
     expect(region.getAttribute("data-evidence-active")).toBe("false");
     expect(region.querySelector("svg path")).toBeNull();
-    expect(disconnect).toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Inspect / the system" }));
+    expect(region.querySelector("svg path")!.getAttribute("d")).toBe(path);
+    fireEvent.pointerDown(document.body);
     fireEvent.click(screen.getByRole("button", { name: "Inspect / the starting point" }));
     expect(region.getAttribute("data-evidence-active")).toBe("false");
   });

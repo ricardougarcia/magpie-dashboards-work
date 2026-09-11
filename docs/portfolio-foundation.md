@@ -85,3 +85,25 @@ Each Region presents a colon-aligned Project, Role, Window, and Status plate. �
 Artifact mounts use the existing raised-paper tone and fine borders, with resting corner marks and active reticles. A / Workflow Map exposes its “What to notice” annotation at rest; inspection supplies the source caption. C's source label identifies the crop's upper-left point in original-image pixels (1734,1518), matching the source locator and crop bounds. Square endpoints finish the existing A–C trace. The line resolves once per inspection and remains static, with animation removed under reduced motion.
 
 General notes distinguish original Artifacts, enlarged details, and reported outcomes. No boot overlay or forthcoming-project index is included. This pass changes only Board components and scoped styles; the Project pages, original image files, Magpie timeline, storage, and production release remain unchanged. UAT only.
+
+## Board interaction parity and typography — September 10, 2026, revision 02
+
+This revision supersedes the earlier Board pointer, pale acquisition pass, artifact lettering and specification panel. The original Magpie sample, its global CSS, pointer component, source images and project data remain unchanged.
+
+The Board mounts the original `CoordinateCursor` and activates its existing full-viewport guides over the Board. X and Y are unpadded viewport CSS pixels with the original stacked labels, offsets, font and edge handling. The fixed sheet ruler retains its explicitly labeled sheet-relative coordinates. Inspection uses the original 16 × 16 acquisition algorithm, dark tones, seeded delays, stepped entry and exit settings, in a Board-scoped annotation surface. Image pixels and mounts remain still.
+
+A is Starting point, enlarged slightly on the left. Sections 02 and 03 share the right-hand notes area; C / Creation handoff sits below A and B / Workflow map sits below the notes, only slightly smaller than before. Every crop reference now identifies B as the source. A graphite edge, dark letter marker and raised paper distinguish artifact mounts. Links use fine underlines; caption actions use restrained bracketed verbs. The contribution panel becomes three factual margin rows: Role, Duration and Team.
+
+### Type roles
+
+| Role | Family | Size / weight | Use |
+| --- | --- | --- | --- |
+| Display | Geist Sans | Responsive 34–68px / 600–620 | Board and project titles; tight Magpie tracking |
+| Statements | Geist Sans | Responsive 26–40px / 550 | Investigation values and result statements share one style |
+| Reading | Geist Sans | 13px / 400; summary 15–17px | Captions, explanations and specification values |
+| Labels | Geist Mono | 10px / 400–500 | Indices, artifact headers, metadata keys and controls |
+| Technical detail | Geist Mono | 8–9px | Rulers and source coordinates; original cursor stays 9px / 600 |
+
+Sizes and weights establish hierarchy within these roles rather than introducing new families. Section 02 and 03 share their heading, display and label treatment. Red indicates inspection and evidence, not every link.
+
+The introduction starts automatically after desktop layout is available: A and B draw from their own registration corners with offset timing, then B's actual crop connects to C and initiates its frame. On screens at most 760px wide, A, B and C advance as their respective artifacts scroll into view. Artifacts, captions and resting borders are visible before and throughout the sequence, including without JavaScript. The introduction runs once per page mount. Reduced motion shows the resolved layout immediately. Inspecting B or C also outlines the crop and draws the same B-to-C path using the Magpie related-item `motion.path` transition (350ms). Explicit inspection interrupts introduction and retains the requested relationship; touch leave never dismisses an open inspection. Geometry follows image/layout resize and routes through the column gutter or mobile sheet margin.
