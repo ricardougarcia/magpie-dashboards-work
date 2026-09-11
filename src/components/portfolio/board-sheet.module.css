@@ -1,10 +1,3 @@
-.titleBlock { display: grid; grid-template-columns: 1fr .7fr 1.8fr; min-width: 280px; border: 1px solid var(--line-strong); background: var(--paper-raised); font: 10px/1.6 var(--font-mono), monospace; text-transform: uppercase; }
-.titleBlock > div { padding: 9px 12px; border-left: 1px solid var(--line); }
-.titleBlock .sheetOwner { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 30px; border-left: 0; border-bottom: 1px solid var(--line-strong); }
-.titleBlock > div:nth-child(2) { border-left: 0; }
-.titleBlock dt { color: var(--muted); font-size: 9px; }
-.titleBlock dd { margin-top: 3px; }
-.titleBlock .sheetOwner dd { margin: 0; }
 .sheet { position: relative; max-width: 1520px; margin-inline: auto; border-inline: 1px solid var(--line); padding: 0 28px; }
 .registration { position: sticky; top: 0; z-index: 5; background: var(--paper); margin: 0 -28px; pointer-events: none; }
 .coordinates { display: flex; justify-content: space-between; align-items: center; gap: 16px; height: 28px; border-block: 1px solid var(--line-strong); font: 9px/1 var(--font-mono), monospace; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -26,20 +19,18 @@
 .artifactMeta { margin-left: auto; font-size: 8px; }
 .sourceCoordinate { margin-top: 6px; font-size: 7px !important; line-height: 1.5 !important; }
 .generalNotes { display: grid; grid-template-columns: 1fr auto; gap: 18px 40px; padding: 32px 0 26px; font: 10px/1.7 var(--font-mono), monospace; color: var(--muted); }
-.generalNotes h2 { grid-column: 1; font: inherit; text-transform: uppercase; color: var(--ink); }
+.generalNotes h2 { grid-column: 1; font: inherit; text-transform: uppercase; color: var(--signal-text); }
 .generalNotes ol { grid-column: 1; list-style: none; padding: 0; margin: 0; max-width: 720px; }
 .generalNotes li { display: flex; gap: 14px; margin-top: 6px; }
 .generalNotes li > span { flex-shrink: 0; color: var(--ink); }
 .sheetEnd { grid-column: 2; grid-row: 1 / 3; align-self: end; text-transform: uppercase; white-space: nowrap; }
 .sheetEnd > span { color: var(--signal); padding-inline: 12px; }
 @media (max-width: 1050px) {
-  .titleBlock { min-width: 240px; }
   .sheet { padding-inline: 20px; }
   .registration { margin-inline: -20px; }
   .artifactMeta { display: none; }
 }
 @media (max-width: 760px) {
-  .titleBlock { width: 100%; }
   .sheet { padding-inline: 14px; }
   .registration { margin-inline: -14px; }
   .coordinateUnits { display: none !important; }

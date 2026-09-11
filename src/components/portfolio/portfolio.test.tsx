@@ -38,6 +38,11 @@ describe("Board and Project foundation", () => {
     expect(screen.getByText("B.01 / What to notice")).toBeTruthy();
     expect(screen.getByText(project.region!.mapInsight)).toBeTruthy();
     expect(container.querySelector("[data-region-code]")?.getAttribute("data-region-code")).toBe("CCP");
+    expect(screen.queryByLabelText("Board sheet record")).toBeNull();
+    const group = container.querySelector("[data-evidence-active]")!;
+    expect([...group.querySelectorAll<HTMLElement>("[data-artifact]")].map((item) => item.dataset.artifact)).toEqual(["A", "B", "C"]);
+    expect(group.querySelector("[data-board-notes]")).toBeNull();
+    expect(group.nextElementSibling?.hasAttribute("data-board-notes")).toBe(true);
   });
 
   it("keeps six sections visible, the investigation available on demand, and every anchor valid", () => {
@@ -131,7 +136,7 @@ describe("Board and Project foundation", () => {
     fireEvent.pointerEnter(root, { pointerType: "mouse" });
     act(() => { vi.advanceTimersByTime(120); });
     expect(button.getAttribute("aria-expanded")).toBe("true");
-    fireEvent.keyDown(button, { key: "Escape" });
+    fireEvent.keyDown(document, { key: "Escape" });
     expect(button.getAttribute("aria-expanded")).toBe("false");
     fireEvent.click(button);
     fireEvent.pointerLeave(root, { pointerType: "touch" });
@@ -139,6 +144,7 @@ describe("Board and Project foundation", () => {
   });
 
   it("ties both B and C inspection to the same crop and clears on outside touch", () => {
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null);
     vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({ left: 0, top: 0, right: 600, bottom: 500, width: 600, height: 500 } as DOMRect);
     const disconnect = vi.fn();
     vi.stubGlobal("ResizeObserver", class { observe() {} disconnect = disconnect; });

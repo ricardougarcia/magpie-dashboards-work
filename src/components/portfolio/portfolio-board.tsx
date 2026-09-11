@@ -20,12 +20,6 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
         <header className={styles.boardHeading}>
           <div><p className={styles.register}>[00] Portfolio / Selected work</p><h1>The Board<span>.</span></h1></div>
           <p>The questions. The decisions.<br />The work that followed.</p>
-          <dl className={sheet.titleBlock} aria-label="Board sheet record">
-            <div className={sheet.sheetOwner}><dt>Board</dt><dd>Rico Garcia</dd></div>
-            <div><dt>Sheet</dt><dd>01</dd></div>
-            <div><dt>Rev</dt><dd>02</dd></div>
-            <div><dt>Issued</dt><dd><time dateTime="2026-09-10">10 Sep 2026</time></dd></div>
-          </dl>
         </header>
         <div className={sheet.sheet} data-board-sheet>
         <BoardRegistration />
@@ -62,32 +56,21 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
                 {context ? <div className={styles.contextPlate} data-artifact="A">
                   <RegionInspection label="the starting point" reference="A" summary={context.caption} insight={project.region?.contextInsight ?? context.caption}>
                     <div key="label" className={styles.plateLabel}><span><b>A</b> Starting point</span><span>Existing experience</span></div>
-                    <PortfolioLink key="context" href={`${projectUrl}#${context.id}`} aria-label={`View ${context.label.toLowerCase()} in the Project`}>
+                    <PortfolioLink className={styles.contextMount} data-artifact-mount key="context" href={`${projectUrl}#${context.id}`} aria-label={`View ${context.label.toLowerCase()} in the Project`}>
                       <Image src={context.src} alt={context.alt} width={context.width} height={context.height} sizes="(max-width: 760px) 100vw, 38vw" />
                     </PortfolioLink>
                   </RegionInspection>
                 </div> : null}
-                <div className={styles.notesPlate}>
-                <div className={styles.researchPlate}>
-                  <p className={styles.register}><span>[02]</span> Investigation / Scope</p>
-                  {project.region?.signals.filter((signal) => project.sections.some((section) => section.id === signal.sectionId)).map((signal) => <PortfolioLink key={signal.label} href={`${projectUrl}#${signal.sectionId}`} className={styles.scopeSignal}>
-                    <strong>{signal.value}</strong><span>{signal.label}</span>
-                  </PortfolioLink>)}
-                </div>
-                <div className={styles.outcomePlate}>
-                  <p className={styles.register}><span>[03]</span> Result / Time to value</p>
-                  <p className={styles.outcome}>{project.boardTakeaway}</p>
-                  <PortfolioLink href={`${projectUrl}#${project.sections.find((section) => section.kind === "impact")?.id ?? project.sections[0]?.id ?? "portfolio-main"}`} className={styles.outcomeLink}>View outcome <span className={styles.actionVerb}>[Read]</span></PortfolioLink>
-                </div>
-                </div>
                 <div className={styles.mapPlate} data-artifact="B" data-evidence-source>
                   <RegionInspection label="the system" reference="B" evidence summary={project.region?.mapInsight ?? cover.caption} insight={cover.caption}>
                     <PortfolioLink key="map" href={projectUrl} className={styles.mapLink} aria-label={`Enter ${project.title} through the ${cover.label.toLowerCase()}`}>
                       <div className={styles.mapLandmark} data-region-landmark="map" style={{ viewTransitionName: `region-${project.id}-map` }}>
                         <div className={styles.plateLabel}><span><b>B</b> {cover.label}</span><span className={sheet.artifactMeta}>{cover.width} × {cover.height} / Original</span></div>
+                        <div className={styles.mapMount} data-artifact-mount data-map-mount>
                         <div className={styles.mapImage} data-evidence-map>
                           <Image src={cover.src} alt={cover.alt} width={cover.width} height={cover.height} sizes="(max-width: 760px) 100vw, 60vw" preload={index === 0} />
                           {detail ? <span className={styles.sourceWindow} style={{ left: `${detail.crop.x * 100}%`, top: `${detail.crop.y * 100}%`, width: `${detail.crop.width * 100}%`, height: `${detail.crop.height * 100}%` }} aria-hidden="true"><span>C / Detail · SRC {sourceCoordinate} px</span></span> : null}
+                        </div>
                         </div>
                       </div>
                     </PortfolioLink>
@@ -102,12 +85,29 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
                     </div>
                   }>
                     <div key="label" className={styles.plateLabel}><span><b>C</b> {detail.label}</span><span>Detail of B</span></div>
-                    <PortfolioLink key="detail" href={`${projectUrl}#${cover.id}`} aria-label={`Inspect ${detail.label.toLowerCase()} in the full map`}>
+                    <PortfolioLink className={styles.detailMount} data-artifact-mount key="detail" href={`${projectUrl}#${cover.id}`} aria-label={`Inspect ${detail.label.toLowerCase()} in the full map`}>
                       <ArtifactCrop artifact={cover} detail={detail} />
                     </PortfolioLink>
                   </RegionInspection>
                 </div> : null}
               </EvidenceRegion>
+                <div className={styles.notesPlate} data-board-notes>
+                <section className={styles.researchPlate} aria-labelledby={`${project.id}-scope`}>
+                  <h3 id={`${project.id}-scope`} className={styles.register}><span>[02]</span> Investigation / Scope</h3>
+                  <div className={styles.researchSignals}>
+                  {project.region?.signals.filter((signal) => project.sections.some((section) => section.id === signal.sectionId)).map((signal) => <PortfolioLink key={signal.label} href={`${projectUrl}#${signal.sectionId}`} className={styles.scopeSignal}>
+                    <strong>{signal.value}</strong><span>{signal.label}</span>
+                  </PortfolioLink>)}
+                  </div>
+                </section>
+                <section className={styles.outcomePlate} aria-labelledby={`${project.id}-outcome`}>
+                  <h3 id={`${project.id}-outcome`} className={styles.register}><span>[03]</span> Result / Time to value</h3>
+                  <div>
+                  <p className={styles.outcome}>{project.boardTakeaway}</p>
+                  <PortfolioLink href={`${projectUrl}#${project.sections.find((section) => section.kind === "impact")?.id ?? project.sections[0]?.id ?? "portfolio-main"}`} className={styles.outcomeLink}>View outcome <span className={styles.actionVerb}>[Read]</span></PortfolioLink>
+                  </div>
+                </section>
+                </div>
               <footer className={styles.regionFoot}><span>R:{project.slug.toUpperCase()} / End of Region {project.number}</span><span>A–B / Original artifacts · C / Detail of B</span></footer>
             </article>;
           })}
