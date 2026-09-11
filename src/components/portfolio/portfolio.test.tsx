@@ -77,6 +77,24 @@ describe("Board and Project foundation", () => {
     expect(screen.getByRole("link", { name: "Return to the Board" }).getAttribute("href")).toBe("/drawer");
   });
 
+  it("preserves every section headline, description, metric, workflow label, and decision", () => {
+    const { container } = render(<ProjectPage project={project} />);
+    for (const section of project.sections) {
+      const content = container.querySelector(`[id="${section.id}"]`)!.textContent!;
+      expect(content).toContain(section.headline);
+      expect(content).toContain(section.summary);
+      for (const block of section.blocks) {
+        if (block.type === "text") block.paragraphs.forEach((text) => expect(content).toContain(text));
+        if (block.type === "flow") block.steps.forEach((step) => { expect(content).toContain(step.label); if (step.note) expect(content).toContain(step.note); });
+        if (block.type === "metrics") block.items.forEach((item) => { expect(content).toContain(item.value); expect(content).toContain(item.label); if (item.note) expect(content).toContain(item.note); });
+        if (block.type === "details" || block.type === "decisions") block.items.forEach((item) => { expect(content).toContain(item.title); expect(content).toContain(item.body); });
+      }
+    }
+    expect(screen.getByRole("link", { name: "Local creation" }).getAttribute("href")).toBe("#new-create");
+    expect(screen.getByRole("link", { name: "Global matching" }).getAttribute("href")).toBe("#new-match");
+    expect(screen.getByRole("link", { name: "Investigate across roles" }).getAttribute("href")).toBe("#approach");
+  });
+
   it("supports a shorter Project without empty sections or dead navigation entries", () => {
     const shorter = { ...project, sections: project.sections.filter((section) => ["context", "solution"].includes(section.kind)) };
     const { container } = render(<ProjectPage project={shorter} />);
