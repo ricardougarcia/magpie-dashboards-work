@@ -30,6 +30,11 @@
 .footer a:hover, .boardLink:hover { color: var(--signal); }
 
 /* Project: a visual reading surface with a persistent route back to the Board. */
+.projectPage :global(.panel-incoming-sheet) { border-top: 0; background: linear-gradient(rgba(40, 40, 40, .018) 1px, transparent 1px), linear-gradient(90deg, rgba(40, 40, 40, .018) 1px, transparent 1px), var(--paper); background-size: 28px 28px; }
+.readingIndex { position: relative; }
+.readingMarker { position: absolute; top: 0; left: 0; width: 2px; height: 18px; background: var(--signal); opacity: 0; pointer-events: none; transition: transform 420ms cubic-bezier(.22, 1, .36, 1), opacity 220ms ease; }
+.sectionRail a[aria-current="location"] { color: var(--signal-text); }
+.sectionRail a:focus-visible, .flowCaption button:focus-visible { outline: 2px solid var(--signal); outline-offset: 4px; }
 .projectHero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; padding: 48px var(--portfolio-gutter); align-items: center; }
 .heroCopy { padding: 10px 0; }
 .heroCopy h1 { font-size: clamp(44px, 5.4vw, 82px); font-weight: 500; line-height: .97; letter-spacing: -.065em; margin-top: 32px; overflow-wrap: break-word; }
@@ -89,6 +94,14 @@
 .detailItems h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
 .detailItems p, .prose p { font-size: 15px; line-height: 1.75; color: var(--muted); }
 .flowFigure { padding: 28px 0; }
+.flowCaption { display: flex; align-items: baseline; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; }
+.flowCaption button { min-height: 44px; padding: 8px 0; border: 0; background: none; color: var(--muted); font: 10px/1.6 var(--font-mono), monospace; cursor: var(--cursor-action); }
+.flowCaption button:hover { color: var(--signal-text); }
+.flowDrawing { position: relative; display: flow-root; }
+.workflowInk { position: absolute; top: 20px; left: 0; overflow: visible; pointer-events: none; fill: none; stroke: var(--signal); stroke-width: 1.5; opacity: .7; }
+.workflowInk path { vector-effect: non-scaling-stroke; }
+.workflowInk[data-playing="true"] path { animation: workflowDraw 2200ms cubic-bezier(.4, 0, .2, 1) both; }
+@keyframes workflowDraw { from { stroke-dasharray: 1; stroke-dashoffset: 1; } to { stroke-dasharray: 1; stroke-dashoffset: 0; } }
 .flow { display: flex; list-style: none; padding: 0; margin: 20px 0 0; gap: 20px; }
 .flow li { flex: 1; min-width: 0; position: relative; padding: 14px 12px 20px; border: 1px solid var(--line-strong); background: var(--paper-raised); }
 .flow li:not(:last-child)::after { content: "→"; position: absolute; right: -17px; top: calc(50% - 9px); color: var(--muted); font: 16px var(--font-mono), monospace; }
@@ -147,6 +160,7 @@
   .metrics dd { font-size: 42px; }
   .metrics dt { margin-top: 8px; max-width: none; }
   .flow { flex-direction: column; gap: 18px; margin-left: 22px; }
+  .workflowInk { left: 22px; }
   .flow li { display: grid; grid-template-columns: 24px 1fr; align-items: baseline; padding: 16px; gap: 2px 12px; }
   .flow strong { margin-top: 0; font-size: 16px; }
   .flow li > span:last-child { grid-column: 2; margin-top: 4px; font-size: 11px; }
@@ -159,10 +173,14 @@
 
 @media (prefers-reduced-motion: reduce) {
   .shell { scroll-behavior: auto; }
+  .readingMarker { transition: none; }
+  .workflowInk[data-playing="true"] path { animation: none; }
 }
 
 @media print {
   .masthead, .sectionRail, .footer, .startReading, .endReturn { display: none; }
+  .flowCaption button { display: none; }
+  .workflowInk[data-playing="true"] path { animation: none; }
   .projectReading { display: block; }
   .projectSection { break-inside: avoid; padding: 24px 0; }
   .artifact img { max-height: 600px; object-fit: contain; }

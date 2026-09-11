@@ -3,6 +3,9 @@ import { PortfolioLink as Link } from "./portfolio-link";
 import { PROJECT_SECTION_TITLES, type Artifact, type PortfolioProject, type ProjectBlock } from "@/lib/portfolio-types";
 import { PortfolioShell } from "./portfolio-shell";
 import { ArtifactViewer } from "./artifact-viewer";
+import { PanelReplacement } from "@/components/panel-replacement";
+import { ProjectReadingRail } from "./project-reading-rail";
+import { WorkflowTrace } from "./workflow-trace";
 import styles from "./portfolio.module.css";
 
 function ArtifactFigure({ artifact }: { artifact: Artifact }) {
@@ -51,19 +54,7 @@ function ProjectContentBlock({ block, project }: { block: ProjectBlock; project:
         </dl>
       );
     case "flow":
-      return (
-        <figure id={block.id} className={styles.flowFigure}>
-          <figcaption className={styles.eyebrow}>{block.label}</figcaption>
-          <ol className={styles.flow}>
-            {block.steps.map((step, index) => (
-              <li key={step.id} id={step.id} className={step.emphasis ? styles.flowEmphasis : undefined}>
-                <span className={styles.flowIndex}>{String(index + 1).padStart(2, "0")}</span>
-                <strong>{step.label}</strong><span>{step.note}</span>
-              </li>
-            ))}
-          </ol>
-        </figure>
-      );
+      return <WorkflowTrace block={block} />;
     case "decisions":
       return (
         <ol id={block.id} className={styles.decisions}>
@@ -85,8 +76,8 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   const coverSection = project.sections.find((section) => section.blocks.some((block) => block.type === "artifact" && block.artifactId === cover.id));
   return (
     <PortfolioShell projectNumber={project.number}>
-      <main id="portfolio-main">
-        <header className={styles.projectHero}>
+      <main id="portfolio-main" className={styles.projectPage}>
+        <PanelReplacement outgoing={<header className={styles.projectHero} data-panel-content>
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}><span>[{project.number}]</span> {project.organization} / Project</p>
             <h1 style={{ viewTransitionName: `region-${project.id}-title` }}>{project.title}<span>.</span></h1>
@@ -97,7 +88,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
             <div className={styles.imageRegister} aria-hidden="true"><span>Artifact / {cover.label}</span><span>↓</span></div>
             <Image src={cover.src} alt={cover.alt} width={cover.width} height={cover.height} sizes="(max-width: 760px) 100vw, 50vw" preload />
           </a>
-        </header>
+        </header>}>
         <dl className={styles.projectFacts}>
           <div><dt>Role</dt><dd>{project.role}</dd></div>
           <div><dt>Company</dt><dd>{project.organization}</dd></div>
@@ -105,15 +96,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
           <div><dt>Collaborators</dt><dd>{project.team}</dd></div>
         </dl>
         <div className={styles.projectReading}>
-          <aside className={styles.sectionRail}>
-            <nav aria-label="Project sections">
-              <p className={styles.eyebrow}>In this Project</p>
-              <ol>{project.sections.map((section, index) => (
-                <li key={section.id}><a href={`#${section.id}`}><span>{String(index + 1).padStart(2, "0")}</span>{PROJECT_SECTION_TITLES[section.kind]}</a></li>
-              ))}</ol>
-              <Link href="/drawer" className={styles.railReturn}>← Board</Link>
-            </nav>
-          </aside>
+          <ProjectReadingRail sections={project.sections.map((section) => ({ id: section.id, title: PROJECT_SECTION_TITLES[section.kind] }))} />
           <article className={styles.projectSections} aria-label={`${project.title} case study`}>
             {project.sections.map((section, index) => (
               <section key={section.id} id={section.id} className={styles.projectSection} aria-labelledby={`${section.id}-heading`}>
@@ -128,6 +111,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
             <Link href="/drawer" className={styles.endReturn}><span>Return to the Board</span><span aria-hidden="true">↗</span></Link>
           </article>
         </div>
+        </PanelReplacement>
       </main>
     </PortfolioShell>
   );

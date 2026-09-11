@@ -17,6 +17,8 @@ export function ArtifactViewer({ artifact }: { artifact: Artifact }) {
   const [zoom, setZoom] = useState(1);
   const viewport = useRef<HTMLDivElement>(null);
   const detail = artifact.details?.find((entry) => entry.id === detailId);
+  const crop = detail?.crop ?? { x: 0, y: 0, width: 1, height: 1 };
+  const ratio = artifact.width * crop.width / (artifact.height * crop.height);
   const viewportId = `${artifact.id}-viewport`;
   useLayoutEffect(() => {
     if (viewport.current) {
@@ -36,9 +38,11 @@ export function ArtifactViewer({ artifact }: { artifact: Artifact }) {
       <output aria-label="Map zoom">{zoom}×</output>
       <button type="button" disabled={zoom === 4} aria-label="Zoom in on map" onClick={() => setZoom((value) => Math.min(4, value + 1))}>+</button>
     </div>
-    <div ref={viewport} id={viewportId} className={styles.viewerViewport} tabIndex={0} role="region" aria-label={`${detail?.label ?? artifact.label}, ${zoom} times magnification`} style={{ aspectRatio: detail ? `${artifact.width * detail.crop.width} / ${artifact.height * detail.crop.height}` : `${artifact.width} / ${artifact.height}` }}>
+    <div ref={viewport} id={viewportId} className={styles.viewerViewport} tabIndex={0} role="region" aria-label={`${detail?.label ?? artifact.label}, ${zoom} times magnification`} style={{ aspectRatio: String(ratio) }}>
       <div className={styles.viewerSurface} style={{ width: `${zoom * 100}%` }}>
-      {detail ? <ArtifactCrop artifact={artifact} detail={detail} magnification={zoom} /> : <Image src={artifact.src} alt={artifact.alt} width={artifact.width} height={artifact.height} sizes={`(max-width: 760px) ${zoom * 100}vw, ${zoom * 1100}px`} />}
+      <div className={styles.viewerMap} data-map-camera style={{ paddingTop: `${100 / ratio}%` }}>
+        <Image src={artifact.src} alt={detail ? `${detail.label}: ${detail.caption}` : artifact.alt} width={artifact.width} height={artifact.height} sizes="(max-width: 760px) 1000vw, 6000px" style={{ width: `${100 / crop.width}%`, left: `${-100 * crop.x / crop.width}%`, top: `${-100 * crop.y / crop.height}%` }} />
+      </div>
       </div>
     </div>
     <div className={styles.viewerCaption}>
