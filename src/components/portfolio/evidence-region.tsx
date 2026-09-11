@@ -10,13 +10,13 @@ type Crop = NonNullable<Artifact["details"]>[number]["crop"];
 
 export function EvidenceRegion({ children, crop }: { children: ReactNode; crop?: Crop }) {
   const [active, setActive] = useState(false);
-  const [path, setPath] = useState("");
+  const [trace, setTrace] = useState<{ path: string; source: { x: number; y: number }; detail: { x: number; y: number } } | null>(null);
   const region = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const root = region.current;
     if (!active || !crop || !root) return;
     const source = root.querySelector<HTMLElement>("[data-evidence-source]");
-    const map = root.querySelector<HTMLElement>("[data-evidence-map]");
+    const map = root.querySelector<HTMLElement>("[data-evidence-map] img");
     const detail = root.querySelector<HTMLElement>("[data-evidence-detail]");
     if (!source || !map || !detail) return;
     let frame = 0;
@@ -28,7 +28,9 @@ export function EvidenceRegion({ children, crop }: { children: ReactNode; crop?:
       // Route through the left margin, never through another Artifact.
       const rail = Math.min(a.left, c.left) - board.left - 12;
       const sourceY = image.top - board.top + image.height * (crop.y + crop.height / 2);
-      setPath(`M ${c.left - board.left} ${c.top - board.top + 21} H ${rail} V ${sourceY} H ${a.left - board.left}`);
+      const sourcePoint = { x: a.left - board.left, y: sourceY };
+      const detailPoint = { x: c.left - board.left, y: c.top - board.top + 21 };
+      setTrace({ path: `M ${detailPoint.x} ${detailPoint.y} H ${rail} V ${sourceY} H ${sourcePoint.x}`, source: sourcePoint, detail: detailPoint });
     };
     const schedule = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(measure); };
     measure();
@@ -39,8 +41,10 @@ export function EvidenceRegion({ children, crop }: { children: ReactNode; crop?:
   return <EvidenceContext value={setActive}>
     <div ref={region} className={styles.constellation} data-evidence-active={active}>
       {children}
-      {active && path ? <svg className={styles.evidenceTrace} aria-hidden="true">
-        <path d={path} pathLength="1" />
+      {active && trace ? <svg className={styles.evidenceTrace} aria-hidden="true">
+        <path d={trace.path} pathLength="1" />
+        <rect x={trace.source.x - 2} y={trace.source.y - 2} width="4" height="4" />
+        <rect x={trace.detail.x - 2} y={trace.detail.y - 2} width="4" height="4" />
       </svg> : null}
     </div>
   </EvidenceContext>;
