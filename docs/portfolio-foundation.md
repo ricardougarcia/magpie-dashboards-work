@@ -107,3 +107,15 @@ A is Starting point, enlarged slightly on the left. Sections 02 and 03 share the
 Sizes and weights establish hierarchy within these roles rather than introducing new families. Section 02 and 03 share their heading, display and label treatment. Red indicates inspection and evidence, not every link.
 
 The introduction starts automatically after desktop layout is available: A and B draw from their own registration corners with offset timing, then B's actual crop connects to C and initiates its frame. On screens at most 760px wide, A, B and C advance as their respective artifacts scroll into view. Artifacts, captions and resting borders are visible before and throughout the sequence, including without JavaScript. The introduction runs once per page mount. Reduced motion shows the resolved layout immediately. Inspecting B or C also outlines the crop and draws the same B-to-C path using the Magpie related-item `motion.path` transition (350ms). Explicit inspection interrupts introduction and retains the requested relationship; touch leave never dismisses an open inspection. Geometry follows image/layout resize and routes through the column gutter or mobile sheet margin.
+
+### September 11 refinement: open composition
+
+The Board's artifact group now completes A → B → C before Investigation / Scope and Result / Time to value. A begins left; B is offset down on the right; C is inset below A. Notes use a shared text alignment and open space rather than horizontal separators. The Board/Sheet/Rev/Issued record has been removed.
+
+Mounts have distinct roles: A has a narrow paper margin and lower annotation, B has open registration corners and an adjacent lower annotation, and C is a tightly mounted enlargement with a short source-boundary mark. Static grain belongs only to exposed mounting margins; source images remain unmodified.
+
+Portfolio ink and graphite are #282828, scoped to the portfolio shell. Small red headings use #bd3e2b for contrast; signal lines retain #d6452f. Large Geist titles use 500, metrics and outcome statements use 450, and body/metadata retain their established Sans/Mono roles. These changes do not alter the original Magpie root sample.
+
+Pixel acquisition uses complete 4px square cells on a density-aware canvas, with #282828 as its darkest and settled tone. Cell count follows annotation dimensions; cells do not stretch with aspect ratio. The pass settles in 900ms and reverses on exit without an idle loop.
+
+B's image scales from 1 to at most 1.012 as it crosses the viewport, without reflowing its mount. The crop marker shares that transform and the trace remeasures its endpoints during scroll. B-to-C traces use 2px strokes and a 700ms easing curve. Entry registration segments draw automatically (on viewport entry for stacked layouts), while every image and caption is readable immediately. Reduced motion removes the scale, pixel pass and entry drawing, and shows inspection connections immediately.

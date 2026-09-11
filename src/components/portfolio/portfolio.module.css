@@ -1,4 +1,10 @@
 .shell {
+  --ink: #282828;
+  --graphite: #282828;
+  --signal-text: #bd3e2b;
+  --line: rgba(40, 40, 40, .16);
+  --line-strong: rgba(40, 40, 40, .36);
+  color: var(--ink);
   --portfolio-gutter: clamp(20px, 3.4vw, 56px);
   min-height: 100svh;
 }
@@ -17,8 +23,8 @@
 .boardLink { display: flex; align-items: center; gap: 8px; min-height: 44px; text-decoration: none; }
 .boardLink > span:first-child { color: var(--signal); font-size: 18px; }
 .navIndex { color: var(--muted); }
-.eyebrow { color: var(--muted); }
-.eyebrow > span { color: var(--signal); margin-right: 12px; }
+.eyebrow { color: var(--signal-text); }
+.eyebrow > span { color: var(--signal-text); margin-right: 12px; }
 .footer { display: flex; justify-content: space-between; gap: 24px; padding: 24px var(--portfolio-gutter); color: var(--muted); border-top: 1px solid var(--line-strong); }
 .footer a { text-decoration: none; }
 .footer a:hover, .boardLink:hover { color: var(--signal); }
@@ -26,7 +32,7 @@
 /* Project: a visual reading surface with a persistent route back to the Board. */
 .projectHero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; padding: 48px var(--portfolio-gutter); align-items: center; }
 .heroCopy { padding: 10px 0; }
-.heroCopy h1 { font-size: clamp(44px, 5.4vw, 82px); font-weight: 640; line-height: .97; letter-spacing: -.065em; margin-top: 32px; overflow-wrap: break-word; }
+.heroCopy h1 { font-size: clamp(44px, 5.4vw, 82px); font-weight: 500; line-height: .97; letter-spacing: -.065em; margin-top: 32px; overflow-wrap: break-word; }
 .heroCopy h1 > span { color: var(--signal); }
 .heroSummary { max-width: 410px; font-size: clamp(18px, 1.8vw, 25px); line-height: 1.35; letter-spacing: -.025em; margin-top: 26px !important; }
 .startReading { display: inline-flex; align-items: center; gap: 28px; min-height: 48px; margin-top: 26px; font: 11px var(--font-mono), monospace; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid var(--line-strong); }
@@ -53,13 +59,13 @@
 .projectSections { min-width: 0; }
 .projectSection { padding: 64px 0; border-bottom: 1px solid var(--line-strong); scroll-margin-top: 28px; }
 .sectionHeading { margin-bottom: 30px; }
-.sectionHeading h2 { font: 11px var(--font-mono), monospace; letter-spacing: .045em; text-transform: uppercase; line-height: 1.5; }
-.sectionHeading h2 > span { color: var(--signal); margin-right: 12px; }
-.sectionHeadline { max-width: 760px; margin-top: 24px !important; font-size: clamp(28px, 3.4vw, 48px); line-height: 1.06; letter-spacing: -.05em; font-weight: 580; }
+.sectionHeading h2 { color: var(--signal-text); font: 11px var(--font-mono), monospace; letter-spacing: .045em; text-transform: uppercase; line-height: 1.5; }
+.sectionHeading h2 > span { color: var(--signal-text); margin-right: 12px; }
+.sectionHeadline { max-width: 760px; margin-top: 24px !important; font-size: clamp(28px, 3.4vw, 48px); line-height: 1.06; letter-spacing: -.05em; font-weight: 500; }
 .sectionSummary { max-width: 680px; margin-top: 18px !important; font-size: 16px; line-height: 1.65; color: var(--muted); }
 .artifact { margin: 30px 0 !important; scroll-margin-top: 24px; }
 .artifact a { display: block; text-decoration: none; border: 1px solid var(--line-strong); }
-.artifactInk { background: #000; color: var(--paper) !important; }
+.artifactInk { background: var(--ink); color: var(--paper) !important; }
 .artifactPaper { background: #fff; }
 .artifactLabel { display: flex; justify-content: space-between; gap: 12px; padding: 13px 18px; border-bottom: 1px solid var(--line); background: var(--paper); color: var(--ink); }
 .artifactLabel span { color: var(--signal); font-size: 15px; }
@@ -70,7 +76,7 @@
 .metrics > div { display: flex; flex-direction: column; padding: 30px 20px; border-left: 1px solid var(--line); }
 .metrics > div:first-child { border-left: 0; padding-left: 0; }
 .metrics dt { order: 1; margin-top: 14px; font-size: 12px; line-height: 1.6; max-width: 230px; }
-.metrics dd { font-size: clamp(28px, 3.1vw, 48px); line-height: 1.1; letter-spacing: -.055em; font-weight: 550; overflow-wrap: anywhere; }
+.metrics dd { font-size: clamp(28px, 3.1vw, 48px); line-height: 1.1; letter-spacing: -.055em; font-weight: 450; overflow-wrap: anywhere; }
 .metrics .metricNote { order: 2; font: 10px var(--font-mono), monospace; margin-top: 10px; color: var(--muted); letter-spacing: normal; }
 .details { margin-top: 26px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .details summary { display: flex; justify-content: space-between; align-items: center; gap: 24px; min-height: 58px; padding: 16px 0; font: 11px var(--font-mono), monospace; line-height: 1.6; text-transform: uppercase; list-style: none; cursor: var(--cursor-action); }
@@ -94,14 +100,14 @@
 .decisions { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); padding: 0; list-style: none; margin: 32px 0 0; border-top: 1px solid var(--line-strong); }
 .decisions li { padding: 26px 22px; border-left: 1px solid var(--line); }
 .decisions li:first-child { padding-left: 0; border-left: 0; }
-.decisions .eyebrow { color: var(--signal); }
-.decisions h3 { font-size: 22px; line-height: 1.15; font-weight: 550; letter-spacing: -.035em; margin: 28px 0 12px; }
+.decisions .eyebrow { color: var(--signal-text); }
+.decisions h3 { font-size: 22px; line-height: 1.15; font-weight: 450; letter-spacing: -.035em; margin: 28px 0 12px; }
 .decisions p { color: var(--muted); font-size: 13px; line-height: 1.7; }
-.endReturn { display: flex; justify-content: space-between; align-items: center; padding: 38px 0; text-decoration: none; font-size: clamp(24px, 3vw, 38px); font-weight: 550; letter-spacing: -.045em; }
+.endReturn { display: flex; justify-content: space-between; align-items: center; padding: 38px 0; text-decoration: none; font-size: clamp(24px, 3vw, 38px); font-weight: 450; letter-spacing: -.045em; }
 .endReturn > span:last-child { color: var(--signal); }
 .endReturn:hover { color: var(--signal); }
 .notFound { padding: 90px var(--portfolio-gutter); min-height: 70svh; }
-.notFound h1 { margin-top: 30px; max-width: 700px; font-size: clamp(36px, 5vw, 64px); letter-spacing: -.055em; line-height: 1.05; }
+.notFound h1 { font-weight: 500; margin-top: 30px; max-width: 700px; font-size: clamp(36px, 5vw, 64px); letter-spacing: -.055em; line-height: 1.05; }
 
 @media (max-width: 1050px) {
   .mastheadMeta span { display: none; }

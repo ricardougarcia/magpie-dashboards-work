@@ -43,12 +43,16 @@ export function EvidenceRegion({ children, crop }: { children: ReactNode; crop?:
     const root = region.current;
     if (!root || !crop) return;
     const map = root.querySelector<HTMLElement>("[data-evidence-map] img");
-    const detail = root.querySelector<HTMLElement>('[data-artifact="C"] > div');
-    const source = root.querySelector<HTMLElement>('[data-artifact="B"] > div');
+    const detail = root.querySelector<HTMLElement>('[data-artifact="C"] [data-artifact-mount]');
+    const source = root.querySelector<HTMLElement>('[data-map-mount]');
     if (!map || !detail || !source) return;
     let frame = 0;
     const measure = () => {
       frame = 0;
+      // Measure the unscaled mount to avoid feedback from the image transform.
+      const mount = source.getBoundingClientRect();
+      const progress = Math.min(1, Math.max(0, (window.innerHeight - mount.top) / (window.innerHeight + mount.height)));
+      root.style.setProperty("--map-scale", String(reduceMotion ? 1 : 1 + progress * .012));
       const board = root.getBoundingClientRect();
       const image = map.getBoundingClientRect();
       const b = source.getBoundingClientRect();
@@ -61,22 +65,28 @@ export function EvidenceRegion({ children, crop }: { children: ReactNode; crop?:
       const detailPoint = { x: (narrow ? c.left : c.right) - board.left, y: c.top - board.top + 22 };
       const frames: Record<string, string> = {};
       root.querySelectorAll<HTMLElement>("[data-artifact]").forEach((plate) => {
-        const rect = plate.firstElementChild!.getBoundingClientRect();
+        const rect = plate.querySelector<HTMLElement>("[data-artifact-mount]")!.getBoundingClientRect();
         const left = rect.left - board.left, top = rect.top - board.top;
         const right = rect.right - board.left, bottom = rect.bottom - board.top;
         frames[plate.dataset.artifact!] = plate.dataset.artifact === "C"
-          ? `M ${detailPoint.x} ${detailPoint.y} V ${top} H ${narrow ? right : left} V ${bottom} H ${detailPoint.x} V ${detailPoint.y}`
-          : `M ${left} ${top + 22} V ${top} H ${right} V ${bottom} H ${left} V ${top + 22}`;
+          ? `M ${detailPoint.x} ${detailPoint.y} V ${top} H ${detailPoint.x + (narrow ? 36 : -36)}`
+          : `M ${left} ${top + 22} V ${top} H ${left + 48}${plate.dataset.artifact === "B" ? ` M ${right - 32} ${bottom} H ${right} V ${bottom - 16}` : ""}`;
       });
-      setGeometry({ path: `M ${sourcePoint.x} ${sourcePoint.y} H ${rail} V ${detailPoint.y} H ${detailPoint.x}`, source: sourcePoint, detail: detailPoint, frames });
+      const next = { path: `M ${sourcePoint.x} ${sourcePoint.y} H ${rail} V ${detailPoint.y} H ${detailPoint.x}`, source: sourcePoint, detail: detailPoint, frames };
+      setGeometry((current) => current?.path === next.path && JSON.stringify(current.frames) === JSON.stringify(frames) ? current : next);
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(measure); };
     measure();
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedule);
-    [root, map, ...root.querySelectorAll<HTMLElement>("[data-artifact] > div")].forEach((element) => observer?.observe(element));
+    [root, map, ...root.querySelectorAll<HTMLElement>("[data-artifact-mount]")].forEach((element) => observer?.observe(element));
     window.addEventListener("resize", schedule, { passive: true });
-    return () => { observer?.disconnect(); cancelAnimationFrame(frame); window.removeEventListener("resize", schedule); };
-  }, [crop]);
+    window.addEventListener("scroll", schedule, { passive: true });
+    return () => {
+      observer?.disconnect(); cancelAnimationFrame(frame);
+      window.removeEventListener("resize", schedule); window.removeEventListener("scroll", schedule);
+      root.style.removeProperty("--map-scale");
+    };
+  }, [crop, reduceMotion]);
 
   useEffect(() => {
     const root = region.current;
@@ -106,7 +116,7 @@ export function EvidenceRegion({ children, crop }: { children: ReactNode; crop?:
         <motion.path key={active ? "inspection" : "entry"} d={geometry.path}
           initial={reduceMotion ? false : { pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: reduceMotion ? 0 : 0.35 }}
+          transition={{ duration: reduceMotion ? 0 : 0.7, ease: FRAME_EASE }}
           onAnimationComplete={() => { if (!active && entry === "trace") setEntry(compact ? "wait-detail" : "detail"); }} />
         <rect x={geometry.source.x - 2} y={geometry.source.y - 2} width="4" height="4" />
         <rect x={geometry.detail.x - 2} y={geometry.detail.y - 2} width="4" height="4" />
