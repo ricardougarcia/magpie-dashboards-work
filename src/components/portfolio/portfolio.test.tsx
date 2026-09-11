@@ -27,6 +27,19 @@ describe("Board and Project foundation", () => {
     }
   });
 
+  it("counts original artifacts and delivery decisions without counting crops or reflections", () => {
+    const { container } = render(<PortfolioBoard projects={portfolioProjects} />);
+    expect(screen.getByText(/02 artifacts/).textContent).toContain("02 delivery decisions");
+    const specifications = screen.getByLabelText(`${project.title} specifications`);
+    expect(within(specifications).getByText(project.role)).toBeTruthy();
+    expect(within(specifications).getByText(project.duration)).toBeTruthy();
+    const entry = screen.getByRole("link", { name: /Begin with CCP/i });
+    expect(container.querySelector(entry.getAttribute("href")!)).toBeTruthy();
+    expect(screen.getByText("A.01 / What to notice")).toBeTruthy();
+    expect(screen.getByText(project.region!.mapInsight)).toBeTruthy();
+    expect(container.querySelector("[data-region-code]")?.getAttribute("data-region-code")).toBe("CCP");
+  });
+
   it("keeps six sections visible, the investigation available on demand, and every anchor valid", () => {
     const { container } = render(<ProjectPage project={project} />);
     for (const title of Object.values(PROJECT_SECTION_TITLES)) {
@@ -136,6 +149,8 @@ describe("Board and Project foundation", () => {
     expect(region.getAttribute("data-evidence-active")).toBe("true");
     expect(screen.getByRole("img", { name: /location in A/ })).toBeTruthy();
     expect(region.querySelector("svg path")).toBeTruthy();
+    expect(region.querySelectorAll("svg rect")).toHaveLength(2);
+    expect(screen.getByText("SRC 1734,1518 px")).toBeTruthy();
     fireEvent.pointerDown(document.body);
     expect(region.getAttribute("data-evidence-active")).toBe("false");
     expect(region.querySelector("svg path")).toBeNull();

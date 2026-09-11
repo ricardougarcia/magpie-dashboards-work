@@ -1,5 +1,5 @@
 .board { padding: 0 var(--portfolio-gutter) 48px; }
-.boardHeading { display: flex; align-items: center; justify-content: space-between; gap: 28px; padding: 32px 0; }
+.boardHeading { display: flex; align-items: center; justify-content: space-between; gap: 28px; padding: 36px 0; max-width: 1520px; margin-inline: auto; }
 .boardHeading h1 { font-size: clamp(34px, 4vw, 54px); line-height: 1; letter-spacing: -.065em; font-weight: 600; margin-top: 8px; }
 .boardHeading h1 span, .regionHeading h2 span { color: var(--signal); }
 .boardHeading > p { color: var(--muted); font-size: 14px; line-height: 1.5; }
@@ -7,18 +7,16 @@
 .register { color: var(--muted); }
 .register > span { color: var(--signal); margin-right: 10px; }
 .regions { display: grid; gap: 80px; }
-.region { position: relative; max-width: 1520px; width: 100%; margin: 0 auto; border-block: 1px solid var(--line-strong); }
+.region { position: relative; max-width: 1520px; width: 100%; margin: 0 auto; border-block: 1px solid var(--line-strong); scroll-margin-top: 72px; }
 .region::before, .region::after { content: "+"; position: absolute; font: 20px/1 var(--font-mono), monospace; color: var(--signal); pointer-events: none; }
 .region::before { top: -11px; left: -7px; }
 .region::after { bottom: -10px; right: -7px; }
-.regionHeading { display: grid; grid-template-columns: 1.6fr 1fr; gap: 48px; align-items: end; padding: 34px 0 38px; }
+.regionHeading { display: grid; grid-template-columns: 1.6fr 1fr; gap: 48px; align-items: center; padding: 34px 0 38px; }
 .regionHeading h2 { max-width: 700px; font-size: clamp(36px, 4.5vw, 68px); font-weight: 620; line-height: 1; letter-spacing: -.06em; margin-top: 22px; }
 .regionHeading h2 a { text-decoration: none; }
 .regionHeading h2 a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 7px; }
 .summary { font-size: 17px; line-height: 1.5; margin-top: 18px !important; }
-.regionIdentity { border-left: 1px solid var(--line); padding-left: 28px; }
-.regionIdentity > p:nth-child(2) { margin-top: 16px; font-size: 14px; line-height: 1.6; }
-.regionIdentity > p > span { display: block; font-size: 11px; color: var(--muted); margin-top: 5px; }
+.regionIdentity { padding: 18px 20px 0; border: 1px solid var(--line); background: var(--paper-raised); }
 .enter { display: flex; justify-content: space-between; align-items: center; gap: 24px; text-decoration: none; padding: 14px 0; margin-top: 16px; border-top: 1px solid var(--line-strong); min-height: 48px; }
 .enter span { font-size: 25px; color: var(--signal); }
 .enter:hover { color: var(--signal); }
@@ -47,13 +45,15 @@
 .regionFoot { display: flex; justify-content: space-between; gap: 20px; color: var(--muted); padding: 30px 0 14px; }
 
 /* Inspection adds meaning without moving neighboring Artifacts. */
-.inspection { position: relative; border: 1px solid var(--line-strong); background: var(--paper-raised); }
+.inspection { position: relative; border: 1px solid var(--line); background: var(--paper-raised); }
 .inspection::before, .inspection::after { content: ""; position: absolute; width: 14px; height: 14px; border: solid transparent; pointer-events: none; transition: border-color 160ms; z-index: 1; }
-.inspection::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+.inspection::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; border-color: var(--line-strong); }
 .inspection::after { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
 .inspection[data-expanded="true"]::before, .inspection[data-expanded="true"]::after { border-color: var(--signal); }
 .inspectButton { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 14px; min-height: 48px; padding: 12px 14px; border: 0; border-top: 1px solid var(--line); background: none; color: var(--ink); text-align: left; cursor: var(--cursor-action); }
-.inspectButton > span:last-child { font-size: 20px; color: var(--signal); }
+.inspectButton > .inspectState { font-size: 9px; color: var(--muted); white-space: nowrap; }
+.annotationReference { display: block; margin-bottom: 8px; font: 9px/1.5 var(--font-mono), monospace; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.insight > div:not(.acquisition) { position: relative; z-index: 1; }
 /* Both captions participate in sizing: inspection never changes the frame. */
 .annotation { display: grid; position: relative; border-top: 1px solid var(--line); overflow: hidden; }
 .insight, .insightRest { grid-area: 1 / 1; position: relative; padding: 18px 16px 22px; }
@@ -71,12 +71,14 @@
 @keyframes acquire-paper { 0% { opacity: 0; } 35% { opacity: var(--acquire-tone); } 100% { opacity: 0; } }
 
 /* One literal A ↔ C relationship. The paper and original image stay still. */
-.mapImage { position: relative; }
+.mapImage { position: relative; border: 12px solid var(--paper-raised); }
 .sourceWindow { position: absolute; border: 1px solid var(--signal); opacity: 0; pointer-events: none; transition: opacity 160ms ease-out; }
-.sourceWindow > span { position: absolute; bottom: 100%; left: -1px; padding: 3px 6px; background: var(--paper-raised); color: var(--signal); font: 9px/1.4 var(--font-mono), monospace; text-transform: uppercase; white-space: nowrap; }
+.sourceWindow > span { position: absolute; bottom: 100%; left: -1px; padding: 3px 6px; background: var(--paper-raised); color: var(--ink); font: 9px/1.4 var(--font-mono), monospace; text-transform: uppercase; white-space: nowrap; }
+.board .register > span, .board .plateLabel > span:last-child { color: #a53626; }
 .constellation[data-evidence-active="true"] .sourceWindow { opacity: 1; }
 .evidenceTrace { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: -1; }
 .evidenceTrace path { fill: none; stroke: var(--signal); stroke-width: 1; stroke-opacity: .65; stroke-dasharray: 1; stroke-dashoffset: 0; animation: evidence-draw 380ms cubic-bezier(.22, 1, .36, 1) both; }
+.evidenceTrace rect { fill: var(--paper-raised); stroke: var(--signal); stroke-width: 1; }
 @keyframes evidence-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 .evidenceLocator { width: 80px; flex: 0 0 80px; position: relative; }
 .evidenceLocator > span { display: block; margin-bottom: 5px; color: var(--muted); font: 8px/1.4 var(--font-mono), monospace; text-transform: uppercase; }
@@ -113,8 +115,8 @@
   .boardHeading > p { font-size: 12px; }
   .boardHeading > .register { width: 100%; }
   .regionHeading { grid-template-columns: 1fr; gap: 24px; padding-top: 30px; }
-  .regionHeading h2 { font-size: 42px; }
-  .regionIdentity { border-left: 0; padding-left: 0; }
+  .regionHeading h2 { font-size: clamp(32px, 8vw, 48px); overflow-wrap: break-word; }
+  .regionIdentity { padding: 18px 16px 0; }
   .regionIdentity > .register { display: none; }
   .regionIdentity > p:nth-child(2) { margin-top: 0; }
   .summary { font-size: 15px; }
@@ -157,6 +159,7 @@
 
 @media (max-width: 760px) {
   .evidenceTrace { display: none; }
+  .sourceWindow > span { font-size: 8px; white-space: normal; width: max-content; max-width: 45vw; }
   .evidenceLocator { width: 62px; flex-basis: 62px; }
   .insight { gap: 14px; }
 }

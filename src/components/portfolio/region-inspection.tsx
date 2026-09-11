@@ -10,8 +10,8 @@ const PIXELS = Array.from({ length: 192 }, (_, index) => {
   return { "--acquire-delay": `${(index % 32) * 4 + noise * 65}ms`, "--acquire-tone": .025 + noise * .055 } as CSSProperties;
 });
 
-export function RegionInspection({ label, summary, insight, children, evidence = false, locator }: {
-  label: string; summary: string; insight: string; children: ReactNode; evidence?: boolean; locator?: ReactNode;
+export function RegionInspection({ label, summary, insight, children, evidence = false, locator, reference }: {
+  label: string; summary: string; insight: string; children: ReactNode; evidence?: boolean; locator?: ReactNode; reference?: string;
 }) {
   const [expanded, setExpanded] = useState(false);
   const id = useId();
@@ -49,13 +49,13 @@ export function RegionInspection({ label, summary, insight, children, evidence =
     onKeyDown={(event) => { if (event.key === "Escape") update(false); }}>
     {children}
     <button className={styles.inspectButton} type="button" aria-expanded={expanded} aria-controls={id} onClick={() => update(!expanded)}>
-      <span>Inspect / {label}</span><span aria-hidden="true">{expanded ? "−" : "+"}</span>
+      <span>Inspect / {label}</span><span className={styles.inspectState} aria-hidden="true">[{expanded ? "Close −" : "Inspect +"}]</span>
     </button>
     <div className={styles.annotation}>
-      <div className={styles.insightRest} aria-hidden={expanded} data-inactive={expanded}><p>{summary}</p></div>
+      <div className={styles.insightRest} aria-hidden={expanded} data-inactive={expanded}>{reference ? <span className={styles.annotationReference}>{reference}.01 / {reference === "A" ? "What to notice" : "Source note"}</span> : null}<p>{summary}</p></div>
       <div id={id} className={styles.insight} aria-hidden={!expanded} data-inactive={!expanded}>
         <div className={styles.acquisition} aria-hidden="true">{PIXELS.map((style, index) => <i key={index} style={style} />)}</div>
-        <p>{insight}</p>
+        <div>{reference ? <span className={styles.annotationReference}>{reference}.02 / Inspection note</span> : null}<p>{insight}</p></div>
         {locator}
       </div>
     </div>
