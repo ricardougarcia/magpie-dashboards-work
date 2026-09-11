@@ -138,7 +138,7 @@ export const portfolioProjects: PortfolioProject[] = [
             { id: "admin-engagement", value: "+130%", label: "Administrator session duration" },
           ] },
           { id: "measurement-detail", type: "details", label: "Read more about measurement", items: [
-            { id: "measurement-approach", title: "Measure the workflow, not just the launch", body: "The initiative tracked duplicates avoided, customer-created product velocity, synced-product adoption, contractor effort, time to value, and support cases. The figures above are reported in the original case study; the available source does not specify the measurement window." },
+            { id: "measurement-approach", title: "Measure the workflow, not just the launch", body: "The initiative tracked duplicates avoided, customer-created product velocity, synced-product adoption, contractor effort, time to value, and support cases. The figures above are reported in the original case study." },
           ] },
         ],
       },

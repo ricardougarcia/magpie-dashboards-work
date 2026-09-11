@@ -7,9 +7,6 @@
 .drawing { position: relative; margin-top: 26px; }
 .flow { display: flex; gap: clamp(16px, 2.5vw, 36px); list-style: none; padding: 0; margin: 0; }
 .flow li { position: relative; flex: 1; min-width: 0; scroll-margin-top: 36px; }
-.flow li:last-child { flex: 1.15; }
-.flow li[data-emphasis="true"] { flex: 1.1; }
-.figure[data-flow-before="true"] .flow li:nth-child(4) { margin-left: 14px; }
 .index { display: inline-block; position: relative; color: var(--muted); font: 10px/18px var(--font-mono), monospace; }
 .copy { position: relative; margin-top: 20px; padding: 12px 0 16px; }
 .copy strong { display: block; font-size: 17px; line-height: 1.2; font-weight: 500; letter-spacing: -.025em; }
@@ -33,7 +30,6 @@
   .drawing { margin-top: 22px; }
   .flow { flex-direction: column; gap: 22px; }
   .flow li { display: grid; grid-template-columns: 24px 1fr; align-items: start; column-gap: 18px; padding-left: 26px; }
-  .figure[data-flow-before="true"] .flow li:nth-child(4) { margin-left: 0; margin-top: 12px; }
   .copy { margin-top: -8px; padding: 8px 0 12px; }
   .copy strong { font-size: 18px; }
   .copy > span { margin-top: 7px; font-size: 12px; }
@@ -41,3 +37,10 @@
 }
 @media (prefers-reduced-motion: reduce) { .ink[data-playing="true"] .traveler, .ink[data-playing="true"] .receiver { animation: none; } .route, .copy::before { transition: none; } }
 @media print { .caption button, .traveler { display: none; } .ink[data-playing="true"] .receiver { animation: none; } }
+
+.stepLink { text-decoration: none; outline-offset: 5px; }
+.stepLink::after { content: ""; position: absolute; inset: 0; }
+.stepLink strong { display: flex; align-items: baseline; gap: 8px; }
+.stepLink strong > span { flex: 0 0 7px; width: 7px; height: 7px; border-top: 1px solid var(--muted); border-right: 1px solid var(--muted); opacity: .6; transition: opacity 220ms ease; }
+.flow li:has(.stepLink):is(:hover,:focus-within) strong { color: var(--signal-text); }
+.flow li:has(.stepLink):is(:hover,:focus-within) strong > span { opacity: 1; border-color: var(--signal-text); }

@@ -42,8 +42,8 @@ export function ProjectSurface({ id, kind, className, enabled, children }: { id:
     let pointer: typeof relations[number] | undefined;
     let focused: typeof relations[number] | undefined;
     const locate = (target: EventTarget | null) => {
-      const element = target instanceof Element ? target.closest<HTMLElement>("a[data-related-step], [data-flow-step]") : null;
-      const step = element?.dataset.relatedStep ?? element?.dataset.flowStep;
+      const element = target instanceof Element ? target.closest<HTMLElement>("[data-decision-step], a[data-related-step], [data-flow-step]") : null;
+      const step = element?.dataset.decisionStep ?? element?.dataset.relatedStep ?? element?.dataset.flowStep;
       return relations.find((relation) => relation.step === step);
     };
     const draw = () => {
@@ -53,7 +53,7 @@ export function ProjectSurface({ id, kind, className, enabled, children }: { id:
       const source = section.querySelector<HTMLElement>(`[id="${selected.step}"]`);
       const target = section.querySelector<HTMLElement>(`[id="${selected.decision}"]`);
       if (!source || !target) return;
-      const parent = section.getBoundingClientRect();
+      const parent = section.querySelector<HTMLElement>("[data-section-content]")!.getBoundingClientRect();
       const a = source.getBoundingClientRect();
       const b = target.getBoundingClientRect();
       const x1 = a.left - parent.left + Math.min(28, a.width / 2);
@@ -83,10 +83,12 @@ export function ProjectSurface({ id, kind, className, enabled, children }: { id:
   }, [enabled, kind]);
 
   return <section ref={root} id={id} className={className} data-project-section={kind} aria-labelledby={`${id}-heading`}>
+    <div className={styles.sectionContent} data-section-content>
     {children}
     {connection && <svg key={connection.key} className={styles.decisionTrace} aria-hidden="true" data-decision-trace>
       <path d={connection.path} pathLength="1" />
       <rect x={connection.x - 1.5} y={connection.y - 1.5} width="3" height="3" />
     </svg>}
+    </div>
   </section>;
 }

@@ -7,6 +7,8 @@ import { PanelReplacement } from "@/components/panel-replacement";
 import { ProjectReadingRail } from "./project-reading-rail";
 import { WorkflowTrace } from "./workflow-trace";
 import { ProjectSurface } from "./project-surface";
+import { ProjectPageMotion } from "./project-page-motion";
+import { CoordinateCursor } from "@/components/coordinate-cursor";
 import ccp from "./ccp.module.css";
 import styles from "./portfolio.module.css";
 
@@ -73,7 +75,7 @@ function ProjectContentBlock({ block, project }: { block: ProjectBlock; project:
       return (
         <ol id={block.id} className={styles.decisions} data-content-type="decisions" data-content-block={block.id}>
           {block.items.map((item, index) => (
-            <li id={item.id} key={item.id}>
+            <li id={item.id} key={item.id} data-decision-step={project.slug === "ccp" && block.id === "release-decisions" ? (item.id === "local-creation" ? "new-create" : "new-match") : undefined}>
               <span className={styles.eyebrow}>[{String(index + 1).padStart(2, "0")}]</span>
               <DecisionHeading id={item.id} title={item.title} blockId={block.id} enabled={project.slug === "ccp"} /><p>{item.body}</p>
             </li>
@@ -90,7 +92,9 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   const coverSection = project.sections.find((section) => section.blocks.some((block) => block.type === "artifact" && block.artifactId === cover.id));
   return (
     <PortfolioShell projectNumber={project.number}>
-      <main id="portfolio-main" className={`${styles.projectPage} ${project.slug === "ccp" ? ccp.sheet : ""}`}>
+      <main id="portfolio-main" data-gantt-region className={`${styles.projectPage} ${project.slug === "ccp" ? ccp.sheet : ""}`}>
+        <CoordinateCursor />
+        {project.slug === "ccp" && <ProjectPageMotion sections={project.sections.map(({ id, kind }) => ({ id, title: PROJECT_SECTION_TITLES[kind] }))} />}
         <PanelReplacement outgoing={<header className={styles.projectHero} data-panel-content>
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}><span>[{project.number}]</span> {project.organization} / Project</p>
