@@ -1,71 +1,87 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { useReducedMotion } from "framer-motion";
 import styles from "./region.module.css";
 
 const SIZE = 4;
-const INK = "#282828";
-const TONES = [INK, "#303030", "#383838", "#424242"];
+const DURATION = 1150;
+const EMPTY = "linear-gradient(transparent, transparent)";
 
-function noise(index: number, salt: number) {
-  let value = Math.imul(index + 1 + salt * 97, 0x9e3779b1);
+// Same seeded noise and staggered timing as Magpie's lane acquisition.
+function noise(index: number, seed: number, salt: number) {
+  let value = Math.imul(index + 1 + salt * 97, 0x9e3779b1) ^ Math.imul(seed + 11, 0x5f356495);
   value ^= value >>> 16;
-  return (Math.imul(value, 0x85ebca6b) >>> 0) / 0xffffffff;
+  value = Math.imul(value, 0x85ebca6b);
+  value ^= value >>> 13;
+  return (value >>> 0) / 0xffffffff;
 }
 
-/** Fixed-size cells, independent of the annotation's aspect ratio. */
-export function PixelAcquisition({ active }: { active: boolean }) {
-  const canvas = useRef<HTMLCanvasElement>(null);
+/** One mask reveals the new ink backing and real DOM text together. */
+export function PixelAcquisition({ active, id, seed = 0, children }: {
+  active: boolean; id?: string; seed?: number; children?: ReactNode;
+}) {
+  const layer = useRef<HTMLDivElement>(null);
   const phase = useRef(0);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    const surface = canvas.current;
-    if (!surface || reduceMotion) return;
+    const surface = layer.current;
+    if (!surface) return;
+    const target = active ? 1 : 0;
+    if (reduceMotion) {
+      phase.current = target;
+      surface.style.removeProperty("--inspection-mask");
+      return;
+    }
+    const canvas = document.createElement("canvas");
+    let context: CanvasRenderingContext2D | null = null;
     let frame = 0;
     let width = 0, height = 0;
-    let context: CanvasRenderingContext2D | null = null;
-    const target = active ? 1 : 0;
+    let cells: { x: number; y: number; delay: number; duration: number }[] = [];
     const from = phase.current;
-    const duration = (active ? 900 : 600) * Math.abs(target - from);
+    // Resume from the current field on reversal; never restart or flash solid.
+    const duration = (active ? DURATION : 850) * Math.abs(target - from);
     let started: number | null = null;
 
     const paint = () => {
-      if (!context) return;
-      context.clearRect(0, 0, width, height);
-      if (phase.current === 0) return;
-      if (phase.current === 1) {
-        context.fillStyle = INK;
-        context.fillRect(0, 0, width, height);
+      if (phase.current === 0 || phase.current === 1) {
+        surface.style.setProperty("--inspection-mask", phase.current === 1 ? "none" : EMPTY);
         return;
       }
-      const columns = Math.floor(width / SIZE), rows = Math.floor(height / SIZE);
-      // Center complete cells; never stretch or clip a cell into a rectangle.
-      const xInset = (width - columns * SIZE) / 2, yInset = (height - rows * SIZE) / 2;
-      for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < columns; x++) {
-          const index = y * columns + x;
-          const start = x / Math.max(1, columns - 1) * .58 + noise(index, 1) * .17;
-          const progress = Math.min(1, Math.max(0, (phase.current - start) / .25));
-          if (!progress) continue;
-          context.globalAlpha = Math.ceil(progress * 4) / 4;
-          context.fillStyle = progress === 1 ? INK : TONES[Math.floor(noise(index, 2) * TONES.length)];
-          context.fillRect(xInset + x * SIZE, yInset + y * SIZE, SIZE, SIZE);
-        }
+      if (!context) return;
+      context.clearRect(0, 0, width, height);
+      context.fillStyle = "#fff";
+      for (const cell of cells) {
+        const progress = Math.min(1, Math.max(0, (phase.current * DURATION - cell.delay) / cell.duration));
+        if (!progress) continue;
+        context.globalAlpha = Math.floor(progress * 4) / 4;
+        context.fillRect(cell.x, cell.y, SIZE, SIZE);
       }
       context.globalAlpha = 1;
+      surface.style.setProperty("--inspection-mask", `url("${canvas.toDataURL()}")`);
     };
     const resize = () => {
       const bounds = surface.getBoundingClientRect();
       width = bounds.width; height = bounds.height;
       if (!width || !height) return;
-      context ??= surface.getContext("2d");
-      if (!context) return;
+      context ??= canvas.getContext("2d");
+      if (!context) {
+        surface.style.setProperty("--inspection-mask", active ? "none" : EMPTY);
+        return;
+      }
       const density = window.devicePixelRatio || 1;
-      surface.width = Math.round(width * density);
-      surface.height = Math.round(height * density);
+      canvas.width = Math.round(width * density);
+      canvas.height = Math.round(height * density);
       context.setTransform(density, 0, 0, density, 0, 0);
+      const columns = Math.floor(width / SIZE), rows = Math.floor(height / SIZE);
+      const xInset = (width - columns * SIZE) / 2, yInset = (height - rows * SIZE) / 2;
+      cells = Array.from({ length: columns * rows }, (_, index) => ({
+        x: xInset + index % columns * SIZE,
+        y: yInset + Math.floor(index / columns) * SIZE,
+        delay: index % columns / Math.max(1, columns - 1) * 510 + noise(index, seed, 1) * 190,
+        duration: 190 + noise(index, seed, 2) * 260,
+      }));
       paint();
     };
     const tick = (time: number) => {
@@ -80,7 +96,7 @@ export function PixelAcquisition({ active }: { active: boolean }) {
     observer?.observe(surface);
     frame = requestAnimationFrame(tick);
     return () => { cancelAnimationFrame(frame); observer?.disconnect(); };
-  }, [active, reduceMotion]);
+  }, [active, reduceMotion, seed]);
 
-  return <canvas ref={canvas} className={styles.acquisition} aria-hidden="true" data-pixel-size={SIZE} />;
+  return <div ref={layer} id={id} className={styles.insight} aria-hidden={!active} data-inactive={!active} data-pixel-size={SIZE}>{children}</div>;
 }
