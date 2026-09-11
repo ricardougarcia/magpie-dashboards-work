@@ -118,6 +118,8 @@ a:is(:hover, :focus-visible) .actionVerb { letter-spacing: .09em; color: var(--i
 .viewerControls button[aria-pressed="true"] { background: var(--ink); color: var(--paper); box-shadow: inset 0 -2px var(--signal); }
 .viewerSurface { background: var(--paper-raised); }
 .viewerSurface > img { display: block; width: 100%; height: auto; }
+.viewerMap { position: relative; overflow: hidden; background: var(--paper-raised); transition: padding-top 900ms cubic-bezier(.22, 1, .36, 1); }
+.viewerMap > img { position: absolute; max-width: none; height: auto; transition: width 900ms cubic-bezier(.22, 1, .36, 1), left 900ms cubic-bezier(.22, 1, .36, 1), top 900ms cubic-bezier(.22, 1, .36, 1); }
 .viewerCaption { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding: 18px; border-top: 1px solid var(--line); }
 .viewerCaption p { font-size: 12px; line-height: 1.6; max-width: 610px; }
 .viewHint { color: var(--muted); }
@@ -182,6 +184,10 @@ a:is(:hover, :focus-visible) .actionVerb { letter-spacing: .09em; color: var(--i
 }
 
 .viewerViewport { overflow: auto; overscroll-behavior: none; scrollbar-width: none; touch-action: pan-x pan-y pinch-zoom; background: var(--paper-raised); }
+.viewerViewport { transition: aspect-ratio 900ms cubic-bezier(.22, 1, .36, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .viewerViewport, .viewerMap, .viewerMap > img { transition: none; }
+}
 .viewerViewport::-webkit-scrollbar { display: none; }
 .viewerViewport:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
 .zoomControls { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); padding: 0 12px; font: 10px/1.5 var(--font-mono), monospace; color: var(--muted); }

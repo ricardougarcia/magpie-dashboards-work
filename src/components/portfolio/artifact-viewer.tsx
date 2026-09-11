@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Artifact } from "@/lib/portfolio-types";
 import styles from "./region.module.css";
 
@@ -17,6 +17,8 @@ export function ArtifactViewer({ artifact }: { artifact: Artifact }) {
   const [zoom, setZoom] = useState(1);
   const viewport = useRef<HTMLDivElement>(null);
   const detail = artifact.details?.find((entry) => entry.id === detailId);
+  const crop = detail?.crop ?? { x: 0, y: 0, width: 1, height: 1 };
+  const ratio = artifact.width * crop.width / (artifact.height * crop.height);
   const viewportId = `${artifact.id}-viewport`;
   useLayoutEffect(() => {
     if (viewport.current) {
@@ -24,6 +26,30 @@ export function ArtifactViewer({ artifact }: { artifact: Artifact }) {
       viewport.current.scrollTop = 0;
     }
   }, [zoom, detailId]);
+  useEffect(() => {
+    const settle = () => {
+      const moving = viewport.current?.getAnimations?.({ subtree: true }).filter((animation) => animation.playState === "running") ?? [];
+      moving.forEach((animation) => animation.finish());
+      return moving.length > 0;
+    };
+    // Finish before native anchor navigation measures the destination, including
+    // selecting the same hash again. Modified clicks keep their browser behavior.
+    const beforeNavigation = (event: MouseEvent) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+      const href = event.target instanceof Element ? event.target.closest("a")?.getAttribute("href") : null;
+      if (href?.startsWith("#") && document.getElementById(href.slice(1))) settle();
+    };
+    const settleForNavigation = () => {
+      const target = document.getElementById(window.location.hash.slice(1));
+      if (target && settle()) target.scrollIntoView({ behavior: "instant", block: "start" });
+    };
+    document.addEventListener("click", beforeNavigation, true);
+    window.addEventListener("hashchange", settleForNavigation);
+    return () => {
+      document.removeEventListener("click", beforeNavigation, true);
+      window.removeEventListener("hashchange", settleForNavigation);
+    };
+  }, []);
   const selectView = (id: string | null) => { setDetailId(id); setZoom(1); };
   return <div className={styles.viewer}>
     <div className={styles.viewerControls} role="group" aria-label={`${artifact.label} views`}>
@@ -36,9 +62,11 @@ export function ArtifactViewer({ artifact }: { artifact: Artifact }) {
       <output aria-label="Map zoom">{zoom}×</output>
       <button type="button" disabled={zoom === 4} aria-label="Zoom in on map" onClick={() => setZoom((value) => Math.min(4, value + 1))}>+</button>
     </div>
-    <div ref={viewport} id={viewportId} className={styles.viewerViewport} tabIndex={0} role="region" aria-label={`${detail?.label ?? artifact.label}, ${zoom} times magnification`} style={{ aspectRatio: detail ? `${artifact.width * detail.crop.width} / ${artifact.height * detail.crop.height}` : `${artifact.width} / ${artifact.height}` }}>
+    <div ref={viewport} id={viewportId} className={styles.viewerViewport} tabIndex={0} role="region" aria-label={`${detail?.label ?? artifact.label}, ${zoom} times magnification`} style={{ aspectRatio: String(ratio) }}>
       <div className={styles.viewerSurface} style={{ width: `${zoom * 100}%` }}>
-      {detail ? <ArtifactCrop artifact={artifact} detail={detail} magnification={zoom} /> : <Image src={artifact.src} alt={artifact.alt} width={artifact.width} height={artifact.height} sizes={`(max-width: 760px) ${zoom * 100}vw, ${zoom * 1100}px`} />}
+      <div className={styles.viewerMap} data-map-camera style={{ paddingTop: `${100 / ratio}%` }}>
+        <Image src={artifact.src} alt={detail ? `${detail.label}: ${detail.caption}` : artifact.alt} width={artifact.width} height={artifact.height} sizes="(max-width: 760px) 1000vw, 6000px" style={{ width: `${100 / crop.width}%`, left: `${-100 * crop.x / crop.width}%`, top: `${-100 * crop.y / crop.height}%` }} />
+      </div>
       </div>
     </div>
     <div className={styles.viewerCaption}>
