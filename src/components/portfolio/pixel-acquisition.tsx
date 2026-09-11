@@ -5,7 +5,9 @@ import { useReducedMotion } from "framer-motion";
 import styles from "./region.module.css";
 
 const SIZE = 4;
-const DURATION = 1150;
+const ACQUISITION_DURATION = 1150;
+const SETTLE_DURATION = 180;
+const DURATION = ACQUISITION_DURATION + SETTLE_DURATION;
 const EMPTY = "linear-gradient(transparent, transparent)";
 
 // Same seeded noise and staggered timing as Magpie's lane acquisition.
@@ -38,6 +40,7 @@ export function PixelAcquisition({ active, id, seed = 0, children }: {
     let context: CanvasRenderingContext2D | null = null;
     let frame = 0;
     let width = 0, height = 0;
+    let cellSize = SIZE;
     let cells: { x: number; y: number; delay: number; duration: number }[] = [];
     const from = phase.current;
     // Resume from the current field on reversal; never restart or flash solid.
@@ -45,8 +48,8 @@ export function PixelAcquisition({ active, id, seed = 0, children }: {
     let started: number | null = null;
 
     const paint = () => {
-      if (phase.current === 0 || phase.current === 1) {
-        surface.style.setProperty("--inspection-mask", phase.current === 1 ? "none" : EMPTY);
+      if (phase.current === 0) {
+        surface.style.setProperty("--inspection-mask", EMPTY);
         return;
       }
       if (!context) return;
@@ -56,29 +59,36 @@ export function PixelAcquisition({ active, id, seed = 0, children }: {
         const progress = Math.min(1, Math.max(0, (phase.current * DURATION - cell.delay) / cell.duration));
         if (!progress) continue;
         context.globalAlpha = Math.floor(progress * 4) / 4;
-        context.fillRect(cell.x, cell.y, SIZE, SIZE);
+        context.fillRect(cell.x, cell.y, cellSize, cellSize);
+      }
+      // Fill only the remaining transparency; acquired pixels stay opaque.
+      const settle = Math.min(1, Math.max(0, (phase.current * DURATION - ACQUISITION_DURATION) / SETTLE_DURATION));
+      if (settle > 0) {
+        context.globalAlpha = settle * settle * (3 - 2 * settle);
+        context.fillRect(0, 0, width, height);
       }
       context.globalAlpha = 1;
       surface.style.setProperty("--inspection-mask", `url("${canvas.toDataURL()}")`);
     };
     const resize = () => {
       const bounds = surface.getBoundingClientRect();
-      width = bounds.width; height = bounds.height;
-      if (!width || !height) return;
+      if (!bounds.width || !bounds.height) return;
       context ??= canvas.getContext("2d");
       if (!context) {
         surface.style.setProperty("--inspection-mask", active ? "none" : EMPTY);
         return;
       }
       const density = window.devicePixelRatio || 1;
-      canvas.width = Math.round(width * density);
-      canvas.height = Math.round(height * density);
-      context.setTransform(density, 0, 0, density, 0, 0);
-      const columns = Math.floor(width / SIZE), rows = Math.floor(height / SIZE);
-      const xInset = (width - columns * SIZE) / 2, yInset = (height - rows * SIZE) / 2;
+      width = canvas.width = Math.round(bounds.width * density);
+      height = canvas.height = Math.round(bounds.height * density);
+      // Work in integer backing pixels. Fractional DPR must not antialias
+      // neighboring cell edges into transparent seams.
+      cellSize = Math.max(1, Math.round(SIZE * density));
+      const columns = Math.floor(width / cellSize), rows = Math.floor(height / cellSize);
+      const xInset = Math.floor((width - columns * cellSize) / 2), yInset = Math.floor((height - rows * cellSize) / 2);
       cells = Array.from({ length: columns * rows }, (_, index) => ({
-        x: xInset + index % columns * SIZE,
-        y: yInset + Math.floor(index / columns) * SIZE,
+        x: xInset + index % columns * cellSize,
+        y: yInset + Math.floor(index / columns) * cellSize,
         delay: index % columns / Math.max(1, columns - 1) * 510 + noise(index, seed, 1) * 190,
         duration: 190 + noise(index, seed, 2) * 260,
       }));
@@ -90,12 +100,15 @@ export function PixelAcquisition({ active, id, seed = 0, children }: {
       phase.current = from + (target - from) * progress;
       paint();
       if (progress < 1) frame = requestAnimationFrame(tick);
+      // Keep the final opaque mask. Removing it changes edge compositing at
+      // fractional display scales; a static mask needs no additional frames.
     };
     resize();
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
     observer?.observe(surface);
+    window.addEventListener("resize", resize);
     frame = requestAnimationFrame(tick);
-    return () => { cancelAnimationFrame(frame); observer?.disconnect(); };
+    return () => { cancelAnimationFrame(frame); observer?.disconnect(); window.removeEventListener("resize", resize); };
   }, [active, reduceMotion, seed]);
 
   return <div ref={layer} id={id} className={styles.insight} aria-hidden={!active} data-inactive={!active} data-pixel-size={SIZE}>{children}</div>;

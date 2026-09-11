@@ -128,3 +128,10 @@ The caption reveal now uses one pixel mask over the incoming text and its #28282
 Caption padding is 10px on desktop and 8px on mobile. The section 01→02 gap is 72px on desktop and 52px on mobile, down from 90px and 64px.
 
 The Board reuses the original PanelReplacement component, including its native scroll timeline, fallback, 0.25 outgoing speed, 0.15 opacity floor, reduced-motion behavior, and inert state after replacement. Its outgoing content contains the portfolio masthead and section 00. The incoming opaque sheet begins at the line above Sheet coordinates and contains the rest of the Board. The original Magpie component, global CSS, data and source images are unchanged. UAT only.
+
+
+### September 11 refinement: dissolve completion
+
+The acquisition keeps its 1150ms stochastic phase, followed by a 180ms smooth opacity fill of remaining transparency. Already acquired pixels stay opaque. The renderer holds the fully opaque mask after the fade without scheduling further frames. This avoids the edge-compositing change caused by removing a mask at fractional display scaling. Exit reverses from the current acquisition or settling state.
+
+Squares now use integer backing-pixel coordinates and a common rounded physical size (approximately 4 CSS pixels). At a fractional device-pixel ratio of 1.8, each square is 7 × 7 physical pixels instead of 7.2 × 7.2; adjacent edges share an exact boundary. Resize remeasures the backing dimensions and density. Reduced-motion inspection remains immediate. This correction changes only the Board dissolve; CCP cohesion ideas remain proposals.

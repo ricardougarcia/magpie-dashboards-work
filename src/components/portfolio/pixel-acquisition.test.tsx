@@ -32,7 +32,7 @@ function setup() {
   return { size, cells, frames, advance, encoded, disconnected, resize: () => act(() => resized()) };
 }
 
-it("masks the text and backing with dense complete squares, then releases the settled mask", () => {
+it("masks the text and backing with dense complete squares, then holds the fully opaque mask", () => {
   const fixture = setup();
   const { container, unmount } = render(<PixelAcquisition active><p>Inspection note</p></PixelAcquisition>);
   const layer = container.firstElementChild as HTMLElement;
@@ -55,8 +55,10 @@ it("masks the text and backing with dense complete squares, then releases the se
   // Neighbors in the same column have different timing, not a uniform wipe.
   expect(new Set(fixture.cells.filter(cell => cell.x === 252).map(cell => cell.alpha)).size).toBeGreaterThan(1);
   fixture.size.width = 157; fixture.size.height = 361; fixture.resize(); assertSquares();
-  fixture.advance(1150);
-  expect(mask()).toBe("none"); expect(fixture.frames.size).toBe(0);
+  fixture.advance(1330);
+  expect(mask()).toContain("data:image/png");
+  expect(fixture.cells.at(-1)?.alpha).toBe(1);
+  expect(fixture.frames.size).toBe(0);
   unmount(); expect(fixture.disconnected).toHaveBeenCalled();
 });
 
@@ -83,4 +85,52 @@ it("uses an immediate semantic state change without drawing under reduced motion
   expect(fixture.encoded).not.toHaveBeenCalled(); expect(fixture.frames.size).toBe(0);
   rerender(<PixelAcquisition active={false} />);
   expect(container.firstElementChild?.getAttribute("aria-hidden")).toBe("true");
+});
+
+
+it("keeps adjacent squares on integer backing pixels at fractional display scaling", () => {
+  vi.stubGlobal("devicePixelRatio", 1.8);
+  const fixture = setup();
+  fixture.size.width = 341.99655; fixture.size.height = 101.8316;
+  render(<PixelAcquisition active />);
+  fixture.advance(0); fixture.advance(1100);
+  expect(fixture.cells.length).toBeGreaterThan(256);
+  for (const cell of fixture.cells) {
+    expect(Number.isInteger(cell.x) && Number.isInteger(cell.y)).toBe(true);
+    expect(cell.width).toBe(7); expect(cell.height).toBe(7);
+    expect(cell.x + cell.width).toBeLessThanOrEqual(Math.round(fixture.size.width * 1.8));
+    expect(cell.y + cell.height).toBeLessThanOrEqual(Math.round(fixture.size.height * 1.8));
+  }
+  const firstRow = fixture.cells.filter(cell => cell.y === fixture.cells[0].y);
+  for (let i = 1; i < firstRow.length; i++) expect(firstRow[i].x).toBe(firstRow[i - 1].x + 7);
+});
+
+it("gradually fills remaining transparency over 180ms and holds the final mask", () => {
+  const fixture = setup();
+  const { container } = render(<PixelAcquisition active />);
+  fixture.advance(0); fixture.advance(1150);
+  const fills = [];
+  for (const time of [1195, 1240, 1285, 1330]) {
+    fixture.advance(time);
+    const finish = fixture.cells.at(-1)!;
+    expect(finish.width).toBe(fixture.size.width); expect(finish.height).toBe(fixture.size.height);
+    fills.push(finish.alpha);
+    expect((container.firstElementChild as HTMLElement).style.getPropertyValue("--inspection-mask")).toContain("data:image/png");
+  }
+  expect(fills).toEqual([.15625, .5, .84375, 1]);
+  const settledMask = (container.firstElementChild as HTMLElement).style.getPropertyValue("--inspection-mask");
+  fixture.advance(1346);
+  expect((container.firstElementChild as HTMLElement).style.getPropertyValue("--inspection-mask")).toBe(settledMask);
+  expect(fixture.frames.size).toBe(0);
+});
+
+it("can reverse during the settling fade without jumping to a new field", () => {
+  const fixture = setup();
+  const { rerender } = render(<PixelAcquisition active />);
+  fixture.advance(0); fixture.advance(1240);
+  const halfway = [...fixture.cells];
+  rerender(<PixelAcquisition active={false} />);
+  expect(fixture.cells).toEqual(halfway);
+  fixture.advance(1240); fixture.advance(1270);
+  expect(fixture.cells.at(-1)!.alpha).toBeLessThan(.5);
 });
