@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Artifact } from "@/lib/portfolio-types";
 import styles from "./region.module.css";
 
@@ -26,6 +26,30 @@ export function ArtifactViewer({ artifact }: { artifact: Artifact }) {
       viewport.current.scrollTop = 0;
     }
   }, [zoom, detailId]);
+  useEffect(() => {
+    const settle = () => {
+      const moving = viewport.current?.getAnimations?.({ subtree: true }).filter((animation) => animation.playState === "running") ?? [];
+      moving.forEach((animation) => animation.finish());
+      return moving.length > 0;
+    };
+    // Finish before native anchor navigation measures the destination, including
+    // selecting the same hash again. Modified clicks keep their browser behavior.
+    const beforeNavigation = (event: MouseEvent) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+      const href = event.target instanceof Element ? event.target.closest("a")?.getAttribute("href") : null;
+      if (href?.startsWith("#") && document.getElementById(href.slice(1))) settle();
+    };
+    const settleForNavigation = () => {
+      const target = document.getElementById(window.location.hash.slice(1));
+      if (target && settle()) target.scrollIntoView({ behavior: "instant", block: "start" });
+    };
+    document.addEventListener("click", beforeNavigation, true);
+    window.addEventListener("hashchange", settleForNavigation);
+    return () => {
+      document.removeEventListener("click", beforeNavigation, true);
+      window.removeEventListener("hashchange", settleForNavigation);
+    };
+  }, []);
   const selectView = (id: string | null) => { setDetailId(id); setZoom(1); };
   return <div className={styles.viewer}>
     <div className={styles.viewerControls} role="group" aria-label={`${artifact.label} views`}>

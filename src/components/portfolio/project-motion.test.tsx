@@ -81,3 +81,14 @@ it("retains the same map image across interrupted view changes and resets magnif
   expect(image.style.left).toBe("0%");
   expect(image.alt).toBe(artifact.alt);
 });
+
+it("settles map motion before section navigation while preserving modified clicks", () => {
+  render(<><ArtifactViewer artifact={portfolioProjects[0].artifacts[0]} /><a href="#destination">Next section</a><section id="destination" /></>);
+  const finish = vi.fn();
+  Object.defineProperty(screen.getByRole("region"), "getAnimations", { value: () => [{ playState: "running", finish }] });
+  const link = screen.getByRole("link", { name: "Next section" });
+  fireEvent.click(link, { ctrlKey: true });
+  expect(finish).not.toHaveBeenCalled();
+  fireEvent.click(link);
+  expect(finish).toHaveBeenCalledOnce();
+});
