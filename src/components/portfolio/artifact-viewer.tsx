@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Artifact } from "@/lib/portfolio-types";
+import { GuidingLightInkTrail } from "@/components/guiding-light-ink-trail";
 import styles from "./region.module.css";
 
 export function ArtifactCrop({ artifact, detail, magnification = 1 }: { artifact: Artifact; detail: NonNullable<Artifact["details"]>[number]; magnification?: number }) {
@@ -13,13 +14,24 @@ export function ArtifactCrop({ artifact, detail, magnification = 1 }: { artifact
 }
 
 export function ArtifactViewer({ artifact }: { artifact: Artifact }) {
-  const [detailId, setDetailId] = useState<string | null>(null);
+  const [pinnedId, setPinnedId] = useState<string | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null | undefined>(undefined);
+  const [focusedId, setFocusedId] = useState<string | null | undefined>(undefined);
+  const [reducedMotion, setReducedMotion] = useState(true);
+  const tabs = useRef<HTMLDivElement>(null);
+  const detailId = focusedId !== undefined ? focusedId : hoveredId !== undefined ? hoveredId : pinnedId;
   const [zoom, setZoom] = useState(1);
   const viewport = useRef<HTMLDivElement>(null);
   const detail = artifact.details?.find((entry) => entry.id === detailId);
   const crop = detail?.crop ?? { x: 0, y: 0, width: 1, height: 1 };
   const ratio = artifact.width * crop.width / (artifact.height * crop.height);
   const viewportId = `${artifact.id}-viewport`;
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(preference.matches);
+    update(); preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
   useLayoutEffect(() => {
     if (viewport.current) {
       viewport.current.scrollLeft = (viewport.current.scrollWidth - viewport.current.clientWidth) / 2;
@@ -50,11 +62,17 @@ export function ArtifactViewer({ artifact }: { artifact: Artifact }) {
       window.removeEventListener("hashchange", settleForNavigation);
     };
   }, []);
-  const selectView = (id: string | null) => { setDetailId(id); setZoom(1); };
-  return <div className={styles.viewer} data-artifact-viewer data-map-view={detailId ?? "overview"}>
-    <div className={styles.viewerControls} role="group" aria-label={`${artifact.label} views`}>
-      <button type="button" aria-pressed={!detail} aria-controls={viewportId} onClick={() => selectView(null)}>Overview</button>
-      {artifact.details?.map((entry) => <button key={entry.id} type="button" aria-pressed={entry.id === detail?.id} aria-controls={viewportId} onClick={() => selectView(entry.id)}>{entry.label}</button>)}
+  const selectView = (id: string | null) => { setPinnedId(id); setFocusedId(undefined); setHoveredId(undefined); setZoom(1); };
+  const preview = (id: string | null) => { setHoveredId(id); setZoom(1); };
+  const views = [{ id: null, label: "Overview" }, ...(artifact.details ?? []).map(({ id, label }) => ({ id, label }))];
+  return <div className={styles.viewer} data-artifact-viewer data-map-view={detailId ?? "overview"} data-pinned-view={pinnedId ?? "overview"}>
+    <div ref={tabs} className={styles.viewerControls} data-map-tabs role="group" aria-label={`${artifact.label} views`} onPointerLeave={(event) => { if (event.pointerType !== "touch") setHoveredId(undefined); }} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocusedId(undefined); }}>
+      <GuidingLightInkTrail trackRef={tabs} disabled={reducedMotion} coreColor="#282828" />
+      {views.map((entry) => <button key={entry.id ?? "overview"} type="button" aria-pressed={pinnedId === entry.id} data-preview={detailId === entry.id} aria-controls={viewportId}
+        onPointerEnter={(event) => { if (event.pointerType !== "touch") preview(entry.id); }}
+        onFocus={(event) => { if (event.currentTarget.matches(":focus-visible")) { setFocusedId(entry.id); setZoom(1); } }}
+        onBlur={() => setFocusedId(undefined)}
+        onClick={() => selectView(entry.id)}><span>{entry.label}</span><span className={styles.pinnedMark} aria-hidden="true" /></button>)}
     </div>
     <div className={styles.zoomControls} role="group" aria-label="Map magnification">
       <span>{zoom > 1 ? "Scroll / swipe to inspect" : "Complete view"}</span>

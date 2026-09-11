@@ -67,7 +67,7 @@ export function WorkflowTrace({ block }: { block: Extract<ProjectBlock, { type: 
       <ol ref={list} id={`${block.id}-steps`} className={styles.flow} onPointerLeave={() => setInspected(null)}>
         {block.steps.map((step, index) => <li key={step.id} id={step.id} data-flow-step={step.id} data-emphasis={!!step.emphasis} onPointerEnter={(event) => { if (event.pointerType !== "touch") setInspected(index); }}>
           <span className={styles.index} data-flow-index>{String(index + 1).padStart(2, "0")}</span>
-          <div className={styles.copy}><strong>{step.label}</strong><span>{step.note}</span></div>
+          <div className={styles.copy}>{step.id === "new-create" || step.id === "new-match" ? <a className={styles.stepLink} href={step.id === "new-create" ? "#local-creation" : "#global-matching"}><strong>{step.label}<span aria-hidden="true" /></strong></a> : <strong>{step.label}</strong>}<span>{step.note}</span></div>
         </li>)}
       </ol>
       {drawing.handoffs.length > 0 && <svg key={run} className={styles.ink} width={drawing.width} height={drawing.height} aria-hidden="true" data-playing={run > 0}>

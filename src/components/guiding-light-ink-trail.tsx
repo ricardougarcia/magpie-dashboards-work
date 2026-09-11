@@ -20,6 +20,7 @@ import {
 type GuidingLightInkTrailProps = {
   trackRef: RefObject<HTMLDivElement | null>;
   disabled?: boolean;
+  coreColor?: string;
 };
 
 type Surface = {
@@ -85,7 +86,7 @@ function drawParticle(
   context.fill();
 }
 
-export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLightInkTrailProps) {
+export function GuidingLightInkTrail({ trackRef, disabled = false, coreColor = CORE_COLOR }: GuidingLightInkTrailProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -243,7 +244,7 @@ export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLigh
       residueSurface.context.clearRect(0, 0, residueSurface.canvas.width, residueSurface.canvas.height);
       configureContext(coreSurface.context);
       configureContext(residueSurface.context);
-      coreSurface.context.fillStyle = CORE_COLOR;
+      coreSurface.context.fillStyle = coreColor;
       residueSurface.context.fillStyle = RESIDUE_COLOR;
       const coreContext = coreSurface.context;
       const residueContext = residueSurface.context;
@@ -374,7 +375,7 @@ export function GuidingLightInkTrail({ trackRef, disabled = false }: GuidingLigh
       track.removeEventListener("pointerleave", onPointerLeave);
       track.removeEventListener("pointercancel", onPointerLeave);
     };
-  }, [disabled, trackRef]);
+  }, [disabled, trackRef, coreColor]);
 
   return <canvas ref={canvasRef} className="guiding-light-ink-canvas" aria-hidden="true" />;
 }
