@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { CoordinateCursor } from "@/components/coordinate-cursor";
 import type { PortfolioProject } from "@/lib/portfolio-types";
-import { PortfolioShell } from "./portfolio-shell";
+import { PanelReplacement } from "@/components/panel-replacement";
+import { PortfolioMasthead, PortfolioShell } from "./portfolio-shell";
 import { PortfolioLink } from "./portfolio-link";
 import { boardRestorationScript } from "@/lib/portfolio-navigation";
 import { ArtifactCrop } from "./artifact-viewer";
@@ -17,10 +18,16 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
       <main id="portfolio-main" className={styles.board} data-gantt-region>
         <CoordinateCursor />
         <script dangerouslySetInnerHTML={{ __html: boardRestorationScript }} />
+        <PanelReplacement outgoing={<div data-panel-content>
+          <PortfolioMasthead isBoard />
+          <div className={styles.boardGutter}>
         <header className={styles.boardHeading}>
           <div><p className={styles.register}>[00] Portfolio / Selected work</p><h1>The Board<span>.</span></h1></div>
           <p>The questions. The decisions.<br />The work that followed.</p>
         </header>
+          </div>
+        </div>}>
+        <div className={styles.boardGutter}>
         <div className={sheet.sheet} data-board-sheet>
         <BoardRegistration />
         <div className={sheet.sheetIndex}>
@@ -122,6 +129,8 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
           <span className={sheet.sheetEnd}>R/G <span aria-hidden="true">+</span> Sheet 01 / End</span>
         </footer>
         </div>
+        </div>
+        </PanelReplacement>
       </main>
     </PortfolioShell>
   );

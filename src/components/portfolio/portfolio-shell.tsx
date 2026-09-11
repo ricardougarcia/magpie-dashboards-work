@@ -7,6 +7,18 @@ export function PortfolioShell({ children, projectNumber, isBoard = false }: { c
   return (
     <div className={`site-shell ${styles.shell}`} data-portfolio-view={isBoard ? "board" : "project"}>
       <a className={styles.skipLink} href="#portfolio-main">Skip to content</a>
+      {!isBoard && <PortfolioMasthead projectNumber={projectNumber} />}
+      {children}
+      <footer className={styles.footer}>
+        <span>Rico Garcia / Product management</span>
+        <Link href="/drawer">{projectNumber ? "Return to Board ↑" : "Board / Selected work"}</Link>
+      </footer>
+    </div>
+  );
+}
+
+export function PortfolioMasthead({ isBoard = false, projectNumber }: { isBoard?: boolean; projectNumber?: string }) {
+  return (
       <header className={styles.masthead}>
         <Link href="/drawer" className={styles.identity} aria-label="Rico Garcia — Board">
           <span className={styles.monogram} aria-hidden="true">R/G</span>
@@ -18,11 +30,5 @@ export function PortfolioShell({ children, projectNumber, isBoard = false }: { c
           <span className={styles.navIndex}>{projectNumber ? ` / ${projectNumber}` : " / Overview"}</span>
         </Link>
       </header>
-      {children}
-      <footer className={styles.footer}>
-        <span>Rico Garcia / Product management</span>
-        <Link href="/drawer">{projectNumber ? "Return to Board ↑" : "Board / Selected work"}</Link>
-      </footer>
-    </div>
   );
 }

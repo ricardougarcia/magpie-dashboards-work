@@ -119,3 +119,12 @@ Portfolio ink and graphite are #282828, scoped to the portfolio shell. Small red
 Pixel acquisition uses complete 4px square cells on a density-aware canvas, with #282828 as its darkest and settled tone. Cell count follows annotation dimensions; cells do not stretch with aspect ratio. The pass settles in 900ms and reverses on exit without an idle loop.
 
 B's image scales from 1 to at most 1.012 as it crosses the viewport, without reflowing its mount. The crop marker shares that transform and the trace remeasures its endpoints during scroll. B-to-C traces use 2px strokes and a 700ms easing curve. Entry registration segments draw automatically (on viewport entry for stacked layouts), while every image and caption is readable immediately. Reduced motion removes the scale, pixel pass and entry drawing, and shows inspection connections immediately.
+
+
+## Synchronized dissolve and Board replacement — September 11, 2026
+
+The caption reveal now uses one pixel mask over the incoming text and its #282828 backing. The resting caption stays underneath, so the advancing pixels replace both content and paper together. The mask uses the original Magpie seeded noise, independently varied cell delays and durations, and four opacity steps. Complete 4px squares settle within 1150ms; exiting reverses from the current field within 850ms. There is no solid prefill, immediate visual text swap, or idle animation. Semantic DOM text remains available to assistive technology in the selected state. Reduced motion switches immediately.
+
+Caption padding is 10px on desktop and 8px on mobile. The section 01→02 gap is 72px on desktop and 52px on mobile, down from 90px and 64px.
+
+The Board reuses the original PanelReplacement component, including its native scroll timeline, fallback, 0.25 outgoing speed, 0.15 opacity floor, reduced-motion behavior, and inert state after replacement. Its outgoing content contains the portfolio masthead and section 00. The incoming opaque sheet begins at the line above Sheet coordinates and contains the rest of the Board. The original Magpie component, global CSS, data and source images are unchanged. UAT only.

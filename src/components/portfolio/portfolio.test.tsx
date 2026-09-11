@@ -1,5 +1,5 @@
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { PortfolioBoard } from "./portfolio-board";
@@ -13,6 +13,10 @@ import { PROJECT_SECTION_TITLES } from "@/lib/portfolio-types";
 import WorkProjectPage, { generateMetadata, generateStaticParams } from "@/app/work/[slug]/page";
 
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("NEXT_NOT_FOUND"); } }));
+beforeEach(() => {
+  vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn(), addListener: vi.fn(), removeListener: vi.fn() })));
+  vi.stubGlobal("ResizeObserver", class { observe() {} disconnect() {} });
+});
 afterEach(() => { cleanup(); sessionStorage.clear(); vi.restoreAllMocks(); vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe("Board and Project foundation", () => {
@@ -43,6 +47,17 @@ describe("Board and Project foundation", () => {
     expect([...group.querySelectorAll<HTMLElement>("[data-artifact]")].map((item) => item.dataset.artifact)).toEqual(["A", "B", "C"]);
     expect(group.querySelector("[data-board-notes]")).toBeNull();
     expect(group.nextElementSibling?.hasAttribute("data-board-notes")).toBe(true);
+  });
+
+  it("replaces the masthead and section 00 with the sheet beginning at its coordinates", () => {
+    const { container } = render(<PortfolioBoard projects={portfolioProjects} />);
+    const outgoing = container.querySelector(".panel-outgoing [data-panel-content]")!;
+    const incoming = container.querySelector(".panel-incoming-sheet")!;
+    expect(within(outgoing as HTMLElement).getByRole("heading", { name: "The Board." })).toBeTruthy();
+    expect(within(outgoing as HTMLElement).getByRole("link", { name: "Rico Garcia — Board" })).toBeTruthy();
+    expect(outgoing.querySelector("[data-board-sheet]")).toBeNull();
+    expect(incoming.querySelector("[data-board-sheet]")?.children[1]?.textContent).toContain("Sheet coordinates");
+    expect(container.querySelectorAll(".panel-replacement")).toHaveLength(1);
   });
 
   it("keeps six sections visible, the investigation available on demand, and every anchor valid", () => {

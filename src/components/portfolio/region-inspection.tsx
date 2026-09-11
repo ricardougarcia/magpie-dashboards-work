@@ -43,12 +43,11 @@ export function RegionInspection({ label, summary, insight, children, evidence =
       <span>Inspect / {label}</span><span className={styles.inspectState} aria-hidden="true">[{expanded ? "Close −" : "Inspect +"}]</span>
     </button>
     <div className={styles.annotation}>
-      <PixelAcquisition active={expanded} />
       <div className={styles.insightRest} aria-hidden={expanded} data-inactive={expanded}>{reference ? <span className={styles.annotationReference}>{reference}.01 / {reference === "B" ? "What to notice" : "Source note"}</span> : null}<p>{summary}</p></div>
-      <div id={id} className={styles.insight} aria-hidden={!expanded} data-inactive={!expanded}>
+      <PixelAcquisition active={expanded} id={id} seed={reference?.charCodeAt(0) ?? 0}>
         <div>{reference ? <span className={styles.annotationReference}>{reference}.02 / Inspection note</span> : null}<p>{insight}</p></div>
         {locator}
-      </div>
+      </PixelAcquisition>
     </div>
   </div>;
 }

@@ -1,4 +1,6 @@
-.board { --board-copy: 13px; --board-label: 10px; --board-display: clamp(26px, 2.8vw, 40px); padding: 0 var(--portfolio-gutter) 48px; }
+.board { --board-copy: 13px; --board-label: 10px; --board-display: clamp(26px, 2.8vw, 40px); padding-bottom: 48px; }
+.boardGutter { padding-inline: var(--portfolio-gutter); }
+.board :global(.panel-incoming-sheet) { border-top: 0; background: linear-gradient(rgba(40, 40, 40, .018) 1px, transparent 1px), linear-gradient(90deg, rgba(40, 40, 40, .018) 1px, transparent 1px), var(--paper); background-size: 28px 28px; }
 .boardHeading { display: flex; align-items: center; justify-content: space-between; gap: 28px; padding: 36px 0; max-width: 1520px; margin-inline: auto; }
 .boardHeading h1 { font-size: clamp(34px, 4vw, 54px); line-height: 1; letter-spacing: -.065em; font-weight: 500; margin-top: 8px; }
 .boardHeading h1 span, .regionHeading h2 span { color: var(--signal); }
@@ -25,7 +27,7 @@
 .contextPlate { grid-column: 1; grid-row: 1; }
 .mapPlate { grid-column: 2; grid-row: 1 / 3; padding-top: 88px; }
 .detailPlate { grid-column: 1; grid-row: 2; margin-left: 42px; margin-right: -10px; }
-.notesPlate { display: grid; gap: 68px; margin: 90px 0 30px; }
+.notesPlate { display: grid; gap: 68px; margin: 72px 0 30px; }
 .researchPlate, .outcomePlate { display: grid; grid-template-columns: minmax(180px, .65fr) minmax(0, 2fr); gap: 40px; align-items: baseline; }
 .researchPlate > .register, .outcomePlate > .register { max-width: 180px; }
 .researchSignals { display: flex; flex-wrap: wrap; gap: 34px 64px; }
@@ -75,25 +77,21 @@ a:is(:hover, :focus-visible) .actionVerb { letter-spacing: .09em; color: var(--i
 .annotationReference { display: block; margin-bottom: 8px; font: 9px/1.5 var(--font-mono), monospace; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
 /* Captions share a footprint so inspection cannot displace adjacent content. */
 .annotation { display: grid; position: relative; overflow: hidden; }
-.annotation::before { content: ""; position: absolute; inset: 0; background: var(--ink); opacity: 0; transition: opacity 140ms; }
-.inspection[data-expanded="true"] .annotation::before { opacity: 1; }
-.insight, .insightRest { grid-area: 1 / 1; position: relative; padding: 14px; }
-.insight { display: flex; align-items: flex-start; gap: 18px; color: var(--paper-raised); }
+.insight, .insightRest { grid-area: 1 / 1; position: relative; isolation: isolate; padding: 10px; }
+.insight { display: flex; align-items: flex-start; gap: 14px; color: var(--paper-raised); background: var(--ink); mask-image: var(--inspection-mask, linear-gradient(transparent, transparent)); mask-size: 100% 100%; mask-repeat: no-repeat; }
 .insightRest { color: var(--muted); }
-.insight[data-inactive="true"], .insightRest[data-inactive="true"] { visibility: hidden; pointer-events: none; }
+.insight[data-inactive="true"], .insightRest[data-inactive="true"] { pointer-events: none; }
 .insight p, .insightRest p { position: relative; z-index: 1; font-size: var(--board-copy, 13px); line-height: 1.65; max-width: 590px; }
-.acquisition { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; pointer-events: none; transition: opacity 140ms; }
-.inspection[data-expanded="false"] .acquisition { opacity: 0; }
 .insight .annotationReference, .insight .evidenceLocator > span { color: #c2c3bb; }
 .insight .evidenceLocator > div { background: var(--paper-raised); }
-.contextPlate .annotation { max-width: 350px; margin-left: -14px; }
+.contextPlate .annotation { max-width: 342px; margin-left: -10px; }
 .mapPlate .inspection { display: grid; grid-template-columns: 100px minmax(0, 1fr); column-gap: 18px; }
 .mapPlate .mapLink { grid-column: 1 / -1; }
 .mapPlate .inspectButton { align-self: start; margin-top: 10px; }
-.mapPlate .annotation { margin: 10px -14px 0 0; }
+.mapPlate .annotation { margin: 10px -10px 0 0; }
 .detailPlate .annotation { margin-left: 0; }
-.detailPlate .annotation::after { content: ""; position: absolute; left: 0; top: 14px; width: 1px; height: 24px; background: var(--line); }
-.detailPlate .inspectButton { margin-left: 14px; }
+.detailPlate .annotation::after { content: ""; position: absolute; left: 0; top: 10px; width: 1px; height: 24px; background: var(--line); }
+.detailPlate .inspectButton { margin-left: 10px; }
 
 /* B contains the original crop that anchors C, on entry and during inspection. */
 .mapImage { position: relative; background: var(--paper-raised); transform: scale(var(--map-scale, 1)); transform-origin: 50% 40%; }
@@ -152,15 +150,15 @@ a:is(:hover, :focus-visible) .actionVerb { letter-spacing: .09em; color: var(--i
   .constellation { position: relative; isolation: isolate; display: flex; flex-direction: column; gap: 50px; }
   .constellation > div { width: 100%; }
   .contextPlate { margin-top: 0; }
-  .notesPlate { gap: 48px; margin-top: 64px; }
+  .notesPlate { gap: 48px; margin-top: 52px; }
   .researchPlate, .outcomePlate { grid-template-columns: 1fr; gap: 22px; }
   .researchPlate > .register, .outcomePlate > .register { max-width: none; }
   .researchSignals { gap: 30px; }
   .mapPlate { padding-top: 0; }
   .detailPlate { margin-left: 18px; margin-right: 0; width: calc(100% - 18px) !important; }
-  .mapPlate .annotation { margin-inline: -10px 0; }
-  .contextPlate .annotation { margin-left: -10px; }
-  .insight, .insightRest { padding: 12px 10px; }
+  .mapPlate .annotation { margin-inline: -8px 0; }
+  .contextPlate .annotation { margin-left: -8px; }
+  .insight, .insightRest { padding: 8px; }
   .scopeSignal strong, .outcome { font-size: 32px; }
   .outcome { max-width: 420px; }
   .regionFoot { flex-direction: column; gap: 8px; font-size: 9px; }
@@ -172,7 +170,9 @@ a:is(:hover, :focus-visible) .actionVerb { letter-spacing: .09em; color: var(--i
 
 }
 @media (prefers-reduced-motion: reduce) {
-  .annotation::before, .acquisition, .actionVerb { transition: none; }
+  .actionVerb { transition: none; }
+  .insight { mask-image: none; }
+  .insight[data-inactive="true"] { visibility: hidden; }
   .mapImage { transform: none; }
 }
 @media print {
@@ -205,13 +205,12 @@ a:is(:hover, :focus-visible) .actionVerb { letter-spacing: .09em; color: var(--i
 }
 @media (prefers-reduced-motion: reduce) {
   .sourceWindow { transition: none; }
-  .acquisition { display: none; }
   .entryFrames { display: none; }
 }
 @media print {
   .annotation { display: block; }
   .annotation .insight { visibility: visible; }
   .annotation .insightRest { display: none !important; }
-  .sourceWindow, .acquisition, .annotation::before, .evidenceTrace, .entryFrames { display: none; }
-  .insight { color: var(--ink); }
+  .sourceWindow, .evidenceTrace, .entryFrames { display: none; }
+  .insight { color: var(--ink); background: none; mask-image: none; }
 }
