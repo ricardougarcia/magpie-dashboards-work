@@ -1,0 +1,43 @@
+.figure { padding: 28px 0 14px; }
+.caption { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; }
+.caption > span { color: var(--signal-text); font: 10px/1.6 var(--font-mono), monospace; text-transform: uppercase; letter-spacing: .055em; }
+.caption button { min-height: 44px; border: 0; background: none; padding: 8px 0; color: var(--muted); font: 10px/1.6 var(--font-mono), monospace; cursor: var(--cursor-action); }
+.caption button:hover { color: var(--ink); }
+.caption button:focus-visible { outline: 2px solid var(--signal); outline-offset: 4px; }
+.drawing { position: relative; margin-top: 26px; }
+.flow { display: flex; gap: clamp(16px, 2.5vw, 36px); list-style: none; padding: 0; margin: 0; }
+.flow li { position: relative; flex: 1; min-width: 0; scroll-margin-top: 36px; }
+.flow li:last-child { flex: 1.15; }
+.flow li[data-emphasis="true"] { flex: 1.1; }
+.figure[data-flow-before="true"] .flow li:nth-child(4) { margin-left: 14px; }
+.index { display: inline-block; position: relative; color: var(--muted); font: 10px/18px var(--font-mono), monospace; }
+.copy { position: relative; margin-top: 20px; padding: 12px 0 16px; }
+.copy strong { display: block; font-size: 17px; line-height: 1.2; font-weight: 500; letter-spacing: -.025em; }
+.copy > span { display: block; margin-top: 10px; color: var(--muted); font-size: 11px; line-height: 1.55; }
+.flow li[data-emphasis="true"] .copy { padding-left: 14px; background: linear-gradient(90deg, var(--paper-raised), transparent); }
+.flow li[data-emphasis="true"] .copy::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 4px; background: repeating-linear-gradient(135deg, rgba(40,40,40,.32) 0 1px, transparent 1px 4px); transition: opacity 300ms ease; opacity: .5; }
+.flow li:hover .copy::before { opacity: 1; }
+.figure:not([data-flow-before="true"]) .flow li[data-emphasis="true"] .copy > span { color: var(--signal-text); }
+.ink { position: absolute; inset: 0; pointer-events: none; overflow: visible; fill: none; stroke: var(--ink); stroke-width: 1; }
+.route { stroke-opacity: .22; transition: stroke-opacity 280ms ease; }
+.receiver { fill: var(--ink); stroke: none; opacity: .35; }
+.traveler { stroke-opacity: .8; opacity: 0; stroke-dasharray: .18 .82; stroke-dashoffset: 1; }
+.ink[data-playing="true"] .traveler { animation: transfer 760ms cubic-bezier(.4,0,.2,1) var(--handoff-delay) both; }
+.ink[data-playing="true"] .receiver { animation: receive 850ms ease calc(var(--handoff-delay) + 420ms) both; }
+.ink [data-near="true"] .route { stroke-opacity: .7; }
+.ink [data-near="true"] .receiver { fill: var(--signal-text); opacity: 1; }
+@keyframes transfer { 0% { stroke-dashoffset: 1; opacity: 0; } 12% { opacity: 1; } 85% { opacity: 1; } 100% { stroke-dashoffset: -.18; opacity: 0; } }
+@keyframes receive { 0% { opacity: .35; } 45% { opacity: 1; } 100% { opacity: .35; } }
+@media (max-width: 760px) {
+  .figure { padding-top: 18px; }
+  .drawing { margin-top: 22px; }
+  .flow { flex-direction: column; gap: 22px; }
+  .flow li { display: grid; grid-template-columns: 24px 1fr; align-items: start; column-gap: 18px; padding-left: 26px; }
+  .figure[data-flow-before="true"] .flow li:nth-child(4) { margin-left: 0; margin-top: 12px; }
+  .copy { margin-top: -8px; padding: 8px 0 12px; }
+  .copy strong { font-size: 18px; }
+  .copy > span { margin-top: 7px; font-size: 12px; }
+  .flow li[data-emphasis="true"] .copy { margin-left: -12px; padding-left: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .ink[data-playing="true"] .traveler, .ink[data-playing="true"] .receiver { animation: none; } .route, .copy::before { transition: none; } }
+@media print { .caption button, .traveler { display: none; } .ink[data-playing="true"] .receiver { animation: none; } }

@@ -6,22 +6,36 @@ import { ArtifactViewer } from "./artifact-viewer";
 import { PanelReplacement } from "@/components/panel-replacement";
 import { ProjectReadingRail } from "./project-reading-rail";
 import { WorkflowTrace } from "./workflow-trace";
+import { ProjectSurface } from "./project-surface";
+import ccp from "./ccp.module.css";
 import styles from "./portfolio.module.css";
 
 function ArtifactFigure({ artifact }: { artifact: Artifact }) {
   return (
-    <figure id={artifact.id} className={styles.artifact} aria-label={artifact.label}>
+    <figure id={artifact.id} className={styles.artifact} data-project-artifact aria-label={artifact.label}>
       {artifact.details?.length ? <>
-        <span className={styles.artifactLabel}>{artifact.label}<span aria-hidden="true">↗</span></span>
+        <span className={styles.artifactLabel}>{artifact.label}</span>
         <ArtifactViewer artifact={artifact} />
-        <a className={styles.fullArtifact} href={artifact.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size ${artifact.label.toLowerCase()} in a new tab`}>Open original at full size ↗</a>
+        <a className={styles.fullArtifact} data-original-link href={artifact.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size ${artifact.label.toLowerCase()} in a new tab`}>Open original at full size</a>
       </> : <a className={artifact.surface === "ink" ? styles.artifactInk : styles.artifactPaper} href={artifact.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size ${artifact.label.toLowerCase()} in a new tab`}>
-        <span className={styles.artifactLabel}>{artifact.label}<span aria-hidden="true">↗</span></span>
+        <span className={styles.artifactLabel}>{artifact.label}</span>
         <Image src={artifact.src} alt={artifact.alt} width={artifact.width} height={artifact.height} sizes="(max-width: 900px) 100vw, 900px" />
       </a>}
-      {!artifact.details?.length ? <figcaption><span>{artifact.caption}</span><span className={styles.eyebrow}>Artifact / Open full size ↗</span></figcaption> : null}
+      {!artifact.details?.length ? <figcaption><span>{artifact.caption}</span><span className={styles.eyebrow}>Artifact / Open full size</span></figcaption> : null}
     </figure>
   );
+}
+
+function DecisionHeading({ id, title, blockId, enabled }: { id: string; title: string; blockId: string; enabled: boolean }) {
+  if (enabled && blockId === "release-decisions") {
+    const step = id === "local-creation" ? "new-create" : "new-match";
+    return <h3><a href={`#${step}`} data-related-step={step}>{title}</a></h3>;
+  }
+  if (enabled && blockId === "carry-forward") {
+    const section = id === "sequence-value" ? "solution" : "approach";
+    return <h3><a href={`#${section}`} data-revisit-section={section}>{title}<span className={ccp.revisit} aria-hidden="true">[Revisit]</span></a></h3>;
+  }
+  return <h3>{title}</h3>;
 }
 
 function ProjectContentBlock({ block, project }: { block: ProjectBlock; project: PortfolioProject }) {
@@ -43,7 +57,7 @@ function ProjectContentBlock({ block, project }: { block: ProjectBlock; project:
       );
     case "metrics":
       return (
-        <dl id={block.id} className={styles.metrics}>
+        <dl id={block.id} className={styles.metrics} data-content-type="metrics" data-content-block={block.id}>
           {block.items.map((item) => (
             <div key={item.id} id={item.id}>
               <dt>{item.label}</dt>
@@ -57,11 +71,11 @@ function ProjectContentBlock({ block, project }: { block: ProjectBlock; project:
       return <WorkflowTrace block={block} />;
     case "decisions":
       return (
-        <ol id={block.id} className={styles.decisions}>
+        <ol id={block.id} className={styles.decisions} data-content-type="decisions" data-content-block={block.id}>
           {block.items.map((item, index) => (
             <li id={item.id} key={item.id}>
               <span className={styles.eyebrow}>[{String(index + 1).padStart(2, "0")}]</span>
-              <h3>{item.title}</h3><p>{item.body}</p>
+              <DecisionHeading id={item.id} title={item.title} blockId={block.id} enabled={project.slug === "ccp"} /><p>{item.body}</p>
             </li>
           ))}
         </ol>
@@ -76,16 +90,16 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   const coverSection = project.sections.find((section) => section.blocks.some((block) => block.type === "artifact" && block.artifactId === cover.id));
   return (
     <PortfolioShell projectNumber={project.number}>
-      <main id="portfolio-main" className={styles.projectPage}>
+      <main id="portfolio-main" className={`${styles.projectPage} ${project.slug === "ccp" ? ccp.sheet : ""}`}>
         <PanelReplacement outgoing={<header className={styles.projectHero} data-panel-content>
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}><span>[{project.number}]</span> {project.organization} / Project</p>
             <h1 style={{ viewTransitionName: `region-${project.id}-title` }}>{project.title}<span>.</span></h1>
             <p className={styles.heroSummary}>{project.summary}</p>
-            {readingStart ? <a className={styles.startReading} href={`#${readingStart.id}`}>{approach ? "Explore the investigation" : "Explore the Project"} <span aria-hidden="true">↓</span></a> : null}
+            {readingStart ? <a className={styles.startReading} href={`#${readingStart.id}`}>{approach ? "Explore the investigation" : "Explore the Project"} <span className={ccp.joint} aria-hidden="true" /></a> : null}
           </div>
           <a className={styles.heroArtifact} data-region-landmark="map" style={{ viewTransitionName: `region-${project.id}-map`, background: cover.surface === "paper" ? "var(--paper-raised)" : "var(--ink)" }} href={coverSection ? `#${cover.id}` : cover.src} target={coverSection ? undefined : "_blank"} rel={coverSection ? undefined : "noopener noreferrer"} aria-label={coverSection ? `View ${cover.label.toLowerCase()} in ${PROJECT_SECTION_TITLES[coverSection.kind]}` : `Open full-size ${cover.label.toLowerCase()} in a new tab`}>
-            <div className={styles.imageRegister} aria-hidden="true"><span>Artifact / {cover.label}</span><span>↓</span></div>
+            <div className={styles.imageRegister} aria-hidden="true"><span>Artifact / {cover.label}</span><span className={ccp.registration} /></div>
             <Image src={cover.src} alt={cover.alt} width={cover.width} height={cover.height} sizes="(max-width: 760px) 100vw, 50vw" preload />
           </a>
         </header>}>
@@ -99,16 +113,16 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
           <ProjectReadingRail sections={project.sections.map((section) => ({ id: section.id, title: PROJECT_SECTION_TITLES[section.kind] }))} />
           <article className={styles.projectSections} aria-label={`${project.title} case study`}>
             {project.sections.map((section, index) => (
-              <section key={section.id} id={section.id} className={styles.projectSection} aria-labelledby={`${section.id}-heading`}>
-                <header className={styles.sectionHeading}>
+              <ProjectSurface key={section.id} id={section.id} kind={section.kind} className={styles.projectSection} enabled={project.slug === "ccp"}>
+                <header className={styles.sectionHeading} data-section-heading>
                   <h2 id={`${section.id}-heading`}><span>[{String(index + 1).padStart(2, "0")}]</span> {PROJECT_SECTION_TITLES[section.kind]}</h2>
                   <p className={styles.sectionHeadline}>{section.headline}</p>
                   <p className={styles.sectionSummary}>{section.summary}</p>
                 </header>
                 {section.blocks.map((block) => <ProjectContentBlock key={block.id} block={block} project={project} />)}
-              </section>
+              </ProjectSurface>
             ))}
-            <Link href="/drawer" className={styles.endReturn}><span>Return to the Board</span><span aria-hidden="true">↗</span></Link>
+            <Link href="/drawer" className={styles.endReturn} data-board-return><span>Return to the Board</span></Link>
           </article>
         </div>
         </PanelReplacement>

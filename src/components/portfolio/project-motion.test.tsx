@@ -92,3 +92,31 @@ it("settles map motion before section navigation while preserving modified click
   fireEvent.click(link);
   expect(finish).toHaveBeenCalledOnce();
 });
+
+it("connects decisions to their actual workflow steps and preserves keyboard focus over hover", async () => {
+  const { ProjectSurface } = await import("./project-surface");
+  vi.stubGlobal("matchMedia", () => ({ matches: false }));
+  vi.stubGlobal("PointerEvent", class extends MouseEvent {
+    pointerType: string;
+    constructor(type: string, init: PointerEventInit = {}) { super(type, init); this.pointerType = init.pointerType ?? "mouse"; }
+  });
+  vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({ left: 0, top: 0, bottom: 50, width: 150, height: 50 } as DOMRect);
+  const { container } = render(<ProjectSurface id="solution" kind="solution" className="" enabled>
+    <div id="new-create" data-flow-step="new-create">Create locally</div><div id="new-match" data-flow-step="new-match">Match and merge</div>
+    <div id="local-creation"><a data-related-step="new-create" href="#new-create">Local creation</a></div>
+    <div id="global-matching"><a data-related-step="new-match" href="#new-match">Global matching</a></div>
+  </ProjectSurface>);
+  const section = container.querySelector("section")!;
+  const local = screen.getByRole("link", { name: "Local creation" });
+  const global = screen.getByRole("link", { name: "Global matching" });
+  fireEvent.pointerOver(local, { pointerType: "touch" });
+  expect(section.querySelector("svg")).toBeNull();
+  fireEvent.pointerOver(local, { pointerType: "mouse" });
+  expect(section.getAttribute("data-related-step")).toBe("new-create");
+  expect(section.querySelector("svg path")).not.toBeNull();
+  fireEvent.focusIn(global);
+  fireEvent.pointerOut(local, { relatedTarget: document.body });
+  expect(section.getAttribute("data-related-step")).toBe("new-match");
+  fireEvent.focusOut(global, { relatedTarget: document.body });
+  expect(section.querySelector("svg")).toBeNull();
+});

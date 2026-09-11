@@ -51,7 +51,7 @@ export function ArtifactViewer({ artifact }: { artifact: Artifact }) {
     };
   }, []);
   const selectView = (id: string | null) => { setDetailId(id); setZoom(1); };
-  return <div className={styles.viewer}>
+  return <div className={styles.viewer} data-artifact-viewer data-map-view={detailId ?? "overview"}>
     <div className={styles.viewerControls} role="group" aria-label={`${artifact.label} views`}>
       <button type="button" aria-pressed={!detail} aria-controls={viewportId} onClick={() => selectView(null)}>Overview</button>
       {artifact.details?.map((entry) => <button key={entry.id} type="button" aria-pressed={entry.id === detail?.id} aria-controls={viewportId} onClick={() => selectView(entry.id)}>{entry.label}</button>)}
@@ -74,7 +74,7 @@ export function ArtifactViewer({ artifact }: { artifact: Artifact }) {
       {detail ? <div className={styles.locator} aria-label={`${detail.label} location within the full map`} role="img">
         <Image src={artifact.src} alt="" width={artifact.width} height={artifact.height} sizes="112px" />
         <span style={{ left: `${detail.crop.x * 100}%`, top: `${detail.crop.y * 100}%`, width: `${detail.crop.width * 100}%`, height: `${detail.crop.height * 100}%` }} />
-      </div> : <span className={styles.viewHint}>Choose a detail to inspect ↗</span>}
+      </div> : <span className={styles.viewHint}>Choose a detail to inspect</span>}
     </div>
   </div>;
 }
