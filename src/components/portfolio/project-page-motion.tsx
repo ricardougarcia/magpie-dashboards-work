@@ -45,7 +45,7 @@ export function ProjectPageMotion({ sections }: { sections: { id: string; title:
       rects.forEach((rect, index) => {
         const next = rects[index + 1];
         let progress = next && !preference.matches
-          ? clamp(Math.min(-rect.top - 80, viewport * .65 - next.top) / Math.max(1, viewport * .5)) : 0;
+          ? clamp(Math.min(-rect.top - 80, viewport / 3 - next.top) / Math.max(1, viewport * .5)) : 0;
         // A linked detail stays at its native anchor position while it is read.
         // Resume the section's scroll motion gradually as that detail leaves view.
         if (index === anchorIndex) progress *= clamp((80 - anchorBottom) / 160);
