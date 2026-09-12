@@ -23,7 +23,7 @@ function subscribeCompact(callback: () => void) {
   return () => media.removeEventListener("change", callback);
 }
 
-export function EvidenceRegion({ children, crop }: { children: ReactNode; crop?: Crop }) {
+export function EvidenceRegion({ children, crop, deferUntilVisible = false }: { children: ReactNode; crop?: Crop; deferUntilVisible?: boolean }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [entry, setEntry] = useState<Entry>("idle");
   const [geometry, setGeometry] = useState<Geometry | null>(null);
@@ -91,7 +91,7 @@ export function EvidenceRegion({ children, crop }: { children: ReactNode; crop?:
   useEffect(() => {
     const root = region.current;
     if (!root || reduceMotion || !geometry) return;
-    if (!compact && entry === "idle") {
+    if (!compact && !deferUntilVisible && entry === "idle") {
       const frame = requestAnimationFrame(() => setEntry("frames"));
       return () => cancelAnimationFrame(frame);
     }
@@ -107,7 +107,7 @@ export function EvidenceRegion({ children, crop }: { children: ReactNode; crop?:
     }, { threshold: 0.12 });
     observer.observe(plate);
     return () => observer.disconnect();
-  }, [reduceMotion, compact, geometry, entry]);
+  }, [reduceMotion, compact, geometry, entry, deferUntilVisible]);
 
   return <EvidenceContext value={activate}>
     <div ref={region} className={styles.constellation} data-evidence-active={active || tracing} data-entry={drawing ? entry : "complete"}>
