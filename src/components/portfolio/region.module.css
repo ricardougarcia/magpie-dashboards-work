@@ -183,7 +183,7 @@ a:is(:hover, :focus-visible) .actionVerb { letter-spacing: .09em; color: var(--i
   .region { break-inside: avoid; }
 }
 
-.viewerViewport { overflow: auto; overscroll-behavior: none; scrollbar-width: none; touch-action: pan-x pan-y pinch-zoom; background: var(--paper-raised); }
+.viewerViewport { overflow: auto; overscroll-behavior: none auto; scrollbar-width: none; touch-action: pan-x pan-y pinch-zoom; background: var(--paper-raised); }
 .viewerViewport { transition: aspect-ratio 900ms cubic-bezier(.22, 1, .36, 1); }
 @media (prefers-reduced-motion: reduce) {
   .viewerViewport, .viewerMap, .viewerMap > img { transition: none; }
