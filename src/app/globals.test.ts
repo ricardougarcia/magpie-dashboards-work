@@ -39,13 +39,13 @@ describe("public timeline visual tokens", () => {
 
   it("uses a light borderless stacked readout on the cursor’s lower-left side with faint viewport guides", () => {
     expect(css).toMatch(/\.coordinate-cursor\s*\{[\s\S]*?position:\s*fixed[\s\S]*?flex-direction:\s*column/);
-    expect(css).toMatch(/\.coordinate-cursor\s*\{[\s\S]*?color:\s*rgba\(17, 19, 17, 0\.36\)/);
+    expect(css).toMatch(/\.coordinate-cursor\s*\{[\s\S]*?color:\s*rgba\(40, 40, 40, 0\.36\)/);
     expect(css).toMatch(/\.coordinate-cursor\s*\{[\s\S]*?transform:\s*translate\(calc\(-100% - 11px\), 11px\)/);
     expect(css).toMatch(/\.coordinate-cursor\s*\{[\s\S]*?letter-spacing:\s*-0\.055em/);
     expect(css).toContain(".coordinate-cursor.is-right-of-cursor");
     expect(css).toContain(".coordinate-cursor.is-above-cursor");
     expect(css).toMatch(/\.cursor-guides\s*\{[\s\S]*?position:\s*fixed[\s\S]*?pointer-events:\s*none/);
-    expect(css).toContain("background: rgba(17, 19, 17, 0.11)");
+    expect(css).toContain("background: rgba(40, 40, 40, 0.11)");
     expect(css).not.toMatch(/\.coordinate-cursor\s*\{[^}]*border:/);
     expect(css).not.toMatch(/@media[^{}]*\{[\s\S]*?\.coordinate-cursor,[\s\S]*?display:\s*none/);
   });
@@ -120,7 +120,7 @@ describe("public timeline visual tokens", () => {
   });
 
   it("shows designed upload progress and prevents low-resolution GIFs from being enlarged", () => {
-    expect(css).toMatch(/\.media-upload-progress\s*\{[\s\S]*?height:\s*3px[\s\S]*?background:\s*rgba\(17, 19, 17, 0\.12\)/);
+    expect(css).toMatch(/\.media-upload-progress\s*\{[\s\S]*?height:\s*3px[\s\S]*?background:\s*rgba\(40, 40, 40, 0\.12\)/);
     expect(css).toMatch(/\.media-upload-progress > span\s*\{[\s\S]*?background:\s*var\(--signal\)/);
     expect(css).toMatch(/\.media-quality-note\s*\{[\s\S]*?border-left:\s*2px solid var\(--signal\)/);
     expect(css).toMatch(/\.media-editor-preview img\.media-no-upscale,[\s\S]*?\.preview-content img\.media-no-upscale,[\s\S]*?object-fit:\s*scale-down/);

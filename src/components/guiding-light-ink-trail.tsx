@@ -33,7 +33,7 @@ type ForwardDeformation = {
   extension: number;
 };
 
-const CORE_COLOR = "#111311";
+const CORE_COLOR = "#282828";
 const RESIDUE_COLOR = "#d6d5d0";
 const NOMINAL_FRAME_MS = 1000 / 60;
 const MAX_POINTER_SAMPLES = 96;

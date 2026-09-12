@@ -44,7 +44,7 @@ const LANE_ORDER = [
   "Challenges Planned / Unplanned",
 ];
 
-const PIXEL_TONES = ["#111311", "#191b19", "#2b2d2b", "#3d3f3d"] as const;
+const PIXEL_TONES = ["#282828", "#303030", "#383838", "#404040"] as const;
 
 function seededUnit(index: number, seed: number, salt: number) {
   let value = Math.imul(index + 1 + salt * 97, 0x9e3779b1) ^ Math.imul(seed + 11, 0x5f356495);
