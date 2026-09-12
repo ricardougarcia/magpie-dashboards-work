@@ -1,12 +1,23 @@
-.miniMap { position: fixed; left: 12px; bottom: 18px; width: 48px; z-index: 40; pointer-events: none; opacity: 0; }
-.miniMap[data-ready="true"] { opacity: .7; }
+.miniMap { position: fixed; left: 12px; bottom: 18px; width: 48px; z-index: 40; visibility: hidden; opacity: 0; }
+.miniMap[data-ready="true"] { visibility: visible; opacity: .7; }
+.miniMap:is(:hover,:focus-within) { opacity: 1; }
 .miniMap svg { display: block; width: 48px; height: var(--mini-height, 150px); overflow: visible; }
 .miniMap [data-mini-region] { fill: rgba(40,40,40,.045); stroke: rgba(40,40,40,.2); stroke-width: .6; }
 .miniMap [data-mini-region][data-current="true"] { fill: rgba(40,40,40,.12); }
 .miniMap [data-page-window] { fill: rgba(189,62,43,.07); stroke: var(--signal-text); stroke-width: .9; }
-.miniMap span { display: block; margin-top: 7px; font: 7px/1.4 var(--font-mono), monospace; color: var(--muted); white-space: nowrap; }
+.caption { display: block; margin-top: 7px; font: 7px/1.4 var(--font-mono), monospace; color: var(--muted); white-space: nowrap; }
+.links { position: absolute; top: 0; left: 0; width: 100%; height: var(--mini-height, 150px); }
+.links a { position: absolute; left: 0; width: 100%; border: 1px solid transparent; text-decoration: none; }
+.links a:is(:hover,:focus-visible) { background: rgba(189,62,43,.1); border-color: var(--signal-text); outline: none; }
+.links a span { position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); padding: 6px 8px; background: var(--paper-raised); color: var(--ink); font: 9px/1.4 var(--font-mono), monospace; white-space: nowrap; opacity: 0; visibility: hidden; pointer-events: none; }
+.links a:is(:hover,:focus-visible) span { opacity: 1; visibility: visible; }
 .miniMap[data-compact="true"] { width: 10px; left: 6px; }
 .miniMap[data-compact="true"] svg { width: 10px; }
-.miniMap[data-compact="true"] span { display: none; }
-@media (max-width: 760px) { .miniMap { left: 4px; bottom: 20px; width: 8px; } .miniMap svg { width: 8px; height: 90px; } .miniMap span { display: none; } }
+.miniMap[data-compact="true"] .caption { display: none; }
+@media (max-width: 760px) {
+  .miniMap, .miniMap[data-compact="true"] { left: 0; bottom: 20px; width: 20px; }
+  .miniMap svg, .miniMap[data-compact="true"] svg { width: 8px; height: 144px; margin-left: 4px; }
+  .links { height: 144px; }
+  .caption { display: none; }
+}
 @media print { .miniMap { display: none; } }

@@ -6,7 +6,7 @@ import styles from "./project-page-motion.module.css";
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
 export function ProjectPageMotion({ sections }: { sections: { id: string; title: string }[] }) {
-  const map = useRef<HTMLDivElement>(null);
+  const map = useRef<HTMLElement>(null);
   useEffect(() => {
     const element = map.current!;
     const page = element.closest("main")!;
@@ -14,6 +14,7 @@ export function ProjectPageMotion({ sections }: { sections: { id: string; title:
     const content = targets.map((target) => target.querySelector<HTMLElement>("[data-section-content]")!);
     const marker = element.querySelector<SVGRectElement>("[data-page-window]")!;
     const regions = [...element.querySelectorAll<SVGRectElement>("[data-mini-region]")];
+    const links = [...element.querySelectorAll<HTMLAnchorElement>("[data-mini-link]")];
     const preference = matchMedia("(prefers-reduced-motion: reduce)");
     const nav = page.querySelector<HTMLElement>('nav[aria-label="Project sections"]');
     let frame = 0;
@@ -36,8 +37,11 @@ export function ProjectPageMotion({ sections }: { sections: { id: string; title:
         anchorBottom = anchor.getBoundingClientRect().bottom - shift;
       }
       const scale = 144 / Math.max(1, height);
+      let current = 0;
+      rects.forEach((rect, index) => { if (rect.top <= Math.min(160, viewport * .25)) current = index; });
+      if (scroll > 0 && scroll + viewport >= height - 2) current = rects.length - 1;
       // The section shell stays in document flow. Only its contents slow down as
-      // the next opaque section crosses them, so anchors and the rail stay stable.
+      // they clear the next section edge; the grid, anchors, and rail stay stable.
       rects.forEach((rect, index) => {
         const next = rects[index + 1];
         let progress = next && !preference.matches
@@ -51,7 +55,11 @@ export function ProjectPageMotion({ sections }: { sections: { id: string; title:
         const bottom = index === rects.length - 1 ? height : rects[index + 1].top + scroll;
         regions[index].setAttribute("y", String(3 + top * scale));
         regions[index].setAttribute("height", String(Math.max(1, (bottom - top) * scale - 2)));
-        regions[index].dataset.current = String(rect.top <= viewport * .3 && (!next || next.top > viewport * .3));
+        regions[index].dataset.current = String(index === current);
+        links[index].style.top = `${(3 + top * scale) / 1.5}%`;
+        links[index].style.height = `${(bottom - top) * scale / 1.5}%`;
+        if (index === current) links[index].setAttribute("aria-current", "location");
+        else links[index].removeAttribute("aria-current");
       });
       marker.setAttribute("y", String(3 + scroll * scale));
       marker.setAttribute("height", String(Math.min(144, viewport * scale)));
@@ -94,11 +102,16 @@ export function ProjectPageMotion({ sections }: { sections: { id: string; title:
     };
   }, [sections]);
 
-  return <div ref={map} className={styles.miniMap} data-page-minimap aria-hidden="true">
-    <svg viewBox="0 0 48 150" preserveAspectRatio="none">
+  return <nav ref={map} className={styles.miniMap} data-page-minimap aria-label="Page mini-map">
+    <svg viewBox="0 0 48 150" preserveAspectRatio="none" aria-hidden="true">
       {sections.map(({ id }) => <rect key={id} data-mini-region={id} x="5" width="36" />)}
       <rect data-page-window x="2" width="42" />
     </svg>
-    <span>CCP / PAGE</span>
-  </div>;
+    <div className={styles.links}>
+      {sections.map(({ id, title }, index) => <a key={id} href={`#${id}`} data-mini-link={id} aria-label={`${String(index + 1).padStart(2, "0")} ${title}`}>
+        <span>{String(index + 1).padStart(2, "0")} / {title}</span>
+      </a>)}
+    </div>
+    <span className={styles.caption} aria-hidden="true">CCP / PAGE</span>
+  </nav>;
 }
