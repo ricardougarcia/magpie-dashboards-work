@@ -55,3 +55,11 @@ This is an operator checklist; no background service automatically merges or rel
 ## Failure handling
 
 Fix failures within the assigned scope or explain the blocker. Do not bypass protections, discard concurrent commits or content, treat absent checks as passing, or release an unverified revision. No automatic processing of unrelated PRs is authorized.
+
+# Portfolio design context
+
+For Portfolio design work, read [PRODUCT.md](PRODUCT.md), [DESIGN.md](DESIGN.md), and the relevant profile in [Portfolio context v2](docs/portfolio-context.md), then load the target's Impeccable surface brief. These records reconstruct the approved implementation and supersede the older vision as the starting point for design decisions. [Design history](docs/portfolio-design-history.md) records superseded settings; [the evidence manifest](docs/portfolio-context-evidence.json) pins the source revisions.
+
+Rico confirmed Magpie, Board, and CCP as approved during this reconstruction. **Exclude EdCo Marketplace design from shared guidance, extraction, critique baselines, and reusable patterns until Rico reviews it.** Newer UAT code alone does not establish design approval. Preserve each named effect's exact scope, geometry, timing, input behavior, and reduced-motion behavior; do not replace them with generic cursor, pixel, or parallax presets.
+
+For a new Project, propose distinct directions and develop an annotated wireframe after selection. For a refinement, preserve the approved surface and its evidence. Keep pending future concepts and Impeccable's build-path choice explicitly unresolved until answered. Update the affected context profile and source evidence when an approved design changes. Existing UAT and production release rules above continue to apply.
