@@ -1,6 +1,9 @@
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
+import { renderToString } from "react-dom/server";
+import { MagpieBoardCluster } from "./board-clusters";
+import { boardEntries } from "@/data/board";
 import { resolve } from "node:path";
 import { PortfolioBoard } from "./portfolio-board";
 import { ProjectPage } from "./project-page";
@@ -31,17 +34,47 @@ describe("Board and Project foundation", () => {
     }
   });
 
+  it("server-renders the timeline source titles without losing their text", () => {
+    const markup = document.createElement("div");
+    markup.innerHTML = renderToString(<MagpieBoardCluster entry={boardEntries[0]} />);
+    const titles = [...markup.querySelectorAll("svg title")];
+    expect(titles).toHaveLength(15);
+    expect(titles[0].textContent).toBe("Infra: New Data Lake Layers Marts, Analytics, Staging, Prod / Jan - Mar");
+    expect(titles.every((title) => title.textContent!.length > 0)).toBe(true);
+  });
+
+  it("keeps authored Board order, honest placeholders, and finished project destinations", () => {
+    const { container } = render(<PortfolioBoard projects={portfolioProjects} />);
+    const entries = [...container.querySelectorAll<HTMLElement>("[data-board-number]")];
+    expect(entries.map((entry) => [entry.dataset.boardNumber, entry.id])).toEqual([
+      ["01", "region-magpie"], ["02", "region-marketplace"], ["03", "region-gcm"],
+      ["04", "region-lti"], ["05", "region-partner-portal"], ["06", "region-learnplatform-ccp"],
+    ]);
+    const reserved = entries.filter((entry) => entry.dataset.boardState === "reserved");
+    expect(reserved).toHaveLength(4);
+    reserved.forEach((entry) => {
+      expect(within(entry).getByText("Wireframe placeholder")).toBeTruthy();
+      expect(entry.querySelector("a, button")).toBeNull();
+    });
+    expect(screen.getByRole("link", { name: "Magpie" }).getAttribute("href")).toBe("/");
+    expect(screen.getByRole("link", { name: project.title }).getAttribute("href")).toBe("/work/ccp");
+    expect(project.number).toBe("01");
+    for (const link of within(screen.getByRole("navigation", { name: "Work on the Board" })).getAllByRole("link")) {
+      expect(container.querySelector(link.getAttribute("href")!)).toBeTruthy();
+    }
+  });
+
   it("keeps concise specifications and correct A/B source references", () => {
     const { container } = render(<PortfolioBoard projects={portfolioProjects} />);
     expect(screen.queryByText(/delivery decisions/i)).toBeNull();
     const specifications = screen.getByLabelText(`${project.title} specifications`);
     expect(within(specifications).getByText(project.role)).toBeTruthy();
     expect(within(specifications).getByText(project.duration)).toBeTruthy();
-    const entry = screen.getByRole("link", { name: /Begin with CCP/i });
+    const entry = screen.getByRole("link", { name: /Begin with Magpie/i });
     expect(container.querySelector(entry.getAttribute("href")!)).toBeTruthy();
     expect(screen.getByText("B.01 / What to notice")).toBeTruthy();
     expect(screen.getByText(project.region!.mapInsight)).toBeTruthy();
-    expect(container.querySelector("[data-region-code]")?.getAttribute("data-region-code")).toBe("CCP");
+    expect(container.querySelector("#region-learnplatform-ccp")?.getAttribute("data-region-code")).toBe("CCP");
     expect(screen.queryByLabelText("Board sheet record")).toBeNull();
     const group = container.querySelector("[data-evidence-active]")!;
     expect([...group.querySelectorAll<HTMLElement>("[data-artifact]")].map((item) => item.dataset.artifact)).toEqual(["A", "B", "C"]);
