@@ -91,7 +91,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   const readingStart = approach ?? project.sections[0];
   const coverSection = project.sections.find((section) => section.blocks.some((block) => block.type === "artifact" && block.artifactId === cover.id));
   return (
-    <PortfolioShell projectNumber={project.number}>
+    <PortfolioShell project={project}>
       <main id="portfolio-main" data-gantt-region className={`${styles.projectPage} ${project.slug === "ccp" ? ccp.sheet : ""}`}>
         <CoordinateCursor />
         {project.slug === "ccp" && <ProjectPageMotion sections={project.sections.map(({ id, kind }) => ({ id, title: PROJECT_SECTION_TITLES[kind] }))} />}
