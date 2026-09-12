@@ -181,6 +181,11 @@ it("keeps section shells and focus stable while the mini-map follows scrolling, 
   railLink.focus();
   scroll = 600; fireEvent.scroll(window); act(() => frames.splice(0).forEach((callback) => callback(0)));
   expect(Number(marker.getAttribute("y"))).toBeGreaterThan(initial);
+  // The next edge is still below the upper third (300px in an 800px viewport).
+  expect(content.style.getPropertyValue("--section-shift")).toBe("0px");
+  expect(content.style.getPropertyValue("--section-opacity")).toBe("1");
+  scroll = 650; fireEvent.scroll(window); act(() => frames.splice(0).forEach((callback) => callback(0)));
+  // Crossing that edge (250px) begins the existing movement and fade.
   expect(parseFloat(content.style.getPropertyValue("--section-shift"))).toBeGreaterThan(0);
   expect(shell.style.transform).toBe("");
   expect(document.activeElement).toBe(railLink);
