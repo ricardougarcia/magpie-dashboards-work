@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { renderToString } from "react-dom/server";
 import { MagpieBoardCluster } from "./board-clusters";
+import { MarketplaceBoardCluster } from "./marketplace-board-cluster";
 import { boardEntries } from "@/data/board";
 import { resolve } from "node:path";
 import { PortfolioBoard } from "./portfolio-board";
@@ -25,7 +26,7 @@ afterEach(() => { cleanup(); sessionStorage.clear(); vi.restoreAllMocks(); vi.us
 describe("Board and Project foundation", () => {
   const project = portfolioProjects[0];
 
-  it("links every Board entry to a generated, directly addressable Project", async () => {
+  it("links every data-backed Board project to a generated, directly addressable Project", async () => {
     render(<PortfolioBoard projects={portfolioProjects} />);
     for (const entry of portfolioProjects) {
       expect(screen.getByRole("link", { name: entry.title }).getAttribute("href")).toBe(`/work/${entry.slug}`);
@@ -43,6 +44,18 @@ describe("Board and Project foundation", () => {
     expect(titles.every((title) => title.textContent!.length > 0)).toBe(true);
   });
 
+  it("server-renders Marketplace's repository work and both audiences with working project links", () => {
+    const markup = document.createElement("div");
+    markup.innerHTML = renderToString(<MarketplaceBoardCluster entry={boardEntries[1]} />);
+    expect(markup.textContent).toContain("Three repositories. One shared Marketplace.");
+    expect(markup.textContent).toContain("sunsetting legacy experiences");
+    expect(markup.textContent).toContain("Educators");
+    expect(markup.textContent).toContain("Providers");
+    expect(markup.querySelectorAll("a")).toHaveLength(3);
+    for (const link of markup.querySelectorAll("a")) expect(link.getAttribute("href")).toBe("/work/marketplace");
+    expect(markup.querySelector("img")?.getAttribute("alt")).toContain("Marketplace catalog");
+  });
+
   it("keeps authored Board order, honest placeholders, and finished project destinations", () => {
     const { container } = render(<PortfolioBoard projects={portfolioProjects} />);
     const entries = [...container.querySelectorAll<HTMLElement>("[data-board-number]")];
@@ -51,12 +64,15 @@ describe("Board and Project foundation", () => {
       ["04", "region-lti"], ["05", "region-partner-portal"], ["06", "region-learnplatform-ccp"],
     ]);
     const reserved = entries.filter((entry) => entry.dataset.boardState === "reserved");
-    expect(reserved).toHaveLength(4);
+    expect(reserved).toHaveLength(3);
+    expect(screen.getByText("06 Regions / 03 project records / 03 reserved")).toBeTruthy();
     reserved.forEach((entry) => {
       expect(within(entry).getByText("Wireframe placeholder")).toBeTruthy();
       expect(entry.querySelector("a, button")).toBeNull();
     });
     expect(screen.getByRole("link", { name: "Magpie" }).getAttribute("href")).toBe("/");
+    expect(screen.getByRole("link", { name: "EdCo Marketplace" }).getAttribute("href")).toBe("/work/marketplace");
+    expect(container.querySelector("#region-marketplace")?.getAttribute("data-board-state")).toBe("ready");
     expect(screen.getByRole("link", { name: project.title }).getAttribute("href")).toBe("/work/ccp");
     expect(project.number).toBe("01");
     for (const link of within(screen.getByRole("navigation", { name: "Work on the Board" })).getAllByRole("link")) {

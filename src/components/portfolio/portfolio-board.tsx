@@ -9,6 +9,7 @@ import sheet from "./board-sheet.module.css";
 
 import { boardEntries } from "@/data/board";
 import { CcpBoardCluster } from "./ccp-board-cluster";
+import { MarketplaceBoardCluster } from "./marketplace-board-cluster";
 import { MagpieBoardCluster, ReservedBoardCluster } from "./board-clusters";
 import clusters from "./board-clusters.module.css";
 
@@ -31,7 +32,7 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
         <div className={sheet.sheet} data-board-sheet>
         <BoardRegistration />
         <div className={sheet.sheetIndex}>
-          <span>06 Regions / 02 project records / 04 reserved</span>
+          <span>06 Regions / 03 project records / 03 reserved</span>
           <a href="#region-magpie">[Begin with Magpie]</a>
         </div>
         <nav className={clusters.index} aria-label="Work on the Board">
@@ -40,6 +41,7 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
         <div className={clusters.field}>
           {boardEntries.map((entry) => {
             if (entry.kind === "magpie") return <MagpieBoardCluster key={entry.id} entry={entry} />;
+            if (entry.kind === "marketplace") return <MarketplaceBoardCluster key={entry.id} entry={entry} />;
             if (entry.kind === "ccp") {
               const project = projects.find((project) => project.slug === "ccp");
               return project ? <CcpBoardCluster key={entry.id} project={project} number={entry.number} /> : null;
