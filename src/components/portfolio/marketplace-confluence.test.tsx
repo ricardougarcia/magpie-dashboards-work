@@ -399,6 +399,40 @@ it("keeps the word handoff destination stable after the nav remains sticky beyon
   expect(word.style.transform).toBe(beforeRelease);
 });
 
+it("interpolates actual word typography into the navigation and reverses through the same lettering", () => {
+  const { root } = setup();
+  const origin = root.querySelector<HTMLElement>("[data-catalog-origin]")!;
+  const destination = root.querySelector<HTMLElement>("[data-catalog-destination]")!;
+  const word = root.querySelector<HTMLElement>("[data-traveling-word]")!;
+  Object.assign(origin.style, { fontSize: "48px", lineHeight: "52px", fontWeight: "500", letterSpacing: "-2.4px" });
+  Object.assign(destination.style, { fontSize: "12px", lineHeight: "18px", fontWeight: "400", letterSpacing: "0px" });
+  fireEvent.resize(window);
+
+  // Halfway through the handoff, the lettering itself has intermediate metrics.
+  // Tracking interpolates from -.05em to 0em, as in the approved progress study.
+  scrollToProgress(.86);
+  expect(parseFloat(word.style.fontSize)).toBeCloseTo(30, 4);
+  expect(parseFloat(word.style.lineHeight)).toBeCloseTo(35, 4);
+  expect(parseFloat(word.style.fontWeight)).toBeCloseTo(450, 4);
+  expect(parseFloat(word.style.letterSpacing)).toBeCloseTo(-.025, 6);
+  expect(word.style.letterSpacing).toMatch(/em$/);
+  expect(word.style.transform).toContain("translate(");
+  expect(word.style.transform).not.toContain("scale(");
+  const midpoint = [word.style.fontSize, word.style.lineHeight, word.style.fontWeight, word.style.letterSpacing];
+
+  scrollToProgress(.9599);
+  expect(parseFloat(word.style.fontSize)).toBeCloseTo(12, 3);
+  expect(parseFloat(word.style.lineHeight)).toBeCloseTo(18, 3);
+  expect(parseFloat(word.style.fontWeight)).toBeCloseTo(400, 3);
+  expect(parseFloat(word.style.letterSpacing)).toBeCloseTo(0, 6);
+  scrollToProgress(.96);
+  expect(word.style.visibility).toBe("hidden");
+  expect(destination.style.opacity).toBe("1");
+
+  scrollToProgress(.86);
+  expect([word.style.fontSize, word.style.lineHeight, word.style.fontWeight, word.style.letterSpacing]).toEqual(midpoint);
+});
+
 it.each([.51, 1.6])("preserves the reading position when temporary measurement clamps scrolling at progress %s", progress => {
   const { root, opening, reading } = setup();
   scrollToProgress(progress);
