@@ -6,9 +6,9 @@ import styles from "./portfolio.module.css";
 
 type ProjectRecord = Pick<PortfolioProject, "number" | "role" | "organization">;
 
-export function PortfolioShell({ children, project, isBoard = false }: { children: ReactNode; project?: ProjectRecord; isBoard?: boolean }) {
+export function PortfolioShell({ children, project, isBoard = false, pinMasthead = false }: { children: ReactNode; project?: ProjectRecord; isBoard?: boolean; pinMasthead?: boolean }) {
   return (
-    <div className={`site-shell ${styles.shell}`} data-portfolio-view={isBoard ? "board" : "project"}>
+    <div className={`site-shell ${styles.shell}${pinMasthead ? ` ${styles.pinnedMasthead}` : ""}`} data-portfolio-view={isBoard ? "board" : "project"}>
       <a className={styles.skipLink} href="#portfolio-main">Skip to content</a>
       {!isBoard && <PortfolioMasthead project={project} />}
       {children}

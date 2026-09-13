@@ -9,14 +9,13 @@
 .hero h1 > span { color: var(--signal); }
 .hero > div > p:first-child { max-width: 420px; font-size: 15px; line-height: 1.6; }
 .hero .meta { font: 9px/1.7 var(--font-mono), monospace; color: var(--muted); margin-top: 14px; }
-.navigation { padding-inline: var(--portfolio-gutter); border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line); }
-.navigation > aside { max-width: var(--marketplace-width); margin-inline: auto; padding: 0; }
-.navigation nav { position: relative; top: auto; }
-.navigation nav > p, .navigation nav > a { display: none; }
-.navigation ol { display: flex; gap: 0 54px; padding: 7px 0; border: 0; }
-.navigation li a { min-height: 44px; font-size: 11px; gap: 12px; padding: 10px 0; }
-.navigation li a > span { color: var(--muted); }
-.story > section { scroll-margin-top: 40px; }
+.navigation { position: sticky; top: var(--masthead-height, 72px); z-index: 15; padding-inline: var(--portfolio-gutter); background: var(--paper); }
+.navigation nav { max-width: var(--marketplace-width); margin-inline: auto; }
+.navigation ol { display: flex; gap: 0 54px; margin: 0; padding: 7px 0; list-style: none; }
+.navigation li a { display: flex; align-items: baseline; min-height: 44px; font-size: 11px; line-height: 1.5; gap: 12px; padding: 10px 0; text-decoration: none; }
+.navigation .navIndex { font: 10px/1.65 var(--font-mono), monospace; color: var(--muted); }
+.navigation li a:hover, .navigation li a[aria-current="location"] { color: var(--signal-text); }
+.story > section { scroll-margin-top: calc(var(--masthead-height, 72px) + 58px); }
 .sectionHeading { display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 80px; margin-bottom: 64px; }
 .sectionHeading h2, .productContext h2 { font-size: clamp(32px, 4.1vw, 58px); line-height: 1.07; letter-spacing: -.05em; font-weight: 450; }
 .sectionHeading > p { font-size: 15px; line-height: 1.7; max-width: 440px; color: var(--muted); }
@@ -90,7 +89,7 @@
   .hero .meta { font-size: 8px; margin-top: 10px; }
   .navigation ol { gap: 0; justify-content: space-between; }
   .navigation li a { gap: 7px; font-size: 10px; }
-  .navigation li a > span { display: none; }
+  .navigation .navIndex { display: none; }
   .research, .delivery, .impact { padding-block: 56px; }
   .sectionHeading, .researchField, .researchSecond, .deliveryField, .planning, .productContext, .reflection { grid-template-columns: 1fr; gap: 28px; }
   .sectionHeading { margin-bottom: 32px; }

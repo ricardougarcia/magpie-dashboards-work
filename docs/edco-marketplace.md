@@ -1,6 +1,6 @@
 # EdCo Marketplace UAT case study
 
-The authored `/work/marketplace` route now uses the working [Catalog Confluence direction](marketplace-confluence.md) for UAT review. It preserves the Portfolio's paper, graphite, signal color, typography, hairlines, cursor, shell, and Board navigation. Four reading beats organize the catalog transition, research, delivery, and reported impact. Owner aesthetic acceptance remains pending; the implementation is not an approved shared design reference.
+The authored `/work/marketplace` route uses [Catalog Confluence](marketplace-confluence.md) for UAT review. On September 13, 2026, the owner approved the interactive prototype for a held four-image catalog sequence and a Catalogs-to-Research word handoff. This is approval of that sequence, not blanket Marketplace aesthetic acceptance or an approved shared design reference. The page preserves the Portfolio's paper, graphite, signal color, typography, hairlines, cursor, and Board navigation. Four reading beats organize the catalog transition, research, delivery, and reported impact.
 
 ## Content and evidence
 
@@ -27,10 +27,10 @@ Files under `public/portfolio/marketplace` are unchanged PNG originals. SHA-256 
 
 ## Interaction and accessibility
 
-One source catalog is readable within a retained frame. Native desktop scrolling registers the surrounding frames and reveals the shared Marketplace. Source choices remain available, and direct image activation opens an original-image inspection with fit and actual-size views. The earlier paper-gate opening and replay control have been replaced.
+When the opening fits, the masthead and entire opening composition remain held while native scrolling advances Emerging AI Marketplace, Edu App Center, LearnCommunity Library, then the shared Marketplace. The image, selected source, and caption follow one reversible timeline. After the final hold, the heading word “catalogs” travels into the section navigation as the opening fades and Research replaces it. The navigation first appears during this handoff, without a top or bottom rule, and marks Research current. The same Research article then continues in normal page movement; there is no duplicate preview article.
 
-Primary narrative is server-rendered. Native original-file links work without JavaScript; optional disclosures retain research and planning qualifications. Narrow, short, reduced-motion and artifact-hash views use normal document flow. Keyboard focus, direct artifact hashes, and interruption preserve the evidence being read. The route remains noindex/nofollow. Exact geometry, timings, input rules and reference differences are recorded in the [implementation contract](marketplace-confluence.md).
+Source choices and Continue to Research provide direct alternatives. Image activation opens the original inspection with fit and actual-size views. All four originals, captions, and the primary narrative are server-rendered. Native file links work without JavaScript; optional disclosures retain research and planning qualifications. A measured fit check enables the compact sequence on sufficiently tall phones. Short screens, narrow landscape, content that no longer fits, reduced motion, and catalog-artifact hashes use normal flow with all four images. Keyboard focus, direct hashes, history, resizing, and inspection have explicit continuity safeguards. The route remains noindex/nofollow. Exact progress intervals, geometry, input rules, and reference differences are recorded in the [implementation contract](marketplace-confluence.md).
 
 ## Release scope
 
-UAT only. No changes to timeline data, storage, authentication, environment configuration, dependencies, production, or the existing CCP case study. The Marketplace Board region changes from reserved to authored, leaving three authored entries and three reserved placeholders.
+UAT only. This sequence revision changes no timeline data, original assets, storage, authentication, environment configuration, dependencies, production, or existing CCP behavior. The Marketplace Board entry remains authored. Checks for this revision are pending at document authoring; the final release PR must record application, browser, exact-preview, and merged-UAT results. Implementation acceptance remains separate from the owner-approved prototype.

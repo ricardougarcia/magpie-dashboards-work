@@ -12,6 +12,8 @@
 .shell a { color: inherit; cursor: var(--cursor-action); }
 .shell h1, .shell h2, .shell h3, .shell p, .shell figure, .shell dl, .shell dd { margin: 0; }
 .shell a, .shell summary { touch-action: manipulation; }
+.pinnedMasthead { --masthead-height: 72px; }
+.pinnedMasthead > :global(.masthead), .pinnedMasthead > .masthead { position: sticky; top: 0; z-index: 30; }
 .skipLink { position: fixed; top: 8px; left: 8px; z-index: 100; padding: 12px 20px; background: var(--ink); color: var(--paper) !important; transform: translateY(-160%); }
 .skipLink:focus { transform: none; }
 .masthead { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 76px; padding: 12px var(--portfolio-gutter); border-bottom: 1px solid var(--line-strong); background: var(--paper); }
@@ -109,6 +111,10 @@
   .mastheadMeta span { display: none; }
   .projectReading { grid-template-columns: 150px minmax(0, 1fr); gap: 32px; }
   .metrics { grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); }
+}
+
+@media (max-width: 800px) {
+  .pinnedMasthead { --masthead-height: 62px; }
 }
 
 @media (max-width: 760px) {
