@@ -2,7 +2,8 @@
 .viewportProbe { position: absolute; height: 100svh; width: 0; visibility: hidden; pointer-events: none; }
 .runway, .stage, .opening, .reading { position: relative; }
 .word { display: block; position: absolute; left: 0; top: 0; transform-origin: left top; pointer-events: none; visibility: hidden; z-index: 20; white-space: nowrap; }
-.catalogs { width: min(1280px, 100% - 2 * var(--portfolio-gutter)); margin-inline: auto; display: grid; grid-template-columns: 255px minmax(0, 1fr); gap: clamp(40px, 6vw, 94px); padding-block: 20px 56px; align-items: start; scroll-margin-top: calc(var(--masthead-height, 0px) + 24px); }
+.confluence [data-catalog-origin], .confluence [data-catalog-destination] { display: inline-block; }
+.catalogs { width: min(1280px, 100% - 2 * var(--portfolio-gutter)); margin-inline: auto; display: grid; grid-template-columns: minmax(0, 29fr) minmax(0, 60fr); gap: 3.26087%; padding-block: 20px 56px; align-items: start; scroll-margin-top: calc(var(--masthead-height, 0px) + 24px); }
 .margin { padding-top: 14px; }
 .margin h2 { font-size: clamp(27px, 2.45vw, 36px); font-weight: 450; line-height: 1.13; letter-spacing: -.04em; }
 .muted { color: var(--muted); }
@@ -36,16 +37,31 @@
 @keyframes note-settle { from { opacity: .55; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .confluence a:focus-visible, .confluence button:focus-visible, .confluence summary:focus-visible { outline: 2px solid var(--signal); outline-offset: 4px; }
 
-/* Measure the compact opening independently of the fixed stage and full reading height. */
-.confluence:is([data-layout="measure"], [data-layout="animated"]) { --image-height: clamp(240px, calc(var(--stage-height) - 400px), 440px); }
-.confluence:is([data-layout="measure"], [data-layout="animated"]) .field { height: calc(var(--image-height) + 110px); }
-.confluence:is([data-layout="measure"], [data-layout="animated"]) .image { position: absolute; inset: 0 0 auto; margin: 0 !important; }
+/* The opening spends available height on evidence after reserving real text and controls.
+   Overlay grid tracks retain the tallest caption instead of guessing its height. */
+.confluence:is([data-layout="measure"], [data-layout="animated"]) { --image-height: clamp(230px, calc(var(--stage-height) - 350px), 340px); }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .catalogs { padding-block: 12px 20px; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .margin { padding-top: 0; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .margin h2 { font-size: clamp(30px, calc(var(--stage-height) * .055 - 5px), 36px); line-height: 1.09; font-weight: 500; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .invitation { margin-top: 22px !important; line-height: 1.5; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .sources { margin-top: 16px; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .sources a { min-height: clamp(44px, calc(var(--stage-height) * .07), 49px); gap: 11px; padding-block: 7px; font-size: 12px; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .sources svg { width: 20px; height: 20px; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .continue { margin-top: 16px; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .field { display: grid; align-items: start; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .image { grid-area: 1 / 1; position: relative; min-width: 0; margin: 0 !important; }
+/* Inactive originals still reserve their intrinsic caption height. Visibility and
+   the controller's inert state keep them out of pointer and keyboard interaction. */
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .image[hidden],
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .image figcaption[hidden] { display: block; visibility: hidden; }
 .confluence[data-layout="animated"] .image { pointer-events: none; }
 .confluence[data-layout="animated"] .image > a, .confluence[data-layout="animated"] .image > figcaption, .confluence[data-layout="animated"] .image > dialog { pointer-events: auto; }
-.confluence:is([data-layout="measure"], [data-layout="animated"]) .image > a { height: var(--image-height); }
-.confluence:is([data-layout="measure"], [data-layout="animated"]) .image [data-marketplace-image] > img { height: 100%; }
-.confluence[data-layout="measure"] .image { display: none; }
-.confluence[data-layout="measure"] .image:first-child { display: block; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .image > a { height: var(--image-height); padding: 10px; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .image [data-marketplace-image] > img { height: 100%; object-position: center top; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .image figcaption { padding-top: 18px; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .image h3 { font-size: 16px; line-height: 1.3; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .image p { line-height: 1.5; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .evidenceNote { margin-top: 12px; }
 .confluence[data-layout="animated"] .runway { height: calc(var(--stage-height) + var(--travel)); }
 .confluence[data-layout="animated"] .stage { position: sticky; top: var(--masthead-height); height: var(--stage-height); }
 .confluence[data-layout="animated"] .reading { position: absolute; top: 0; inset-inline: 0; }
@@ -61,12 +77,11 @@
 .registration span:first-child { transform: translate(calc(var(--separation) * -1), var(--separation)); }
 .registration span:last-child { transform: translate(var(--separation), calc(var(--separation) * -1)); }
 .confluence[data-layout="animated"][data-wiping="true"] .readingLine { display: block; position: absolute; z-index: 3; top: calc(var(--image-height) * var(--wipe-progress, 0)); left: -12px; right: -12px; height: 1px; background: var(--signal); }
-.confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] { padding-block: 30px 38px; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] { min-height: clamp(116px, calc(var(--stage-height) * .187), 140px); padding-block: clamp(22px, calc(var(--stage-height) * .044), 29px) 20px; }
 .confluence[data-layout="animated"] [data-marketplace-navigation] { background: var(--paper); }
-.confluence[data-layout="animated"] [data-marketplace-navigation] + article > section:first-child { padding-top: 64px; }
+.confluence[data-layout="animated"] [data-marketplace-navigation] + article > section:first-child { padding-top: 61px; }
 
 @media (max-width: 999px) {
-  .catalogs { grid-template-columns: 210px minmax(0, 1fr); gap: 34px; }
   .margin h2 { font-size: 30px; }
   .sources a { gap: 10px; font-size: 12px; }
   .sources svg { width: 22px; height: 22px; }
@@ -85,9 +100,9 @@
   .image h3 { font-size: 15px; margin-top: 5px !important; }
   .image p { font-size: 11px; line-height: 1.55; }
   .evidence { width: 100%; }
-  .confluence:is([data-layout="measure"], [data-layout="animated"]) { --image-height: clamp(160px, calc(var(--stage-height) - 556px), 280px); }
-  .confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] { padding-block: 20px; gap: 12px; }
-  .confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] h1 { font-size: 32px; letter-spacing: -.045em; }
+  .confluence:is([data-layout="measure"], [data-layout="animated"]) { --image-height: clamp(160px, calc(var(--stage-height) - 556px), 248px); }
+  .confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] { min-height: 0; padding-block: 20px; gap: 12px; }
+  .confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] h1 { font-size: 30px; letter-spacing: -.04em; }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] > div > p:first-child { font-size: 12px; line-height: 1.45; }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] > div > p + p { margin-top: 8px; }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) .catalogs { display: grid; grid-template-columns: 1fr; gap: 12px; padding-block: 8px 16px; }
@@ -96,12 +111,17 @@
   .confluence:is([data-layout="measure"], [data-layout="animated"]) .invitation { display: none; }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) .evidence { grid-row: 2; }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) .sources { grid-row: 3; margin-top: 0; }
+  .confluence:is([data-layout="measure"], [data-layout="animated"]) .sources a { min-height: 44px; padding-block: 6px; gap: 8px; font-size: 11px; }
+  .confluence:is([data-layout="measure"], [data-layout="animated"]) .sources svg { width: 18px; height: 18px; }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) .continue { grid-row: 4; margin-top: 0; min-height: 44px; }
-  .confluence:is([data-layout="measure"], [data-layout="animated"]) .field { height: calc(var(--image-height) + 98px); }
+  .confluence:is([data-layout="measure"], [data-layout="animated"]) .image > a { padding: 8px; }
+  .confluence:is([data-layout="measure"], [data-layout="animated"]) .image figcaption { padding-top: 12px; }
+  .confluence:is([data-layout="measure"], [data-layout="animated"]) .image h3 { font-size: 14px; }
+  .confluence:is([data-layout="measure"], [data-layout="animated"]) .image p { line-height: 1.45; }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) .evidenceNote { margin-top: 0; }
   .confluence[data-layout="animated"] .registration { display: none; }
-  .confluence[data-layout="animated"] [data-marketplace-navigation] + article > section:first-child { padding-top: 42px; }
+  .confluence[data-layout="animated"] [data-marketplace-navigation] + article > section:first-child { padding-top: 54px; }
 }
 @media (prefers-reduced-motion: reduce) { .sources path, .noteMark { transition: none; } .evidenceNote[open] > div { animation: none; } }
-@media print { .continue, .sources, .viewportProbe, .word { display: none !important; } .confluence .runway, .confluence .stage, .confluence .reading, .confluence .field { height: auto !important; position: static !important; transform: none !important; } .confluence .continuation { display: none; } .confluence .image { display: block !important; position: static !important; } .confluence .image > a { clip-path: none !important; height: auto !important; } .confluence figcaption { display: block !important; opacity: 1 !important; } }
+@media print { .continue, .sources, .viewportProbe, .word { display: none !important; } .confluence .runway, .confluence .stage, .confluence .reading, .confluence .field { height: auto !important; position: static !important; transform: none !important; } .confluence .field { display: block !important; } .confluence .continuation { display: none; } .confluence .image { display: block !important; position: static !important; visibility: visible !important; } .confluence .image > a { clip-path: none !important; height: auto !important; } .confluence figcaption { display: block !important; visibility: visible !important; opacity: 1 !important; } }
 @media print { .confluence .opening { --departure: 1 !important; } .confluence [data-catalog-origin] { visibility: visible !important; } .confluence .reading, .confluence .reading > article, .confluence [data-marketplace-navigation], .confluence [data-catalog-destination] { opacity: 1 !important; transform: none !important; } }

@@ -36,7 +36,7 @@ export function MarketplaceConfluence({ intro, children }: { intro: ReactNode; c
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let disposed = false, raf = 0, hashRaf = 0, measuring = false, initialized = false;
     let enhanced = false, headerHeight = 0, height = 0, travel = 0;
-    let geometry: { x: number; y: number; dx: number; dy: number; scale: number } | null = null;
+    let geometry: { x: number; y: number; dx: number; dy: number; size: number; targetSize: number; line: number; targetLine: number; weight: number; targetWeight: number; tracking: number; targetTracking: number } | null = null;
     let keyboard = false;
 
     const documentTop = () => runway.getBoundingClientRect().top + window.scrollY;
@@ -47,11 +47,15 @@ export function MarketplaceConfluence({ intro, children }: { intro: ReactNode; c
       if (!destination) return;
       const from = origin.getBoundingClientRect(), to = destination.getBoundingClientRect(), box = stage.getBoundingClientRect();
       const font = getComputedStyle(origin), targetFont = getComputedStyle(destination);
-      word.style.font = font.font; word.style.letterSpacing = font.letterSpacing;
+      word.style.fontFamily = font.fontFamily;
+      const size = parseFloat(font.fontSize), targetSize = parseFloat(targetFont.fontSize);
+      const line = parseFloat(font.lineHeight) || size * 1.2, targetLine = parseFloat(targetFont.lineHeight) || targetSize * 1.2;
+      const weight = parseFloat(font.fontWeight) || 400, targetWeight = parseFloat(targetFont.fontWeight) || 400;
+      const tracking = (parseFloat(font.letterSpacing) || 0) / size, targetTracking = (parseFloat(targetFont.letterSpacing) || 0) / targetSize;
       // The nav may already be sticky after release. Its label's local offset is
       // stable; its viewport position relative to a released stage is not.
       const navTop = navigation?.getBoundingClientRect().top ?? box.top;
-      geometry = { x: from.left - box.left, y: from.top - box.top, dx: to.left - box.left, dy: to.top - navTop, scale: parseFloat(targetFont.fontSize) / parseFloat(font.fontSize) };
+      geometry = { x: from.left - box.left, y: from.top - box.top, dx: to.left - box.left, dy: to.top - navTop, size, targetSize, line, targetLine, weight, targetWeight, tracking, targetTracking };
     };
     const setCurrentSection = (progress: number) => {
       let current = "repositories";
@@ -81,7 +85,7 @@ export function MarketplaceConfluence({ intro, children }: { intro: ReactNode; c
       if (enhanced && keyboard && reading.contains(document.activeElement)) frame = getMarketplaceFrame(1);
       element.dataset.progress = String(progress); element.dataset.selected = String(frame.selected);
       element.dataset.scene = enhanced && frame.arrival > 0 ? "research" : frame.selected === 3 ? "product" : "source";
-      element.style.setProperty("--separation", `${28 * (1 - frame.registration)}px`);
+      element.style.setProperty("--separation", `${12 * (1 - frame.registration)}px`);
       element.style.setProperty("--line-opacity", String(1 - .65 * frame.registration));
       element.style.setProperty("--reveal", `${frame.reveal * 100}%`);
       element.style.setProperty("--wipe-progress", String(frame.reveal));
@@ -97,7 +101,7 @@ export function MarketplaceConfluence({ intro, children }: { intro: ReactNode; c
         link.tabIndex = selected ? 0 : -1;
         if (selected) link.removeAttribute("aria-hidden"); else link.setAttribute("aria-hidden", "true");
         caption.hidden = !selected;
-        caption.style.opacity = enhanced ? String(1 - .55 * Math.sin(frame.reveal * Math.PI) ** 2) : "1";
+        caption.style.opacity = enhanced ? String(1 - .65 * Math.sin(frame.reveal * Math.PI) ** 2) : "1";
       });
       choices.forEach((choice, index) => {
         if (enhanced && frame.selected === index) choice.setAttribute("aria-current", "true");
@@ -105,7 +109,7 @@ export function MarketplaceConfluence({ intro, children }: { intro: ReactNode; c
       });
       opening.style.setProperty("--departure", enhanced ? String(frame.departure) : "1");
       opening.inert = enhanced && frame.departure === 0;
-      if (article) { article.style.opacity = enhanced ? String(frame.arrival) : "1"; article.style.transform = enhanced ? `translateY(${(1 - frame.arrival) * 24}px)` : "none"; }
+      if (article) { article.style.opacity = enhanced ? String(frame.arrival) : "1"; article.style.transform = enhanced ? `translateY(${(1 - frame.arrival) * (window.innerWidth < 720 ? 16 : 24)}px)` : "none"; }
       reading.inert = enhanced && frame.arrival < .95;
       if (navigation) navigation.style.opacity = enhanced ? String(frame.nav) : "1";
       origin.style.visibility = enhanced && frame.handoff > 0 ? "hidden" : "visible";
@@ -113,7 +117,16 @@ export function MarketplaceConfluence({ intro, children }: { intro: ReactNode; c
       word.style.visibility = "hidden";
       if (enhanced && geometry && frame.handoff > 0 && frame.handoff < 1) {
         const t = frame.handoff, x = geometry.x + (geometry.dx - geometry.x) * t, y = geometry.y + (geometry.dy - geometry.y) * t;
-        word.style.visibility = "visible"; word.style.transform = `translate(${x}px, ${y}px) scale(${1 + (geometry.scale - 1) * t})`; word.style.opacity = String(1 - frame.wordBlend);
+        // The approved study morphs typography as the word travels. Scaling a
+        // fixed glyph preserves its original weight/tracking and cannot land as
+        // the real navigation label.
+        const mix = (from: number, to: number) => from + (to - from) * t;
+        word.style.visibility = "visible"; word.style.transform = `translate(${x}px, ${y}px)`;
+        word.style.fontSize = `${mix(geometry.size, geometry.targetSize)}px`;
+        word.style.lineHeight = `${mix(geometry.line, geometry.targetLine)}px`;
+        word.style.fontWeight = String(mix(geometry.weight, geometry.targetWeight));
+        word.style.letterSpacing = `${mix(geometry.tracking, geometry.targetTracking)}em`;
+        word.style.opacity = String(1 - frame.wordBlend);
       }
       setCurrentSection(frame.arrival === 1 && progress < 1 ? 1 : progress);
     };

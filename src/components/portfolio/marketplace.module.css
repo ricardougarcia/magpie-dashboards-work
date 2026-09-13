@@ -1,29 +1,38 @@
 /* Shared graph paper remains visible through this surface. Marketplace owns its composition. */
-.page { --marketplace-width: 1280px; }
+.page { --marketplace-width: 1280px; --portfolio-gutter: clamp(20px, 4vw, 56px); }
 .page a, .page button, .page summary { touch-action: manipulation; }
 .page button { cursor: var(--cursor-action); }
 .page a:focus-visible, .page button:focus-visible, .page summary:focus-visible { outline: 2px solid var(--signal); outline-offset: 5px; }
 .hero, .story { width: min(var(--marketplace-width), 100% - 2 * var(--portfolio-gutter)); margin-inline: auto !important; }
-.hero { display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 80px; padding-block: 42px 48px; }
-.hero h1 { font-size: clamp(40px, 4.8vw, 68px); line-height: 1.01; font-weight: 500; letter-spacing: -.065em; }
+.hero { display: grid; grid-template-columns: 1.15fr 1fr; align-items: start; gap: 30px; padding-block: 29px 38px; }
+.hero h1 { font-size: clamp(30px, 4.7vw, 46px); line-height: 1.02; font-weight: 500; letter-spacing: -.04em; }
 .hero h1 > span { color: var(--signal); }
-.hero > div > p:first-child { max-width: 420px; font-size: 15px; line-height: 1.6; }
-.hero .meta { font: 9px/1.7 var(--font-mono), monospace; color: var(--muted); margin-top: 14px; }
-.navigation { position: sticky; top: var(--masthead-height, 72px); z-index: 15; padding-inline: var(--portfolio-gutter); background: var(--paper); }
+.hero > div > p:first-child { max-width: 38ch; font-size: 13px; line-height: 1.55; }
+.hero .meta { font: 9px/1.7 var(--font-mono), monospace; color: var(--muted); margin-top: 8px; }
+.navigation { position: sticky; top: var(--masthead-height, 72px); z-index: 15; padding: 26px var(--portfolio-gutter) 0; background: var(--paper); }
 .navigation nav { max-width: var(--marketplace-width); margin-inline: auto; }
-.navigation ol { display: flex; gap: 0 54px; margin: 0; padding: 7px 0; list-style: none; }
-.navigation li a { display: flex; align-items: baseline; min-height: 44px; font-size: 11px; line-height: 1.5; gap: 12px; padding: 10px 0; text-decoration: none; }
-.navigation .navIndex { font: 10px/1.65 var(--font-mono), monospace; color: var(--muted); }
+.navigation ol { display: flex; gap: 0 36px; margin: 0; padding: 0; list-style: none; }
+.navigation li a { display: flex; align-items: center; min-height: 44px; font-size: 12px; line-height: 1; gap: 10px; padding: 0; text-decoration: none; }
+.navigation .navIndex { font: 10px/1 var(--font-mono), monospace; color: var(--muted); }
 .navigation li a:hover, .navigation li a[aria-current="location"] { color: var(--signal-text); }
-.story > section { scroll-margin-top: calc(var(--masthead-height, 72px) + 58px); }
+.story > section { scroll-margin-top: calc(var(--masthead-height, 72px) + 70px); }
 .sectionHeading { display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 80px; margin-bottom: 64px; }
 .sectionHeading h2, .productContext h2 { font-size: clamp(32px, 4.1vw, 58px); line-height: 1.07; letter-spacing: -.05em; font-weight: 450; }
 .sectionHeading > p { font-size: 15px; line-height: 1.7; max-width: 440px; color: var(--muted); }
 .research { padding-block: 104px 112px; }
-.researchField { display: grid; grid-template-columns: 255px minmax(0, 1fr); gap: clamp(40px, 6vw, 94px); align-items: center; }
+/* The handoff arrives at the study's quieter Research heading scale. */
+.research > .sectionHeading { align-items: start; gap: 30px; margin-bottom: 38px; }
+.research > .sectionHeading h2 { font-size: 38px; line-height: 1.06; font-weight: 500; letter-spacing: -.04em; }
+.research > .sectionHeading > p { font-size: 13px; line-height: 1.55; }
+.researchField { display: grid; grid-template-columns: minmax(0, 26fr) minmax(0, 68fr); gap: 6%; align-items: start; }
+.researchField > [data-marketplace-artifact] [data-marketplace-image] { height: 297px; padding: 12px; }
+.researchField > [data-marketplace-artifact] [data-marketplace-image] > img { height: 100%; object-position: left top; }
 .marginCopy h3 { font-size: 23px; line-height: 1.2; font-weight: 450; letter-spacing: -.035em; }
 .marginCopy p { font-size: 13px; line-height: 1.8; margin-top: 20px; color: var(--muted); }
 .marginCopy .annotation { font-size: 11px; padding-top: 20px; border-top: 1px solid var(--line); }
+.researchField > .marginCopy h3 { font-weight: 500; line-height: 1.08; }
+.researchField > .marginCopy p { font-size: 12px; line-height: 1.7; margin-top: 14px; }
+.researchField > .marginCopy .annotation { font-size: 11px; padding-top: 14px; }
 .researchSecond { display: grid; grid-template-columns: 1.4fr 1fr; gap: 9%; margin-top: 84px; padding-left: 8%; align-items: center; }
 .researchSecond > p { font-size: 27px; line-height: 1.2; font-weight: 450; letter-spacing: -.035em; max-width: 330px; }
 .researchSecond > p > span { display: block; margin-top: 20px; font-size: 13px; line-height: 1.8; font-weight: 400; letter-spacing: normal; color: var(--muted); }
@@ -72,10 +81,8 @@
 .endReturn > span:last-child { font: 10px var(--font-mono), monospace; color: var(--muted); }
 .endReturn:hover { color: var(--signal-text); }
 @media (max-width: 1000px) {
-  .hero, .sectionHeading, .productContext, .reflection { gap: 36px; }
-  .hero { grid-template-columns: 1.1fr 1fr; }
-  .hero h1 { font-size: 46px; }
-  .researchField, .planning { grid-template-columns: 200px minmax(0, 1fr); gap: 32px; }
+  .sectionHeading, .productContext, .reflection { gap: 36px; }
+  .planning { grid-template-columns: 200px minmax(0, 1fr); gap: 32px; }
   .deliveryField { gap: 8%; }
   .outcomes { gap: 8%; }
   .outcomes > div { grid-template-columns: 1fr; }
@@ -84,16 +91,25 @@
 }
 @media (max-width: 720px) {
   .hero { grid-template-columns: 1fr; gap: 18px; padding-block: 28px 24px; }
-  .hero h1 { font-size: clamp(36px, 9.4vw, 58px); }
+  .hero h1 { font-size: clamp(28px, 7.7vw, 36px); }
   .hero > div > p:first-child { font-size: 14px; max-width: 450px; }
   .hero .meta { font-size: 8px; margin-top: 10px; }
   .navigation ol { gap: 0; justify-content: space-between; }
-  .navigation li a { gap: 7px; font-size: 10px; }
-  .navigation .navIndex { display: none; }
+  .navigation { padding-top: 19px; }
+  .navigation li a { gap: 5px; font-size: 11px; }
+  .navigation .navIndex { font-size: 9px; }
+  .story > section { scroll-margin-top: calc(var(--masthead-height, 62px) + 63px); }
   .research, .delivery, .impact { padding-block: 56px; }
   .sectionHeading, .researchField, .researchSecond, .deliveryField, .planning, .productContext, .reflection { grid-template-columns: 1fr; gap: 28px; }
   .sectionHeading { margin-bottom: 32px; }
   .sectionHeading h2, .productContext h2 { font-size: 34px; }
+  .research > .sectionHeading { gap: 24px; margin-bottom: 30px; }
+  .research > .sectionHeading h2 { font-size: 34px; }
+  .researchField { gap: 24px; }
+  .researchField > .marginCopy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 14px; align-items: start; }
+  .researchField > .marginCopy h3 { font-size: 21px; }
+  .researchField > .marginCopy p { margin-top: 0; }
+  .researchField > [data-marketplace-artifact] [data-marketplace-image] { height: 299px; }
   .sectionHeading p { font-size: 14px; }
   .marginCopy h3 { font-size: 24px; }
   .marginCopy p { margin-top: 14px; }
