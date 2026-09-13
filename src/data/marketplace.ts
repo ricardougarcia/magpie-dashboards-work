@@ -12,7 +12,7 @@ export const marketplaceRecord = {
 export const marketplaceSections = [
   { id: "people", title: "Two perspectives" },
   { id: "investigation", title: "Investigation" },
-  { id: "repositories", title: "Three repositories" },
+  { id: "repositories", title: "Three catalogs" },
   { id: "orchestration", title: "Orchestration" },
   { id: "shared-product", title: "Shared product" },
   { id: "impact", title: "Impact" },
@@ -73,21 +73,25 @@ export const marketplaceArtifacts = {
 export const marketplaceWorkstreams = [
   {
     id: "catalog-foundation", number: "A", title: "Bring the catalog together.", label: "Data + publishing",
+    detailLabel: "Publishing rules and partner recognition",
     body: "We audited the existing repositories and brought product information into a shared catalog. A foundational API supplied LearnPlatform data for filters, badges, images, and tags.",
     detail: "Publishing rules and provider-partner recognition connected the underlying records to what appeared in the Marketplace. The aim was a consistent, current listing experience across the new surfaces.",
   },
   {
     id: "coordinate-delivery", number: "B", title: "Coordinate the moving parts.", label: "Discovery + delivery",
+    detailLabel: "Connected delivery work",
     body: "I connected research and concept testing to requirements, then coordinated delivery across the catalog, provider workflows, and the public Marketplace.",
     detail: "Provider listing management, marketing assets, and lead capture had to work with the new catalog. Public discovery and the planned premium experience also needed a shared product foundation.",
   },
   {
     id: "transition-data", number: "C", title: "Carry the data through.", label: "Transition + continuity",
+    detailLabel: "Provider access during the transition",
     body: "Legacy-source data was rerouted into the shared backend during the sunset period. The new experience and the transition away from existing ones were connected work.",
     detail: "This joined catalog consolidation with the provider experience and the Marketplace launch. The product work included how people reached and maintained listings as the ecosystem changed.",
   },
   {
-    id: "sunset-legacy", number: "D", title: "Retire the legacy paths.", label: "Sunsetting + operations",
+    id: "sunset-legacy", number: "D", title: "Sunset Edu App Center.", label: "Sunsetting + operations",
+    detailLabel: "What the sunsetting scope included",
     body: "The public Marketplace launched alongside the sunsetting of Edu App Center. Reducing fragmented discovery also meant reducing the operational burden of separate environments.",
     detail: "Consolidating three sources and retiring a legacy product are distinct parts of the story. The documented launch identifies Edu App Center in the sunsetting work; it does not establish that all three repositories were retired.",
   },

@@ -6,15 +6,29 @@
 .index { color: var(--signal-text); }
 .index > span { margin-right: 14px; }
 .smallLabel { color: var(--muted); }
-.hero { display: grid; grid-template-columns: 1fr 1fr; gap: var(--marketplace-gap); padding-block: clamp(50px, 7vw, 108px) 64px; }
+.hero { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.3fr); gap: var(--marketplace-gap); align-items: start; padding-block: clamp(36px, 4.2vw, 64px) 48px; }
 .heroIdentity { min-width: 0; }
-.hero h1 { font-size: clamp(44px, 6.8vw, 104px); font-weight: 500; line-height: .99; letter-spacing: -.068em; margin-top: 28px; }
+.hero h1 { font-size: clamp(44px, 5.3vw, 78px); font-weight: 500; line-height: .99; letter-spacing: -.065em; margin-top: 24px; }
 .hero h1 > span { color: var(--signal); }
-.heroSubline { font-size: 14px; line-height: 1.6; max-width: 360px; color: var(--muted); margin-top: 26px !important; }
-.heroStory { position: relative; padding-left: var(--marketplace-gap); border-left: 1px solid var(--line-strong); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; margin-left: calc(var(--marketplace-gap) / -2); }
-.seamMark { position: absolute; left: -2px; top: 28px; height: 36px; width: 3px; background: var(--signal); }
-.heroThesis { font-size: clamp(27px, 3.4vw, 50px); font-weight: 450; line-height: 1.1; letter-spacing: -.05em; }
-.heroStory > p:not(.heroThesis) { max-width: 410px; margin-top: 25px; font-size: 15px; line-height: 1.7; color: var(--muted); }
+.heroStory { margin-top: 32px; padding-left: 20px; border-left: 1px solid var(--line-strong); }
+.heroThesis { font-size: clamp(25px, 2.6vw, 38px); font-weight: 450; line-height: 1.12; letter-spacing: -.04em; }
+.heroStory > p:not(.heroThesis) { max-width: 410px; margin-top: 20px; font-size: 15px; line-height: 1.7; color: var(--muted); }
+.heroEvidence { min-width: 0; padding-top: 4px; }
+.heroSources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.heroSources figure { min-width: 0; }
+.heroSources a, .heroProduct > a { display: block; text-decoration: none; }
+.heroSources img, .heroProduct img { display: block; width: 100%; height: auto; border: 1px solid var(--line-strong); }
+.heroSources a:hover img, .heroProduct > a:hover img { border-color: var(--ink); }
+.heroSources figcaption { padding-top: 10px; font-size: 12px; line-height: 1.45; }
+.heroSources figcaption a { display: flex; justify-content: space-between; gap: 8px; min-height: 44px; overflow-wrap: anywhere; }
+.heroSources figcaption span { color: var(--signal-text); }
+.heroConvergence { height: 51px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; position: relative; margin-top: 12px; }
+.heroConvergence > span { justify-self: center; height: 24px; border-left: 1px solid var(--line-strong); }
+.heroConvergence::before { content: ""; position: absolute; left: calc((100% - 32px) / 6); right: calc((100% - 32px) / 6); top: 23px; border-top: 1px solid var(--line-strong); }
+.heroConvergence::after { content: ""; position: absolute; left: 50%; top: 23px; height: 28px; border-left: 1px solid var(--signal); }
+.heroProduct figcaption { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; margin-top: 10px; font-size: 12px; line-height: 1.5; }
+.heroProduct figcaption a { display: inline-flex; align-items: center; gap: 14px; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
+.heroProduct figcaption a span { color: var(--signal-text); }
 .textLink { display: inline-flex; justify-content: space-between; gap: 24px; align-items: center; min-height: 44px; margin-top: 21px; border-bottom: 1px solid var(--line-strong); text-decoration: none; }
 .textLink span { color: var(--signal); font-size: 17px; }
 .textLink:hover { color: var(--signal-text); border-color: var(--signal); }
@@ -56,7 +70,8 @@
 .artifact figcaption { padding-top: 15px; font-size: 12px; line-height: 1.65; }
 .artifact figcaption strong { font-size: 14px; line-height: 1.4; font-weight: 500; display: block; }
 .artifact figcaption p { color: var(--muted); margin-top: 8px; max-width: 550px; }
-.inspectHint { display: block; font-size: 10px; color: var(--muted); margin-top: 10px; }
+.inspectHint { display: inline-flex; align-items: center; min-height: 44px; font-size: 10px; color: var(--muted); margin-top: 6px; text-decoration: underline; text-underline-offset: 4px; white-space: pre-wrap; }
+.inspectHint:hover { color: var(--signal-text); }
 .findings { margin-top: 45px; display: grid; grid-template-columns: 1fr 1fr; gap: var(--marketplace-gap); }
 .findings > div { padding-top: 20px; border-top: 1px solid var(--line-strong); }
 .findings h3 { font-size: 22px; font-weight: 450; letter-spacing: -.025em; line-height: 1.25; margin-top: 16px; }
@@ -118,29 +133,31 @@
   .navigation ol { justify-content: flex-start; gap: 0 20px; }
   .section { scroll-margin-top: 139px; }
   .hero { gap: 38px; }
-  .heroStory { padding-left: 28px; margin-left: -10px; }
   .repositories { gap: 16px; }
   .workstreams { gap: 24px 30px; }
   .compactArtifact figcaption { min-height: 182px; }
 }
 @media (max-width: 720px) {
-  .hero { grid-template-columns: 1fr; gap: 32px; padding-top: 40px; padding-bottom: 34px; }
-  .hero h1 { font-size: clamp(48px, 11vw, 80px); margin-top: 21px; }
-  .heroStory { margin-left: 0; padding-left: 22px; padding-block: 3px; }
-  .heroThesis { font-size: 30px; }
-  .heroStory > p:not(.heroThesis) { font-size: 14px; margin-top: 17px; }
-  .heroSubline { margin-top: 19px !important; }
-  .desktopBreak { display: none; }
-  .seamMark { top: 4px; }
+  .hero { grid-template-columns: 1fr; gap: 26px; padding-top: 28px; padding-bottom: 30px; }
+  .hero h1 { font-size: clamp(44px, 11vw, 68px); margin-top: 17px; }
+  .heroStory { padding-left: 16px; margin-top: 24px; }
+  .heroThesis { font-size: 27px; }
+  .heroStory > p:not(.heroThesis) { font-size: 14px; margin-top: 14px; }
+  .heroStory .textLink { margin-top: 12px; font-size: 10px; }
+  .heroSources, .heroConvergence { gap: 10px; }
+  .heroSources figcaption { font-size: 11px; }
+  .heroSources figcaption a { gap: 3px; }
+  .heroConvergence::before { left: calc((100% - 20px) / 6); right: calc((100% - 20px) / 6); }
   .facts { grid-template-columns: 1fr; }
   .facts > div, .facts > div:first-child { border-left: 0; display: grid; grid-template-columns: 65px minmax(0,1fr); gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
   .facts > div:last-child { border-bottom: 0; }
   .facts dt { margin-bottom: 0; }
-  .navigation { margin-top: 16px; }
+  .navigation { position: static; margin-top: 16px; }
   .navigation ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 12px; padding: 7px 0; }
-  .navigation li a { font-size: 10px; gap: 7px; min-height: 38px; padding: 8px 0; }
+  .navigation li a { font-size: 10px; gap: 7px; min-height: 44px; padding: 8px 0; }
   .navigation li a > span { display: none; }
-  .section { scroll-margin-top: 145px; padding-block: 52px; }
+  .section { scroll-margin-top: 24px; padding-block: 52px; }
+  .artifact, .workstream { scroll-margin-top: 24px; }
   .sectionHeading h2 { font-size: 32px; margin-top: 18px; }
   .summary { font-size: 14px; margin-top: 17px !important; }
   .perspectives { grid-template-columns: 1fr; padding-left: 18px; border-left: 1px solid var(--line-strong); margin-top: 30px; }

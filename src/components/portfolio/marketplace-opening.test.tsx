@@ -105,12 +105,16 @@ it("keeps visible hydration and initial deep links open", () => {
   expect(frames.size).toBe(0);
 });
 
-it("shows reduced-motion content immediately and cancels a running opening when the preference changes", () => {
+it("explains unavailable replay for reduced motion and keeps the artifact visible as the preference changes", () => {
   preference.matches = true;
   const reduced = render(<Sample />);
   expect(reduced.container.querySelector<HTMLElement>("[data-marketplace-opening]")?.dataset.openingState).toBe("open");
   const button = screen.getByRole("button", { name: "Replay the Marketplace opening" });
+  const initialNote = screen.getByText("Replay is unavailable with reduced motion enabled.");
   expect(button.getAttribute("aria-disabled")).toBe("true");
+  expect(initialNote.hidden).toBe(false);
+  expect(button.getAttribute("aria-describedby")).toBe(initialNote.id);
+  expect(screen.getByRole("img").closest('[aria-hidden="true"], [hidden], [inert]')).toBeNull();
   fireEvent.click(button);
   expect(frames.size).toBe(0);
   reduced.unmount();
@@ -119,16 +123,30 @@ it("shows reduced-motion content immediately and cancels a running opening when 
   preference.addEventListener.mockClear();
   const normal = render(<Sample />);
   const root = normal.container.querySelector<HTMLElement>("[data-marketplace-opening]")!;
+  const replayButton = screen.getByRole("button", { name: "Replay the Marketplace opening" });
+  const note = screen.getByText("Replay is unavailable with reduced motion enabled.");
+  const artifact = screen.getByRole("img");
+  expect(note.hidden).toBe(true);
+  expect(replayButton.hasAttribute("aria-describedby")).toBe(false);
   intersect();
   expect(root.dataset.openingState).toBe("opening");
   preference.matches = true;
   act(() => preference.addEventListener.mock.calls[0][1]());
   expect(root.dataset.openingState).toBe("open");
+  expect(note.hidden).toBe(false);
+  expect(replayButton.getAttribute("aria-describedby")).toBe(note.id);
+  expect(replayButton.getAttribute("aria-disabled")).toBe("true");
+  fireEvent.click(replayButton);
+  expect(frames.size).toBe(0);
+  expect(screen.getByRole("img")).toBe(artifact);
+  expect(artifact.closest('[aria-hidden="true"], [hidden], [inert]')).toBeNull();
   expect(vi.getTimerCount()).toBe(0);
   preference.matches = false;
   act(() => preference.addEventListener.mock.calls[0][1]());
   expect(root.dataset.openingState).toBe("open");
-  expect(screen.getByRole("button", { name: "Replay the Marketplace opening" }).getAttribute("aria-disabled")).toBe("false");
+  expect(replayButton.getAttribute("aria-disabled")).toBe("false");
+  expect(note.hidden).toBe(true);
+  expect(replayButton.hasAttribute("aria-describedby")).toBe(false);
 });
 
 it("opens immediately on artifact focus without moving focus or re-covering it", () => {

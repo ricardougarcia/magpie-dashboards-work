@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CoordinateCursor } from "@/components/coordinate-cursor";
 import type { Artifact } from "@/lib/portfolio-types";
 import { marketplaceArtifacts as artifacts, marketplaceRecord, marketplaceSections, marketplaceWorkstreams } from "@/data/marketplace";
 import { PortfolioShell } from "./portfolio-shell";
@@ -13,7 +14,7 @@ function ArtifactFigure({ artifact, code, type, compact = false }: { artifact: A
       <span className={styles.artifactRegister}><span>{code} / {type}</span><span aria-hidden="true">↗</span></span>
       <Image src={artifact.src} alt={artifact.alt} width={artifact.width} height={artifact.height} sizes={compact ? "(max-width: 720px) 100vw, 34vw" : "(max-width: 720px) 100vw, 60vw"} />
     </a>
-    <figcaption><strong>{artifact.label}</strong><p>{artifact.caption}</p><span className={styles.inspectHint}>[ Inspect original ↗ ]</span></figcaption>
+    <figcaption><strong>{artifact.label}</strong><p>{artifact.caption}</p><a className={styles.inspectHint} href={artifact.src} target="_blank" rel="noopener noreferrer" aria-label={`Inspect original: ${artifact.label} (opens in a new tab)`}>[ Inspect original <span aria-hidden="true">↗</span> ]</a></figcaption>
   </figure>;
 }
 
@@ -27,18 +28,34 @@ function SectionHeading({ id, number, label, title, summary }: { id: string; num
 
 export function MarketplacePage() {
   return <PortfolioShell project={marketplaceRecord}>
-    <main id="portfolio-main" className={styles.page} data-marketplace-page>
+    <main id="portfolio-main" className={styles.page} data-marketplace-page data-gantt-region>
+      <CoordinateCursor />
       <header className={styles.hero}>
         <div className={styles.heroIdentity}>
           <p className={styles.index}>[02] Instructure / EdTech Collective</p>
           <h1 style={{ viewTransitionName: "region-marketplace-title" }}>EdCo<br />Marketplace<span>.</span></h1>
-          <p className={styles.heroSubline}>Discovery, trust, and the work between systems.</p>
+          <div className={styles.heroStory}>
+            <p className={styles.heroThesis}>Three catalogs.<br />One shared Marketplace.</p>
+            <p>I led product strategy and delivery to bring three separate catalogs into one Marketplace, coordinating research, provider workflows, and the transition alongside Edu App Center’s sunsetting.</p>
+            <a className={styles.textLink} href="#repositories">Trace the catalog transition <span aria-hidden="true">↓</span></a>
+          </div>
         </div>
-        <div className={styles.heroStory}>
-          <span className={styles.seamMark} aria-hidden="true" />
-          <p className={styles.heroThesis}>Three repositories.<br />One shared<br className={styles.desktopBreak} /> marketplace.</p>
-          <p>Bringing educator and provider needs together required more than a new catalog. It required orchestrating the data, the workflows, and the transition away from legacy experiences.</p>
-          <a className={styles.textLink} href="#orchestration">Explore the orchestration <span aria-hidden="true">↓</span></a>
+        <div className={styles.heroEvidence} role="group" aria-label="Three source catalogs converge into the shared Marketplace">
+          <div className={styles.heroSources}>
+            {[artifacts.ai, artifacts.appCenter, artifacts.library].map((artifact) => <figure key={artifact.id}>
+              <a href={artifact.src} target="_blank" rel="noopener noreferrer" aria-label={`Inspect original: ${artifact.label} (opens in a new tab)`}>
+                <Image src={artifact.src} alt={artifact.alt} width={artifact.width} height={artifact.height} sizes="(max-width: 720px) 30vw, 16vw" loading="eager" />
+              </a>
+              <figcaption><a href={artifact.src} target="_blank" rel="noopener noreferrer" aria-label={`Inspect original: ${artifact.label} (opens in a new tab)`}>{artifact.label}<span aria-hidden="true">↗</span></a></figcaption>
+            </figure>)}
+          </div>
+          <div className={styles.heroConvergence} aria-hidden="true"><span /><span /><span /></div>
+          <figure className={styles.heroProduct}>
+            <a href={artifacts.catalog.src} target="_blank" rel="noopener noreferrer" aria-label="Inspect original: The shared Marketplace (opens in a new tab)">
+              <Image src={artifacts.catalog.src} alt={artifacts.catalog.alt} width={artifacts.catalog.width} height={artifacts.catalog.height} sizes="(max-width: 720px) 100vw, 54vw" loading="eager" />
+            </a>
+            <figcaption><span>The shared Marketplace</span><a href="#shared-product">Explore the product <span aria-hidden="true">↓</span></a></figcaption>
+          </figure>
         </div>
       </header>
       <dl className={styles.facts}>
@@ -70,7 +87,7 @@ export function MarketplacePage() {
         </section>
 
         <section id="repositories" className={`${styles.section} ${styles.repositorySection}`} aria-labelledby="repositories-heading" data-marketplace-section>
-          <SectionHeading id="repositories" number="03" label="Three independent repositories" title="The work between three and one." summary="These were separate product catalogs and data sources. Unifying the experience meant bringing their information together while working through the legacy transition." />
+          <SectionHeading id="repositories" number="03" label="Three independent catalogs" title="The work between three and one." summary="These were separate product catalogs and data sources. Unifying the experience meant bringing their information together while working through the legacy transition." />
           <div className={styles.repositories} role="group" aria-label="The three predecessor catalogs">
             <ArtifactFigure artifact={artifacts.ai} code="01" type="Source catalog" compact />
             <ArtifactFigure artifact={artifacts.appCenter} code="02" type="Source catalog" compact />
@@ -84,7 +101,7 @@ export function MarketplacePage() {
           <SectionHeading id="orchestration" number="04" label="Orchestration + sunsetting" title="The transition was part of the product." summary="I owned the product strategy and delivery, coordinating research, requirements, and the transition across a connected ecosystem. Catalog consolidation, provider workflows, and legacy retirement had to advance together." />
           <div className={styles.workstreams} role="group" aria-label="The orchestration work">
             {marketplaceWorkstreams.map((work) => <div key={work.id} id={work.id} className={styles.workstream}>
-              <span className={styles.workstreamNumber}>{work.number}</span><div><p className={styles.smallLabel}>{work.label}</p><h3>{work.title}</h3><p>{work.body}</p><details className={styles.detail}><summary>Read the decision <span aria-hidden="true">+</span></summary><p>{work.detail}</p></details></div>
+              <span className={styles.workstreamNumber}>{work.number}</span><div><p className={styles.smallLabel}>{work.label}</p><h3>{work.title}</h3><p>{work.body}</p><details className={styles.detail}><summary>{work.detailLabel} <span aria-hidden="true">+</span></summary><p>{work.detail}</p></details></div>
             </div>)}
           </div>
           <div className={styles.deliveryNote}><span className={styles.smallLabel}>The critical relationship</span><p>Legacy data continued into the shared backend during the sunset period. The Marketplace launched alongside the sunsetting of Edu App Center.</p></div>
@@ -97,7 +114,7 @@ export function MarketplacePage() {
           <SectionHeading id="shared-product" number="05" label="The shared product" title="What that coordination made possible." summary="A public Marketplace for discovery and evaluation, with meaningful trust signals and provider-owned information. One product-data foundation supported the public catalog and the planned in-platform experience." />
           <figure className={styles.productFigure} id={artifacts.catalog.id} data-marketplace-artifact>
             <MarketplaceOpening><a href={artifacts.catalog.src} target="_blank" rel="noopener noreferrer" aria-label="Open full-size Marketplace product presentation in a new tab"><Image src={artifacts.catalog.src} alt={artifacts.catalog.alt} width={artifacts.catalog.width} height={artifacts.catalog.height} sizes="(max-width: 720px) 100vw, 1200px" /></a></MarketplaceOpening>
-            <figcaption><span>{artifacts.catalog.caption}</span><a href={artifacts.catalog.src} target="_blank" rel="noopener noreferrer">[ Inspect original ↗ ]</a></figcaption>
+            <figcaption><span>{artifacts.catalog.caption}</span><a className={styles.inspectHint} href={artifacts.catalog.src} target="_blank" rel="noopener noreferrer" aria-label="Inspect original: The shared Marketplace (opens in a new tab)">[ Inspect original <span aria-hidden="true">↗</span> ]</a></figcaption>
           </figure>
           <div className={styles.productDecisions}>
             <div><span className={styles.smallLabel}>Discover</span><h3>A useful place to start.</h3><p>Visual listings and filters help educators find tools by subject, grade, and role.</p></div>

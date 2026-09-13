@@ -8,12 +8,14 @@ export function MarketplaceOpening({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const replay = useRef<HTMLButtonElement>(null);
+  const motionNote = useRef<HTMLSpanElement>(null);
   const stageId = useId();
 
   useEffect(() => {
     const element = root.current!;
     const surface = stage.current!;
     const button = replay.current!;
+    const note = motionNote.current!;
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     let observer: IntersectionObserver | null = null;
     let frame = 0;
@@ -68,6 +70,9 @@ export function MarketplaceOpening({ children }: { children: ReactNode }) {
     const onPreference = () => {
       element.dataset.reducedMotion = String(preference.matches);
       button.setAttribute("aria-disabled", String(preference.matches));
+      note.hidden = !preference.matches;
+      if (preference.matches) button.setAttribute("aria-describedby", note.id);
+      else button.removeAttribute("aria-describedby");
       if (preference.matches) settle();
     };
     const onVisibility = () => { if (document.hidden) settle(); };
@@ -112,6 +117,7 @@ export function MarketplaceOpening({ children }: { children: ReactNode }) {
       element.dataset.openingState = "open";
       element.dataset.openingReady = "false";
       button.hidden = true;
+      note.hidden = true;
     };
   }, []);
 
@@ -128,6 +134,7 @@ export function MarketplaceOpening({ children }: { children: ReactNode }) {
       </div>
     </div>
     <div className={styles.controls}>
+      <span ref={motionNote} id={`${stageId}-motion-note`} className={styles.motionNote} hidden>Replay is unavailable with reduced motion enabled.</span>
       <button ref={replay} type="button" hidden aria-label="Replay the Marketplace opening" aria-controls={stageId}>Replay opening <span aria-hidden="true">↗</span></button>
     </div>
   </div>;

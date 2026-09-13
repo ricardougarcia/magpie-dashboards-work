@@ -31,4 +31,26 @@ describe("Marketplace case study", () => {
     }
     expect(metadata.robots).toEqual({ index: false, follow: false });
   });
+
+  it("makes opening evidence and every inspection caption available as native links without duplicate artifact IDs", () => {
+    const page = document.createElement("div");
+    page.innerHTML = renderToString(<MarketplacePage />);
+    const opening = page.querySelector("main > header")!;
+    expect(opening.querySelectorAll("img")).toHaveLength(4);
+    for (const artifact of [marketplaceArtifacts.ai, marketplaceArtifacts.appCenter, marketplaceArtifacts.library, marketplaceArtifacts.catalog]) {
+      expect(opening.querySelector(`a[href="${artifact.src}"]`)?.getAttribute("target")).toBe("_blank");
+      expect(page.querySelectorAll(`#${artifact.id}`)).toHaveLength(1);
+    }
+    const inspectionCaptions = [...page.querySelectorAll("figcaption")].filter(caption => caption.textContent?.includes("Inspect original"));
+    expect(inspectionCaptions).toHaveLength(8);
+    for (const caption of inspectionCaptions) {
+      const link = caption.querySelector("a")!;
+      expect(link.getAttribute("href")).toMatch(/^\/portfolio\/marketplace\//);
+      expect(link.getAttribute("aria-label")).toMatch(/^Inspect original: .+ \(opens in a new tab\)$/);
+      expect(link.rel).toContain("noopener");
+    }
+    const summaries = [...page.querySelectorAll("#orchestration details > summary")].map(summary => summary.textContent);
+    expect(new Set(summaries).size).toBe(summaries.length);
+    expect(summaries.every(summary => !summary?.includes("Read the decision"))).toBe(true);
+  });
 });
