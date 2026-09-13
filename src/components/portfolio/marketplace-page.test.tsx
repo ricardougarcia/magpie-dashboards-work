@@ -17,8 +17,16 @@ describe("Marketplace case study", () => {
     const page = serverPage();
     expect([...page.querySelectorAll("[data-marketplace-section]")].map(section => section.id))
       .toEqual(["repositories", "investigation", "orchestration", "impact"]);
-    expect(page.querySelector("main > header + [data-confluence]")).toBeTruthy();
-    expect(page.querySelector("main > header")?.textContent).toContain("I led product strategy and delivery");
+    expect(page.querySelector("main > [data-confluence]")).toBeTruthy();
+    expect(page.querySelector("[data-opening] [data-marketplace-intro]")?.textContent).toContain("I led product strategy and delivery");
+    expect(page.querySelector("main > header")).toBeNull();
+    const opening = page.querySelector("[data-opening]")!;
+    const navigation = page.querySelector("nav[aria-label='Project sections']")!;
+    expect(opening.contains(navigation)).toBe(false);
+    expect(opening.compareDocumentPosition(navigation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect([...navigation.querySelectorAll("a")].map(link => link.getAttribute("href")))
+      .toEqual(["#repositories", "#investigation", "#orchestration", "#impact"]);
+    expect(page.querySelectorAll("[data-catalog-destination]")).toHaveLength(1);
     expect(page.querySelector("[data-marketplace-opening]")).toBeNull();
     for (const id of ["people", "shared-product", "reflection"]) expect(page.querySelectorAll(`#${id}`)).toHaveLength(1);
     for (const link of page.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')) {
@@ -41,9 +49,12 @@ describe("Marketplace case study", () => {
       expect(preview.getAttribute("width")).toBe(String(artifact.width));
       expect(preview.getAttribute("height")).toBe(String(artifact.height));
     }
+    for (const artifact of [marketplaceArtifacts.ai, marketplaceArtifacts.appCenter, marketplaceArtifacts.library, marketplaceArtifacts.catalog]) {
+      expect(page.querySelector(`#${artifact.id}`)?.closest("[hidden], [inert], [aria-hidden='true']"), artifact.label).toBeNull();
+    }
     expect(page.querySelectorAll("img")).toHaveLength(8);
     expect(page.querySelectorAll("dialog[open]")).toHaveLength(0);
-    for (const caption of page.querySelectorAll("figcaption")) {
+    for (const caption of page.querySelectorAll("article figcaption")) {
       const original = caption.querySelector<HTMLAnchorElement>('a[href^="/portfolio/marketplace/"]')!;
       expect(original).toBeTruthy();
       expect(original.getAttribute("aria-label")).toMatch(/^Inspect original: .+ \(opens in a new tab\)$/);

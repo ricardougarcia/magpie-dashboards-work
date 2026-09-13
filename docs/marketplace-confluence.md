@@ -1,43 +1,67 @@
 # Marketplace: Catalog Confluence
 
-September 13, 2026 · UAT implementation record. **Owner aesthetic acceptance is pending. Production is untouched by this work.**
+September 13, 2026 · Implementation record for UAT review. **The owner approved the held catalog sequence and Catalogs-to-Research prototype. Full-page aesthetic acceptance remains pending. Production is outside this release scope.**
 
 ## Diagnosis and authority
 
-The previous page exposed useful evidence without establishing a focal hierarchy. Similar artifact weighting and repeated actions produced density without a distinctive interaction. Functional fixes did not establish design quality.
+The first Confluence revision improved hierarchy but let the opening move upward before every original had been seen. It also exposed section navigation before Research. The owner requested one held opening: scroll through all four images, then carry the word “catalogs” into the navigation as Research replaces the scene. The owner reviewed the interactive `catalogs-to-research.html` progress study and explicitly approved proceeding on September 13.
 
-Catalog Confluence is the agent's working recommendation after an optional direction-selection question, not an owner-selected aesthetic. One source original dominates; surrounding frames register into a shared-product presentation; originals invite inspection. Research, delivery, and impact then vary composition and density.
+That approval covers this sequence and prototype, including the mobile reading alternative. It does not approve every Marketplace aesthetic choice or make Marketplace a shared Portfolio reference. Research, delivery, impact, factual qualifications, and original assets remain intact.
 
-Guidance is separate: [Portfolio proposal/context draft, PR #31](https://github.com/ricardougarcia/magpie-dashboards-work/pull/31), and the September 13 local working draft's `README.md` and `motion-study.md` under `docs/design/marketplace-experience-direction`. The latter are outside this checkout, not represented as merged files.
+Guidance remains separate: [Portfolio proposal/context draft, PR #31](https://github.com/ricardougarcia/magpie-dashboards-work/pull/31), and the local working draft's `README.md` and `motion-study.md` under `docs/design/marketplace-experience-direction`. Those draft files are outside this checkout, not represented as merged files.
 
-Impeccable's document workflow was applied as an incumbent comparison. The proposal's `PRODUCT.md`, `DESIGN.md`, and `.impeccable/design.json` retain approved Magpie/Board/CCP authority and exclude Marketplace. Shared paper, graphite, Sans/Mono roles, cursor, and source preservation remain applicable. Marketplace-specific sizing, breakpoints and motion are surface extensions; they do not redefine those files or F01–F18. H01–H05 remain reference observations. No global guidance or installed skill was rewritten.
+The Impeccable document comparison preserves the approved Magpie/Board/CCP authority in that proposal's `PRODUCT.md`, `DESIGN.md`, and `.impeccable/design.json`. Shared paper, graphite, Sans/Mono roles, graph paper, cursor, and source preservation still apply. This page's sequence, fit checks, and pinned masthead are scoped extensions, not changes to F01–F18 or installed skill rules. H01–H05 remain reference observations.
 
-## Actual choreography
+## The held sequence
 
-Source: [confluence component](../src/components/portfolio/marketplace-confluence.tsx) and [styles](../src/components/portfolio/marketplace-confluence.module.css).
+Sources: [timeline](../src/components/portfolio/marketplace-sequence.ts), [controller](../src/components/portfolio/marketplace-confluence.tsx), [scene styles](../src/components/portfolio/marketplace-confluence.module.css), and [page integration](../src/components/portfolio/marketplace-page.tsx).
 
-- Choreography requires **≥1000px width, ≥760px height**, and no reduced-motion preference. The stage sticks **24px** from the top. Section minimum height is measured stage height plus **70vh**, supplying native scroll travel without wheel interception.
-- Progress uses section position and section-minus-stage height. From **20–60%**, frame separation contracts **28px→0** and line opacity **1→.35**. From **60–85%**, a straight top-to-bottom clip reveals the product. A signal line follows its boundary. Caption and keyboard/assistive reading layer switch at **65% of reveal**.
-- During a partial reveal, pointer access follows visible clipped originals. Product becomes `inert` only at zero reveal; source becomes `inert` only at full reveal. Inactive image anchors receive `tabIndex=-1` and `aria-hidden=true`. Focus within either reading layer holds that layer fully visible; an open dialog suspends scene painting.
-- Ordinary source-link activation selects its original; modified activation retains native file navigation. Manual source/product selection lasts until scroll moves **>40px**. Current-product state clears the source-current indicator and marks the product control. Geometry follows present progress without queued playback.
-- Artifact hashes disable choreography and select their source. Two animation frames allow selection/layout to settle before scrolling to the artifact; current-hash/disposal checks and cancellation prevent stale navigation.
-- Hover, visible focus and source selection construct registration strokes over **420ms**, `cubic-bezier(.22,1,.36,1)`, with an **80ms** inner-stroke delay. These are implementation values, not Heron measurements.
-- The native evidence disclosure contracts its marker to **.65 scale** and settles its note over **650ms**, from **6px** displacement and **.55 opacity**. Text remains open. Close/Escape dismiss and return focus to the summary.
+The masthead stays at the viewport top. A single stage holds the intro, catalog heading, selected original, source controls, and description beneath it. Native document scrolling drives one reversible progress value; it does not intercept wheel or touch input. Stopping scroll stops the authored transition. These intervals are percentages of that sequence, not elapsed animation durations:
 
-## Responsive reading and inspection
+| Progress | Visible change |
+| --- | --- |
+| 0–14% | Hold Emerging AI Marketplace. |
+| 14–22% | Reveal Edu App Center from top to bottom. |
+| 22–36% | Hold Edu App Center. |
+| 36–44% | Reveal LearnCommunity Library. |
+| 44–58% | Hold LearnCommunity Library. |
+| 58–66% | Reveal the shared Marketplace. |
+| 66–76% | Hold the shared Marketplace. |
+| 76–96% | Transfer “catalogs” to the navigation and replace the opening with Research. |
+| 96–100% | Hold the settled Research view before ordinary page movement resumes. |
 
-Without choreography, the selected source and shared product remain in normal flow, without a sticky runway or reveal clipping. At **≤600px**, the source artifact visually precedes stacked source controls; controls retain **44px** minimum height. Reduced motion also removes stroke/marker transitions and note animation. Removing the page's opaque background exposes inherited graph paper. The existing Coordinate Cursor remains unchanged.
+Each reveal clips the incoming original within the same frame. The signal line tracks its boundary. Selection and caption change at the reveal midpoint; caption opacity decreases to .45 midway and returns to 1. Registration frames contract from 28px separation to zero over 58–72%, with line opacity 1→.35. Original pixels do not morph into another product or imply a migration sequence.
 
-[Image inspection](../src/components/portfolio/marketplace-artifact.tsx) uses a native modal with fit/actual-size views, dimensions, original-file access and load-failure fallback. Its inner paper reveals from the trigger rectangle intersected with dialog bounds to full visibility over **360ms**, `cubic-bezier(.22,1,.36,1)`, opacity **.75→1**. Original image dimensions do not animate. Close sits outside animated paper and receives immediate focus. Reduced motion or unavailable animation opens immediately. Close, reopen, unmount, or interaction/focus inside the paper cancels the reveal. Escape, Close and outside press-and-release dismiss; focus returns to the image trigger.
+## Catalogs becomes navigation
 
-## Reference differences and critique
+From 76–96%, an assistive-hidden copy of the heading word travels to the measured Catalogs label position and shrinks toward its font size. A final blend over 92–96% resolves to the real navigation label and its exact type. The semantic heading and native navigation remain separate, without duplicate reading content.
 
-The straight clip differs from Heron's irregular material reveal; the moving line differs from its near-steady opposite-column handoff. Hover draws registration marks rather than distinct illustrative diagrams. H03 directional pixel acquisition is not implemented. These differences remain documented rather than silently repaired into global rules.
+The remaining opening fades over 76–88%. Navigation emerges over 83–94%; Research becomes current at 84%. Research arrives over 84–96%, fading in and settling from 24px below its resting position. These ramps use `t²(3−2t)` easing against scroll progress. The navigation has no top or bottom rule and remains sticky beneath the masthead through the article.
 
-Impeccable must judge focal hierarchy, meaningful registration, settled inspection, visible grid, spacing, caption continuity, and phone density from rendered motion. Passing interaction checks does not establish satisfactory pacing or owner acceptance.
+The existing Research/Delivery/Impact article appears once in the DOM. During the held scene it occupies the stage's reading layer. After release, that same content continues down the page; a nonsemantic spacer reserves its remaining height, `max(0, reading height − stage height)`. No duplicate Research preview or rasterized page stands in for the real content.
+
+## Fit and functional alternatives
+
+Available stage height is the smaller of the stable `100svh` probe and visual viewport, minus the measured masthead. Enhancement requires a positive opening height that fits with at least 12px spare space, no reduced-motion preference, and no catalog-artifact hash. At widths below 720px it additionally requires portrait orientation and at least 660px of stage height; wider screens require at least 540px. A breakpoint alone does not establish fit.
+
+Native scroll travel is 2.5 stage heights below 720px and 2.8 otherwise. The runway reserves stage height plus travel. The continuation spacer accounts for the rest of the article. Resize, font loading, disclosure changes, and viewport changes trigger measurement; mode changes attempt to retain the current original or article position.
+
+A fitting phone uses a compact heading, image and caption, a two-column source control group, and Continue to Research. Controls retain 44px minimum targets. Short screens, narrow landscape, enlarged content that fails the fit check, reduced motion, and catalog-artifact hashes use normal flow. **All four originals and their captions are server-rendered and readable in the static/no-JavaScript alternative.** Reduced motion also removes drawn-control and note transitions.
+
+Source choices move to sequence stops at 0%, 22%, 44%, and 66%, or to the corresponding in-flow original. Modified clicks retain native original-file navigation. Continue to Research skips the held sequence. Section links retain real hash destinations; artifact navigation remeasures and settles across two animation frames, checks the current hash, and cancels stale work. History changes use the same landing logic.
+
+During a wipe, pointer inspection follows the visible clipped image. Only the selected image link is in the keyboard reading order. Keyboard focus in an original holds that original; focus in the note holds the product; focus in the reading content reveals Research. Hidden frames and unavailable reading layers are inert. An open inspection dialog suspends sequence painting. Navigation and Continue activation transfer focus to the destination control without a second scroll.
+
+## Retained inspection and detail
+
+Original-image inspection retains its native modal, fit/actual-size views, dimensions, file link, error fallback, and focus return. Its inner paper reveals from the trigger rectangle over 360ms, `cubic-bezier(.22,1,.36,1)`, opacity .75→1; original dimensions do not animate. Reduced motion opens immediately. Close remains outside the animated paper and receives focus. Close, reopen, unmount, and paper interaction cancel the reveal. Escape, Close, and outside press-and-release dismiss.
+
+Source registration strokes draw over 420ms with the same easing and an 80ms inner-stroke delay. The native evidence note contracts its marker to .65 scale and settles over 650ms from 6px/.55 opacity; it stays open until dismissed. These are authored implementation values, not measured Heron timings.
+
+The straight wipe differs from Heron's irregular material reveal. The word handoff adapts a narrative relationship to Marketplace's own content. H03 directional pixel acquisition is not implemented. Impeccable must assess the actual moving sequence, continuity, spacing, and phone fit; functional checks alone do not establish satisfactory pacing.
 
 ## Evidence and verification
 
-Follow [the source record](edco-marketplace.md): persona is synthesis; public/Canvas plans are planning; only Edu App Center is explicitly sunset. Retain qualifications for 102% growth, 20+ hours/week and “7-month sample.” Never imply screenshot morphing or record-level migration.
+Follow [the source record](edco-marketplace.md): persona is synthesis; public/Canvas plans are planning; only Edu App Center is explicitly sunset. Retain the qualifications for 102% growth, 20+ hours/week, and “7-month sample.” The timeline is a presentation order, not evidence of an exact operational cutover.
 
-**Final local checks passed:** `pnpm check` completed with 201 tests across 24 files, data validation (45 items, six lanes), lint, TypeScript and production build. The final browser report passed at 1440, 820, 390 and 320px widths with zero runtime errors; additional partial-click/focus/hash checks passed. Independent engineering review found no P0–P2 issues. Visual review's current-state cue finding was resolved within its reviewed scope. Evidence archive destination: `GANT/verification/marketplace-confluence-2026-09-13`, outside the repository. The release PR must record the exact revision. **Hosted preview/UAT verification and owner aesthetic acceptance remain pending.**
+**Checks for this revision are pending at document authoring.** Prior Confluence checks do not validate this replacement. The final release PR must record the exact reviewed head, full application checks, rendered desktop/mobile/reduced-motion and keyboard behavior, forward/reverse scroll, resize/hash/history continuity, inspection, and exact preview and merged-UAT deployment verification. Owner review of the implemented pacing remains distinct from approval of the prototype. Production release requires separate authorization.
