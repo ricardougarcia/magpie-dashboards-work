@@ -193,3 +193,7 @@ Guiding Light focus, lane acquisition, Telemetry Aperture, source-to-aperture te
 - Don't restore the removed Board title block, pale pixel wash, or CCP's rejected staggered alignment.
 - Don't add Miro-style pan/zoom, decorative arrows everywhere, or an empty boot state.
 - Don't fabricate evidence, treat historical tests as a new pass, or promote production without the owner's release request.
+
+## Experience direction supplement
+
+[Portfolio experience guidance](docs/portfolio-experience-guidance.md) adds Heron as an explicit reference and defines attention, rhythm, discovery, material visibility, motion provenance, and owner aesthetic review. Apply it alongside these exact approved values; the [Marketplace proposals](docs/design/marketplace-experience-direction/README.md) do not revise the shared tokens or named effects.

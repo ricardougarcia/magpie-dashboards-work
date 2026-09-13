@@ -328,3 +328,7 @@ The recommended first Impeccable task is a scoped **critique** of the approved B
 For changes that later affect these features, update the relevant profile and source manifest with the same change. Record what was superseded. Verify desktop/narrow layouts, source attachment, keyboard/touch behavior, reduced motion, interruption/reversal, settled navigation, and browser errors where relevant. Historical check counts do not substitute for checking the new revision.
 
 Development and release follow [AGENTS.md](../AGENTS.md): focused branches from fresh UAT, review, appropriate checks, and exact-revision verification. Production promotion needs Rico's explicit release request. Never publish in Wix. Do not alter source evidence, timeline data, authentication, secrets, storage, or infrastructure as a side effect of design-context work.
+
+## Experience direction supplement
+
+[Portfolio experience guidance](portfolio-experience-guidance.md) supplements this preservation catalog with a creative brief and rendered acceptance criteria. The [Marketplace direction proposal](design/marketplace-experience-direction/README.md) supersedes the earlier recommended starting task above while retaining Marketplace's unapproved status. Its proposed timings and mechanisms are separate from F01–F18 until owner review establishes an accepted implementation.

@@ -70,3 +70,7 @@ Preserve keyboard, touch, native scrolling, readable source artifacts, explicit 
 Question-led Board rearrangement, Underdrawing, and an exportable visitor-journey drawing/PDF were future concepts in the older vision. Their current disposition awaits Rico's answer; none is an implemented requirement. A future spatial concept does not supersede the later rejection of Miro-style pan/zoom.
 
 Public launch, domain migration, résumé placement, final indexing, and the remaining case-study inventory are not resolved by this context asset. Impeccable's build-path preference belongs only in its configuration after the owner chooses it, not in this product record.
+
+## Experience direction supplement
+
+Use [Portfolio experience guidance](docs/portfolio-experience-guidance.md) to turn the source inventory into a narrative and a Project-specific behavioral signature. The [Marketplace alternatives](docs/design/marketplace-experience-direction/README.md) remain proposals pending owner selection and aesthetic review; they do not enter the approved reference set through their presence here.
