@@ -10,13 +10,10 @@ export const marketplaceRecord = {
 };
 
 export const marketplaceSections = [
-  { id: "people", title: "Two perspectives" },
-  { id: "investigation", title: "Investigation" },
-  { id: "repositories", title: "Three catalogs" },
-  { id: "orchestration", title: "Orchestration" },
-  { id: "shared-product", title: "Shared product" },
+  { id: "repositories", title: "Catalogs" },
+  { id: "investigation", title: "Research" },
+  { id: "orchestration", title: "Delivery" },
   { id: "impact", title: "Impact" },
-  { id: "reflection", title: "Reflection" },
 ];
 
 export const marketplaceArtifacts = {

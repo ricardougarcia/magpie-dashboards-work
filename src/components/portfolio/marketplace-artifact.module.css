@@ -1,0 +1,49 @@
+.figure { min-width: 0; margin: 0; scroll-margin-top: 96px; }
+.mount { border: 1px solid var(--line-strong, rgba(40, 40, 40, .36)); background: var(--paper-raised, #f8f6f1); }
+.register { display: flex; align-items: baseline; gap: 14px; padding: 10px 14px; border-bottom: 1px solid var(--line, rgba(40, 40, 40, .16)); color: var(--muted, #6b6a64); font: 10px/1.6 var(--font-mono), monospace; }
+.register > span:first-child { color: var(--signal-text, #bd3e2b); }
+.imageLink { display: block; color: inherit; text-decoration: none; }
+.imageLink .previewImage { display: block; width: 100%; height: auto; object-fit: contain; }
+.imageLink:focus-visible, .caption a:focus-visible, .dialog :is(button, a, [tabindex]):focus-visible { outline: 2px solid var(--signal, #d6452f); outline-offset: 4px; }
+.caption { padding-top: 14px; font-size: 13px; line-height: 1.6; }
+.caption strong { display: block; font-size: 15px; font-weight: 500; }
+.caption p { margin: 7px 0 0; max-width: 65ch; color: var(--muted, #6b6a64); }
+.caption a { display: inline-flex; align-items: center; min-height: 44px; font-size: 12px; text-decoration: underline; text-underline-offset: 4px; }
+.caption a:hover { color: var(--signal-text, #bd3e2b); }
+
+.dialog { position: fixed; inset: 0; width: min(1500px, calc(100vw - 32px)); height: calc(100dvh - 32px); max-width: calc(100vw - 32px); max-height: calc(100dvh - 32px); margin: auto; padding: 0; overflow: hidden; overscroll-behavior: contain; border: 0; border-radius: 0; color: var(--ink, #282828); background: transparent; }
+.dialog[open] { display: block; }
+.dialog::backdrop { background: rgba(40, 40, 40, .55); }
+.inspectionPaper { display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 0; border: 1px solid var(--line-strong, rgba(40, 40, 40, .36)); background: var(--paper, #f1efe9); }
+.dialogHeader { flex: 0 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 20px; align-items: center; padding: 16px 24px 12px; border-bottom: 1px solid var(--line, rgba(40, 40, 40, .16)); }
+.dialog .dialogTitle { margin: 0; font-size: clamp(18px, 2.1vw, 27px); font-weight: 500; line-height: 1.2; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.dialog button, .dialog a { min-height: 44px; color: inherit; font-family: inherit; font-size: 13px; }
+.dialog button { border: 0; padding: 8px 12px; background: transparent; }
+.dialog button:hover, .dialog a:hover { color: var(--signal-text, #bd3e2b); }
+.dialog .close { position: absolute; top: 17px; right: 25px; z-index: 1; display: grid; place-items: center; width: 44px; padding: 0; background: var(--paper, #f1efe9); }
+.closeSpace { width: 44px; height: 44px; }
+.tools { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: center; }
+.tools button { border: 1px solid var(--line-strong, rgba(40, 40, 40, .36)); }
+.tools button[aria-pressed="true"] { color: var(--paper, #f1efe9); background: var(--ink, #282828); }
+.tools a { display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: 4px; margin-left: auto; }
+.dimensions { color: var(--muted, #6b6a64); font: 10px/1.6 var(--font-mono), monospace; }
+.imageViewport { flex: 1 1 auto; min-height: 0; min-width: 0; margin: 12px; overflow: auto; overscroll-behavior: contain; scrollbar-color: var(--muted, #6b6a64) var(--paper, #f1efe9); }
+.imageSurface { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.imageSurface .original { display: block; width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
+.imageSurface[data-actual-size="true"] { width: max-content; min-width: 100%; height: max-content; min-height: 100%; }
+.imageSurface[data-actual-size="true"] .original { width: var(--original-width); height: var(--original-height); max-width: none; max-height: none; flex: 0 0 auto; }
+.dialogFooter { display: block; flex: 0 0 auto; max-height: 22vh; overflow: auto; padding: 12px 24px 18px; border-top: 1px solid var(--line, rgba(40, 40, 40, .16)); overscroll-behavior: contain; font-family: var(--font-sans), Arial, sans-serif; text-transform: none; letter-spacing: normal; }
+.dialogFooter p { margin: 0; max-width: 75ch; color: var(--muted, #6b6a64); font-size: 12px; line-height: 1.6; }
+.dialogFooter [role="status"] { margin-bottom: 8px; color: var(--ink, #282828); }
+
+@media (max-width: 720px) {
+  .figure { scroll-margin-top: 24px; }
+  .dialog { width: calc(100vw - 16px); max-width: calc(100vw - 16px); height: calc(100dvh - 16px); max-height: calc(100dvh - 16px); }
+  .dialogHeader { padding: 10px 14px; gap: 4px 10px; }
+  .dialog .close { top: 11px; right: 15px; }
+  .tools { gap: 4px 12px; }
+  .tools a { margin-left: 0; }
+  .imageViewport { margin: 8px; }
+  .dialogFooter { padding: 10px 14px; }
+}
+@media print { .dialog, .caption a { display: none !important; } }

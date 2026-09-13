@@ -1,6 +1,6 @@
 # EdCo Marketplace UAT case study
 
-The authored `/work/marketplace` route presents the selected Exchange / Opening direction. It uses the portfolio's paper, ink, signal color, typography, hairlines, shell, Board navigation, and reading index. The story moves from two audiences through investigation, three catalogs, orchestration and sunsetting, the shared product, reported impact, and reflection.
+The authored `/work/marketplace` route now uses the working [Catalog Confluence direction](marketplace-confluence.md) for UAT review. It preserves the Portfolio's paper, graphite, signal color, typography, hairlines, cursor, shell, and Board navigation. Four reading beats organize the catalog transition, research, delivery, and reported impact. Owner aesthetic acceptance remains pending; the implementation is not an approved shared design reference.
 
 ## Content and evidence
 
@@ -27,9 +27,9 @@ Files under `public/portfolio/marketplace` are unchanged PNG originals. SHA-256 
 
 ## Interaction and accessibility
 
-The shared-product presentation uses two decorative paper gates that retract from the central seam once on arrival. The image remains stationary. Motion is enhanced only when the section starts below the viewport; server output, deep links, already-visible content, reduced motion, focused content, hidden tabs, and interrupted interactions show the original. A replay control is explicit and reserves its own height. No scrolling is intercepted.
+One source catalog is readable within a retained frame. Native desktop scrolling registers the surrounding frames and reveals the shared Marketplace. Source choices remain available, and direct image activation opens an original-image inspection with fit and actual-size views. The earlier paper-gate opening and replay control have been replaced.
 
-Primary narrative is rendered on the server. Optional native disclosures expand decision context and one planning artifact. The same reading rail and Board return mechanism used by the portfolio preserve navigation conventions. Mobile layouts stack the two perspectives and source catalogs along a vertical seam. The route is noindex/nofollow.
+Primary narrative is server-rendered. Native original-file links work without JavaScript; optional disclosures retain research and planning qualifications. Narrow, short, reduced-motion and artifact-hash views use normal document flow. Keyboard focus, direct artifact hashes, and interruption preserve the evidence being read. The route remains noindex/nofollow. Exact geometry, timings, input rules and reference differences are recorded in the [implementation contract](marketplace-confluence.md).
 
 ## Release scope
 
