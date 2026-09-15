@@ -1,0 +1,616 @@
+{
+  "schemaVersion": 1,
+  "reconstructedAt": "2026-09-12T17:10:59.500951+00:00",
+  "repository": "https://github.com/ricardougarcia/magpie-dashboards-work",
+  "approvedDesignBaseline": "201bae93fdc97c030cd1f06ad4e9cba2ac38bdf6",
+  "auditedUatHead": "530e1da8636b8d7fb983ec9ad08d46c9b1abc6ca",
+  "productionHeadObserved": "77bf3c3afd1f19fafe16c4d59d20d3236f232d76",
+  "scope": {
+    "approved": [
+      "Magpie /",
+      "Board /drawer through PR29",
+      "CCP /work/ccp through PR28"
+    ],
+    "excluded": [
+      "EdCo Marketplace: design not owner-reviewed"
+    ],
+    "authority": "Rico confirmed all other existing designs approved in the September12 reconstruction task. Code presence alone is not approval."
+  },
+  "featureSources": {
+    "F01": [
+      "src/components/coordinate-cursor.tsx",
+      "src/app/globals.css",
+      "public/cursor-plus.svg",
+      "public/cursor-plus-pick.svg"
+    ],
+    "F02": [
+      "src/components/portfolio/board-registration.tsx",
+      "src/components/portfolio/board-sheet.module.css"
+    ],
+    "F03": [
+      "src/components/panel-replacement.tsx",
+      "src/lib/panel-replacement.ts",
+      "src/app/globals.css"
+    ],
+    "F04": [
+      "src/components/portfolio/pixel-acquisition.tsx",
+      "src/components/portfolio/region-inspection.tsx",
+      "src/components/portfolio/region.module.css"
+    ],
+    "F05": [
+      "src/components/public-timeline.tsx",
+      "src/app/globals.css"
+    ],
+    "F06": [
+      "src/components/portfolio/evidence-region.tsx",
+      "src/components/portfolio/ccp-board-cluster.tsx",
+      "src/data/portfolio.ts",
+      "src/components/portfolio/region.module.css"
+    ],
+    "F07": [
+      "src/components/portfolio/evidence-region.tsx",
+      "src/components/portfolio/ccp-board-cluster.tsx"
+    ],
+    "F08": [
+      "src/components/portfolio/evidence-region.tsx",
+      "src/components/portfolio/region.module.css"
+    ],
+    "F09": [
+      "src/components/portfolio/board-clusters.tsx",
+      "src/components/portfolio/cluster-entrance.tsx",
+      "src/components/portfolio/board-clusters.module.css",
+      "src/data/timeline.seed.json"
+    ],
+    "F10": [
+      "src/components/guiding-light-ink-trail.tsx",
+      "src/lib/guiding-light-ink.ts",
+      "src/components/portfolio/artifact-viewer.tsx"
+    ],
+    "F11": [
+      "src/components/portfolio/artifact-viewer.tsx",
+      "src/components/portfolio/region.module.css"
+    ],
+    "F12": [
+      "src/components/portfolio/project-reading-rail.tsx",
+      "src/components/portfolio/portfolio.module.css"
+    ],
+    "F13": [
+      "src/components/portfolio/project-page-motion.tsx",
+      "src/components/portfolio/project-surface.tsx",
+      "src/components/portfolio/ccp.module.css"
+    ],
+    "F14": [
+      "src/components/portfolio/project-page-motion.tsx",
+      "src/components/portfolio/project-page-motion.module.css"
+    ],
+    "F15": [
+      "src/components/portfolio/workflow-trace.tsx",
+      "src/components/portfolio/workflow-trace.module.css"
+    ],
+    "F16": [
+      "src/components/portfolio/project-surface.tsx",
+      "src/components/portfolio/ccp.module.css"
+    ],
+    "F17": [
+      "src/components/telemetry-aperture.tsx",
+      "src/components/public-timeline.tsx",
+      "src/lib/telemetry-tether.ts",
+      "src/lib/orthogonal-connectors.ts"
+    ],
+    "F18": [
+      "src/components/portfolio/portfolio-link.tsx",
+      "src/lib/portfolio-navigation.ts",
+      "src/components/portfolio/portfolio-motion.css"
+    ]
+  },
+  "sources": [
+    {
+      "path": "public/cursor-plus-pick.svg",
+      "approvedSha256": "2173865972dd678a2a8118a74182e533936f00aca05b20ed947c2f310fb50352",
+      "auditedSha256": "2173865972dd678a2a8118a74182e533936f00aca05b20ed947c2f310fb50352",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "public/cursor-plus.svg",
+      "approvedSha256": "545a7e7c861b972071d23600ab5a84334f7c3f9379a017f51547dd618a69d432",
+      "auditedSha256": "545a7e7c861b972071d23600ab5a84334f7c3f9379a017f51547dd618a69d432",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/app/drawer/page.tsx",
+      "approvedSha256": "139da29f73e6297d6c2ecac4bd809587acd5f8c224e88cfdeaa48d290eb46aac",
+      "auditedSha256": "139da29f73e6297d6c2ecac4bd809587acd5f8c224e88cfdeaa48d290eb46aac",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/app/globals.css",
+      "approvedSha256": "b072cc6e71c74f6353cb6c931a4dc56d5b7f02e386e72eaad2868bb4b61f0843",
+      "auditedSha256": "b072cc6e71c74f6353cb6c931a4dc56d5b7f02e386e72eaad2868bb4b61f0843",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "approvedSha256": "c6ce2ba08274195e1898d533539d629365ca5f7367d0a3d8da7c9bf3dda621d3",
+      "auditedSha256": "c6ce2ba08274195e1898d533539d629365ca5f7367d0a3d8da7c9bf3dda621d3",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/app/page.tsx",
+      "approvedSha256": "8105156a2c213c196dfbcce03d0b77ebb5c82d0c981cd20947e8c01789f5b1b1",
+      "auditedSha256": "8105156a2c213c196dfbcce03d0b77ebb5c82d0c981cd20947e8c01789f5b1b1",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/app/work/[slug]/page.tsx",
+      "approvedSha256": "9af51541ed8f7b3384eeee77d7e222c1908ce94bad73c124811206c335eca684",
+      "auditedSha256": "9af51541ed8f7b3384eeee77d7e222c1908ce94bad73c124811206c335eca684",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/coordinate-cursor.tsx",
+      "approvedSha256": "92635d62e40623b816e2a8e9fa667f3783e940f2bcd6e2457a61c11ec6322b6a",
+      "auditedSha256": "92635d62e40623b816e2a8e9fa667f3783e940f2bcd6e2457a61c11ec6322b6a",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/guiding-light-ink-trail.tsx",
+      "approvedSha256": "780b8676a5fa47748a57202b1b8baf5a64e6ac553970881312575c2fffbb7d1b",
+      "auditedSha256": "780b8676a5fa47748a57202b1b8baf5a64e6ac553970881312575c2fffbb7d1b",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/panel-replacement.tsx",
+      "approvedSha256": "9f7dce5ed136b78829c84541e2f1e54bbee287bad5ad5d66265bbc97f3f0d7a1",
+      "auditedSha256": "9f7dce5ed136b78829c84541e2f1e54bbee287bad5ad5d66265bbc97f3f0d7a1",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/artifact-viewer.tsx",
+      "approvedSha256": "b63e42b06c91ca281d7f0e134bd247f0b9a6a59e3af3d4f881bfc0a72540b878",
+      "auditedSha256": "b63e42b06c91ca281d7f0e134bd247f0b9a6a59e3af3d4f881bfc0a72540b878",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/board-clusters.module.css",
+      "approvedSha256": "7babdba73dfadf8e53273578672a50f3902a691c1640d576533bc983c0bff196",
+      "auditedSha256": "7babdba73dfadf8e53273578672a50f3902a691c1640d576533bc983c0bff196",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/board-clusters.tsx",
+      "approvedSha256": "a78e929748ffb0d3c9727fba046d7116eb31b92d5e86031635c05b1fcb2caae9",
+      "auditedSha256": "a78e929748ffb0d3c9727fba046d7116eb31b92d5e86031635c05b1fcb2caae9",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/board-registration.tsx",
+      "approvedSha256": "ad3b42ebec4c072566e645b8ddf412f85c220fc0a559e9af1721543aa3f2c6b4",
+      "auditedSha256": "ad3b42ebec4c072566e645b8ddf412f85c220fc0a559e9af1721543aa3f2c6b4",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/board-sheet.module.css",
+      "approvedSha256": "a5a229050fca973fa1fa34252466dcd5fb7787d58f71b95c2e2267cfe493b76d",
+      "auditedSha256": "a5a229050fca973fa1fa34252466dcd5fb7787d58f71b95c2e2267cfe493b76d",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/ccp-board-cluster.tsx",
+      "approvedSha256": "24fb5f9843f103bc044936b11c494836fa2b7a9f498227e80679d8248d008c98",
+      "auditedSha256": "24fb5f9843f103bc044936b11c494836fa2b7a9f498227e80679d8248d008c98",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/ccp.module.css",
+      "approvedSha256": "939c8d8e7d8c31a40b63d99898df10c4ac4c2dac8d25cf423a0e254aab3c4dc6",
+      "auditedSha256": "939c8d8e7d8c31a40b63d99898df10c4ac4c2dac8d25cf423a0e254aab3c4dc6",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/cluster-entrance.tsx",
+      "approvedSha256": "5622c8a6f8ae765c009ec17c60d2790ba75f711836fb95d94cd3e3841ff3ff6d",
+      "auditedSha256": "5622c8a6f8ae765c009ec17c60d2790ba75f711836fb95d94cd3e3841ff3ff6d",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/evidence-region.tsx",
+      "approvedSha256": "1e7b17bef0de90fdc28095301ca125bc3b82e52bb35766d2cda8770f662cfad9",
+      "auditedSha256": "1e7b17bef0de90fdc28095301ca125bc3b82e52bb35766d2cda8770f662cfad9",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/pixel-acquisition.tsx",
+      "approvedSha256": "f0a15682b4201d7a1f0fc3e009035086ba22933230405edd2bc73a4225401e43",
+      "auditedSha256": "f0a15682b4201d7a1f0fc3e009035086ba22933230405edd2bc73a4225401e43",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/portfolio-board.tsx",
+      "approvedSha256": "c335bf2673580353d760369ca242eb599f0f71ec3b25cd7242a2c5fc4a493e08",
+      "auditedSha256": "131ed7d5b327126d12c6007aea6f158e1f7e493e36fa14a002891b6f614cf490",
+      "unchangedSinceApprovedBaseline": false
+    },
+    {
+      "path": "src/components/portfolio/portfolio-link.tsx",
+      "approvedSha256": "afc56005d4ca12520946281b103d9294d86b852cc83482219f582b6ddd987ac2",
+      "auditedSha256": "afc56005d4ca12520946281b103d9294d86b852cc83482219f582b6ddd987ac2",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/portfolio-motion.css",
+      "approvedSha256": "5b834c600d8c2a136740162624b319dc64fb49673e78b08d4188806f0180ddf5",
+      "auditedSha256": "5b834c600d8c2a136740162624b319dc64fb49673e78b08d4188806f0180ddf5",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/portfolio.module.css",
+      "approvedSha256": "21f5e90cbe221bef9370eb450ede48e792bf53d990d045e48f51988f9914d70a",
+      "auditedSha256": "21f5e90cbe221bef9370eb450ede48e792bf53d990d045e48f51988f9914d70a",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/project-page-motion.module.css",
+      "approvedSha256": "8babbdf67830e96ea6d0bb9f9aa07cabadeb0737a6ad96461352e06b9b7004e3",
+      "auditedSha256": "8babbdf67830e96ea6d0bb9f9aa07cabadeb0737a6ad96461352e06b9b7004e3",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/project-page-motion.tsx",
+      "approvedSha256": "1716c5b61f1edb30d8a19113b7fd1dfb5357848198de208299c948b0e3678d39",
+      "auditedSha256": "1716c5b61f1edb30d8a19113b7fd1dfb5357848198de208299c948b0e3678d39",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/project-page.tsx",
+      "approvedSha256": "bf08ff27135442bbad6dc52c425593c4cc25ed76a471cdb4d2d476f870aec520",
+      "auditedSha256": "bf08ff27135442bbad6dc52c425593c4cc25ed76a471cdb4d2d476f870aec520",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/project-reading-rail.tsx",
+      "approvedSha256": "ca1211cc0501b6272e7d2ce7998e7ad767188ca6aabf76fcda7b4d6eb70c849e",
+      "auditedSha256": "ca1211cc0501b6272e7d2ce7998e7ad767188ca6aabf76fcda7b4d6eb70c849e",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/project-surface.tsx",
+      "approvedSha256": "cfba0e7548f077963900e0b12b9b1b84980fd5d630472a3cc463927d1a5dcdaa",
+      "auditedSha256": "cfba0e7548f077963900e0b12b9b1b84980fd5d630472a3cc463927d1a5dcdaa",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/region-inspection.tsx",
+      "approvedSha256": "e6155cc492d20233e7b4554f533d599de52f10fefbe9f46a1b57f6e264dee3cf",
+      "auditedSha256": "e6155cc492d20233e7b4554f533d599de52f10fefbe9f46a1b57f6e264dee3cf",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/region.module.css",
+      "approvedSha256": "f1c9c3d47638ab4c68b0f71989abc6c6afdca331d6e30c5d3e9a50f45fb771aa",
+      "auditedSha256": "f1c9c3d47638ab4c68b0f71989abc6c6afdca331d6e30c5d3e9a50f45fb771aa",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/workflow-trace.module.css",
+      "approvedSha256": "f13ef54b02ee5345339c964e1efa2119a1136c0cef145153ec2916771b94bd8d",
+      "auditedSha256": "f13ef54b02ee5345339c964e1efa2119a1136c0cef145153ec2916771b94bd8d",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/portfolio/workflow-trace.tsx",
+      "approvedSha256": "ecfc09ff70c301ca4d42dd42d985d1eb93a249110e4b42597d1d42db6f231b33",
+      "auditedSha256": "ecfc09ff70c301ca4d42dd42d985d1eb93a249110e4b42597d1d42db6f231b33",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/public-timeline.tsx",
+      "approvedSha256": "47dcb1ddd8c6b2e799feb45c4175cafe42be62ea4c49469a9cd521ffa7e12a29",
+      "auditedSha256": "47dcb1ddd8c6b2e799feb45c4175cafe42be62ea4c49469a9cd521ffa7e12a29",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/components/telemetry-aperture.tsx",
+      "approvedSha256": "06080963bd46978bf8cc30d35c855460c832e4ce1ab5f9f1763f541a7b5b7c84",
+      "auditedSha256": "06080963bd46978bf8cc30d35c855460c832e4ce1ab5f9f1763f541a7b5b7c84",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/data/board.ts",
+      "approvedSha256": "ed65884adb863d133599807435ec08bf0315c76ef1878a917b8605a47664fb12",
+      "auditedSha256": "b9c249998ef11e9c4794f3a1231f71db600c7986ddf2cb698fbed3af1b5a317a",
+      "unchangedSinceApprovedBaseline": false
+    },
+    {
+      "path": "src/data/portfolio.ts",
+      "approvedSha256": "5e65713f0a5373c82db83b4e3ef373e8313d27d38df9461a0b31f4be5dc022b4",
+      "auditedSha256": "5e65713f0a5373c82db83b4e3ef373e8313d27d38df9461a0b31f4be5dc022b4",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/data/timeline.seed.json",
+      "approvedSha256": "f0d22b132c49817d643c2eaa88dcaa57cb7776c6b98483a0b5833accb69dc9f5",
+      "auditedSha256": "f0d22b132c49817d643c2eaa88dcaa57cb7776c6b98483a0b5833accb69dc9f5",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/lib/guiding-light-ink.ts",
+      "approvedSha256": "8d1406dcab308b8565ad78700c25c46c54c2214a7415d6888fc39ab8ada330ed",
+      "auditedSha256": "8d1406dcab308b8565ad78700c25c46c54c2214a7415d6888fc39ab8ada330ed",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/lib/orthogonal-connectors.ts",
+      "approvedSha256": "cf0ae07b01305fedee1071ea22c4c3b41b1a9e2fbb726bec1efcdb0bfa790b11",
+      "auditedSha256": "cf0ae07b01305fedee1071ea22c4c3b41b1a9e2fbb726bec1efcdb0bfa790b11",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/lib/panel-replacement.ts",
+      "approvedSha256": "1af236a383947ad2b42551ce52d6e2b95d2f1ab213cbdc2a8c313d4dfb11938f",
+      "auditedSha256": "1af236a383947ad2b42551ce52d6e2b95d2f1ab213cbdc2a8c313d4dfb11938f",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/lib/portfolio-navigation.ts",
+      "approvedSha256": "487343572511494df6dbbb3c4f39af638e16011e9db7b9611441af9a25e92f0a",
+      "auditedSha256": "487343572511494df6dbbb3c4f39af638e16011e9db7b9611441af9a25e92f0a",
+      "unchangedSinceApprovedBaseline": true
+    },
+    {
+      "path": "src/lib/telemetry-tether.ts",
+      "approvedSha256": "6fe9ce1ff9b6a674d85394d34763fb370688a6c53fe699f00912f97f98b13234",
+      "auditedSha256": "6fe9ce1ff9b6a674d85394d34763fb370688a6c53fe699f00912f97f98b13234",
+      "unchangedSinceApprovedBaseline": true
+    }
+  ],
+  "archive": {
+    "path": "docs/archive/portfolio-vision-2026-09-07.md",
+    "sha256": "0cf1a971f3a5e63094e906487a5362e480be81a81de7895aea1e5a279671bae0",
+    "status": "Historical source, copied unchanged; phase plan and early parameters superseded."
+  },
+  "pullRequestEvidence": [
+    {
+      "number": 1,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/1",
+      "title": "Add 3 px of top and bottom padding to Gantt lanes",
+      "mergedAt": "2026-09-06T04:10:24Z",
+      "mergeCommit": "c5160acf706cb0b4b366a43884eca5ab8accd199"
+    },
+    {
+      "number": 2,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/2",
+      "title": "Record standing authority for reviewed routine merges",
+      "mergedAt": "2026-09-06T04:13:21Z",
+      "mergeCommit": "2043c38d12b003236f3d7feeec4c2b9be6d336cd"
+    },
+    {
+      "number": 3,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/3",
+      "title": "Remove seams and uncovered strips from lane highlights",
+      "mergedAt": "2026-09-06T05:16:52Z",
+      "mergeCommit": "8e11e564b3b8491db36c44d886a6dee45624d923"
+    },
+    {
+      "number": 4,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/4",
+      "title": "Document UAT preview and production release workflow",
+      "mergedAt": "2026-09-06T06:22:05Z",
+      "mergeCommit": "eafbdc2dab0bfe2c56af6312caba2f7424f95a73"
+    },
+    {
+      "number": 5,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/5",
+      "title": "Make the UAT favicon white",
+      "mergedAt": "2026-09-06T07:30:07Z",
+      "mergeCommit": "d34867456c428c703ca6756d705c90829a380a97"
+    },
+    {
+      "number": 6,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/6",
+      "title": "Add scroll-linked Panel 1 / Panel 2 replacement",
+      "mergedAt": "2026-09-06T08:16:10Z",
+      "mergeCommit": "0443932cec72cb2677a299283a2e83041717dfdf"
+    },
+    {
+      "number": 7,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/7",
+      "title": "Smooth Panel 0 / Panel 1 scrolling and hide native scrollbars",
+      "mergedAt": "2026-09-06T09:00:34Z",
+      "mergeCommit": "09ea8e87b81207cfbfa016691fc13332790355f6"
+    },
+    {
+      "number": 8,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/8",
+      "title": "Release approved Panel 1 / Panel 2 scrolling to production",
+      "mergedAt": "2026-09-06T09:25:31Z",
+      "mergeCommit": "3cd8873ecdb9b663c7545c0b81be91b26d97dcc4"
+    },
+    {
+      "number": 9,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/9",
+      "title": "Add a blank drawer endpoint for UAT",
+      "mergedAt": "2026-09-06T09:39:03Z",
+      "mergeCommit": "3b74c1240363094151f2db6c85f94e4b2b221753"
+    },
+    {
+      "number": 10,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/10",
+      "title": "Stabilize mobile parallax during browser toolbar resizing",
+      "mergedAt": "2026-09-06T18:24:21Z",
+      "mergeCommit": "c9a592a3598b268da46aa6a59423b600defb7e2e"
+    },
+    {
+      "number": 11,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/11",
+      "title": "Disable vertical overscroll bounce on the public page",
+      "mergedAt": "2026-09-06T20:10:42Z",
+      "mergeCommit": "552eedee56263bfe94f15f90f59490cf046f42b7"
+    },
+    {
+      "number": 12,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/12",
+      "title": "Disable horizontal bounce in the Gantt timeline",
+      "mergedAt": "2026-09-06T20:28:41Z",
+      "mergeCommit": "01fd728a39e05a84ab7832a2c17431e1ffada4b7"
+    },
+    {
+      "number": 13,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/13",
+      "title": "Release mobile scroll improvements and blank drawer endpoint",
+      "mergedAt": "2026-09-06T21:26:42Z",
+      "mergeCommit": "77bf3c3afd1f19fafe16c4d59d20d3236f232d76"
+    },
+    {
+      "number": 14,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/14",
+      "title": "Build visual Board and CCP Project foundation",
+      "mergedAt": "2026-09-07T18:00:01Z",
+      "mergeCommit": "5aa66a84839b20ddaacdfa5e597a6f00b84073a8"
+    },
+    {
+      "number": 15,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/15",
+      "title": "Compose Board regions with artifact inspection and continuous Project entry",
+      "mergedAt": "2026-09-08T00:55:05Z",
+      "mergeCommit": "6e21a9d4b1fa679de799c32344f6a03f045cb100"
+    },
+    {
+      "number": 16,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/16",
+      "title": "Refine Board inspection with quiet pixel acquisition and evidence traces",
+      "mergedAt": "2026-09-08T02:35:13Z",
+      "mergeCommit": "021a6b900c39d0df5146f818b9d49d3ec3a6fc35"
+    },
+    {
+      "number": 17,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/17",
+      "title": "Refine the Board with sheet registration and project dossiers",
+      "mergedAt": "2026-09-11T00:08:43Z",
+      "mergeCommit": "77c7bdcc31050d115b8f7a03149fd2e8e69ba908"
+    },
+    {
+      "number": 18,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/18",
+      "title": "Match Board interactions to Magpie and redraw the artifact layout",
+      "mergedAt": "2026-09-11T03:30:58Z",
+      "mergeCommit": "e4613548f6c594c87ef25726f2e2e88b475e1043"
+    },
+    {
+      "number": 19,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/19",
+      "title": "Open the Board composition and soften portfolio typography",
+      "mergedAt": "2026-09-11T05:04:56Z",
+      "mergeCommit": "1e76895fccdf84a505ac6de9c9b9bfd0f8cb3f36"
+    },
+    {
+      "number": 20,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/20",
+      "title": "Synchronize Board caption dissolve and Magpie parallax",
+      "mergedAt": "2026-09-11T05:59:41Z",
+      "mergeCommit": "16eb9781fc11b049f44a74308391f8f06c1a35ed"
+    },
+    {
+      "number": 21,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/21",
+      "title": "Soften the Board dissolve completion and remove pixel seams",
+      "mergedAt": "2026-09-11T06:29:13Z",
+      "mergeCommit": "012d2585ea3b6a9ab168b89cb82ee95e6b8bd69d"
+    },
+    {
+      "number": 22,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/22",
+      "title": "Add CCP reading motion and fluid map inspection",
+      "mergedAt": "2026-09-11T14:16:11Z",
+      "mergeCommit": "754ff1220c276a993f2cd4394767516e36baf3a7"
+    },
+    {
+      "number": 23,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/23",
+      "title": "Give CCP open workflow handoffs and graphite detail",
+      "mergedAt": "2026-09-11T22:46:25Z",
+      "mergeCommit": "712d6681291e16484cfc09cecb71ae3829ecff01"
+    },
+    {
+      "number": 24,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/24",
+      "title": "Restore CCP alignment and unify exploration controls",
+      "mergedAt": "2026-09-11T23:56:25Z",
+      "mergeCommit": "1f8840aaa8a16ed331278d8df67bae344b241ec9"
+    },
+    {
+      "number": 25,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/25",
+      "title": "Restore CCP grid and make the mini-map navigable",
+      "mergedAt": "2026-09-12T01:11:04Z",
+      "mergeCommit": "7d6e8ef25ea711fc7e325776be0399b8b37b213c"
+    },
+    {
+      "number": 26,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/26",
+      "title": "Start CCP section takeover at the upper third",
+      "mergedAt": "2026-09-12T01:36:27Z",
+      "mergeCommit": "6cc90e7fde9050cf6c6de0c77c2b5344d12e5bb6"
+    },
+    {
+      "number": 27,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/27",
+      "title": "Let Workflow Map scrolling continue through the page",
+      "mergedAt": "2026-09-12T01:55:56Z",
+      "mergeCommit": "f2b2260019ef6a083ba772678b96fd2f935e4a88"
+    },
+    {
+      "number": 28,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/28",
+      "title": "Match CCP masthead to Magpie and unify graphite ink",
+      "mergedAt": "2026-09-12T02:10:38Z",
+      "mergeCommit": "451987c0b6d5c0ed220796ced2277f6035ea363f"
+    },
+    {
+      "number": 29,
+      "url": "https://github.com/ricardougarcia/magpie-dashboards-work/pull/29",
+      "title": "Compose the Board as six artifact clusters",
+      "mergedAt": "2026-09-12T05:29:34Z",
+      "mergeCommit": "201bae93fdc97c030cd1f06ad4e9cba2ac38bdf6"
+    }
+  ],
+  "conversationEvidence": [
+    {
+      "dateUtc": "2026-09-11",
+      "topic": "Original cursor parity, square pixels, open mounts, lighter type, thicker slower source trace, synchronized caption dissolve, completion smoothing."
+    },
+    {
+      "dateUtc": "2026-09-12",
+      "topic": "CCP alignment, reciprocal connections, shared map-tab ink, stationary visible grid, upper-third takeover, map scroll chaining, original masthead."
+    },
+    {
+      "dateUtc": "2026-09-12",
+      "topic": "True Miro canvas rejected; six authored Board positions and distinct Project signatures selected."
+    },
+    {
+      "dateUtc": "2026-09-12",
+      "topic": "EdCo design excluded pending owner review; other designs confirmed approved."
+    }
+  ],
+  "verificationScope": {
+    "thisTask": "Documentation reconstruction and schema/link/source checks only; no application implementation changes or new runtime/physical-device acceptance claim.",
+    "historical": [
+      {
+        "pr": 29,
+        "commit": "201bae93fdc97c030cd1f06ad4e9cba2ac38bdf6",
+        "reportedTests": 159,
+        "scope": "Board artifact-cluster release and responsive/interaction evidence."
+      },
+      {
+        "pr": 28,
+        "commit": "451987c",
+        "reportedTests": 157,
+        "scope": "CCP masthead/global graphite release and scoped hosted checks."
+      }
+    ],
+    "visualEvidenceExamined": [
+      "Approved CCP masthead at1440px",
+      "Approved compact CCP Board cluster at1440px"
+    ]
+  },
+  "maintenance": "When an approved design changes, update the affected feature profile, appropriate DESIGN/sidecar/surface records, and source hashes together. Hash equality detects source drift; it does not establish owner approval."
+}
