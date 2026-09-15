@@ -35,9 +35,11 @@ describe("Marketplace case study", () => {
     expect(page.querySelector("a[data-board-return]")?.getAttribute("href")).toBe("/drawer");
   });
 
-  it("keeps every original and stable artifact identity available without hydration", () => {
+  it("keeps the six displayed originals available without hydration and excludes the archived research images", () => {
     const page = serverPage();
-    for (const artifact of Object.values(marketplaceArtifacts)) {
+    const displayedArtifacts = Object.values(marketplaceArtifacts).filter(artifact =>
+      artifact !== marketplaceArtifacts.discovery && artifact !== marketplaceArtifacts.provider);
+    for (const artifact of displayedArtifacts) {
       const instances = page.querySelectorAll(`#${artifact.id}`);
       expect(instances, artifact.id).toHaveLength(1);
       const original = instances[0].querySelector<HTMLAnchorElement>("a[data-marketplace-image]")!;
@@ -52,9 +54,13 @@ describe("Marketplace case study", () => {
     for (const artifact of [marketplaceArtifacts.ai, marketplaceArtifacts.appCenter, marketplaceArtifacts.library, marketplaceArtifacts.catalog]) {
       expect(page.querySelector(`#${artifact.id}`)?.closest("[hidden], [inert], [aria-hidden='true']"), artifact.label).toBeNull();
     }
-    expect(page.querySelectorAll("img")).toHaveLength(8);
+    for (const artifact of [marketplaceArtifacts.discovery, marketplaceArtifacts.provider]) {
+      expect(page.querySelector(`#${artifact.id}`)).toBeNull();
+    }
+    expect(page.querySelector("#investigation details, #investigation [data-marketplace-artifact]")).toBeNull();
+    expect(page.querySelectorAll("img")).toHaveLength(6);
     expect(page.querySelectorAll("dialog[open]")).toHaveLength(0);
-    for (const caption of page.querySelectorAll("article figcaption")) {
+    for (const caption of page.querySelectorAll("article [data-marketplace-artifact] figcaption")) {
       const original = caption.querySelector<HTMLAnchorElement>('a[href^="/portfolio/marketplace/"]')!;
       expect(original).toBeTruthy();
       expect(original.getAttribute("aria-label")).toMatch(/^Inspect original: .+ \(opens in a new tab\)$/);
@@ -77,7 +83,15 @@ describe("Marketplace case study", () => {
 
   it("preserves research, planning, retirement, and measurement qualifications", () => {
     const page = serverPage();
-    expect(page.querySelector("#investigation")?.textContent).toContain("research synthesis, not an individual participant");
+    const research = page.querySelector("#investigation")!;
+    expect(research.textContent).toContain("Educators needed confidence in what they found. Providers needed ownership of what others found about them.");
+    expect(research.querySelector("figcaption")?.textContent).toBe("Conceptual listing · no specific product or certification");
+    const needs = [...research.querySelectorAll("h3")].map(heading => heading.textContent);
+    expect(needs).toEqual([
+      "Is this right for my needs?", "Will the right educators find us?",
+      "What helps me evaluate it?", "Can we represent our product clearly?",
+      "How do I learn more?", "Can interest become a conversation?",
+    ]);
     expect(page.querySelector(`#${marketplaceArtifacts.canvasPlan.id}`)?.textContent).toContain("not a claim that every pictured feature shipped");
     expect(page.querySelector("#repositories")?.textContent).toContain("does not establish that all three catalogs were retired");
     expect(page.querySelector("#impact")?.textContent).toContain("underlying listing counts and time-measurement method are not included");

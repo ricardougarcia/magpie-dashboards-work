@@ -4,6 +4,7 @@ import { PortfolioShell } from "./portfolio-shell";
 import { PortfolioLink } from "./portfolio-link";
 import { MarketplaceConfluence } from "./marketplace-confluence";
 import { MarketplaceArtifact } from "./marketplace-artifact";
+import { MarketplaceResearchLens } from "./marketplace-research-lens";
 import styles from "./marketplace.module.css";
 
 export function MarketplacePage() {
@@ -28,19 +29,8 @@ export function MarketplacePage() {
       </div>
       <article className={styles.story} aria-label="EdCo Marketplace case study">
         <section id="investigation" className={styles.research} aria-labelledby="investigation-heading" data-marketplace-section>
-          <header className={styles.sectionHeading}><h2 id="investigation-heading">Start with the people<br />on both sides.</h2><p>Interviews and concept testing connected educator confidence with provider participation.</p></header>
-          <div id="people" className={styles.researchField}>
-            <div className={styles.marginCopy}>
-              <h3>Find the right tool.<br />Represent it clearly.</h3>
-              <p>Educators needed a useful way to discover, evaluate, and connect. Providers needed control over their listings and a path to receive inquiries.</p>
-              <p className={styles.annotation}>The early flow makes that relationship visible: discovery should lead to a meaningful next step.</p>
-            </div>
-            <MarketplaceArtifact artifact={artifacts.discovery} code="A039" type="Early user flow" />
-          </div>
-          <div className={styles.researchSecond}>
-            <MarketplaceArtifact artifact={artifacts.provider} code="A040" type="Research synthesis" />
-            <p>Visibility, ownership, connection.<span>The provider persona brings these needs into the same conversation as discovery and trust. It represents research synthesis, not an individual participant.</span></p>
-          </div>
+          <header className={styles.sectionHeading}><h2 id="investigation-heading">Start with the people<br />on both sides.</h2><p>Educators needed confidence in what they found. Providers needed ownership of what others found about them.</p></header>
+          <MarketplaceResearchLens />
         </section>
 
         <section id="orchestration" className={styles.delivery} aria-labelledby="orchestration-heading" data-marketplace-section>
