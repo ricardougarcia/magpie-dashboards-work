@@ -4,9 +4,9 @@
 .noScript { display: none; }
 
 @media (prefers-reduced-motion: no-preference) {
-  .trust { animation: trustResolves 900ms cubic-bezier(.4, 0, .2, 1) 1400ms both; }
+  .trust { animation: trustResolves 1800ms cubic-bezier(.4, 0, .2, 1) 1400ms both; }
   .finalValue { animation: finalValueReturns 1ms step-end 2800ms both; }
-  .counter { display: block; animation: counterWindow 2800ms step-end both; }
+  .counter { display: block; animation: counterWindow 2800ms step-end both, counterColor 1300ms ease-in-out 1100ms both; }
 }
 
 /* A finite CSS window also restores 97% if hydration never completes. */
@@ -16,10 +16,14 @@
 }
 @keyframes finalValueReturns { from { opacity: 0; } to { opacity: 1; } }
 @keyframes counterWindow { from { opacity: 1; } to { opacity: 0; } }
+@keyframes counterColor {
+  0%, 50%, 100% { color: var(--ink); }
+  25%, 75% { color: var(--signal-text); }
+}
 
 .hero[data-arrival-settled="true"] .trust,
-.hero[data-arrival-settled="true"] .finalValue { animation: none; opacity: 1; clip-path: none; transform: none; }
-.hero[data-arrival-settled="true"] .counter { display: none; animation: none; }
+.hero[data-count-settled="true"] .finalValue { animation: none; opacity: 1; clip-path: none; transform: none; }
+.hero[data-count-settled="true"] .counter { display: none; animation: none; }
 
 @media print {
   .hero .trust, .hero .finalValue { animation: none; opacity: 1; clip-path: none; transform: none; }

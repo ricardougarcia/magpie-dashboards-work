@@ -6,6 +6,7 @@ import { GcmImpact } from "./gcm-impact";
 
 let reduced: MediaQueryList;
 let now = 0;
+let arrivalElapsed = 0;
 let frameId = 0;
 let frames: Map<number, FrameRequestCallback>;
 let intersect: IntersectionObserverCallback;
@@ -23,6 +24,7 @@ function advanceFrame(time: number) {
 beforeEach(() => {
   vi.useFakeTimers();
   now = 0;
+  arrivalElapsed = 0;
   frameId = 0;
   frames = new Map();
   animations = [];
@@ -46,6 +48,7 @@ beforeEach(() => {
     return animation as unknown as Animation;
   });
   Object.defineProperty(HTMLElement.prototype, "animate", { configurable: true, value: animate });
+  Object.defineProperty(HTMLElement.prototype, "getAnimations", { configurable: true, value: () => [{ currentTime: arrivalElapsed }] });
 });
 
 afterEach(() => {
@@ -54,6 +57,7 @@ afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
   Reflect.deleteProperty(HTMLElement.prototype, "animate");
+  Reflect.deleteProperty(HTMLElement.prototype, "getAnimations");
   window.history.replaceState({}, "", "/");
 });
 
@@ -69,7 +73,7 @@ describe("GCM opening", () => {
     expect(html).toContain("animation:none!important");
   });
 
-  it("holds zero through the question beat, counts up, and keeps the accessible value stable", () => {
+  it("counts after the opening beat without ending the longer trust fade, keeping the accessible value stable", () => {
     const { container } = render(<GcmHero />);
     const count = container.querySelector("[data-gcm-counter]")!;
     const final = container.querySelector("strong > span:not([aria-hidden])")!;
@@ -85,7 +89,8 @@ describe("GCM opening", () => {
     expect(container.querySelector("[aria-live]")).toBeNull();
     advanceFrame(2400);
     expect(count.textContent).toBe("97%");
-    expect(container.querySelector("header")?.getAttribute("data-arrival-settled")).toBe("true");
+    expect(container.querySelector("header")?.getAttribute("data-count-settled")).toBe("true");
+    expect(container.querySelector("header")?.hasAttribute("data-arrival-settled")).toBe(false);
     expect(frames.size).toBe(0);
   });
 
@@ -109,6 +114,31 @@ describe("GCM opening", () => {
     expect(container.querySelector("[data-gcm-counter]")?.textContent).toBe("97%");
     expect(frames.size).toBe(0);
     expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("can still settle the longer trust fade after the count has completed", () => {
+    const { container } = render(<GcmHero />);
+    act(() => vi.advanceTimersByTime(1100));
+    advanceFrame(2400);
+    const header = container.querySelector("header")!;
+    expect(header.getAttribute("data-count-settled")).toBe("true");
+    expect(header.hasAttribute("data-arrival-settled")).toBe(false);
+    act(() => { Object.assign(reduced, { matches: true }); reduced.dispatchEvent(new Event("change")); });
+    expect(header.getAttribute("data-arrival-settled")).toBe("true");
+    expect(frames.size).toBe(0);
+  });
+
+  it("late hydration restores the finished count without truncating trust and retains cancellation", () => {
+    arrivalElapsed = 2600;
+    const { container } = render(<GcmHero />);
+    const header = container.querySelector("header")!;
+    expect(header.getAttribute("data-count-settled")).toBe("true");
+    expect(header.hasAttribute("data-arrival-settled")).toBe(false);
+    expect(container.querySelector("[data-gcm-counter]")?.textContent).toBe("97%");
+    expect(frames.size).toBe(0);
+    expect(vi.getTimerCount()).toBe(0);
+    act(() => { Object.assign(reduced, { matches: true }); reduced.dispatchEvent(new Event("change")); });
+    expect(header.getAttribute("data-arrival-settled")).toBe("true");
   });
 
   it("cancels the delay and active frame when unmounted", () => {
