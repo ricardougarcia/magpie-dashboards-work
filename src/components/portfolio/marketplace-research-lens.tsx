@@ -271,8 +271,8 @@ export function MarketplaceResearchLens() {
         <svg className={styles.connectors} data-lens-connectors aria-hidden="true"><path /><path /></svg>
         <span className={styles.focusFrame} data-lens-frame aria-hidden="true" />
       </div>
-      <div className={styles.bottomLine}><span data-lens-caption>Three paired needs / One listing</span><a href="#orchestration">Continue to Delivery</a></div>
       <div className={styles.shared} data-lens-shared><p>Different needs.<br /><span>The same point of connection.</span></p><span>What an educator needs to understand is also what a provider needs to represent.</span></div>
+      <div className={styles.bottomLine}><span data-lens-caption>Three paired needs / One listing</span><a href="#orchestration">Continue to Delivery</a></div>
       <p className="sr-only" data-lens-status role="status" aria-live="polite" />
     </div>
   </div>;
