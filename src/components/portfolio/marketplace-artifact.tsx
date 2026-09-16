@@ -8,7 +8,7 @@ import styles from "./marketplace-artifact.module.css";
 type ImageProps = { artifact: Artifact; priority?: boolean };
 
 /** The original link remains usable before hydration and on modified activation. */
-export function MarketplaceImage({ artifact, priority = false }: ImageProps) {
+export function MarketplaceImage({ artifact, priority = false, triggerLabel }: ImageProps & { triggerLabel?: string }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLAnchorElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
@@ -80,7 +80,7 @@ export function MarketplaceImage({ artifact, priority = false }: ImageProps) {
 
   return <>
     <a ref={trigger} className={styles.imageLink} href={artifact.src} target="_blank" rel="noopener noreferrer"
-      aria-label={`Inspect original: ${artifact.label}`} aria-haspopup="dialog" onClick={open} data-marketplace-image>
+      aria-label={triggerLabel ?? `Inspect original: ${artifact.label}`} aria-haspopup="dialog" onClick={open} data-marketplace-image>
       <Image className={styles.previewImage} src={artifact.src} alt={artifact.alt} width={artifact.width} height={artifact.height}
         sizes="(max-width: 720px) 100vw, 70vw" loading={priority ? "eager" : "lazy"} />
     </a>

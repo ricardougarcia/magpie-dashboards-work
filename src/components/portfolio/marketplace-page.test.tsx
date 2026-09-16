@@ -35,7 +35,7 @@ describe("Marketplace case study", () => {
     expect(page.querySelector("a[data-board-return]")?.getAttribute("href")).toBe("/drawer");
   });
 
-  it("keeps the six displayed originals available without hydration and excludes the archived research images", () => {
+  it("keeps the six original assets available without hydration and excludes the archived research images", () => {
     const page = serverPage();
     const displayedArtifacts = Object.values(marketplaceArtifacts).filter(artifact =>
       artifact !== marketplaceArtifacts.discovery && artifact !== marketplaceArtifacts.provider);
@@ -61,9 +61,15 @@ describe("Marketplace case study", () => {
     expect(page.querySelectorAll("img")).toHaveLength(6);
     expect(page.querySelectorAll("dialog[open]")).toHaveLength(0);
     for (const caption of page.querySelectorAll("article [data-marketplace-artifact] figcaption")) {
-      const original = caption.querySelector<HTMLAnchorElement>('a[href^="/portfolio/marketplace/"]')!;
+      const figure = caption.closest("[data-marketplace-artifact]")!;
+      // The compact A051 text control is itself the original-image fallback.
+      const directConcept = figure.id === marketplaceArtifacts.canvasPlan.id;
+      const original = directConcept
+        ? figure.querySelector<HTMLAnchorElement>("a[data-marketplace-image]")!
+        : caption.querySelector<HTMLAnchorElement>('a[href^="/portfolio/marketplace/"]')!;
       expect(original).toBeTruthy();
-      expect(original.getAttribute("aria-label")).toMatch(/^Inspect original: .+ \(opens in a new tab\)$/);
+      if (directConcept) expect(original.getAttribute("aria-label")).toBe("Explore the in-platform discovery concept · A051");
+      else expect(original.getAttribute("aria-label")).toMatch(/^Inspect original: .+ \(opens in a new tab\)$/);
     }
   });
 

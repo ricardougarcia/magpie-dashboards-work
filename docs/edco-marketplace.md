@@ -4,6 +4,8 @@ The authored `/work/marketplace` route uses [Catalog Confluence](marketplace-con
 
 On September 14, 2026, the owner approved the [Research “Shift the lens” study](marketplace-research-lens.md), with no additional Research artifacts or disclosure. The Research section uses one illustrative listing to connect educator discovery, evaluation, and connection with provider visibility, ownership, and inquiries. This approval is specific to the Research study and its stated exclusion; it does not approve all Marketplace aesthetics or make Marketplace a shared Portfolio reference.
 
+On September 15, 2026, the owner approved [Delivery “One focused workstream”](marketplace-delivery-focus.md), including automatic tray selection on hover. Delivery preserves its source content in a compact composition with an A–D index, one active reading tray, and the planning artifacts. Keyboard focus and tap provide equivalent selection; nested supporting disclosures remain manual. This approval is specific to the Delivery wireframe and hover revision.
+
 ## Content and evidence
 
 Source: the owner's recovered Marketplace case study and asset archive in `portfolio-migration-research-2026-09-06`, reviewed alongside the owner's explicit requirement to foreground the three-repository transition. Here, repositories means independent product catalogs/data sources, not Git repositories: Emerging AI Marketplace, Edu App Center, and LearnCommunity Library.
