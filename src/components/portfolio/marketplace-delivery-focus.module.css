@@ -1,10 +1,10 @@
 .delivery { padding-block: 30px 34px; }
 .heading { display: grid; grid-template-columns: 1.02fr 1fr; gap: 48px; align-items: end; margin-bottom: 32px; }
-.heading h2 { margin: 0; font-size: 38px; font-weight: 500; letter-spacing: -.04em; line-height: 1.06; }
+.heading h2 { margin: 0; font-size: 38px; font-weight: 500; letter-spacing: -.05em; line-height: 1.06; }
 .delivery .heading > p { margin: 0 0 3px; max-width: 420px; color: var(--muted); font-size: 13px; line-height: 1.6; }
 .main { display: grid; grid-template-columns: minmax(0, .76fr) minmax(0, 1.6fr); grid-template-areas: "statement workspace" "planning workspace"; gap: 24px 42px; align-items: start; }
 .statement { grid-area: statement; min-width: 0; }
-.statement .claim { margin: 0 0 15px; font-size: 38px; font-weight: 500; letter-spacing: -.04em; line-height: 1.04; }
+.statement .claim { margin: 0 0 15px; font-size: 38px; font-weight: 500; letter-spacing: -.05em; line-height: 1.04; }
 .claim span { color: var(--muted); }
 .legacy { margin: 0; max-width: 360px; font-size: 13px; line-height: 1.6; color: var(--muted); }
 .workspace { grid-area: workspace; display: grid; grid-template-columns: minmax(0, .94fr) minmax(0, 1.24fr); gap: 25px; min-width: 0; align-items: start; }
