@@ -81,10 +81,17 @@ describe("Marketplace case study", () => {
     }
     expect(page.querySelector("#orchestration")?.textContent).toContain("Legacy data continued into the shared backend during the sunset period.");
     expect(page.querySelector("#orchestration")?.textContent).toContain("sunsetting of Edu App Center");
-    expect(page.querySelector("#impact")?.textContent).toContain("102%");
-    expect(page.querySelector("#impact")?.textContent).toContain("20+ hr/wk");
+    const outcomes = [...page.querySelectorAll("#impact dl > div")];
+    expect(outcomes.map(outcome => outcome.querySelector("dt")?.textContent)).toEqual([
+      "Edtech Marketplace", "Partner-listing growth", "Partnership revenue", "User sentiment", "Maintenance effort saved",
+    ]);
+    expect(outcomes.map(outcome => outcome.querySelector("dd")?.textContent)).toEqual([
+      "#1", "102%", "$2M+", "+95%", "40+ hr/wk",
+    ]);
     expect(page.querySelector("#impact")?.textContent).toContain("Reported over five months");
-    expect(page.querySelector("#impact")?.textContent).toContain("Reported across separate environments");
+    expect(page.querySelector("#impact")?.textContent).toContain("Reported in the first year");
+    expect(page.querySelector("#impact")?.textContent).toContain("Positive reception from interviewed users");
+    expect(page.querySelector("#impact")?.textContent).toContain("Across separate environments");
   });
 
   it("preserves research, planning, retirement, and measurement qualifications", () => {
@@ -100,7 +107,9 @@ describe("Marketplace case study", () => {
     ]);
     expect(page.querySelector(`#${marketplaceArtifacts.canvasPlan.id}`)?.textContent).toContain("not a claim that every pictured feature shipped");
     expect(page.querySelector("#repositories")?.textContent).toContain("does not establish that all three catalogs were retired");
-    expect(page.querySelector("#impact")?.textContent).toContain("underlying listing counts and time-measurement method are not included");
+    expect(page.querySelector("#impact")?.textContent).toContain("maintenance savings updated to 40+ hours per week by the project owner");
+    expect(page.querySelector("#impact")?.textContent).toContain("does not include an independent ranking basis, underlying listing counts, revenue attribution, interview sample or sentiment methodology, or a time-measurement method");
+    expect(page.querySelector("#impact")?.textContent).toContain("User sentiment is not an NPS score or a measured percentage improvement");
     expect(page.querySelector("#impact")?.textContent).toContain("not an isolated individual contribution");
     const summaries = [...page.querySelectorAll("#orchestration details > summary")].map(summary => summary.textContent);
     expect(new Set(summaries).size).toBe(summaries.length);
