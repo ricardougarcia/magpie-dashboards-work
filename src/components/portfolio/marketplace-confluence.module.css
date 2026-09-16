@@ -5,7 +5,7 @@
 .confluence [data-catalog-origin], .confluence [data-catalog-destination] { display: inline-block; }
 .catalogs { width: min(1280px, 100% - 2 * var(--portfolio-gutter)); margin-inline: auto; display: grid; grid-template-columns: minmax(0, 29fr) minmax(0, 60fr); gap: 3.26087%; padding-block: 20px 56px; align-items: start; scroll-margin-top: calc(var(--masthead-height, 0px) + 24px); }
 .margin { padding-top: 14px; }
-.margin h2 { font-size: clamp(27px, 2.45vw, 36px); font-weight: 450; line-height: 1.13; letter-spacing: -.04em; }
+.margin h2 { font-size: clamp(27px, 2.45vw, 36px); font-weight: 450; line-height: 1.13; letter-spacing: -.05em; }
 .muted { color: var(--muted); }
 .invitation { font-size: 12px; line-height: 1.6; color: var(--muted); margin-top: 26px !important; }
 .sources { display: grid; margin-top: 22px; }
@@ -102,7 +102,7 @@
   .evidence { width: 100%; }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) { --image-height: clamp(160px, calc(var(--stage-height) - 556px), 248px); }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] { min-height: 0; padding-block: 20px; gap: 12px; }
-  .confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] h1 { font-size: 30px; letter-spacing: -.04em; }
+  .confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] h1 { font-size: 30px; letter-spacing: -.055em; }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] > div > p:first-child { font-size: 12px; line-height: 1.45; }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) [data-marketplace-intro] > div > p + p { margin-top: 8px; }
   .confluence:is([data-layout="measure"], [data-layout="animated"]) .catalogs { display: grid; grid-template-columns: 1fr; gap: 12px; padding-block: 8px 16px; }
