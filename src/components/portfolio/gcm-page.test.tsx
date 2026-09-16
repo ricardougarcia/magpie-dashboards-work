@@ -59,7 +59,7 @@ describe("GCM direct case-study route", () => {
     expect(page.textContent).not.toMatch(/97%\s*(?:accuracy|accurate)/i);
   });
 
-  it("links PMF as a separate original case study instead of inventing an unimplemented local route", () => {
+  it("links the implemented PMF route as a separate research work sample", () => {
     const page = serverPage();
     const heading = page.querySelector("#gcm-pmf-heading")!;
     const section = heading.closest("section")!;
@@ -67,8 +67,7 @@ describe("GCM direct case-study route", () => {
     const link = section.querySelector("a")!;
     expect(link.textContent).toContain("Product Market Fit…");
     expect(link.textContent).toContain("with no product");
-    expect(link.getAttribute("href")).toBe("https://www.ricardougarcia.com/work/pmf");
-    expect(page.querySelector('a[href="/work/pmf"]')).toBeNull();
+    expect(link.getAttribute("href")).toBe("/work/pmf");
   });
 
   it("serves local evidence assets and identifies the UAT route without indexing it", () => {

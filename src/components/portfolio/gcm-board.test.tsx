@@ -21,7 +21,7 @@ describe("GCM's distributed Board family", () => {
     const { container } = renderStudies();
     expect(screen.getByRole("link", { name: "GCM" }).getAttribute("href")).toBe("/work/gcm");
     expect(screen.getByRole("link", { name: /Product Market Fit/ }).getAttribute("href")).toBe(gcmPmfHref);
-    expect(screen.getByRole("link", { name: /Original case study/ }).getAttribute("href")).toBe(gcmPmfHref);
+    expect(container.querySelector('#study-pmf footer a')?.getAttribute("href")).toBe(gcmPmfHref);
     expect(screen.getByText("Sole product lead")).toBeTruthy();
     expect(container.querySelector('[data-gcm-connected="false"]')).toBeTruthy();
     expect(container.querySelectorAll("[data-board-number]")).toHaveLength(1);
