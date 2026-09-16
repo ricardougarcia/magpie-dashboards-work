@@ -4,15 +4,15 @@
 .noScript { display: none; }
 
 @media (prefers-reduced-motion: no-preference) {
-  .trust { animation: trustResolves 650ms cubic-bezier(.22, 1, .36, 1) 800ms both; }
+  .trust { animation: trustResolves 900ms cubic-bezier(.4, 0, .2, 1) 1400ms both; }
   .finalValue { animation: finalValueReturns 1ms step-end 2800ms both; }
   .counter { display: block; animation: counterWindow 2800ms step-end both; }
 }
 
 /* A finite CSS window also restores 97% if hydration never completes. */
 @keyframes trustResolves {
-  from { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(4px); }
-  to { opacity: 1; clip-path: inset(-.15em 0 -.15em); transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 @keyframes finalValueReturns { from { opacity: 0; } to { opacity: 1; } }
 @keyframes counterWindow { from { opacity: 1; } to { opacity: 0; } }
