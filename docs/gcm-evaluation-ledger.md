@@ -26,6 +26,12 @@ The opening question holds its first clause for 1400ms before “worth trusting?
 
 Impact uses a one-time 520ms arrival per visible outcome, with a stagger capped at 390ms, without changing its grid or introducing pinned scrolling. The separate PMF sample gains a real artifact thumbnail inside the native link and a repeating question-to-sample connector: a 900ms draw within an 8s cycle. The connector pauses when offscreen or the document is hidden, includes a pause/resume control, and becomes a static relationship under reduced motion. The PMF sample remains a separate destination.
 
+## Intro-to-evidence overlap, 2026-09-16
+
+The owner’s annotated boundary begins above the three section links. Those links and the full article form one foreground paper sheet, retaining their original positions and native scroll speed. The outgoing intro travels at 35% of that speed until the sheet reaches the viewport top; reversing the scroll reverses the overlap. There is no pin, added spacer, scroll interception, or change to section-link targets.
+
+On short screens and tall mobile intros, ordinary scrolling first exposes the intro’s lower content before the overlap begins. Measurements use the untransformed sheet and the visible viewport; resizing, mobile browser toolbar changes, restored pages, and font loading refresh them. The moving intro is excluded from browser scroll anchoring so Back restores the actual scroll position. The opaque sheet spans the viewport with the existing 28px graph-paper pattern aligned to the underlying page. The effect stops updating after the intro is covered. Reduced motion, printing, and no JavaScript retain ordinary document flow. The existing question reveal, color count, ledger, evidence/video, outcomes, companion animation, and typography are unchanged.
+
 Original case: https://www.ricardougarcia.com/work/gcm
 
 Original recording: https://video.wixstatic.com/video/7eca65_a9578d8c1a714034a612d04e4d02622d/1080p/mp4/file.mp4
