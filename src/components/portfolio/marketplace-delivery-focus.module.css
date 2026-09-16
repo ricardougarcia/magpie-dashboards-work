@@ -1,4 +1,4 @@
-.delivery { padding-block: 30px 34px; border-top: 1px solid var(--line-strong); }
+.delivery { padding-block: 30px 34px; }
 .heading { display: grid; grid-template-columns: 1.02fr 1fr; gap: 48px; align-items: end; margin-bottom: 32px; }
 .heading h2 { margin: 0; font-size: 38px; font-weight: 500; letter-spacing: -.04em; line-height: 1.06; }
 .delivery .heading > p { margin: 0 0 3px; max-width: 420px; color: var(--muted); font-size: 13px; line-height: 1.6; }

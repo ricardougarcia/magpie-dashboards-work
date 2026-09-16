@@ -24,6 +24,8 @@ These statements are research framing and are not presented as participant quota
 
 The conclusion is “Different needs. The same point of connection.” Its supporting sentence is “What an educator needs to understand is also what a provider needs to represent.” This expresses the relationship between the needs; it does not introduce a new measured research result or delivery claim.
 
+The conclusion follows the listing-and-annotation composition, above the hairline and the current-topic / “Continue to Delivery” row. Delivery begins without a repeated top divider. This order applies to the enhanced stage and the normal-flow fallback; the existing conclusion reveal remains unchanged.
+
 Research no longer renders the original discovery flow (A039) or provider persona (A040), including in a disclosure. Both PNG files and their asset records remain in the repository. The page retains the six catalog and planning originals elsewhere. Provenance and hashes remain in the [case-study record](edco-marketplace.md).
 
 ## Scroll and interaction contract
