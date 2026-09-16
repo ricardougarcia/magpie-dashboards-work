@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { CoordinateCursor } from "@/components/coordinate-cursor";
 import type { PortfolioProject } from "@/lib/portfolio-types";
 import { PanelReplacement } from "@/components/panel-replacement";
@@ -11,6 +12,8 @@ import { boardEntries } from "@/data/board";
 import { CcpBoardCluster } from "./ccp-board-cluster";
 import { MarketplaceBoardCluster } from "./marketplace-board-cluster";
 import { MagpieBoardCluster, ReservedBoardCluster } from "./board-clusters";
+import { GcmBoardCluster, GcmPmfBoardSlip } from "./gcm-board-cluster";
+import { GcmBoardField } from "./gcm-board-field";
 import clusters from "./board-clusters.module.css";
 
 export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
@@ -32,23 +35,24 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
         <div className={sheet.sheet} data-board-sheet>
         <BoardRegistration />
         <div className={sheet.sheetIndex}>
-          <span>06 Regions / 03 project records / 03 reserved</span>
+          <span>06 Regions / 07 entries / 02 reserved</span>
           <a href="#region-magpie">[Begin with Magpie]</a>
         </div>
         <nav className={clusters.index} aria-label="Work on the Board">
-          {boardEntries.map((entry) => <a key={entry.id} href={`#region-${entry.id}`}><span>{entry.number}</span>{entry.title}</a>)}
+          {boardEntries.map((entry) => <a key={entry.id} href={`#region-${entry.id}`}><span>{entry.number}</span>{entry.kind === "gcm" ? "GCM + PMF" : entry.title}</a>)}
         </nav>
-        <div className={clusters.field}>
+        <GcmBoardField className={clusters.field}>
           {boardEntries.map((entry) => {
             if (entry.kind === "magpie") return <MagpieBoardCluster key={entry.id} entry={entry} />;
             if (entry.kind === "marketplace") return <MarketplaceBoardCluster key={entry.id} entry={entry} />;
+            if (entry.kind === "gcm") return <GcmBoardCluster key={entry.id} entry={entry} />;
             if (entry.kind === "ccp") {
               const project = projects.find((project) => project.slug === "ccp");
-              return project ? <CcpBoardCluster key={entry.id} project={project} number={entry.number} /> : null;
+              return <Fragment key={entry.id}><GcmPmfBoardSlip />{project ? <CcpBoardCluster project={project} number={entry.number} /> : null}</Fragment>;
             }
             return <ReservedBoardCluster key={entry.id} entry={entry} />;
           })}
-        </div>
+        </GcmBoardField>
         <footer className={sheet.generalNotes}>
           <h2>General notes</h2>
           <ol>

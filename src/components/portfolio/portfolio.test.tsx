@@ -64,8 +64,8 @@ describe("Board and Project foundation", () => {
       ["04", "region-lti"], ["05", "region-partner-portal"], ["06", "region-learnplatform-ccp"],
     ]);
     const reserved = entries.filter((entry) => entry.dataset.boardState === "reserved");
-    expect(reserved).toHaveLength(3);
-    expect(screen.getByText("06 Regions / 03 project records / 03 reserved")).toBeTruthy();
+    expect(reserved).toHaveLength(2);
+    expect(screen.getByText("06 Regions / 07 entries / 02 reserved")).toBeTruthy();
     reserved.forEach((entry) => {
       expect(within(entry).getByText("Wireframe placeholder")).toBeTruthy();
       expect(entry.querySelector("a, button")).toBeNull();
@@ -73,6 +73,10 @@ describe("Board and Project foundation", () => {
     expect(screen.getByRole("link", { name: "Magpie" }).getAttribute("href")).toBe("/");
     expect(screen.getByRole("link", { name: "EdCo Marketplace" }).getAttribute("href")).toBe("/work/marketplace");
     expect(container.querySelector("#region-marketplace")?.getAttribute("data-board-state")).toBe("ready");
+    expect(container.querySelector("#region-gcm")?.getAttribute("data-board-state")).toBe("ready");
+    expect(screen.getByRole("link", { name: "GCM" }).getAttribute("href")).toBe("/work/gcm");
+    expect(container.querySelector("#study-pmf")?.previousElementSibling?.id).toBe("region-partner-portal");
+    expect(container.querySelector("#study-pmf")?.nextElementSibling?.id).toBe("region-learnplatform-ccp");
     expect(screen.getByRole("link", { name: project.title }).getAttribute("href")).toBe("/work/ccp");
     expect(project.number).toBe("01");
     for (const link of within(screen.getByRole("navigation", { name: "Work on the Board" })).getAllByRole("link")) {
