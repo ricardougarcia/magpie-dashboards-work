@@ -6,13 +6,15 @@ On September 14, 2026, the owner approved the [Research “Shift the lens” stu
 
 On September 15, 2026, the owner approved [Delivery “One focused workstream”](marketplace-delivery-focus.md), including automatic tray selection on hover. Delivery preserves its source content in a compact composition with an A–D index, one active reading tray, and the planning artifacts. Keyboard focus and tap provide equivalent selection; nested supporting disclosures remain manual. This approval is specific to the Delivery wireframe and hover revision.
 
+On September 15, 2026, the owner approved the [five-outcome Impact treatment](marketplace-impact.md) and corrected the maintenance figure from 20+ to 40+ hours per week. Impact restores all five outcomes from the original portfolio in a compact, unboxed composition with a restrained entrance reveal. The owner correction applies to the authored page; the historical source archive remains unchanged.
+
 ## Content and evidence
 
 Source: the owner's recovered Marketplace case study and asset archive in `portfolio-migration-research-2026-09-06`, reviewed alongside the owner's explicit requirement to foreground the three-repository transition. Here, repositories means independent product catalogs/data sources, not Git repositories: Emerging AI Marketplace, Edu App Center, and LearnCommunity Library.
 
 The narrative includes legacy data rerouting into a shared backend during the sunset period and the public launch alongside Edu App Center's sunsetting. It does not assert all three sources were retired, an exact cutover sequence, zero downtime, or undocumented migration controls. Planning artifacts retain their planning/concept captions; the in-platform expansion is not presented as fully shipped.
 
-Impact uses the original case's reported 102% partner-listing growth over five months and 20+ hours/week reduction in maintenance. Baseline counts and measurement methods are unavailable. Revenue, sentiment/NPS, superlatives, and attributed causal claims with conflicting sources are omitted.
+Impact presents the five original portfolio outcomes: #1 Edtech Marketplace, 102% partner-listing growth within five months, $2M+ first-year partnership revenue, +95% user sentiment, and maintenance savings corrected by the owner to 40+ hours per week. The original case is the selected source for these reported outcomes; the owner explicitly requested all five after an earlier revision had omitted three. The #1 claim describes the original case's reported largest private marketplace of interoperable edtech tools, not a verified current ranking. Sentiment describes positive reception among interviewed users, not NPS or an improvement rate. Baseline counts, comparative ranking evidence, interview sample size, and measurement methods are unavailable. The native source disclosure and [Impact contract](marketplace-impact.md) retain these boundaries and distinguish the owner's correction from the historical 20+ hours/week figure.
 
 ## Original artifacts
 
@@ -39,4 +41,4 @@ Research has an independent measured hold below the masthead and section navigat
 
 ## Release scope
 
-UAT only. This Research revision changes no timeline data, original assets, storage, authentication, environment configuration, dependencies, production, or existing CCP behavior. The Marketplace Board entry remains authored. The release PR records application, browser, exact-preview, and merged-UAT results. Implementation acceptance remains separate from the owner-approved study.
+UAT only. These section revisions change no timeline data, original assets, storage, authentication, environment configuration, dependencies, production, or existing CCP behavior. The Marketplace Board entry remains authored. The release PR records application, browser, exact-preview, and merged-UAT results. Implementation acceptance remains separate from the owner-approved direction.
