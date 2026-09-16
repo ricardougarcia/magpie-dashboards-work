@@ -9,7 +9,22 @@
 .register { color: var(--signal-text); }
 .page button { color: inherit; cursor: pointer; }
 .page a:focus-visible, .page button:focus-visible, .page summary:focus-visible { outline: 2px solid var(--signal-text); outline-offset: 5px; }
-.hero { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, .5fr); align-items: center; gap: clamp(30px, 5vw, 80px); padding: 64px 0 42px; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, .5fr); align-items: center; gap: clamp(30px, 5vw, 80px); padding: 64px 0 42px; overflow-anchor: none; }
+.hero[data-gcm-depth] { position: relative; z-index: 0; transform: translateY(var(--gcm-intro-offset, 0px)); }
+.hero[data-gcm-depth="moving"] { will-change: transform; }
+.contentSheet { position: relative; z-index: 1; isolation: isolate; }
+.contentSheet[data-gcm-sheet-ready="true"]::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: var(--gcm-sheet-left);
+  width: var(--gcm-sheet-width);
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(rgba(40, 40, 40, .018) 1px, transparent 1px), linear-gradient(90deg, rgba(40, 40, 40, .018) 1px, transparent 1px), var(--paper);
+  background-size: 28px 28px;
+  background-position: 0 var(--gcm-paper-y);
+}
 .hero .register { margin-bottom: 18px; }
 .scope { max-width: 560px; color: var(--muted); }
 .scope .role { font-weight: 500; color: var(--ink); margin-bottom: 6px; }
@@ -146,9 +161,12 @@
 }
 @media (pointer: coarse) { .sectionNav a, .evidenceCaption a { min-height: 44px; display: inline-flex; align-items: center; } }
 @media (prefers-reduced-motion: reduce) {
+  .hero[data-gcm-depth] { transform: none; will-change: auto; }
   .page *, .page *::before, .page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
 @media print {
+  .hero[data-gcm-depth] { transform: none; will-change: auto; }
+  .contentSheet::before { display: none; }
   .sectionNav, .returnLink, .evidenceChoices { display: none; }
   .hero { padding-top: 20px; }
   .section { break-inside: avoid; }
