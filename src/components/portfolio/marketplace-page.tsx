@@ -1,10 +1,10 @@
 import { CoordinateCursor } from "@/components/coordinate-cursor";
-import { marketplaceArtifacts as artifacts, marketplaceRecord, marketplaceSections, marketplaceWorkstreams } from "@/data/marketplace";
+import { marketplaceArtifacts as artifacts, marketplaceRecord, marketplaceSections } from "@/data/marketplace";
 import { PortfolioShell } from "./portfolio-shell";
 import { PortfolioLink } from "./portfolio-link";
 import { MarketplaceConfluence } from "./marketplace-confluence";
-import { MarketplaceArtifact } from "./marketplace-artifact";
 import { MarketplaceResearchLens } from "./marketplace-research-lens";
+import { MarketplaceDeliveryFocus } from "./marketplace-delivery-focus";
 import styles from "./marketplace.module.css";
 
 export function MarketplacePage() {
@@ -33,23 +33,7 @@ export function MarketplacePage() {
           <MarketplaceResearchLens />
         </section>
 
-        <section id="orchestration" className={styles.delivery} aria-labelledby="orchestration-heading" data-marketplace-section>
-          <header className={styles.sectionHeading}><h2 id="orchestration-heading">The work between<br />three and one.</h2><p>Catalog consolidation, provider workflows, and the legacy transition had to advance together.</p></header>
-          <div className={styles.deliveryField}>
-            <div className={styles.deliveryClaim}><p>The transition<br />was part of<br /><span>the product.</span></p><p>Legacy data continued into the shared backend during the sunset period. The Marketplace launched alongside the sunsetting of Edu App Center.</p></div>
-            <div className={styles.workstreams} role="group" aria-label="The orchestration work">
-              {marketplaceWorkstreams.map(work => <div key={work.id} id={work.id} className={styles.workstream}>
-                <span className={styles.workstreamNumber}>{work.number}</span>
-                <div><h3>{work.title}</h3><p>{work.body}</p><details className={styles.detail}><summary>{work.detailLabel}<span aria-hidden="true" /></summary><p>{work.detail}</p></details></div>
-              </div>)}
-            </div>
-          </div>
-          <div className={styles.planning}>
-            <div className={styles.marginCopy}><h3>Make the requirements inspectable.</h3><p>The public discovery plan connects research themes with structure, priorities, and open questions.</p></div>
-            <MarketplaceArtifact artifact={artifacts.publicPlan} code="A044" type="Annotated plan" />
-          </div>
-          <details className={`${styles.detail} ${styles.concept}`}><summary>Explore the in-platform discovery concept<span aria-hidden="true" /></summary><MarketplaceArtifact artifact={artifacts.canvasPlan} code="A051" type="Concept / planning evidence" /></details>
-        </section>
+        <MarketplaceDeliveryFocus />
 
         <section id="impact" className={styles.impact} aria-labelledby="impact-heading" data-marketplace-section>
           <div id="shared-product" className={styles.productContext}>
