@@ -19,13 +19,17 @@ export function GcmHero() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
     let timer: ReturnType<typeof setTimeout> | undefined;
-    let settled = false;
-    const settle = () => {
-      settled = true;
+    let countFinished = false;
+    const finishCount = () => {
+      countFinished = true;
       clearTimeout(timer);
       timer = undefined;
       cancelAnimationFrame(frame);
       value.textContent = "97%";
+      element.dataset.countSettled = "true";
+    };
+    const settle = () => {
+      finishCount();
       element.dataset.arrivalSettled = "true";
     };
     const bounds = element.getBoundingClientRect();
@@ -40,20 +44,19 @@ export function GcmHero() {
     // CSS starts the question at first paint, before hydration. Align the count
     // with that existing timeline rather than restarting it when JS arrives.
     const elapsed = Number(trust.current?.getAnimations?.()[0]?.currentTime ?? 0);
-    if (elapsed >= countDelay + countDuration) {
-      settle();
-      return;
-    }
     const begins = performance.now() + Math.max(0, countDelay - elapsed);
     const alreadyElapsed = Math.max(0, elapsed - countDelay);
     const tick = (now: number) => {
-      if (settled) return;
+      if (countFinished) return;
       const progress = Math.min(1, Math.max(0, (now - begins + alreadyElapsed) / countDuration));
       value.textContent = `${Math.floor(97 * (1 - Math.pow(1 - progress, 3)))}%`;
       if (progress < 1) frame = requestAnimationFrame(tick);
-      else settle();
+      else finishCount();
     };
-    timer = setTimeout(() => { frame = requestAnimationFrame(tick); }, Math.max(0, countDelay - elapsed));
+    // The headline has a longer arrival than the metric. Normal completion
+    // restores the static number without finishing the headline's fade early.
+    if (elapsed >= countDelay + countDuration) finishCount();
+    else timer = setTimeout(() => { frame = requestAnimationFrame(tick); }, Math.max(0, countDelay - elapsed));
     const preferenceChanged = () => { if (reduced.matches) settle(); };
     const visibilityChanged = () => { if (document.hidden) settle(); };
     const restored = (event: PageTransitionEvent) => { if (event.persisted) settle(); };
