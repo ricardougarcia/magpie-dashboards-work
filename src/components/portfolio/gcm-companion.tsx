@@ -95,8 +95,8 @@ export function GcmCompanion() {
       </button>
     </div>
     <a ref={linkRef} href={gcmPmfHref} className={styles.study}>
-      <span className={styles.thumbnail}><Image src="/portfolio/gcm/pmf-market-analysis.png" alt="" fill sizes="(max-width: 420px) 86px, 132px" /></span>
-      <span className={styles.studyText}><span className={styles.title}>Product Market Fit…<br />with no product</span><span className={base.meta}>Original case study / SaferData</span></span>
+      <span className={styles.thumbnail}><Image src="/portfolio/pmf/market-overview.png" alt="" fill sizes="(max-width: 420px) 86px, 132px" /></span>
+      <span className={styles.studyText}><span className={styles.title}>Product Market Fit…<br />with no product</span><span className={base.meta}>Research work sample / SaferData</span></span>
     </a>
     <svg className={styles.connector} aria-hidden="true" focusable="false">
       <path ref={pathRef} pathLength="1" />

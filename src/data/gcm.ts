@@ -1,7 +1,7 @@
 // Source: Rico Garcia's published GCM case and original expected-behavior artifact.
 // See docs/gcm-evaluation-ledger.md for provenance and the accepted 2R contract.
 export const gcmRecord = { number: "03.A", role: "Sole product lead", organization: "SaferData" };
-export const gcmPmfHref = "https://www.ricardougarcia.com/work/pmf";
+export const gcmPmfHref = "/work/pmf";
 export const gcmDemoSrc = "https://video.wixstatic.com/video/7eca65_a9578d8c1a714034a612d04e4d02622d/1080p/mp4/file.mp4";
 export const gcmAssets = {
   poster: "/portfolio/gcm/demo-poster.jpg",

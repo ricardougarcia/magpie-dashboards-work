@@ -54,9 +54,9 @@ describe("GCM's separate PMF companion", () => {
     expect(html.querySelectorAll("a")).toHaveLength(1);
     expect(link.getAttribute("href")).toBe(gcmPmfHref);
     expect(link.textContent).toContain("Product Market Fit…with no product");
-    expect(link.textContent).toContain("Original case study / SaferData");
+    expect(link.textContent).toContain("Research work sample / SaferData");
     expect(link.querySelector("img")?.getAttribute("alt")).toBe("");
-    expect(link.querySelector("img")?.getAttribute("src")).toContain("pmf-market-analysis.png");
+    expect(link.querySelector("img")?.getAttribute("src")).toContain("market-overview.png");
     expect(link.closest('[hidden], [aria-hidden="true"]')).toBeNull();
   });
 

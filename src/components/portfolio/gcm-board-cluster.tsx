@@ -27,9 +27,9 @@ export function GcmPmfBoardSlip() {
   return <article id="study-pmf" data-board-subentry="03.B" data-gcm-entry="pmf" className={styles.pmf} aria-labelledby="pmf-title">
     <div className={styles.tabs} aria-hidden="true"><i /><i /><i /></div>
     <p className={region.register}>[03.B] SaferData / Discovery</p>
-    <h2 id="pmf-title"><a href={gcmPmfHref}>Product Market Fit…<br />with no product</a></h2>
+    <h2 id="pmf-title"><PortfolioLink href={gcmPmfHref}>Product Market Fit…<br />with no product</PortfolioLink></h2>
     <p className={styles.pmfSummary}>Explore the need before defining the product.</p>
     <GcmBoardRelationship origin="pmf" />
-    <footer className={styles.pmfFoot}><span>Separate work sample</span><a href={gcmPmfHref}>Original case study <span>[Open]</span></a></footer>
+    <footer className={styles.pmfFoot}><span>Separate work sample</span><PortfolioLink href={gcmPmfHref}>View project <span>[Open]</span></PortfolioLink></footer>
   </article>;
 }
