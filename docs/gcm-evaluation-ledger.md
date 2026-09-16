@@ -14,11 +14,17 @@ The page opens with “What makes an AI answer worth trusting?” and identifies
 
 Mouse hover, keyboard focus, and click/tap select a behavior. The marker travels in 420ms; responsibility accents change in 300–360ms; the explanation settles from opacity .55 and a 4px offset in 320ms. Selecting the current row does not restart it. Component highlights describe conceptual responsibility, not instrumented execution or individual pass rates.
 
-Demo, Data, Integration, and Evaluation use explicit activation. Each pairs evidence with a first-person product contribution. Evidence reveals in 520ms; the contribution note settles in 360ms. The original video retains its node and playback position, pauses when another evidence view is selected, and does not autoplay on return. It has native controls, a descriptive overview, and a direct-source fallback. Normal document scrolling is preserved. Reduced-motion states are immediate.
+Demo, Data, Integration, and Evaluation change after 120ms of deliberate mouse hover, immediately on keyboard focus, or through click/tap. Leaving before the hover delay cancels selection. Each pairs evidence with a first-person product contribution. Evidence reveals in 520ms; the contribution note settles in 360ms. The original video retains its node and playback position, pauses when another evidence view is selected, and does not autoplay on return. It has native controls, a descriptive overview, and a direct-source fallback. Normal document scrolling is preserved. Reduced-motion states are immediate.
 
 ## Content and assets
 
-The six published outcomes remain distinct: four pilot commitments and five follow-on engagements; feedback of at least 4.5/5 on clarity and utility; 97% alignment in evaluation tests; all participants contributing feature requests; delivery across engineering, data science, and product; and a modular foundation. The unreconciled duration claim is omitted. “Sole product lead” does not imply sole engineering or data-science contributor.
+The six outcomes remain distinct: pilot commitments and follow-on engagements; feedback of at least 4.5/5 on clarity and utility; 97% alignment in evaluation tests; all participants contributing feature requests; delivery across engineering, data science, and product; and a modular foundation. The project owner requested the first displayed total change from “4 + 5” to “10” on 2026-09-16. The original source values remain recorded here for provenance; the UI presents the requested total without additional commentary. The unreconciled duration claim is omitted. “Sole product lead” does not imply sole engineering or data-science contributor.
+
+## Requested motion refinements, 2026-09-16
+
+The opening question holds its first clause for 800ms before “worth trusting?” resolves over 650ms. The count starts at 1100ms and reaches 97% over 1300ms. Anchor visits, restored scroll, hidden-page visits, and reduced motion settle immediately; a finite 2800ms CSS fallback prevents a failed hydration from stranding the number at zero. The full question and final number remain accessible and available without JavaScript. The reliability ledger retains its exact words, typography, order, and geometry; selected components gain a tinted field, visible outline, larger signal dot, and darker supporting copy.
+
+Impact uses a one-time 520ms arrival per visible outcome, with a stagger capped at 390ms, without changing its grid or introducing pinned scrolling. The separate PMF sample gains a real artifact thumbnail inside the native link and a repeating question-to-sample connector: a 900ms draw within an 8s cycle. The connector pauses when offscreen or the document is hidden, includes a pause/resume control, and becomes a static relationship under reduced motion. The PMF sample remains a separate destination.
 
 Original case: https://www.ricardougarcia.com/work/gcm
 
@@ -31,6 +37,7 @@ Local media preserve original evidence from the approved preview/source archive:
 | `public/portfolio/gcm/demo-poster.jpg` | A068; original demo frame | `ee479560cc46ca1d403b504be72686b60ad5965370dbf52deeafd50afce585b2` |
 | `public/portfolio/gcm/data-coverage.jpg` | A017; original data frame | `2e2f35aeda01bc93fa22aff44960de347e922e99251d31cf977116ce70064ba7` |
 | `public/portfolio/gcm/expected-behaviors.png` | A064; original framework | `155dc0dc57d07c3b8468021d89b26fcd15ac650b46b4bdcd4513789b0530ac4d` |
+| `public/portfolio/gcm/pmf-market-analysis.png` | [Published PMF Market Analysis board](https://static.wixstatic.com/media/7eca65_99ba0e2144f7460b88edb8ff0d98b85f~mv2.png) | `4f274641f64bd090b0efbd0f77682b731709a63a483206cf12ad65a5b699871d` |
 
 ## Scope and verification
 
