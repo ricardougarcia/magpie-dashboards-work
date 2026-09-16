@@ -41,11 +41,11 @@ describe("GCM direct case-study route", () => {
     expect(page.querySelector("#impact")?.textContent).toContain("Lean-team delivery");
   });
 
-  it("keeps all six source outcomes visible and labels 97 percent as evaluation alignment", () => {
+  it("keeps all six outcomes visible with the owner-updated total and labels 97 percent as evaluation alignment", () => {
     const page = serverPage();
     const outcomes = [...page.querySelectorAll("#impact dl > div")];
     expect(outcomes.map(outcome => [outcome.querySelector("dd")?.textContent, outcome.querySelector("dt")?.textContent])).toEqual([
-      ["4 + 5", "Pilot commitments + follow-on engagements"],
+      ["10", "Pilot commitments + follow-on engagements"],
       ["≥4.5/5", "Feedback on clarity and utility"],
       ["97%", "Evaluation alignment"],
       ["100%", "Participants contributed feature requests"],

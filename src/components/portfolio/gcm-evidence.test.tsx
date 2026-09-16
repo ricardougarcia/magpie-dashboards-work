@@ -2,7 +2,13 @@ import { act, cleanup, fireEvent, render, within } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { GcmEvidence } from "./gcm-evidence";
 
-afterEach(() => { cleanup(); vi.restoreAllMocks(); });
+afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.useRealTimers(); });
+
+function enter(target: Element, pointerType = "mouse") {
+  const event = new MouseEvent("pointerover", { bubbles: true });
+  Object.assign(event, { pointerType });
+  fireEvent(target, event);
+}
 
 const choices = [
   { label: "Demo", id: "demo", title: "Make the model understandable—and testable.", contribution: "planned the integration", media: "video" },
@@ -31,20 +37,66 @@ describe("GCM product evidence", () => {
     else expect(visible[0].textContent).toContain(media);
   });
 
-  it("requires explicit evidence activation and keeps focus or hover from interrupting the demonstration", () => {
+  it("selects evidence after deliberate mouse hover and pauses a playing demo only when selection changes", () => {
+    vi.useFakeTimers();
     const { container, getByRole } = render(<GcmEvidence />);
     const choice = getByRole("button", { name: /01 \/ Data/ });
     const video = container.querySelector("video")!;
     vi.spyOn(video, "paused", "get").mockReturnValue(false);
     const pause = vi.spyOn(video, "pause").mockImplementation(() => {});
-    fireEvent.pointerOver(choice, { pointerType: "mouse" });
-    act(() => choice.focus());
+    enter(choice);
+    act(() => vi.advanceTimersByTime(119));
     expect(choice.getAttribute("aria-pressed")).toBe("false");
     expect(container.querySelector("[data-gcm-evidence]")?.getAttribute("data-gcm-evidence")).toBe("demo");
     expect(pause).not.toHaveBeenCalled();
-    fireEvent.click(choice);
+    act(() => vi.advanceTimersByTime(1));
     expect(pause).toHaveBeenCalledOnce();
     expect(choice.getAttribute("aria-pressed")).toBe("true");
+    expect(container.querySelector('[data-gcm-evidence="data"]')).toBeTruthy();
+    expect(getByRole("complementary", { name: "Data: product contribution" })).toBeTruthy();
+    enter(choice);
+    act(() => vi.advanceTimersByTime(120));
+    expect(pause).toHaveBeenCalledOnce();
+  });
+
+  it("cancels a transient hover and does not let a stale hover override keyboard or click selection", () => {
+    vi.useFakeTimers();
+    const { getByRole } = render(<GcmEvidence />);
+    const data = getByRole("button", { name: /01 \/ Data/ });
+    const evaluation = getByRole("button", { name: /03 \/ Evaluation/ });
+    const integration = getByRole("button", { name: /02 \/ Integration/ });
+    enter(data);
+    fireEvent.pointerOut(data, { relatedTarget: document.body });
+    act(() => vi.advanceTimersByTime(150));
+    expect(data.getAttribute("aria-pressed")).toBe("false");
+    enter(data);
+    act(() => evaluation.focus());
+    act(() => vi.advanceTimersByTime(150));
+    expect(evaluation.getAttribute("aria-pressed")).toBe("true");
+    enter(data);
+    fireEvent.click(integration);
+    act(() => vi.advanceTimersByTime(150));
+    expect(integration.getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it.each(["touch", "pen"])("ignores %s hover and retains explicit activation", pointerType => {
+    vi.useFakeTimers();
+    const { getByRole } = render(<GcmEvidence />);
+    const data = getByRole("button", { name: /01 \/ Data/ });
+    enter(data, pointerType);
+    act(() => vi.advanceTimersByTime(150));
+    expect(data.getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(data);
+    expect(data.getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("cleans up a pending hover when the page unmounts", () => {
+    vi.useFakeTimers();
+    const { getByRole, unmount } = render(<GcmEvidence />);
+    enter(getByRole("button", { name: /01 \/ Data/ }));
+    expect(vi.getTimerCount()).toBe(1);
+    unmount();
+    expect(vi.getTimerCount()).toBe(0);
   });
 
   it("pauses playback on evidence change while retaining the video node and position for return", () => {

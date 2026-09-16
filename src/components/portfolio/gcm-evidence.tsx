@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gcmAssets, gcmBehaviors, gcmDecisions, gcmDemoSrc } from "@/data/gcm";
 import styles from "./gcm.module.css";
 
@@ -10,8 +10,15 @@ export function GcmEvidence() {
   const [changed, setChanged] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const video = useRef<HTMLVideoElement>(null);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const decision = gcmDecisions[selected];
+  const cancelHover = () => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    hoverTimer.current = null;
+  };
+  useEffect(() => () => { if (hoverTimer.current) clearTimeout(hoverTimer.current); }, []);
   const select = (index: number) => {
+    cancelHover();
     if (index === selected) return;
     if (video.current && !video.current.paused) video.current.pause();
     setChanged(true); setSelected(index);
@@ -20,7 +27,14 @@ export function GcmEvidence() {
   return <section id="product-work" className={styles.section} aria-labelledby="gcm-work-heading">
     <header className={styles.sectionHead}><div><p className={styles.meta}>02 / The product work</p><h2 id="gcm-work-heading">Make the work<br />behind the demo visible.</h2></div><p>Relevant data. A connected system. Answers that could be evaluated.</p></header>
     <div className={styles.evidenceChoices} role="group" aria-label="Explore the work behind the demo">
-      {gcmDecisions.map((item, index) => <button key={item.id} type="button" aria-pressed={index === selected} aria-controls="gcm-evidence-panel" onClick={() => select(index)}>{String(index).padStart(2, "0")} / {item.label}</button>)}
+      {gcmDecisions.map((item, index) => <button key={item.id} type="button" aria-pressed={index === selected} aria-controls="gcm-evidence-panel"
+        onPointerEnter={(event) => {
+          if (event.pointerType !== "mouse") return;
+          cancelHover();
+          hoverTimer.current = setTimeout(() => select(index), 120);
+        }} onPointerLeave={cancelHover} onPointerDown={cancelHover} onFocus={() => select(index)} onClick={() => select(index)}>
+        {String(index).padStart(2, "0")} / {item.label}
+      </button>)}
     </div>
     <div id="gcm-evidence-panel" className={styles.evidenceLayout} data-gcm-evidence={decision.id}>
       <div>

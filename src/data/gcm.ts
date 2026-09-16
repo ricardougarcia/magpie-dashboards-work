@@ -27,7 +27,7 @@ export const gcmDecisions = [
 ] as const;
 
 export const gcmOutcomes = [
-  { value: "4 + 5", label: "Pilot commitments + follow-on engagements", words: false },
+  { value: "10", label: "Pilot commitments + follow-on engagements", words: false },
   { value: "≥4.5/5", label: "Feedback on clarity and utility", words: false },
   { value: "97%", label: "Evaluation alignment", words: false },
   { value: "100%", label: "Participants contributed feature requests", words: false },
