@@ -94,7 +94,7 @@ describe("Marketplace case study", () => {
     expect(page.querySelector("#impact")?.textContent).toContain("Across separate environments");
   });
 
-  it("preserves research, planning, retirement, and measurement qualifications", () => {
+  it("preserves research, planning, and retirement qualifications without the removed outcomes disclosure", () => {
     const page = serverPage();
     const research = page.querySelector("#investigation")!;
     expect(research.textContent).toContain("Educators needed confidence in what they found. Providers needed ownership of what others found about them.");
@@ -107,10 +107,8 @@ describe("Marketplace case study", () => {
     ]);
     expect(page.querySelector(`#${marketplaceArtifacts.canvasPlan.id}`)?.textContent).toContain("not a claim that every pictured feature shipped");
     expect(page.querySelector("#repositories")?.textContent).toContain("does not establish that all three catalogs were retired");
-    expect(page.querySelector("#impact")?.textContent).toContain("maintenance savings updated to 40+ hours per week by the project owner");
-    expect(page.querySelector("#impact")?.textContent).toContain("does not include an independent ranking basis, underlying listing counts, revenue attribution, interview sample or sentiment methodology, or a time-measurement method");
-    expect(page.querySelector("#impact")?.textContent).toContain("User sentiment is not an NPS score or a measured percentage improvement");
-    expect(page.querySelector("#impact")?.textContent).toContain("not an isolated individual contribution");
+    expect(page.querySelector("#impact details")).toBeNull();
+    expect(page.querySelector("#impact")?.textContent).not.toContain("About the reported outcomes");
     const summaries = [...page.querySelectorAll("#orchestration details > summary")].map(summary => summary.textContent);
     expect(new Set(summaries).size).toBe(summaries.length);
     expect(summaries.every(summary => !summary?.includes("Read the decision"))).toBe(true);
