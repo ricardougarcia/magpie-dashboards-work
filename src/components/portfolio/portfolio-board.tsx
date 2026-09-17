@@ -12,7 +12,8 @@ import { boardEntries } from "@/data/board";
 import { CcpBoardCluster } from "./ccp-board-cluster";
 import { MarketplaceBoardCluster } from "./marketplace-board-cluster";
 import { LtiBoardCluster } from "./lti-board-cluster";
-import { MagpieBoardCluster, ReservedBoardCluster } from "./board-clusters";
+import { PortalBoardCluster } from "./portal-board-cluster";
+import { MagpieBoardCluster } from "./board-clusters";
 import { GcmBoardCluster, GcmPmfBoardSlip } from "./gcm-board-cluster";
 import { GcmBoardField } from "./gcm-board-field";
 import clusters from "./board-clusters.module.css";
@@ -45,11 +46,12 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
             if (entry.kind === "marketplace") return <MarketplaceBoardCluster key={entry.id} entry={entry} />;
             if (entry.kind === "gcm") return <GcmBoardCluster key={entry.id} entry={entry} />;
             if (entry.kind === "lti") return <LtiBoardCluster key={entry.id} entry={entry} />;
+            if (entry.kind === "portal") return <PortalBoardCluster key={entry.id} entry={entry} />;
             if (entry.kind === "ccp") {
               const project = projects.find((project) => project.slug === "ccp");
               return <Fragment key={entry.id}><GcmPmfBoardSlip />{project ? <CcpBoardCluster project={project} number={entry.number} /> : null}</Fragment>;
             }
-            return <ReservedBoardCluster key={entry.id} entry={entry} />;
+            return null;
           })}
         </GcmBoardField>
         <footer className={sheet.sheetClosing}>
