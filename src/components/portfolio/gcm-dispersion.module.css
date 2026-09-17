@@ -1,0 +1,29 @@
+.field { position: relative; height: 310px; margin-top: 12px; color: var(--ink); }
+.field canvas, .fallback { position: absolute; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; }
+.fallback { opacity: var(--gcm-scatter-opacity, 1); }
+.fallback path { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-opacity: .57; }
+.field[data-canvas-ready="true"] .fallback { display: none; }
+.axes { position: absolute; inset: 20px 19px 32px; border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); pointer-events: none; }
+.axes span { position: absolute; font: 11px/1 var(--font-mono), monospace; color: var(--muted); }
+.axes span:first-child { top: 0; left: -13px; }
+.axes span:last-child { right: 0; bottom: -20px; }
+.caption { position: absolute; bottom: 10px; left: 19px; color: var(--muted); font: 9px/1.4 var(--font-mono), monospace; text-transform: uppercase; letter-spacing: .035em; }
+.endpoint { position: absolute; left: 50%; top: 58%; width: 8px; height: 8px; margin: -4px; border-radius: 50%; background: var(--ink); opacity: var(--gcm-arrival-opacity, 0); pointer-events: none; }
+.endpoint i { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--signal-text); opacity: var(--gcm-red-opacity, 0); }
+.trigger { position: absolute; inset: 0; width: 100%; padding: 0; border: 0; background: transparent; color: var(--muted); cursor: var(--cursor-action); touch-action: manipulation; text-align: right; }
+.trigger > span { position: absolute; right: 19px; bottom: -30px; display: inline-flex; align-items: center; gap: 12px; min-height: 44px; font: 9px/1.4 var(--font-mono), monospace; text-transform: uppercase; }
+.trigger > span > span { color: var(--ink); }
+.trigger:focus-visible { outline: 2px solid var(--signal-text); outline-offset: 4px; }
+.trigger:is(:hover, :focus-visible) > span { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+.formula { position: absolute; z-index: 1; width: min(230px, calc(100% - 20px)); left: 50%; top: calc(58% - 90px); padding: 10px 12px; border: 1px solid var(--line-strong); background: var(--paper-raised); pointer-events: none; opacity: var(--gcm-formula-opacity, 0); transform: translate(-50%, var(--gcm-formula-offset, 6px)); }
+.formula[aria-hidden="true"] { visibility: hidden; }
+.formula::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: 15px; background: var(--signal-text); }
+.formulaLabel { display: block; margin-bottom: 7px; font: 11px/1.4 var(--font-mono), monospace; color: var(--muted); text-transform: uppercase; }
+.equation { display: flex; align-items: center; justify-content: center; gap: 8px; font: 16px/1.25 Georgia, serif; white-space: nowrap; }
+.fraction { display: grid; text-align: center; }
+.fraction > span:first-child { padding: 0 3px 3px; border-bottom: 1px solid var(--ink); }
+.fraction > span:last-child { padding-top: 3px; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 540px) { .field { height: 290px; } }
+@media (prefers-reduced-motion: reduce) { .formula { transform: translateX(-50%); } }
+@media print { .field canvas, .trigger, .formula, .endpoint { display: none; } .field[data-canvas-ready="true"] .fallback { display: block; opacity: 1; } }

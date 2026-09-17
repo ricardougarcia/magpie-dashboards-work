@@ -454,7 +454,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   };
 
   return (
-    <main className="site-shell">
+    <main className="site-shell" data-work-sample="magpie">
       <SiteMasthead project={{ mark: "M/D", number: "01", role: "Principal Product Manager", organization: "Magpie Literacy" }} />
 
       <PanelReplacement outgoing={

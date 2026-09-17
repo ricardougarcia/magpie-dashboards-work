@@ -4,6 +4,7 @@ import { gcmPmfHref } from "@/data/gcm";
 import { pmfAssets, pmfPrototypeFrames } from "@/data/pmf";
 import { PortfolioLink } from "./portfolio-link";
 import { GcmBoardRelationship } from "./gcm-board-field";
+import { GcmDispersion } from "./gcm-dispersion";
 import clusters from "./board-clusters.module.css";
 import region from "./region.module.css";
 import styles from "./gcm-board-cluster.module.css";
@@ -16,10 +17,13 @@ export function GcmBoardCluster({ entry }: { entry: BoardEntry }) {
       <p className={clusters.summary}>Make probabilistic AI tangible.</p>
       <div className={clusters.facts}><span>Sole product lead</span><span>Generative Consumer Model</span></div>
     </header>
-    <PortfolioLink href="/work/gcm" className={styles.model} aria-label="Explore GCM: a working model, a testable answer">
-      <h3>A working model.<br />A testable answer.</h3>
-      <div className={styles.components} aria-label="GCM architecture components"><span>LLM <small>/ Interpret</small></span><span>MCP <small>/ Connect</small></span><span>GCM <small>/ Model</small></span></div>
-    </PortfolioLink>
+    <div className={styles.model}>
+      <PortfolioLink href="/work/gcm" className={styles.modelHeading} aria-label="Explore GCM: a working model, a testable answer">
+        <h3>A working model.<br />A testable answer.</h3>
+        <div className={styles.components} aria-label="GCM architecture components"><span>LLM <small>/ Interpret</small></span><span>MCP <small>/ Connect</small></span><span>GCM <small>/ Model</small></span></div>
+      </PortfolioLink>
+      <GcmDispersion />
+    </div>
     <GcmBoardRelationship origin="gcm" />
     <footer className={clusters.clusterFoot}><span>R:GCM / 03.A</span><PortfolioLink href="/work/gcm">View project <span>[Open]</span></PortfolioLink></footer>
   </article>;
