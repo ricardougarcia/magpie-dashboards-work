@@ -56,7 +56,7 @@ it("docks a single accessible navigation, reverses with scrolling, and remeasure
   const sheet = container.querySelector<HTMLElement>("[data-board-sheet]")!;
   const navigation = getByRole("navigation").parentElement!;
   const rail = navigation.parentElement!;
-  const readout = rail.firstElementChild!;
+  const readout = rail.firstElementChild as HTMLElement;
   let top = 100;
   let navHeight = 56;
   vi.spyOn(sheet, "getBoundingClientRect").mockImplementation(() => ({ top, width: 960, height: 2200 } as DOMRect));

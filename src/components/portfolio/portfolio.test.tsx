@@ -103,8 +103,8 @@ describe("Board and Project foundation", () => {
     expect(screen.queryByLabelText("Board sheet record")).toBeNull();
     const group = container.querySelector("[data-evidence-active]")!;
     expect([...group.querySelectorAll<HTMLElement>("[data-artifact]")].map((item) => item.dataset.artifact)).toEqual(["A", "B", "C"]);
-    expect(group.querySelector("[data-board-notes]")).toBeNull();
-    expect(group.nextElementSibling?.hasAttribute("data-board-notes")).toBe(true);
+    expect(container.querySelector("[data-board-notes]")).toBeNull();
+    expect(group.nextElementSibling?.tagName).toBe("FOOTER");
   });
 
   it("replaces the masthead and section 00 with the sheet beginning at its coordinates", () => {

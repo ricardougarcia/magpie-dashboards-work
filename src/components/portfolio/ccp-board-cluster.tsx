@@ -72,23 +72,6 @@ export function CcpBoardCluster({ project, number }: { project: PortfolioProject
         </RegionInspection>
       </div> : null}
     </EvidenceRegion>
-      <div className={styles.notesPlate} data-board-notes>
-      <section className={styles.researchPlate} aria-labelledby={`${project.id}-scope`}>
-        <h3 id={`${project.id}-scope`} className={styles.register}>Investigation / Scope</h3>
-        <div className={styles.researchSignals}>
-        {project.region?.signals.filter((signal) => project.sections.some((section) => section.id === signal.sectionId)).map((signal) => <PortfolioLink key={signal.label} href={`${projectUrl}#${signal.sectionId}`} className={styles.scopeSignal}>
-          <strong>{signal.value}</strong><span>{signal.label}</span>
-        </PortfolioLink>)}
-        </div>
-      </section>
-      <section className={styles.outcomePlate} aria-labelledby={`${project.id}-outcome`}>
-        <h3 id={`${project.id}-outcome`} className={styles.register}>Result / Time to value</h3>
-        <div>
-        <p className={styles.outcome}>{project.boardTakeaway}</p>
-        <PortfolioLink href={`${projectUrl}#${project.sections.find((section) => section.kind === "impact")?.id ?? project.sections[0]?.id ?? "portfolio-main"}`} className={styles.outcomeLink}>View outcome <span className={styles.actionVerb}>[Read]</span></PortfolioLink>
-        </div>
-      </section>
-      </div>
     <footer className={styles.regionFoot}><span>R:{project.slug.toUpperCase()} / End of Region {number}</span><PortfolioLink href={projectUrl}>View project <span className={styles.actionVerb}>[Open]</span></PortfolioLink></footer>
   </article>;
 }
