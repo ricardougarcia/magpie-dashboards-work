@@ -4,16 +4,20 @@
 .cluster > header > div { margin-top: 12px; }
 .cluster > footer { flex-direction: row; margin-top: 0; padding: 16px 0 0; }
 .artifacts { position: relative; padding-top: 4px; }
-.audiences { display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 20px; color: var(--marketplace-ink); font: 10px/1.6 var(--font-mono), monospace; }
-.audiences > span { display: grid; gap: 4px; padding: 8px 22px 16px 0; }
+.audiences { display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 8px; color: var(--marketplace-ink); font: 10px/1.6 var(--font-mono), monospace; }
+.audiences > span { padding: 8px 22px 8px 0; }
 .audiences > span:last-child { border-left: 1px solid var(--marketplace-ink); padding-inline: 22px 0; }
+.audienceCopy { display: grid; gap: 4px; transform: translateX(calc(-1 * var(--marketplace-label-shift, 0px))); }
+.audiences > span:last-child .audienceCopy { transform: translateX(var(--marketplace-label-shift, 0px)); }
 .audiences small { color: var(--muted); font: 11px/1.5 var(--font-sans), sans-serif; }
 .catalogStack { position: relative; isolation: isolate; }
 .paperSheet { position: absolute; inset: 0; z-index: -1; border: 1px solid var(--marketplace-ink); background: var(--paper-raised); pointer-events: none; opacity: calc(var(--marketplace-hover-opacity, 0) * .38); transform: var(--marketplace-sheet-a, none); }
 .paperSheet:nth-child(2) { transform: var(--marketplace-sheet-b, none); }
 .catalog { position: relative; display: block; padding: 14px 12px 0; border-top: 1px solid var(--line-strong); background: var(--paper-raised); text-decoration: none; }
-.catalog::before { content: ""; position: absolute; left: 50%; top: -20px; height: 20px; width: 1px; background: var(--marketplace-ink); }
-.catalog img { display: block; width: 100%; height: auto; margin-top: 14px; }
+.catalog::before { content: ""; position: absolute; left: 50%; top: -8px; height: 8px; width: 1px; background: var(--marketplace-ink); }
+.catalogImage { position: relative; overflow: hidden; margin-top: 14px; }
+.catalog img { display: block; width: 100%; height: auto; }
+.seamReveal { position: absolute; inset: 0; pointer-events: none; backdrop-filter: contrast(1.1) saturate(1.05); clip-path: inset(0 var(--marketplace-seam-inset, 50%)); opacity: var(--marketplace-hover-opacity, 0); }
 .catalogAction { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px 16px; align-items: center; min-height: 48px; font: 9px/1.6 var(--font-mono), monospace; color: var(--muted); }
 .catalogAction > span { color: var(--ink); }
 .catalog:is(:hover, :focus-visible) .catalogAction { color: var(--ink); text-decoration: underline; text-underline-offset: 5px; }
@@ -22,8 +26,8 @@
 .baseTrace { fill: none; stroke: var(--marketplace-ink); stroke-width: 1; stroke-dasharray: 1; }
 .convergence circle { fill: var(--marketplace-ink); }
 .travelers { opacity: var(--marketplace-hover-opacity, 0); pointer-events: none; }
-.travelers path { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 8 112; stroke-dashoffset: var(--marketplace-trace-offset, 8); }
-.convergence .endpoint { fill: var(--ink); opacity: var(--marketplace-endpoint-opacity, 0); }
+.travelers path { fill: none; stroke: var(--signal-text); stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 14 106; stroke-dashoffset: var(--marketplace-trace-offset, 14); }
+.convergence .endpoint { fill: var(--signal-text); stroke: var(--signal-text); stroke-width: 2; vector-effect: non-scaling-stroke; opacity: var(--marketplace-endpoint-opacity, 0); }
 .orchestration p { color: var(--muted); font-size: 12px; line-height: 1.6; margin: 8px 0 0; }
 .orchestration p:first-child { font-size: 9px; margin: 0; }
 .orchestration h3 { font: 500 20px/1.15 var(--font-sans), sans-serif; letter-spacing: -.035em; margin: 10px 0 0; }
@@ -36,9 +40,11 @@
   .catalogAction { font-size: 8px; }
   .orchestration { margin-left: 0; gap: 16px; grid-template-columns: 55px 1fr; }
   .orchestration h3 { font-size: 19px; }
+  .travelers path { stroke-width: 6.5; }
 }
 @media (prefers-reduced-motion: reduce) {
   .artifacts[data-entered="true"] .baseTrace { animation: none; }
-  .paperSheet, .travelers { display: none; }
+  .paperSheet, .travelers, .seamReveal { display: none; }
+  .audienceCopy, .audiences > span:last-child .audienceCopy { transform: none; }
   .cluster[data-marketplace-active="true"] .endpoint { opacity: 1; }
 }

@@ -37,7 +37,7 @@ function keyboardFocus(element: HTMLElement) {
 }
 
 function value(element: HTMLElement, name: string) {
-  return Number(element.style.getPropertyValue(`--marketplace-${name}`));
+  return Number.parseFloat(element.style.getPropertyValue(`--marketplace-${name}`) || "0");
 }
 
 function scene() {
@@ -82,16 +82,24 @@ describe("Marketplace Board hover motion", () => {
     pointer(article, "pointerenter");
     advance(350);
     const progress = value(article, "trace-offset");
+    const seam = value(article, "seam-inset");
+    expect(seam).toBeGreaterThan(0);
+    expect(seam).toBeLessThan(50);
+    expect(value(article, "label-shift")).toBeGreaterThan(0);
+    expect(value(article, "label-shift")).toBeLessThan(3);
     pointer(title, "pointerleave");
     pointer(catalog, "pointerenter");
     expect(article.dataset.marketplaceActive).toBe("true");
     expect(value(article, "trace-offset")).toBe(progress);
     advance(64);
     expect(value(article, "trace-offset")).toBeLessThan(progress);
+    expect(value(article, "seam-inset")).toBeLessThan(seam);
     advance(1000);
     expect(frames.size).toBe(0);
     expect(value(article, "hover-opacity")).toBe(1);
     expect(value(article, "endpoint-opacity")).toBe(1);
+    expect(article.style.getPropertyValue("--marketplace-seam-inset")).toBe("0%");
+    expect(article.style.getPropertyValue("--marketplace-label-shift")).toBe("3px");
     const settled = article.getAttribute("style");
     pointer(catalog, "pointerleave");
     pointer(title, "pointerenter");
@@ -120,6 +128,8 @@ describe("Marketplace Board hover motion", () => {
     expect(article.dataset.marketplaceActive).toBe("false");
     advance(400);
     expect(value(article, "hover-opacity")).toBe(0);
+    expect(article.style.getPropertyValue("--marketplace-seam-inset")).toBe("50%");
+    expect(article.style.getPropertyValue("--marketplace-label-shift")).toBe("0px");
     expect(frames.size).toBe(0);
   });
 
@@ -129,6 +139,8 @@ describe("Marketplace Board hover motion", () => {
     advance(350);
     const sheets = [article.style.getPropertyValue("--marketplace-sheet-a"), article.style.getPropertyValue("--marketplace-sheet-b")];
     const progress = value(article, "trace-offset");
+    const seam = value(article, "seam-inset");
+    const labelShift = value(article, "label-shift");
     pointer(article, "pointerleave");
     advance(64);
     const fadingOpacity = value(article, "hover-opacity");
@@ -136,12 +148,20 @@ describe("Marketplace Board hover motion", () => {
     expect(fadingOpacity).toBeLessThan(1);
     expect([article.style.getPropertyValue("--marketplace-sheet-a"), article.style.getPropertyValue("--marketplace-sheet-b")]).toEqual(sheets);
     expect(value(article, "trace-offset")).toBe(progress);
+    expect(value(article, "seam-inset")).toBe(seam);
+    const returningLabels = value(article, "label-shift");
+    expect(returningLabels).toBeGreaterThan(0);
+    expect(returningLabels).toBeLessThan(labelShift);
     pointer(article, "pointerenter");
     expect(value(article, "hover-opacity")).toBe(fadingOpacity);
     expect(value(article, "trace-offset")).toBe(progress);
+    expect(value(article, "seam-inset")).toBe(seam);
+    expect(value(article, "label-shift")).toBe(returningLabels);
     advance(64);
     expect(value(article, "hover-opacity")).toBeGreaterThan(fadingOpacity);
     expect(value(article, "trace-offset")).toBeLessThan(progress);
+    expect(value(article, "seam-inset")).toBeLessThan(seam);
+    expect(value(article, "label-shift")).toBeGreaterThan(returningLabels);
     advance(1000);
     expect(value(article, "endpoint-opacity")).toBe(1);
     expect(frames.size).toBe(0);
@@ -157,6 +177,8 @@ describe("Marketplace Board hover motion", () => {
     expect(frames.size).toBe(0);
     expect(value(article, "hover-opacity")).toBe(0);
     expect(value(article, "endpoint-opacity")).toBe(0);
+    expect(article.style.getPropertyValue("--marketplace-seam-inset")).toBe("50%");
+    expect(article.style.getPropertyValue("--marketplace-label-shift")).toBe("0px");
     const quiet = article.getAttribute("style");
     pointer(article, "pointerleave");
     pointer(article, "pointerenter");

@@ -17,16 +17,19 @@ export function MarketplaceBoardCluster({ entry }: { entry: BoardEntry }) {
     </header>
     <ClusterEntrance className={styles.artifacts}>
       <div className={styles.audiences} role="group" aria-label="Marketplace audiences">
-        <span>Educators <small>Find the right tools</small></span>
-        <span>Providers <small>Reach the right educators</small></span>
+        <span><span className={styles.audienceCopy}>Educators <small>Find the right tools</small></span></span>
+        <span><span className={styles.audienceCopy}>Providers <small>Reach the right educators</small></span></span>
       </div>
       <div className={styles.catalogStack}>
         <span className={styles.paperSheet} aria-hidden="true" />
         <span className={styles.paperSheet} aria-hidden="true" />
         <PortfolioLink href="/work/marketplace" className={styles.catalog} aria-label="Explore EdCo Marketplace through the shared catalog">
-        <div className={clusters.sourceLabel}><span>A / Shared Marketplace</span><span>Product presentation</span></div>
-        <Image src="/portfolio/marketplace/catalog.png" alt="EdTech Collective Marketplace catalog presentation with product listings, search, discovery filters, and trust badges" width={2842} height={1428} sizes="(max-width: 900px) 100vw, 42vw" />
-        <span className={styles.catalogAction}>Explore the shared experience <span>[Open]</span></span>
+          <div className={clusters.sourceLabel}><span>A / Shared Marketplace</span><span>Product presentation</span></div>
+          <div className={styles.catalogImage}>
+            <Image src="/portfolio/marketplace/catalog.png" alt="EdTech Collective Marketplace catalog presentation with product listings, search, discovery filters, and trust badges" width={2842} height={1428} sizes="(max-width: 900px) 100vw, 42vw" />
+            <span className={styles.seamReveal} aria-hidden="true" />
+          </div>
+          <span className={styles.catalogAction}>Explore the shared experience <span>[Open]</span></span>
         </PortfolioLink>
       </div>
       <div className={styles.orchestration}>
@@ -38,7 +41,7 @@ export function MarketplaceBoardCluster({ entry }: { entry: BoardEntry }) {
             <path pathLength="100" d="M 60 4 V 60" />
             <path pathLength="100" d="M 108 4 V 20 H 60 V 60" />
           </g>
-          <circle className={styles.endpoint} cx="60" cy="60" r="3" />
+          <circle className={styles.endpoint} cx="60" cy="60" r="4" />
         </svg>
         <div>
           <p className={clusters.sourceLabel}>B / The work behind the seam</p>
