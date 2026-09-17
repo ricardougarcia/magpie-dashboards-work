@@ -2,6 +2,8 @@
 
 The harness checks the four prototype views at 1440×1000, 820×1180, 390×844 with touch, and 320×700 with touch. It covers mouse, touch, and keyboard selection; keyboard access to the selected image; all four modal images and disclosures; Escape, focus, and scroll restoration; stable image/caption heights; the 320 ms opacity transition, rapid selection, and reduced motion; horizontal overflow; rail reversal and completed convergence; and the existing protected interview viewer.
 
+Image assertions compare URL paths so Vercel's deployment query parameter does not produce false mismatches. Hosted verification separately compares the served artifact bytes against the approval manifest.
+
 Run against a local server or an exact hosted deployment:
 
 ```sh

@@ -36,6 +36,8 @@ async function check(name, operation) {
   } catch (error) { record(name, false, error.message); }
 }
 const settle = page => page.waitForTimeout(450);
+// Hosted Next.js appends its deployment ID to original asset URLs.
+const imagePath = async locator => new URL(await locator.getAttribute('src'), base).pathname;
 const instantScroll = (page, y) => page.evaluate(top => window.scrollTo({ top, behavior: 'instant' }), y);
 const overflow = page => page.evaluate(() => ({ pass: document.documentElement.scrollWidth <= innerWidth + 1, detail: { viewport: innerWidth, content: document.documentElement.scrollWidth } }));
 async function screenshot(page, name, locator) {
@@ -60,7 +62,7 @@ async function selected(gallery, index) {
     const caption = captions.filter(node => getComputedStyle(node).visibility === 'visible' && node.getAttribute('aria-hidden') !== 'true');
     return {
       pass: buttons.length === 4 && buttons.every((button, position) => button.getAttribute('aria-pressed') === String(position === expected.index)) &&
-        visible.length === 1 && visible[0].src.endsWith(expected.source) && visible[0].alt.length > 0 && visible[0].complete && visible[0].naturalWidth === 960 &&
+        visible.length === 1 && new URL(visible[0].src).pathname === `/portfolio/pmf/prototypes/${expected.source}` && visible[0].alt.length > 0 && visible[0].complete && visible[0].naturalWidth === 960 &&
         trigger.getAttribute('aria-label') === `View image: ${expected.title}` && caption.length === 1 && captions[expected.index] === caption[0],
       detail: { pressed: buttons.map(button => button.getAttribute('aria-pressed')), images: visible.map(image => ({ src: image.getAttribute('src'), alt: image.alt, naturalWidth: image.naturalWidth })), caption: caption.map(node => node.textContent) },
     };
@@ -141,7 +143,7 @@ const readProgress = page => page.evaluate(() => ({
         const keyboardDialog = gallery.getByRole('dialog', { name: titles[2] });
         await check('Enter opens the keyboard-selected Ask frame', async () => {
           await keyboardDialog.waitFor({ state: 'visible', timeout: 2500 });
-          return await keyboardDialog.getByRole('img').getAttribute('src') === `/portfolio/pmf/prototypes/${sources[2]}`;
+          return await imagePath(keyboardDialog.getByRole('img')) === `/portfolio/pmf/prototypes/${sources[2]}`;
         });
         await page.keyboard.press('Escape');
         await restored(page, trigger, keyboardOverflow);
@@ -155,7 +157,7 @@ const readProgress = page => page.evaluate(() => ({
           await dialog.waitFor({ state: 'visible' });
           await check(`${labels[index]}: dialog shows original selected image with accurate disclosure`, async () => {
             const image = dialog.getByRole('img');
-            return await image.getAttribute('src') === `/portfolio/pmf/prototypes/${sources[index]}` && await image.evaluate(element => element.complete && element.naturalWidth === 960) && await dialog.getByText('Original prototype frame', { exact: true }).isVisible() && !(await dialog.innerText()).includes('withheld');
+            return await imagePath(image) === `/portfolio/pmf/prototypes/${sources[index]}` && await image.evaluate(element => element.complete && element.naturalWidth === 960) && await dialog.getByText('Original prototype frame', { exact: true }).isVisible() && !(await dialog.innerText()).includes('withheld');
           });
           await check(`${labels[index]}: native modal focuses Close and locks body and root`, async () => ({ pass: await dialog.getByRole('button', { name: 'Close', exact: true }).evaluate(element => document.activeElement === element) && await page.evaluate(() => document.body.style.overflow === 'hidden' && document.documentElement.style.overflow === 'hidden') }));
           await check(`${labels[index]}: dialog fits the viewport`, () => dialog.evaluate(element => { const box = element.getBoundingClientRect(); return { pass: box.left >= 0 && box.right <= innerWidth + 1 && box.top >= 0 && box.bottom <= innerHeight + 1, detail: { x: box.x, y: box.y, width: box.width, height: box.height } }; }));
@@ -203,7 +205,7 @@ const readProgress = page => page.evaluate(() => ({
         if (device.touch) await protectedTrigger.tap(); else await protectedTrigger.click();
         const protectedDialog = page.getByRole('dialog', { name: 'Interview script', exact: true });
         await protectedDialog.waitFor({ state: 'visible' });
-        await check('Existing interview viewer retains protected asset and disclosure', async () => await protectedDialog.getByRole('img').getAttribute('src') === '/portfolio/pmf/interview-overview.png' && await protectedDialog.getByText('Original artifact · details withheld', { exact: true }).isVisible());
+        await check('Existing interview viewer retains protected asset and disclosure', async () => await imagePath(protectedDialog.getByRole('img')) === '/portfolio/pmf/interview-overview.png' && await protectedDialog.getByText('Original artifact · details withheld', { exact: true }).isVisible());
         await page.keyboard.press('Escape');
         await protectedDialog.waitFor({ state: 'hidden' });
         await check('Existing viewer restores trigger focus', () => protectedTrigger.evaluate(element => document.activeElement === element));
