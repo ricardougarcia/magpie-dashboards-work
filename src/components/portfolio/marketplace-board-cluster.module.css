@@ -26,7 +26,7 @@
 .baseTrace { fill: none; stroke: var(--marketplace-ink); stroke-width: 1; stroke-dasharray: 1; }
 .convergence circle { fill: var(--marketplace-ink); }
 .travelers { opacity: var(--marketplace-hover-opacity, 0); pointer-events: none; }
-.travelers path { fill: none; stroke: var(--signal-text); stroke-width: 3; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-dasharray: 14 106; stroke-dashoffset: var(--marketplace-trace-offset, 14); }
+.travelers path { fill: none; stroke: var(--signal-text); stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 14 106; stroke-dashoffset: var(--marketplace-trace-offset, 14); }
 .convergence .endpoint { fill: var(--signal-text); stroke: var(--signal-text); stroke-width: 2; vector-effect: non-scaling-stroke; opacity: var(--marketplace-endpoint-opacity, 0); }
 .orchestration p { color: var(--muted); font-size: 12px; line-height: 1.6; margin: 8px 0 0; }
 .orchestration p:first-child { font-size: 9px; margin: 0; }
@@ -40,6 +40,7 @@
   .catalogAction { font-size: 8px; }
   .orchestration { margin-left: 0; gap: 16px; grid-template-columns: 55px 1fr; }
   .orchestration h3 { font-size: 19px; }
+  .travelers path { stroke-width: 6.5; }
 }
 @media (prefers-reduced-motion: reduce) {
   .artifacts[data-entered="true"] .baseTrace { animation: none; }
