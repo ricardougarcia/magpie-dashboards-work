@@ -1,6 +1,6 @@
 // Approved “Two lines of inquiry” study. Public overview assets have details
 // permanently removed; never substitute full-detail originals in this record.
-export const pmfRecord = { number: "03.B", role: "Sole product lead", organization: "SaferData" };
+export const pmfRecord = { mark: "P/F", number: "03.B", role: "Sole product lead", organization: "SaferData" };
 
 export const pmfAssets = {
   segmentation: { src: "/portfolio/pmf/segmentation-overview.png", width: 1084, height: 608, title: "Population segmentation prototype", alt: "Original population segmentation prototype overview, with detailed labels withheld", caption: "One model / multiple ways to explore a population" },

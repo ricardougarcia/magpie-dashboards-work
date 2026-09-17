@@ -44,6 +44,7 @@ export type ProjectSection = {
 };
 
 export type PortfolioProject = {
+  mark: string;
   id: string;
   slug: string;
   number: string;

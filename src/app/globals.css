@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  --masthead-height: 72px;
+  --masthead-gutter: clamp(20px, 3.4vw, 56px);
   --paper: #f1efe9;
   --paper-raised: #f8f6f1;
   --ink: #282828;
@@ -94,24 +96,28 @@ select:focus-visible {
   position: relative;
   z-index: 10;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  min-height: 72px;
-  padding: 0 40px;
-  border-bottom: 1px solid var(--line-strong);
+  gap: 20px;
+  min-height: var(--masthead-height);
+  padding: 0 var(--masthead-gutter);
+  border-block: 1px solid rgba(40, 40, 40, 0.36);
   background: var(--paper);
   transform: translateZ(0);
 }
 
 .wordmark,
-.edit-link {
+.masthead-destination {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  width: fit-content;
   color: inherit;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .wordmark {
-  display: flex;
-  align-items: center;
   gap: 12px;
   font-size: 12px;
   font-weight: 650;
@@ -123,6 +129,7 @@ select:focus-visible {
   display: grid;
   width: 32px;
   height: 32px;
+  flex-shrink: 0;
   place-items: center;
   border: 1px solid var(--ink);
   background: var(--ink);
@@ -131,25 +138,49 @@ select:focus-visible {
   font-size: 10px;
 }
 
-.masthead-meta {
-  display: flex;
-  gap: 28px;
-  color: var(--muted);
+.masthead-meta,
+.masthead-destination {
   font-family: var(--font-mono), monospace;
-  font-size: 9px;
-  letter-spacing: 0.1em;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.055em;
   text-transform: uppercase;
 }
 
-.edit-link {
-  justify-self: end;
+.masthead-meta {
   display: flex;
-  align-items: center;
+  justify-content: center;
   gap: 8px;
-  font-family: var(--font-mono), monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+}
+
+.masthead-destination {
+  justify-self: end;
+  gap: 8px;
+}
+
+.masthead-plus { color: var(--signal); font-size: 18px; }
+.masthead-overview { color: var(--muted); }
+.wordmark:hover,
+.masthead-destination:hover { color: var(--signal); }
+
+@media (max-width: 1000px) {
+  :root { --masthead-height: 96px; }
+  .masthead {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 44px auto;
+    gap: 0 12px;
+    padding-block: 8px 12px;
+  }
+  .masthead-meta { grid-column: 1 / -1; grid-row: 2; flex-wrap: wrap; gap: 0 8px; }
+  .masthead-destination { grid-column: 2; grid-row: 1; }
+}
+
+@media (max-width: 380px) {
+  .wordmark { gap: 8px; font-size: 11px; }
+  .masthead { column-gap: 8px; }
 }
 
 .hero {
@@ -1045,14 +1076,6 @@ footer {
 }
 
 @media (max-width: 1100px) {
-  .masthead-meta {
-    display: none;
-  }
-
-  .masthead {
-    grid-template-columns: 1fr auto;
-  }
-
   .hero {
     min-height: auto;
   }
@@ -1072,19 +1095,10 @@ footer {
 }
 
 @media (max-width: 800px) {
-  .masthead,
   .hero,
   .section-heading {
     padding-left: 20px;
     padding-right: 20px;
-  }
-
-  .masthead {
-    min-height: 62px;
-  }
-
-  .wordmark > span:last-child {
-    display: none;
   }
 
   .hero {
@@ -4437,10 +4451,6 @@ body {
 }
 
 /* Panel 0's bottom line is Panel 1's top line. Panel 2 owns the sweeping shared line. */
-.masthead[data-panel="0"] {
-  border-top: 1px solid var(--line-strong);
-}
-
 .panel-outgoing .hero {
   border-bottom: 0;
 }

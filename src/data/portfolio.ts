@@ -7,6 +7,7 @@ export const portfolioProjects: PortfolioProject[] = [
     id: "learnplatform-ccp",
     slug: "ccp",
     number: "01",
+    mark: "C/P",
     title: "Customer-Created Products",
     organization: "LearnPlatform",
     category: "Edtech / Platform workflows",
