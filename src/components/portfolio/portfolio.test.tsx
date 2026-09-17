@@ -64,7 +64,8 @@ describe("Board and Project foundation", () => {
       ["04", "region-lti"], ["05", "region-partner-portal"], ["06", "region-learnplatform-ccp"],
     ]);
     const reserved = entries.filter((entry) => entry.dataset.boardState === "reserved");
-    expect(reserved).toHaveLength(2);
+    expect(reserved).toHaveLength(1);
+    expect(reserved[0].id).toBe("region-partner-portal");
     expect(screen.queryByText("06 Regions / 07 entries / 02 reserved")).toBeNull();
     reserved.forEach((entry) => {
       expect(within(entry).getByText("Wireframe placeholder")).toBeTruthy();
@@ -74,6 +75,11 @@ describe("Board and Project foundation", () => {
     expect(screen.getByRole("link", { name: "EdCo Marketplace" }).getAttribute("href")).toBe("/work/marketplace");
     expect(container.querySelector("#region-marketplace")?.getAttribute("data-board-state")).toBe("ready");
     expect(container.querySelector("#region-gcm")?.getAttribute("data-board-state")).toBe("ready");
+    const lti = container.querySelector<HTMLElement>("#region-lti")!;
+    expect(lti.dataset.boardState).toBe("ready");
+    expect(within(lti).getByRole("link", { name: "LTI" }).getAttribute("href")).toBe("/work/lti");
+    expect(within(lti).getByRole("link", { name: "Explore LTI: three connected workstreams" }).getAttribute("href")).toBe("/work/lti");
+    expect(within(lti).getByRole("group", { name: "LTI delivery workstreams" }).textContent).toContain("Integration");
     expect(screen.getByRole("link", { name: "GCM" }).getAttribute("href")).toBe("/work/gcm");
     expect(container.querySelector("#study-pmf")?.previousElementSibling?.id).toBe("region-partner-portal");
     expect(container.querySelector("#study-pmf")?.nextElementSibling?.id).toBe("region-learnplatform-ccp");
