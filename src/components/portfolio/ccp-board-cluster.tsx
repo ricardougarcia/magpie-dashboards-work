@@ -16,22 +16,13 @@ export function CcpBoardCluster({ project, number }: { project: PortfolioProject
   const projectUrl = `/work/${project.slug}`;
   const sourceCoordinate = detail ? `${Math.round(cover.width * detail.crop.x)},${Math.round(cover.height * detail.crop.y)}` : undefined;
   return <article id={`region-${project.id}`} data-region-code={project.slug.toUpperCase()} className={`${styles.region} ${clusters.cluster} ${clusters.ccp}`} data-board-number={number} data-board-state="ready" aria-labelledby={`${project.id}-title`}>
-    <header className={styles.regionHeading}>
-      <div>
-        <p className={styles.register}><span>[{number}]</span> {project.organization} / {project.category}</p>
-        <h2 id={`${project.id}-title`} style={{ viewTransitionName: `region-${project.id}-title` }}>
-          <PortfolioLink href={projectUrl} aria-label={project.title}>{project.title}<span>.</span></PortfolioLink>
-        </h2>
-        <p className={styles.summary}>{project.summary}</p>
-      </div>
-      <div className={styles.regionIdentity}>
-        <dl className={sheet.specPlate} aria-label={`${project.title} specifications`}>
-          <div><dt>Role</dt><dd>{project.role}</dd></div>
-          <div><dt>Duration</dt><dd>{project.duration}</dd></div>
-          <div><dt>Team</dt><dd>{project.team}</dd></div>
-        </dl>
-        <PortfolioLink href={projectUrl} className={styles.enter}>View project <span className={styles.actionVerb}>[Open]</span></PortfolioLink>
-      </div>
+    <header className={clusters.heading}>
+      <p className={styles.register}><span>[{number}]</span> {project.organization} / {project.category}</p>
+      <h2 id={`${project.id}-title`} style={{ viewTransitionName: `region-${project.id}-title` }}>
+        <PortfolioLink href={projectUrl} aria-label={project.title}>{project.title}<span>.</span></PortfolioLink>
+      </h2>
+      <p className={clusters.summary}>{project.summary}</p>
+      <div className={clusters.facts}><span>Product Manager · Creation + Dissemination</span></div>
     </header>
     <EvidenceRegion crop={detail?.crop} deferUntilVisible>
       {context ? <div className={styles.contextPlate} data-artifact="A">
@@ -72,6 +63,6 @@ export function CcpBoardCluster({ project, number }: { project: PortfolioProject
         </RegionInspection>
       </div> : null}
     </EvidenceRegion>
-    <footer className={styles.regionFoot}><span>R:{project.slug.toUpperCase()} / End of Region {number}</span><PortfolioLink href={projectUrl}>View project <span className={styles.actionVerb}>[Open]</span></PortfolioLink></footer>
+    <footer className={clusters.clusterFoot}><span>R:{project.slug.toUpperCase()} / End of Region {number}</span><PortfolioLink href={projectUrl}>View project <span className={styles.actionVerb}>[Open]</span></PortfolioLink></footer>
   </article>;
 }

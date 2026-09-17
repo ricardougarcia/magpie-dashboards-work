@@ -90,12 +90,15 @@ describe("Board and Project foundation", () => {
     }
   });
 
-  it("keeps concise specifications and correct A/B source references", () => {
+  it("keeps concise Board metadata and correct A/B source references", () => {
     const { container } = render(<PortfolioBoard projects={portfolioProjects} />);
     expect(screen.queryByText(/delivery decisions/i)).toBeNull();
-    const specifications = screen.getByLabelText(`${project.title} specifications`);
-    expect(within(specifications).getByText(project.role)).toBeTruthy();
-    expect(within(specifications).getByText(project.duration)).toBeTruthy();
+    const ccp = container.querySelector("#region-learnplatform-ccp") as HTMLElement;
+    expect(within(ccp).getByText("Product Manager · Creation + Dissemination")).toBeTruthy();
+    expect(within(ccp).queryByRole("definition")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "General notes" })).toBeNull();
+    expect(screen.queryByText("Artifacts are preserved from the source portfolio.")).toBeNull();
+    expect(screen.getByText(/Sheet 01 \/ End/)).toBeTruthy();
     expect(screen.queryByRole("link", { name: /Begin with Magpie/i })).toBeNull();
     expect(screen.getByText("B.01 / What to notice")).toBeTruthy();
     expect(screen.getByText(project.region!.mapInsight)).toBeTruthy();
