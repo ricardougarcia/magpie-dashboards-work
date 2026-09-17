@@ -52,13 +52,7 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
             return <ReservedBoardCluster key={entry.id} entry={entry} />;
           })}
         </GcmBoardField>
-        <footer className={sheet.generalNotes}>
-          <h2>General notes</h2>
-          <ol>
-            <li><span>N1.</span> Artifacts are preserved from the source portfolio.</li>
-            <li><span>N2.</span> Enlarged details refer to their original artifact.</li>
-            <li><span>N3.</span> Wireframe areas reserve space for work samples still to come.</li>
-          </ol>
+        <footer className={sheet.sheetClosing}>
           <span className={sheet.sheetEnd}>R/G <span aria-hidden="true">+</span> Sheet 01 / End</span>
         </footer>
         </div>
