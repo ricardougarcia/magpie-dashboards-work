@@ -21,6 +21,11 @@
 .cluster a:focus-visible, .index a:focus-visible { outline: 2px solid var(--signal-text); outline-offset: 5px; }
 
 /* Magpie: a horizontal work record, with one detached, readable source detail. */
+.magpie { align-self: start; }
+.magpie > .heading { min-height: 0; padding-bottom: 16px; }
+.magpie > .heading h2 { margin: 12px 0 8px; }
+.magpie .facts { margin-top: 12px; }
+.magpie > .clusterFoot { flex-direction: row; margin-top: 0; padding: 16px 0 0; }
 .magpieArtifacts { position: relative; padding: 4px 0 0; }
 .magpieArtifacts > div:first-child { width: 93%; }
 .timelineMount { display: block; padding: 14px 12px 12px; background: var(--paper-raised); text-decoration: none; border-top: 1px solid var(--line-strong); position: relative; }
@@ -35,11 +40,11 @@
 .sourceTrace { fill: none; stroke: var(--signal-text); stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: 0; opacity: .65; }
 .magpieArtifacts[data-entered="true"] .sourceTrace { animation: registerTrace 1450ms cubic-bezier(.22, 1, .36, 1) both; }
 .magpieArtifacts[data-entered="true"] .workBar rect { animation: registerWork 1000ms ease-out both; animation-delay: var(--bar-delay); }
-.detachedNote { display: block; position: relative; width: 64%; margin: 18px 0 0 auto; padding: 20px 22px; background: var(--paper-raised); border-left: 1px solid var(--line-strong); text-decoration: none; }
-.detachedNote::before { content: ""; position: absolute; top: 20px; left: -16px; width: 16px; height: 1px; background: var(--signal-text); }
-.detachedNote h3 { font-size: clamp(22px, 2vw, 28px); font-weight: 450; line-height: 1.15; letter-spacing: -.04em; margin: 18px 0 12px; }
+.detachedNote { display: block; position: relative; width: 64%; margin: 12px 0 0 auto; padding: 12px 16px; background: var(--paper-raised); border-left: 1px solid var(--line-strong); text-decoration: none; }
+.detachedNote::before { content: ""; position: absolute; top: 14px; left: -16px; width: 16px; height: 1px; background: var(--signal-text); }
+.detachedNote h3 { font-size: clamp(22px, 2vw, 28px); font-weight: 450; line-height: 1.15; letter-spacing: -.04em; margin: 12px 0 8px; }
 .detachedNote p { font-size: 12px; line-height: 1.65; color: var(--muted); }
-.noteFoot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 18px; color: var(--muted); }
+.noteFoot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 10px; color: var(--muted); }
 .detachedNote:is(:hover, :focus-visible) { border-color: var(--signal-text); }
 .detachedNote:is(:hover, :focus-visible) .noteFoot > span { color: var(--signal-text); }
 
@@ -101,7 +106,7 @@
   .heading, .ccp > header { min-height: 184px; }
   .ccp [data-evidence-active] { column-gap: 24px; }
   .ccp [data-artifact="A"], .ccp [data-artifact="C"] { grid-column: 1; }
-  .detachedNote { width: 78%; padding: 18px; }
+  .detachedNote { width: 78%; }
   .sourceLabel { font-size: 8px; }
 }
 @media (max-width: 900px) {
@@ -121,7 +126,7 @@
   .sourceLabel { font-size: 7px; }
   .timelineMount { padding: 12px 8px; }
   .magpieArtifacts > div:first-child { width: 100%; }
-  .detachedNote { width: 86%; padding: 18px; margin-top: 12px; }
+  .detachedNote { width: 86%; margin-top: 8px; }
   .reservedCaption { margin-left: 4%; }
   .ccp [data-evidence-active] { display: flex; flex-direction: column; gap: 28px; }
   .ccp [data-artifact="A"] { width: 88%; }
