@@ -15,7 +15,7 @@
 .trigger > span > span { color: var(--ink); }
 .trigger:focus-visible { outline: 2px solid var(--signal-text); outline-offset: 4px; }
 .trigger:is(:hover, :focus-visible) > span { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
-.formula { position: absolute; z-index: 1; width: min(230px, calc(100% - 20px)); left: 50%; top: calc(58% - 90px); padding: 10px 12px; border: 1px solid var(--line-strong); background: var(--paper-raised); pointer-events: none; opacity: var(--gcm-formula-opacity, 0); transform: translate(-50%, var(--gcm-formula-offset, 6px)); }
+.formula { position: absolute; z-index: 1; width: min(230px, calc(100% - 20px)); left: 50%; bottom: calc(42% + 16px); padding: 10px 12px; border: 1px solid var(--line-strong); background: var(--paper-raised); pointer-events: none; opacity: var(--gcm-formula-opacity, 0); transform: translate(-50%, var(--gcm-formula-offset, 6px)); }
 .formula[aria-hidden="true"] { visibility: hidden; }
 .formula::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: 15px; background: var(--signal-text); }
 .formulaLabel { display: block; margin-bottom: 7px; font: 11px/1.4 var(--font-mono), monospace; color: var(--muted); text-transform: uppercase; }
