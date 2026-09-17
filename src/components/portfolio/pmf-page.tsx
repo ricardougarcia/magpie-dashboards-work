@@ -1,5 +1,5 @@
 import { CoordinateCursor } from "@/components/coordinate-cursor";
-import { pmfAssets, pmfMarketCheckpoints, pmfRecord, pmfResearchCheckpoints } from "@/data/pmf";
+import { pmfAssets, pmfMarketCheckpoints, pmfPrototypeFrames, pmfRecord, pmfResearchCheckpoints } from "@/data/pmf";
 import { PortfolioShell } from "./portfolio-shell";
 import { PortfolioLink } from "./portfolio-link";
 import { PmfArtifact } from "./pmf-artifact";
@@ -35,7 +35,9 @@ export function PmfPage() {
                 <h2 id="research-heading">Which problems<br />matter to people?</h2>
               </header>
               {pmfResearchCheckpoints.map((checkpoint) => <PmfCheckpoint key={checkpoint.id} {...checkpoint}>
-                <PmfArtifact artifact={pmfAssets[checkpoint.artifact]} />
+                {checkpoint.id === "research-choice"
+                  ? <PmfArtifact artifact={pmfPrototypeFrames[0]} sequence={pmfPrototypeFrames} />
+                  : <PmfArtifact artifact={pmfAssets[checkpoint.artifact]} />}
               </PmfCheckpoint>)}
             </section>
             <section className={`${styles.track} ${styles.marketTrack}`} data-pmf-track="market" aria-labelledby="market-heading">

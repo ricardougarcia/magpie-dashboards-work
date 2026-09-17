@@ -1,0 +1,2611 @@
+{
+  "base": "http://127.0.0.1:3087",
+  "timestamp": "2026-09-17T01:03:48.651Z",
+  "passed": 200,
+  "failed": 0,
+  "results": [
+    {
+      "viewport": "1440x1000",
+      "name": "PMF page returns 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Initial frame has a single accessible image and caption",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No initial horizontal overflow or framework error overlay",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Gallery disclosure identifies original prototype frames",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Selector targets remain within the gallery and at least 44px high",
+      "pass": true,
+      "detail": [
+        {
+          "left": 72,
+          "right": 210,
+          "width": 138,
+          "height": 103.875
+        },
+        {
+          "left": 218,
+          "right": 356,
+          "width": 138,
+          "height": 103.875
+        },
+        {
+          "left": 364,
+          "right": 502,
+          "width": 138,
+          "height": 103.875
+        },
+        {
+          "left": 510,
+          "right": 648,
+          "width": 138,
+          "height": 103.875
+        }
+      ]
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Prototype: mouse hover selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Prototype: pointer exit retains selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Segment: mouse hover selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Segment: pointer exit retains selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Ask: mouse hover selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "true",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/inference-response.jpg",
+            "alt": "Original inference prototype showing a population question, a response, and an Ask your Data input",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Inference / a question and response"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Ask: pointer exit retains selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "true",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/inference-response.jpg",
+            "alt": "Original inference prototype showing a population question, a response, and an Ask your Data input",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Inference / a question and response"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Enrich: mouse hover selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "false",
+          "true"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/imputation-progress.jpg",
+            "alt": "Original data imputation prototype with highlighted table cells, a confidence indicator, and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Data imputation / generation in progress"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Enrich: pointer exit retains selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "false",
+          "true"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/imputation-progress.jpg",
+            "alt": "Original data imputation prototype with highlighted table cells, a confidence indicator, and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Data imputation / generation in progress"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Pane and caption heights remain stable across all four frames",
+      "pass": true,
+      "detail": [
+        {
+          "pane": 230,
+          "caption": 49.5,
+          "figure": 439.375,
+          "width": 574
+        },
+        {
+          "pane": 230,
+          "caption": 49.5,
+          "figure": 439.375,
+          "width": 574
+        },
+        {
+          "pane": 230,
+          "caption": 49.5,
+          "figure": 439.375,
+          "width": 574
+        },
+        {
+          "pane": 230,
+          "caption": 49.5,
+          "figure": 439.375,
+          "width": 574
+        }
+      ]
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Keyboard focus selects Segment",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "ArrowRight moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "End moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Home moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "ArrowLeft moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Shift+Tab returns directly from selected Ask to its image button",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Enter opens the keyboard-selected Ask frame",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Prototype: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Prototype: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Prototype: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 240,
+        "y": 173.53125,
+        "width": 960,
+        "height": 652.9375
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Prototype: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Prototype: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Segment: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Segment: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Segment: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 240,
+        "y": 174.46875,
+        "width": 960,
+        "height": 651.046875
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Segment: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Segment: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Ask: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Ask: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Ask: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 240,
+        "y": 173.53125,
+        "width": 960,
+        "height": 652.9375
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Ask: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Ask: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "true",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/inference-response.jpg",
+            "alt": "Original inference prototype showing a population question, a response, and an Ask your Data input",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Inference / a question and response"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Enrich: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Enrich: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Enrich: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 240,
+        "y": 173.53125,
+        "width": 960,
+        "height": 652.9375
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Enrich: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Enrich: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "false",
+          "true"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/imputation-progress.jpg",
+            "alt": "Original data imputation prototype with highlighted table cells, a confidence indicator, and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Data imputation / generation in progress"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Opacity crossfade has an intermediate state and completes after 320ms",
+      "pass": true,
+      "detail": {
+        "declared": 0.32,
+        "before": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "middle": [
+          0.219207,
+          0.780793,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          1,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Fast successive selections settle on the final frame without mixed opacity",
+      "pass": true,
+      "detail": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Existing interview viewer retains protected asset and disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Existing viewer restores trigger focus",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Native scroll advances both rails and completes convergence",
+      "pass": true,
+      "detail": {
+        "start": {
+          "rails": [
+            0.04320012272762139,
+            0.04320012272762139
+          ],
+          "join": 0,
+          "arrived": "false"
+        },
+        "end": {
+          "rails": [
+            1,
+            1
+          ],
+          "join": 1,
+          "arrived": "true"
+        }
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Reverse scroll restores rail and convergence progress",
+      "pass": true,
+      "detail": {
+        "start": {
+          "rails": [
+            0.04320012272762139,
+            0.04320012272762139
+          ],
+          "join": 0,
+          "arrived": "false"
+        },
+        "reverse": {
+          "rails": [
+            0.04320012272762139,
+            0.04320012272762139
+          ],
+          "join": 0,
+          "arrived": "false"
+        }
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Reduced motion swaps images immediately with no transitions",
+      "pass": true,
+      "detail": [
+        {
+          "opacity": 1,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        }
+      ]
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Reduced motion keeps both rails and convergence complete",
+      "pass": true,
+      "detail": {
+        "rails": [
+          1,
+          1
+        ],
+        "join": 1,
+        "arrived": "true"
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No horizontal overflow after all gallery interactions",
+      "pass": true,
+      "detail": {
+        "viewport": 1440,
+        "content": 1440
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "All selected prototype assets load successfully",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No browser runtime or console errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "PMF page returns 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Initial frame has a single accessible image and caption",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No initial horizontal overflow or framework error overlay",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Gallery disclosure identifies original prototype frames",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Selector targets remain within the gallery and at least 44px high",
+      "pass": true,
+      "detail": [
+        {
+          "left": 41,
+          "right": 117,
+          "width": 76,
+          "height": 69
+        },
+        {
+          "left": 125,
+          "right": 201,
+          "width": 76,
+          "height": 69
+        },
+        {
+          "left": 209,
+          "right": 285,
+          "width": 76,
+          "height": 69
+        },
+        {
+          "left": 293,
+          "right": 369,
+          "width": 76,
+          "height": 69
+        }
+      ]
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Prototype: mouse hover selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Prototype: pointer exit retains selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Segment: mouse hover selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Segment: pointer exit retains selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Ask: mouse hover selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "true",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/inference-response.jpg",
+            "alt": "Original inference prototype showing a population question, a response, and an Ask your Data input",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Inference / a question and response"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Ask: pointer exit retains selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "true",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/inference-response.jpg",
+            "alt": "Original inference prototype showing a population question, a response, and an Ask your Data input",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Inference / a question and response"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Enrich: mouse hover selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "false",
+          "true"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/imputation-progress.jpg",
+            "alt": "Original data imputation prototype with highlighted table cells, a confidence indicator, and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Data imputation / generation in progress"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Enrich: pointer exit retains selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "false",
+          "true"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/imputation-progress.jpg",
+            "alt": "Original data imputation prototype with highlighted table cells, a confidence indicator, and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Data imputation / generation in progress"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Pane and caption heights remain stable across all four frames",
+      "pass": true,
+      "detail": [
+        {
+          "pane": 230,
+          "caption": 65.5,
+          "figure": 420.5,
+          "width": 326
+        },
+        {
+          "pane": 230,
+          "caption": 65.5,
+          "figure": 420.5,
+          "width": 326
+        },
+        {
+          "pane": 230,
+          "caption": 65.5,
+          "figure": 420.5,
+          "width": 326
+        },
+        {
+          "pane": 230,
+          "caption": 65.5,
+          "figure": 420.5,
+          "width": 326
+        }
+      ]
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Keyboard focus selects Segment",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "ArrowRight moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "End moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Home moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "ArrowLeft moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Shift+Tab returns directly from selected Ask to its image button",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Enter opens the keyboard-selected Ask frame",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Prototype: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Prototype: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Prototype: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 18,
+        "y": 313.640625,
+        "width": 784,
+        "height": 552.703125
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Prototype: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Prototype: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Segment: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Segment: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Segment: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 18,
+        "y": 314.40625,
+        "width": 784,
+        "height": 551.171875
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Segment: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Segment: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Ask: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Ask: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Ask: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 18,
+        "y": 313.640625,
+        "width": 784,
+        "height": 552.703125
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Ask: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Ask: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "true",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/inference-response.jpg",
+            "alt": "Original inference prototype showing a population question, a response, and an Ask your Data input",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Inference / a question and response"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Enrich: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Enrich: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Enrich: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 18,
+        "y": 313.640625,
+        "width": 784,
+        "height": 552.703125
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Enrich: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Enrich: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "false",
+          "true"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/imputation-progress.jpg",
+            "alt": "Original data imputation prototype with highlighted table cells, a confidence indicator, and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Data imputation / generation in progress"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Opacity crossfade has an intermediate state and completes after 320ms",
+      "pass": true,
+      "detail": {
+        "declared": 0.32,
+        "before": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "middle": [
+          0.219601,
+          0.780399,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          1,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Fast successive selections settle on the final frame without mixed opacity",
+      "pass": true,
+      "detail": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Existing interview viewer retains protected asset and disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Existing viewer restores trigger focus",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Native scroll advances both rails and completes convergence",
+      "pass": true,
+      "detail": {
+        "start": {
+          "rails": [
+            0.11304619334246908,
+            0.11304619334246908
+          ],
+          "join": 0,
+          "arrived": "false"
+        },
+        "end": {
+          "rails": [
+            1,
+            1
+          ],
+          "join": 1,
+          "arrived": "true"
+        }
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Reverse scroll restores rail and convergence progress",
+      "pass": true,
+      "detail": {
+        "start": {
+          "rails": [
+            0.11304619334246908,
+            0.11304619334246908
+          ],
+          "join": 0,
+          "arrived": "false"
+        },
+        "reverse": {
+          "rails": [
+            0.11304619334246908,
+            0.11304619334246908
+          ],
+          "join": 0,
+          "arrived": "false"
+        }
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Reduced motion swaps images immediately with no transitions",
+      "pass": true,
+      "detail": [
+        {
+          "opacity": 1,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        }
+      ]
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Reduced motion keeps both rails and convergence complete",
+      "pass": true,
+      "detail": {
+        "rails": [
+          1,
+          1
+        ],
+        "join": 1,
+        "arrived": "true"
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No horizontal overflow after all gallery interactions",
+      "pass": true,
+      "detail": {
+        "viewport": 820,
+        "content": 820
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "All selected prototype assets load successfully",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No browser runtime or console errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "PMF page returns 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "390x844",
+      "name": "Initial frame has a single accessible image and caption",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "No initial horizontal overflow or framework error overlay",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Gallery disclosure identifies original prototype frames",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Selector targets remain within the gallery and at least 44px high",
+      "pass": true,
+      "detail": [
+        {
+          "left": 38,
+          "right": 114,
+          "width": 76,
+          "height": 69
+        },
+        {
+          "left": 122,
+          "right": 198,
+          "width": 76,
+          "height": 69
+        },
+        {
+          "left": 206,
+          "right": 282,
+          "width": 76,
+          "height": 69
+        },
+        {
+          "left": 290,
+          "right": 366,
+          "width": 76,
+          "height": 69
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "name": "Prototype: tap selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Segment: tap selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Ask: tap selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "true",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/inference-response.jpg",
+            "alt": "Original inference prototype showing a population question, a response, and an Ask your Data input",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Inference / a question and response"
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Enrich: tap selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "false",
+          "true"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/imputation-progress.jpg",
+            "alt": "Original data imputation prototype with highlighted table cells, a confidence indicator, and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Data imputation / generation in progress"
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Pane and caption heights remain stable across all four frames",
+      "pass": true,
+      "detail": [
+        {
+          "pane": 200,
+          "caption": 65.5,
+          "figure": 390.5,
+          "width": 326
+        },
+        {
+          "pane": 200,
+          "caption": 65.5,
+          "figure": 390.5,
+          "width": 326
+        },
+        {
+          "pane": 200,
+          "caption": 65.5,
+          "figure": 390.5,
+          "width": 326
+        },
+        {
+          "pane": 200,
+          "caption": 65.5,
+          "figure": 390.5,
+          "width": 326
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "name": "Keyboard focus selects Segment",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "ArrowRight moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "End moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Home moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "ArrowLeft moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Shift+Tab returns directly from selected Ask to its image button",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Enter opens the keyboard-selected Ask frame",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Prototype: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Prototype: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Prototype: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 12,
+        "y": 263.1875,
+        "width": 366,
+        "height": 317.625
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Prototype: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Prototype: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Segment: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Segment: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Segment: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 12,
+        "y": 263.546875,
+        "width": 366,
+        "height": 316.90625
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Segment: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Segment: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Ask: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Ask: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Ask: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 12,
+        "y": 273.78125,
+        "width": 366,
+        "height": 296.4375
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Ask: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Ask: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "true",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/inference-response.jpg",
+            "alt": "Original inference prototype showing a population question, a response, and an Ask your Data input",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Inference / a question and response"
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Enrich: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Enrich: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Enrich: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 12,
+        "y": 273.78125,
+        "width": 366,
+        "height": 296.4375
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Enrich: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Enrich: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "false",
+          "true"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/imputation-progress.jpg",
+            "alt": "Original data imputation prototype with highlighted table cells, a confidence indicator, and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Data imputation / generation in progress"
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Opacity crossfade has an intermediate state and completes after 320ms",
+      "pass": true,
+      "detail": {
+        "declared": 0.32,
+        "before": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "middle": [
+          0.219372,
+          0.780628,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          1,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Fast successive selections settle on the final frame without mixed opacity",
+      "pass": true,
+      "detail": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "name": "Existing interview viewer retains protected asset and disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Existing viewer restores trigger focus",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Native scroll advances both rails and completes convergence",
+      "pass": true,
+      "detail": {
+        "start": {
+          "rails": [
+            0,
+            0
+          ],
+          "join": 0,
+          "arrived": "false"
+        },
+        "end": {
+          "rails": [
+            1,
+            1
+          ],
+          "join": 1,
+          "arrived": "true"
+        }
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Reverse scroll restores rail and convergence progress",
+      "pass": true,
+      "detail": {
+        "start": {
+          "rails": [
+            0,
+            0
+          ],
+          "join": 0,
+          "arrived": "false"
+        },
+        "reverse": {
+          "rails": [
+            0,
+            0
+          ],
+          "join": 0,
+          "arrived": "false"
+        }
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Reduced motion swaps images immediately with no transitions",
+      "pass": true,
+      "detail": [
+        {
+          "opacity": 1,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "name": "Reduced motion keeps both rails and convergence complete",
+      "pass": true,
+      "detail": {
+        "rails": [
+          1,
+          1
+        ],
+        "join": 1,
+        "arrived": "true"
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "No horizontal overflow after all gallery interactions",
+      "pass": true,
+      "detail": {
+        "viewport": 390,
+        "content": 390
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "All selected prototype assets load successfully",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "390x844",
+      "name": "No browser runtime or console errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "PMF page returns 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "320x700",
+      "name": "Initial frame has a single accessible image and caption",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "No initial horizontal overflow or framework error overlay",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Gallery disclosure identifies original prototype frames",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Selector targets remain within the gallery and at least 44px high",
+      "pass": true,
+      "detail": [
+        {
+          "left": 38,
+          "right": 96.5,
+          "width": 58.5,
+          "height": 59.15625
+        },
+        {
+          "left": 104.5,
+          "right": 163,
+          "width": 58.5,
+          "height": 59.15625
+        },
+        {
+          "left": 171,
+          "right": 229.5,
+          "width": 58.5,
+          "height": 59.15625
+        },
+        {
+          "left": 237.5,
+          "right": 296,
+          "width": 58.5,
+          "height": 59.15625
+        }
+      ]
+    },
+    {
+      "viewport": "320x700",
+      "name": "Prototype: tap selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Segment: tap selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Ask: tap selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "true",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/inference-response.jpg",
+            "alt": "Original inference prototype showing a population question, a response, and an Ask your Data input",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Inference / a question and response"
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Enrich: tap selects correct frame",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "false",
+          "true"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/imputation-progress.jpg",
+            "alt": "Original data imputation prototype with highlighted table cells, a confidence indicator, and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Data imputation / generation in progress"
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Pane and caption heights remain stable across all four frames",
+      "pass": true,
+      "detail": [
+        {
+          "pane": 200,
+          "caption": 65.5,
+          "figure": 380.65625,
+          "width": 256
+        },
+        {
+          "pane": 200,
+          "caption": 65.5,
+          "figure": 380.65625,
+          "width": 256
+        },
+        {
+          "pane": 200,
+          "caption": 65.5,
+          "figure": 380.65625,
+          "width": 256
+        },
+        {
+          "pane": 200,
+          "caption": 65.5,
+          "figure": 380.65625,
+          "width": 256
+        }
+      ]
+    },
+    {
+      "viewport": "320x700",
+      "name": "Keyboard focus selects Segment",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "ArrowRight moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "End moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Home moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "ArrowLeft moves selector focus and selection together",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Shift+Tab returns directly from selected Ask to its image button",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Enter opens the keyboard-selected Ask frame",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Prototype: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Prototype: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Prototype: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 12,
+        "y": 200.28125,
+        "width": 296,
+        "height": 299.4375
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Prototype: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Prototype: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "true",
+          "false",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/discovery-prototype.jpg",
+            "alt": "Original prototype showing population attributes, a created population, and baseline population cards",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Population discovery / attributes and baseline populations"
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Segment: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Segment: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Segment: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 12,
+        "y": 200.5625,
+        "width": 296,
+        "height": 298.875
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Segment: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Segment: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "true",
+          "false",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+            "alt": "Original segmentation prototype with a selected group of points and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Segmentation / a selected population"
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Ask: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Ask: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Ask: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 12,
+        "y": 210.875,
+        "width": 296,
+        "height": 278.25
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Ask: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Ask: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "true",
+          "false"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/inference-response.jpg",
+            "alt": "Original inference prototype showing a population question, a response, and an Ask your Data input",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Inference / a question and response"
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Enrich: dialog shows original selected image with accurate disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Enrich: native modal focuses Close and locks body and root",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Enrich: dialog fits the viewport",
+      "pass": true,
+      "detail": {
+        "x": 12,
+        "y": 210.875,
+        "width": 296,
+        "height": 278.25
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Enrich: Tab retains focus in modal",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Enrich: Escape restores focus and scroll state without changing selection",
+      "pass": true,
+      "detail": {
+        "pressed": [
+          "false",
+          "false",
+          "false",
+          "true"
+        ],
+        "images": [
+          {
+            "src": "/portfolio/pmf/prototypes/imputation-progress.jpg",
+            "alt": "Original data imputation prototype with highlighted table cells, a confidence indicator, and a generating state",
+            "naturalWidth": 960
+          }
+        ],
+        "caption": [
+          "Data imputation / generation in progress"
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Opacity crossfade has an intermediate state and completes after 320ms",
+      "pass": true,
+      "detail": {
+        "declared": 0.32,
+        "before": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "middle": [
+          0.219766,
+          0.780234,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          1,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Fast successive selections settle on the final frame without mixed opacity",
+      "pass": true,
+      "detail": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "viewport": "320x700",
+      "name": "Existing interview viewer retains protected asset and disclosure",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Existing viewer restores trigger focus",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Native scroll advances both rails and completes convergence",
+      "pass": true,
+      "detail": {
+        "start": {
+          "rails": [
+            0,
+            0
+          ],
+          "join": 0,
+          "arrived": "false"
+        },
+        "end": {
+          "rails": [
+            1,
+            1
+          ],
+          "join": 1,
+          "arrived": "true"
+        }
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Reverse scroll restores rail and convergence progress",
+      "pass": true,
+      "detail": {
+        "start": {
+          "rails": [
+            0,
+            0
+          ],
+          "join": 0,
+          "arrived": "false"
+        },
+        "reverse": {
+          "rails": [
+            0,
+            0
+          ],
+          "join": 0,
+          "arrived": "false"
+        }
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Reduced motion swaps images immediately with no transitions",
+      "pass": true,
+      "detail": [
+        {
+          "opacity": 1,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        },
+        {
+          "opacity": 0,
+          "transition": "0s"
+        }
+      ]
+    },
+    {
+      "viewport": "320x700",
+      "name": "Reduced motion keeps both rails and convergence complete",
+      "pass": true,
+      "detail": {
+        "rails": [
+          1,
+          1
+        ],
+        "join": 1,
+        "arrived": "true"
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "No horizontal overflow after all gallery interactions",
+      "pass": true,
+      "detail": {
+        "viewport": 320,
+        "content": 320
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "All selected prototype assets load successfully",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "320x700",
+      "name": "No browser runtime or console errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    }
+  ],
+  "runtime": [
+    {
+      "viewport": "1440x1000",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "failedImages": []
+    },
+    {
+      "viewport": "820x1180",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "failedImages": []
+    },
+    {
+      "viewport": "390x844",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "failedImages": []
+    },
+    {
+      "viewport": "320x700",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "failedImages": []
+    }
+  ],
+  "screenshots": [
+    "/private/tmp/pmf-two-lines/verification/pmf-gallery/local/1440x1000-gallery.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-gallery/local/1440x1000-modal.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-gallery/local/1440x1000-convergence.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-gallery/local/390x844-gallery.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-gallery/local/390x844-modal.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-gallery/local/390x844-convergence.png"
+  ],
+  "screenshotRetention": {
+    "generated": 12,
+    "retained": 6,
+    "note": "Representative desktop and 390px mobile gallery, modal, and convergence captures are retained. All four viewport results remain in this report."
+  }
+}

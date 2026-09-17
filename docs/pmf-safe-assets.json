@@ -1,6 +1,6 @@
 {
   "date": "2026-09-16",
-  "method": "Owner-approved exact local redaction; RGB flattened PNG exports without metadata",
+  "method": "Four owner-approved redacted RGB PNG exports and four separately approved, unchanged original JPG prototype frames",
   "assets": [
     {
       "file": "segmentation-overview.png",
@@ -46,5 +46,48 @@
     "4f274641f64bd090b0efbd0f77682b731709a63a483206cf12ad65a5b699871d",
     "9ec0b90c1f64750747145a9f44a123403397d0d0155d95be9c3be66047fec0e1",
     "847378bf412e57968af3fc83ce0aaf07c1181d72776e7f56d19c1fabce52a36d"
+  ],
+  "ownerException": "The owner explicitly selected these four exact JPG frames for use without redaction. This later approval applies only to approvedOriginalFrames and supersedes the earlier general redaction requirement for them. Other PMF assets retain their existing protections.",
+  "approvedOriginalFrames": [
+    {
+      "file": "prototypes/discovery-prototype.jpg",
+      "size": [
+        960,
+        540
+      ],
+      "sha256": "07bf9f8ac593b2acae5c80186e7e6af32aa61c249e38c6431f63b8f7ac2de50c",
+      "sourceFile": "portfolio-migration-research-2026-09-06/review/A069-video.jpg",
+      "treatment": "Original JPG copied byte for byte; no redaction, resizing, re-encoding or metadata changes."
+    },
+    {
+      "file": "prototypes/segmentation-selected.jpg",
+      "size": [
+        960,
+        538
+      ],
+      "sha256": "6126da113b6284e81e908eb1d4295d7d5a07feed73f9564bc176749a1aece2be",
+      "sourceFile": "portfolio-migration-research-2026-09-06/review/A138-video.jpg",
+      "treatment": "Original JPG copied byte for byte; no redaction, resizing, re-encoding or metadata changes."
+    },
+    {
+      "file": "prototypes/inference-response.jpg",
+      "size": [
+        960,
+        540
+      ],
+      "sha256": "5e55132fa56f9e108708032ab21fda494e40c5590e1161fec6ffc3152e892524",
+      "sourceFile": "portfolio-migration-research-2026-09-06/review/A139-video.jpg",
+      "treatment": "Original JPG copied byte for byte; no redaction, resizing, re-encoding or metadata changes."
+    },
+    {
+      "file": "prototypes/imputation-progress.jpg",
+      "size": [
+        960,
+        540
+      ],
+      "sha256": "5235526a29a166df01f3b974ae9f9e9370f024f85e4ea009216812446a569089",
+      "sourceFile": "portfolio-migration-research-2026-09-06/review/A140-video.jpg",
+      "treatment": "Original JPG copied byte for byte; no redaction, resizing, re-encoding or metadata changes."
+    }
   ]
 }

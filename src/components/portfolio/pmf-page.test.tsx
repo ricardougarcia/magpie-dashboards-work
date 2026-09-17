@@ -4,10 +4,11 @@ import { resolve } from "node:path";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import PmfWorkPage, { metadata } from "@/app/work/pmf/page";
-import { pmfAssets } from "@/data/pmf";
+import { pmfAssets, pmfPrototypeFrames } from "@/data/pmf";
 
 const manifest = JSON.parse(readFileSync(resolve("docs/pmf-safe-assets.json"), "utf8")) as {
   assets: { file: string; sha256: string }[];
+  approvedOriginalFrames: { file: string; sha256: string }[];
   blockedSourceHashes: string[];
 };
 
@@ -35,14 +36,14 @@ describe("PMF's two lines of inquiry", () => {
     }
   });
 
-  it("distinguishes genuine protected originals from the two illustrative diagrams", () => {
+  it("uses only approved originals and protected overviews alongside the two illustrative diagrams", () => {
     const page = document.createElement("div");
     page.innerHTML = renderToString(<PmfWorkPage />);
     expect(page.querySelectorAll('button[aria-haspopup="dialog"]')).toHaveLength(4);
     expect(page.querySelectorAll('[data-pmf-capability-map]')).toHaveLength(1);
     expect(page.querySelectorAll('[data-pmf-opportunity-map]')).toHaveLength(1);
     expect(page.textContent?.match(/Illustrative reconstruction/g)).toHaveLength(2);
-    const publicPaths = Object.values(pmfAssets).map(asset => asset.src);
+    const publicPaths = [...Object.values(pmfAssets), ...pmfPrototypeFrames].map(asset => asset.src);
     for (const image of page.querySelectorAll("img")) {
       expect(publicPaths).toContain(image.getAttribute("src"));
       expect(image.hasAttribute("srcset")).toBe(false);
@@ -51,12 +52,27 @@ describe("PMF's two lines of inquiry", () => {
     expect(metadata.robots).toEqual({ index: false, follow: false });
   });
 
-  it("ships only the four reviewed flattened exports in the PMF directory", () => {
+  it("ships only the four reviewed flattened exports and four explicitly approved original frames", () => {
     const directory = resolve("public/portfolio/pmf");
-    expect(readdirSync(directory).sort()).toEqual(manifest.assets.map(asset => asset.file).sort());
-    for (const asset of manifest.assets) {
+    const approvedFrameFiles = [
+      "prototypes/discovery-prototype.jpg",
+      "prototypes/segmentation-selected.jpg",
+      "prototypes/inference-response.jpg",
+      "prototypes/imputation-progress.jpg",
+    ];
+    expect(manifest.approvedOriginalFrames.map(asset => asset.file)).toEqual(approvedFrameFiles);
+    expect(pmfPrototypeFrames.map(asset => asset.src)).toEqual(approvedFrameFiles.map(file => `/portfolio/pmf/${file}`));
+    const approvedAssets = [...manifest.assets, ...manifest.approvedOriginalFrames];
+    const files = readdirSync(directory, { recursive: true, withFileTypes: true })
+      .filter(entry => entry.isFile())
+      .map(entry => resolve(entry.parentPath, entry.name).slice(directory.length + 1));
+    expect(files.sort()).toEqual(approvedAssets.map(asset => asset.file).sort());
+    for (const asset of approvedAssets) {
       const bytes = readFileSync(resolve(directory, asset.file));
       expect(createHash("sha256").update(bytes).digest("hex"), asset.file).toBe(asset.sha256);
+    }
+    for (const asset of manifest.assets) {
+      const bytes = readFileSync(resolve(directory, asset.file));
       // Confidential text/EXIF/embedded originals cannot hitchhike in PNG ancillary chunks.
       let offset = 8;
       while (offset < bytes.length) {
@@ -68,7 +84,7 @@ describe("PMF's two lines of inquiry", () => {
     expect(existsSync(resolve("public/portfolio/gcm/pmf-market-analysis.png"))).toBe(false);
   });
 
-  it("does not ship an original PMF asset under another public filename", () => {
+  it("does not ship a blocked original PMF asset under another public filename", () => {
     const root = resolve("public");
     const files = readdirSync(root, { recursive: true, withFileTypes: true }).filter(entry => entry.isFile());
     for (const entry of files) {
