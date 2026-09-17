@@ -39,7 +39,7 @@
 .pmfPreview:is(:hover, :focus-visible) .pmfMarketSheet { transform: translateY(-5px); }
 .pmfPreview:is(:hover, :focus-visible) .pmfLineDraw path { stroke-dashoffset: 0; }
 .pmfPreview:is(:hover, :focus-visible) .pmfDirection { color: var(--signal-text); }
-.pmfFoot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 20px; margin-top: 18px; font: 9px/1.6 var(--font-mono), monospace; color: var(--muted); }
+.pmfFoot { display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 20px; margin-top: 18px; padding: 0; font: 9px/1.6 var(--font-mono), monospace; color: var(--muted); }
 .pmfFoot a { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; text-decoration: none; }
 .pmfFoot a:is(:hover, :focus-visible) { text-decoration: underline; text-underline-offset: 5px; }
 .pmfFoot a > span { color: var(--ink); }
