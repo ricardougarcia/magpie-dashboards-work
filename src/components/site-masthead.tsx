@@ -1,4 +1,5 @@
 import { PortfolioLink as Link } from "@/components/portfolio/portfolio-link";
+import "@/components/portfolio/portfolio-motion.css";
 
 export type WorkSampleRecord = {
   mark: string;

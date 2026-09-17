@@ -1,13 +1,24 @@
-/* Only portfolio documents load this opt-in. Document links keep native history,
-   URLs and touch scrolling; unsupported browsers navigate without animation. */
+/* Every public masthead loads this opt-in, including Magpie. Document links keep
+   native history, URLs and touch scrolling; unsupported browsers navigate normally. */
 @view-transition { navigation: auto; }
+/* Preserve the existing title and artifact morphs. Only the root and masthead
+   snapshots use the shorter handoff; live page layout and motion are untouched. */
 ::view-transition-group(*) { animation-duration: 420ms; animation-timing-function: cubic-bezier(.2, .7, .2, 1); }
-::view-transition-old(root) { animation: portfolio-paper-recede 420ms both; }
-::view-transition-new(root) { animation: portfolio-paper-arrive 420ms both; }
+::view-transition-group(root) { animation-duration: 240ms; }
+::view-transition-old(root) { animation: portfolio-page-out 240ms ease-out both; }
+::view-transition-new(root) { animation: portfolio-page-in 240ms ease-out both; }
 ::view-transition-image-pair(root) { isolation: auto; }
 ::view-transition-old(root), ::view-transition-new(root) { mix-blend-mode: normal; }
-@keyframes portfolio-paper-recede { to { transform: translateY(-12px); opacity: .4; } }
-@keyframes portfolio-paper-arrive { from { transform: translateY(36px); } to { transform: none; } }
+
+.masthead { view-transition-name: portfolio-masthead; }
+/* Use the destination header's geometry without changing its actual sticky or
+   scroll behavior. A header outside the restored viewport stays outside it. */
+::view-transition-group(portfolio-masthead) { animation: none; z-index: 1; }
+::view-transition-old(portfolio-masthead) { animation: portfolio-page-out 240ms ease-out both; }
+::view-transition-new(portfolio-masthead) { animation: portfolio-page-in 240ms ease-out both; }
+
+@keyframes portfolio-page-out { to { opacity: 0; } }
+@keyframes portfolio-page-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }

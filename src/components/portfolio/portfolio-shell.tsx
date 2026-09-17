@@ -1,7 +1,6 @@
 import { PortfolioLink as Link } from "./portfolio-link";
 import type { ReactNode } from "react";
 import { SiteMasthead, type WorkSampleRecord } from "@/components/site-masthead";
-import "./portfolio-motion.css";
 import styles from "./portfolio.module.css";
 
 export { SiteMasthead as PortfolioMasthead } from "@/components/site-masthead";
