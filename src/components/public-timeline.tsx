@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ExternalLink, X } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
 import Image from "next/image";
 import {
   type ChangeEvent as ReactChangeEvent,
@@ -15,6 +15,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { SiteMasthead } from "@/components/site-masthead";
 import { PanelReplacement } from "@/components/panel-replacement";
 import { CoordinateCursor } from "@/components/coordinate-cursor";
 import { GuidingLightInkTrail } from "@/components/guiding-light-ink-trail";
@@ -454,19 +455,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
 
   return (
     <main className="site-shell">
-      <header className="masthead" data-panel="0">
-        <a className="wordmark" href="#top" aria-label="Magpie Dashboards timeline home">
-          <span className="wordmark-mark">M/D</span>
-          <span>Rico Garcia</span>
-        </a>
-        <div className="masthead-meta">
-          <span>Principal product management</span>
-          <span>Portfolio record / 2026</span>
-        </div>
-        <a className="edit-link" href="/edit">
-          Owner access <ExternalLink size={13} />
-        </a>
-      </header>
+      <SiteMasthead project={{ mark: "M/D", number: "01", role: "Principal Product Manager", organization: "Magpie Literacy" }} />
 
       <PanelReplacement outgoing={
         <section className="hero" id="top" data-panel="1">

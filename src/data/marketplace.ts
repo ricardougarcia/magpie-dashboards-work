@@ -4,6 +4,7 @@ import type { Artifact } from "@/lib/portfolio-types";
 // for the source record, image provenance, and editorial boundaries.
 export const marketplaceRecord = {
   number: "02",
+  mark: "E/M",
   role: "Product Manager",
   organization: "Instructure",
   duration: "7-month sample",

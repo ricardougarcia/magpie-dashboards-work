@@ -34,10 +34,6 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
         <div className={styles.boardGutter}>
         <div className={sheet.sheet} data-board-sheet>
         <BoardRegistration />
-        <div className={sheet.sheetIndex}>
-          <span>06 Regions / 07 entries / 02 reserved</span>
-          <a href="#region-magpie">[Begin with Magpie]</a>
-        </div>
         <nav className={clusters.index} aria-label="Work on the Board">
           {boardEntries.map((entry) => <a key={entry.id} href={`#region-${entry.id}`}><span>{entry.number}</span>{entry.kind === "gcm" ? "GCM + PMF" : entry.title}</a>)}
         </nav>

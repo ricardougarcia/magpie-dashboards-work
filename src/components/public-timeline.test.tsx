@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PublicTimeline } from "@/components/public-timeline";
 import type { PublicTimelineData } from "@/lib/timeline-types";
@@ -108,7 +108,7 @@ describe("PublicTimeline presentation safeguards", () => {
     expect(screen.getByText("Planned")).toBeTruthy();
     expect(screen.queryByText("Planned. Not yet placed.")).toBeNull();
 
-    expect(screen.getByText("Principal Product Manager")).toBeTruthy();
+    expect(within(container.querySelector(".hero")!).getByText("Principal Product Manager")).toBeTruthy();
     expect(screen.queryByText("Sole principal PM")).toBeNull();
     expect(screen.queryByLabelText("Color key")).toBeNull();
     ["Discovery-led", "Corrective", "Reliability", "Governance", "Growth"].forEach((label) => {

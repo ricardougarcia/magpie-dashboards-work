@@ -65,7 +65,7 @@ describe("Board and Project foundation", () => {
     ]);
     const reserved = entries.filter((entry) => entry.dataset.boardState === "reserved");
     expect(reserved).toHaveLength(2);
-    expect(screen.getByText("06 Regions / 07 entries / 02 reserved")).toBeTruthy();
+    expect(screen.queryByText("06 Regions / 07 entries / 02 reserved")).toBeNull();
     reserved.forEach((entry) => {
       expect(within(entry).getByText("Wireframe placeholder")).toBeTruthy();
       expect(entry.querySelector("a, button")).toBeNull();
@@ -90,8 +90,7 @@ describe("Board and Project foundation", () => {
     const specifications = screen.getByLabelText(`${project.title} specifications`);
     expect(within(specifications).getByText(project.role)).toBeTruthy();
     expect(within(specifications).getByText(project.duration)).toBeTruthy();
-    const entry = screen.getByRole("link", { name: /Begin with Magpie/i });
-    expect(container.querySelector(entry.getAttribute("href")!)).toBeTruthy();
+    expect(screen.queryByRole("link", { name: /Begin with Magpie/i })).toBeNull();
     expect(screen.getByText("B.01 / What to notice")).toBeTruthy();
     expect(screen.getByText(project.region!.mapInsight)).toBeTruthy();
     expect(container.querySelector("#region-learnplatform-ccp")?.getAttribute("data-region-code")).toBe("CCP");

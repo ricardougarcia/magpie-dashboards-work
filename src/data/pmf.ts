@@ -1,6 +1,6 @@
 // Approved “Two lines of inquiry” study. Preserve the protected overviews;
 // only the four explicitly selected prototype frames expose original pixels.
-export const pmfRecord = { number: "03.B", role: "Sole product lead", organization: "SaferData" };
+export const pmfRecord = { mark: "P/F", number: "03.B", role: "Sole product lead", organization: "SaferData" };
 
 export type PmfAsset = {
   src: string;

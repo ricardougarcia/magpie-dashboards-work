@@ -12,24 +12,15 @@
 .shell a { color: inherit; cursor: var(--cursor-action); }
 .shell h1, .shell h2, .shell h3, .shell p, .shell figure, .shell dl, .shell dd { margin: 0; }
 .shell a, .shell summary { touch-action: manipulation; }
-.pinnedMasthead { --masthead-height: 72px; }
-.pinnedMasthead > :global(.masthead), .pinnedMasthead > .masthead { position: sticky; top: 0; z-index: 30; }
+.pinnedMasthead > :global(.masthead) { position: sticky; top: 0; z-index: 30; }
 .skipLink { position: fixed; top: 8px; left: 8px; z-index: 100; padding: 12px 20px; background: var(--ink); color: var(--paper) !important; transform: translateY(-160%); }
 .skipLink:focus { transform: none; }
-.masthead { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 76px; padding: 12px var(--portfolio-gutter); border-bottom: 1px solid var(--line-strong); background: var(--paper); }
-.identity { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font-size: 12px; font-weight: 650; text-transform: uppercase; white-space: nowrap; }
-.monogram { width: 32px; height: 32px; display: grid; place-items: center; color: var(--paper); background: var(--ink); font: 10px var(--font-mono), monospace; }
-.mastheadMeta, .boardLink, .eyebrow, .footer, .boardRegister, .boardCoordinates, .imageRegister, .artifactLabel, .projectFacts dt { font-family: var(--font-mono), monospace; font-size: 10px; line-height: 1.6; text-transform: uppercase; letter-spacing: .055em; }
-.mastheadMeta { color: var(--muted); }
-.mastheadMeta span { margin-left: 20px; }
-.boardLink { display: flex; align-items: center; gap: 8px; min-height: 44px; text-decoration: none; }
-.boardLink > span:first-child { color: var(--signal); font-size: 18px; }
-.navIndex { color: var(--muted); }
+.eyebrow, .footer, .boardRegister, .boardCoordinates, .imageRegister, .artifactLabel, .projectFacts dt { font-family: var(--font-mono), monospace; font-size: 10px; line-height: 1.6; text-transform: uppercase; letter-spacing: .055em; }
 .eyebrow { color: var(--signal-text); }
 .eyebrow > span { color: var(--signal-text); margin-right: 12px; }
 .footer { display: flex; justify-content: space-between; gap: 24px; padding: 24px var(--portfolio-gutter); color: var(--muted); border-top: 1px solid var(--line-strong); }
 .footer a { text-decoration: none; }
-.footer a:hover, .boardLink:hover { color: var(--signal); }
+.footer a:hover { color: var(--signal); }
 
 /* Project: a visual reading surface with a persistent route back to the Board. */
 .projectPage :global(.panel-incoming-sheet) { border-top: 0; background: linear-gradient(rgba(40, 40, 40, .018) 1px, transparent 1px), linear-gradient(90deg, rgba(40, 40, 40, .018) 1px, transparent 1px), var(--paper); background-size: 28px 28px; }
@@ -108,18 +99,11 @@
 .notFound h1 { font-weight: 500; margin-top: 30px; max-width: 700px; font-size: clamp(36px, 5vw, 64px); letter-spacing: -.055em; line-height: 1.05; }
 
 @media (max-width: 1050px) {
-  .mastheadMeta span { display: none; }
   .projectReading { grid-template-columns: 150px minmax(0, 1fr); gap: 32px; }
   .metrics { grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); }
 }
 
-@media (max-width: 800px) {
-  .pinnedMasthead { --masthead-height: 62px; }
-}
-
 @media (max-width: 760px) {
-  .masthead { gap: 12px; min-height: 66px; }
-  .mastheadMeta, .navIndex { display: none; }
   .projectHero { grid-template-columns: 1fr; gap: 30px; padding-top: 34px; padding-bottom: 28px; }
   .heroCopy h1 { font-size: clamp(42px, 10vw, 68px); max-width: 590px; margin-top: 24px; }
   .heroArtifact img { height: auto; }
@@ -157,7 +141,7 @@
 }
 
 @media print {
-  .masthead, .sectionRail, .footer, .startReading, .endReturn { display: none; }
+  .shell :global(.masthead), .sectionRail, .footer, .startReading, .endReturn { display: none; }
   .projectReading { display: block; }
   .projectSection { break-inside: avoid; padding: 24px 0; }
   .artifact img { max-height: 600px; object-fit: contain; }
