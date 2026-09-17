@@ -1,8 +1,11 @@
 .sheet { position: relative; max-width: 1520px; margin-inline: auto; border-inline: 1px solid var(--line); padding: 0 28px; }
 .registration { position: sticky; top: 0; z-index: 5; background: var(--paper); margin: 0 -28px; pointer-events: none; }
-.coordinates { display: flex; justify-content: space-between; align-items: center; gap: 16px; height: 28px; border-block: 1px solid var(--line-strong); font: 9px/1 var(--font-mono), monospace; color: var(--muted); font-variant-numeric: tabular-nums; }
+.readout { transform: translateY(var(--board-readout-shift, 0px)); }
+.navigation { position: relative; z-index: 1; padding-inline: 28px; pointer-events: auto; transform: translateY(var(--board-navigation-shift, 0px)); opacity: var(--board-navigation-opacity, 1); }
+.navigation:focus-within { opacity: 1; background: var(--paper); }
+.sheet [id^="region-"], .sheet [id="study-pmf"] { scroll-margin-top: calc(var(--board-rail-height, 206px) + 20px); }
+.coordinates { display: flex; justify-content: space-between; align-items: center; gap: 16px; height: 28px; border-bottom: 1px solid var(--line-strong); padding-inline: 10px; font: 9px/1 var(--font-mono), monospace; color: var(--muted); font-variant-numeric: tabular-nums; }
 .coordinates > span { display: flex; align-items: center; gap: 10px; }
-.coordinates i { display: inline-block; width: 5px; height: 5px; background: var(--ink); }
 .coordinates b { font-weight: 400; opacity: .5; }
 .topRuler { height: 22px; position: relative; overflow: hidden; background-image: repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 8px), repeating-linear-gradient(90deg, var(--line-strong) 0 1px, transparent 1px 80px); background-size: 100% 4px, 100% 8px; background-repeat: no-repeat; background-position: top; }
 .topRuler > span { position: absolute; top: 10px; padding-left: 3px; font: 8px/1 var(--font-mono), monospace; color: var(--muted); }
@@ -23,11 +26,13 @@
 @media (max-width: 1050px) {
   .sheet { padding-inline: 20px; }
   .registration { margin-inline: -20px; }
+  .navigation { padding-inline: 20px; }
   .artifactMeta { display: none; }
 }
 @media (max-width: 760px) {
   .sheet { padding-inline: 14px; }
   .registration { margin-inline: -14px; }
+  .navigation { padding-inline: 14px; }
   .coordinateUnits { display: none !important; }
   .coordinates { font-size: 8px; }
   .coordinates > span { gap: 5px; }
@@ -35,4 +40,12 @@
   .generalNotes { grid-template-columns: 1fr; font-size: 9px; }
   .sheetEnd { grid-column: 1; grid-row: auto; margin-top: 12px; }
 }
-@media print { .registration { position: static; } }
+@media (prefers-reduced-motion: reduce) {
+  .registration { display: flex; flex-direction: column; }
+  .readout { order: 2; transform: none; }
+  .navigation { order: 1; transform: none; opacity: 1; }
+}
+@media print {
+  .registration { position: static; }
+  .readout, .navigation { transform: none; opacity: 1; }
+}

@@ -21,6 +21,7 @@ it("keeps Magpie viewport telemetry separate from the scrolling sheet and releas
   const sheet = container.querySelector("[data-board-sheet]")!;
   let top = 100;
   vi.spyOn(sheet, "getBoundingClientRect").mockImplementation(() => ({ left: 40, top, width: 960, height: 2200 } as DOMRect));
+  fireEvent.resize(window);
   flush();
   expect(container.textContent).toContain("[0960, 0000]");
   top = -320;
@@ -43,4 +44,47 @@ it("keeps Magpie viewport telemetry separate from the scrolling sheet and releas
   expect(disconnect).toHaveBeenCalledOnce();
   expect(remove).toHaveBeenCalledWith("scroll", expect.any(Function));
   expect(remove).toHaveBeenCalledWith("pointermove", expect.any(Function));
+});
+
+
+it("docks a single accessible navigation, reverses with scrolling, and remeasures wrapped links", () => {
+  const frames: FrameRequestCallback[] = [];
+  vi.stubGlobal("requestAnimationFrame", vi.fn((callback: FrameRequestCallback) => { frames.push(callback); return frames.length; }));
+  vi.stubGlobal("cancelAnimationFrame", vi.fn());
+  const flush = () => act(() => { frames.splice(0).forEach((callback) => callback(0)); });
+  const { container, getByRole, unmount } = render(<div data-board-sheet><BoardRegistration><nav aria-label="Work on the Board"><a href="#region-magpie">Magpie</a></nav></BoardRegistration></div>);
+  const sheet = container.querySelector<HTMLElement>("[data-board-sheet]")!;
+  const navigation = getByRole("navigation").parentElement!;
+  const rail = navigation.parentElement!;
+  const readout = rail.firstElementChild as HTMLElement;
+  let top = 100;
+  let navHeight = 56;
+  vi.spyOn(sheet, "getBoundingClientRect").mockImplementation(() => ({ top, width: 960, height: 2200 } as DOMRect));
+  vi.spyOn(readout, "offsetHeight", "get").mockReturnValue(50);
+  vi.spyOn(navigation, "offsetHeight", "get").mockImplementation(() => navHeight);
+  const sync = () => { fireEvent.scroll(window); flush(); };
+  sync();
+  expect(rail.style.getPropertyValue("--board-navigation-shift")).toBe("0px");
+  expect(getByRole("link", { name: "Magpie" }).closest('[aria-hidden="true"]')).toBeNull();
+  top = -80;
+  sync();
+  expect(rail.style.getPropertyValue("--board-navigation-shift")).toBe("-25px");
+  expect(Number(rail.style.getPropertyValue("--board-navigation-opacity"))).toBeLessThan(0.2);
+  top = -320;
+  sync();
+  expect(rail.style.getPropertyValue("--board-navigation-shift")).toBe("-50px");
+  expect(rail.style.getPropertyValue("--board-readout-shift")).toBe("56px");
+  expect(Number(rail.style.getPropertyValue("--board-navigation-opacity"))).toBeCloseTo(1);
+  navHeight = 156;
+  fireEvent.resize(window);
+  flush();
+  expect(sheet.style.getPropertyValue("--board-rail-height")).toBe("206px");
+  expect(rail.style.getPropertyValue("--board-readout-shift")).toBe("156px");
+  top = 100;
+  sync();
+  expect(rail.style.getPropertyValue("--board-navigation-shift")).toBe("0px");
+  expect(container.querySelectorAll("nav")).toHaveLength(1);
+  expect(container.querySelectorAll("i")).toHaveLength(0);
+  unmount();
+  expect(sheet.style.getPropertyValue("--board-rail-height")).toBe("");
 });
