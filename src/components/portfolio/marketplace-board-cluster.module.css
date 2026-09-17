@@ -1,4 +1,8 @@
-.cluster { --marketplace-ink: #4b6769; }
+.cluster { --marketplace-ink: #4b6769; align-self: start; }
+.cluster > header { min-height: 0; padding-bottom: 16px; }
+.cluster > header h2 { margin: 12px 0 8px; }
+.cluster > header > div { margin-top: 12px; }
+.cluster > footer { flex-direction: row; margin-top: 0; padding: 16px 0 0; }
 .artifacts { position: relative; padding-top: 4px; }
 .audiences { display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 20px; color: var(--marketplace-ink); font: 10px/1.6 var(--font-mono), monospace; }
 .audiences > span { display: grid; gap: 4px; padding: 8px 22px 16px 0; }
@@ -10,7 +14,7 @@
 .catalogAction { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px 16px; align-items: center; min-height: 48px; font: 9px/1.6 var(--font-mono), monospace; color: var(--muted); }
 .catalogAction > span { color: var(--ink); }
 .catalog:is(:hover, :focus-visible) .catalogAction { color: var(--ink); text-decoration: underline; text-underline-offset: 5px; }
-.orchestration { display: grid; grid-template-columns: minmax(55px, .25fr) 1fr; align-items: start; gap: 22px; margin: 22px 0 0 5%; }
+.orchestration { display: grid; grid-template-columns: minmax(55px, .25fr) 1fr; align-items: start; gap: 22px; margin: 16px 0 0 5%; }
 .convergence { display: block; width: 100%; max-width: 120px; height: auto; overflow: visible; margin-top: 6px; }
 .convergence path { fill: none; stroke: var(--marketplace-ink); stroke-width: 1; stroke-dasharray: 1; }
 .convergence circle { fill: var(--marketplace-ink); }
