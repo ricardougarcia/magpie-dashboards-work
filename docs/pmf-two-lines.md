@@ -37,6 +37,8 @@ Inline and modal images reference the same approved files, with no larger origin
 
 The old full-detail PMF market image under `public/portfolio/gcm` is removed from the new deployment. The GCM companion uses the protected overview. The Board's existing 03.B placement and connecting interaction are unchanged; its destination and the GCM companion now link to `/work/pmf`. Existing external source sites and older deployments are not retroactively changed by this release.
 
+The Board's 03.B preview pairs the already-approved segmentation prototype with that same permanently redacted market-board export. Paper and graphite mounts identify user research and market analysis; two fine paths meet at “MVP direction.” The whole rendering links to the PMF sample. Hover and keyboard focus lift the mounts by 3px/5px over 500ms and draw the paths over 720ms, using `cubic-bezier(.22,1,.36,1)`. Reduced motion shows complete paths without movement. This reuses published files and leaves the separate GCM relationship control intact.
+
 ## Verification and release
 
 Record application checks, direct-file visual/OCR review, browser results, independent review, exact preview SHA and stable UAT verification in the release evidence. The user selected the design and treatments; engineering checks do not imply owner acceptance of the finished page. Production promotion requires a later explicit request.
