@@ -86,15 +86,6 @@
 .ccp [data-pixel-size] > div:first-child { flex: 1; min-width: 0; }
 .ccp [data-artifact="C"] > div > div:last-child { width: min(380px, calc(100cqw - 12px)); }
 .ccp [data-source-locator] { width: 62px; flex: 0 0 62px; }
-.ccp [data-board-notes] { display: grid; grid-template-columns: 1fr; gap: 24px; margin: 30px 0 0; }
-.ccp [data-board-notes] > section { display: block; }
-.ccp [data-board-notes] h3 { max-width: none; font-size: 9px; margin-bottom: 12px; }
-.ccp [data-board-notes] > section:first-child > div { display: flex; gap: 24px; }
-.ccp [data-board-notes] > section:first-child a { flex: 1; min-width: 0; gap: 6px; }
-.ccp [data-board-notes] > section:first-child strong { font-size: 24px; }
-.ccp [data-board-notes] > section:first-child a > span { font-size: 11px; }
-.ccp [data-board-notes] > section:last-child p { font-size: 26px; max-width: 430px; }
-.ccp [data-board-notes] > section:last-child a { margin-top: 6px; }
 .ccp > footer a { display: inline-flex; align-items: center; gap: 20px; min-height: 44px; text-decoration: none; }
 .ccp > footer a:is(:hover, :focus-visible) { text-decoration: underline; text-underline-offset: 5px; }
 .ccp > footer { margin-top: auto; padding-top: 28px; flex-wrap: wrap; gap: 4px 16px; font-size: 8px; }
@@ -133,9 +124,6 @@
   .ccp [data-artifact="B"] { padding-top: 0; width: 100%; }
   .ccp [data-artifact="C"] { width: calc(100% - 22px) !important; margin-left: 22px; }
   .ccp [data-artifact="C"] > div > div:last-child { width: 100%; }
-  .ccp [data-board-notes] > section:first-child > div { gap: 16px; }
-  .ccp [data-board-notes] > section:first-child strong { font-size: 23px; }
-  .ccp [data-board-notes] > section:last-child p { font-size: 27px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .field *, .field *::before, .field *::after { animation: none !important; }
