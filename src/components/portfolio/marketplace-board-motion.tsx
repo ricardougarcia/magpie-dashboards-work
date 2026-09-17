@@ -19,8 +19,11 @@ export function MarketplaceBoardMotion(props: ComponentPropsWithoutRef<"article"
       element.style.setProperty("--marketplace-sheet-a", `translate(${-10 * spread + 2 * phase}px, ${-6 * spread + 3 * phase}px)`);
       element.style.setProperty("--marketplace-sheet-b", `translate(${10 * spread + 4 * phase}px, ${8 * spread + 6 * phase}px)`);
       element.style.setProperty("--marketplace-hover-opacity", String(opacity));
+      const seam = 1 - Math.pow(1 - phase, 3);
+      element.style.setProperty("--marketplace-seam-inset", `${50 * (1 - seam)}%`);
+      element.style.setProperty("--marketplace-label-shift", `${3 * seam * opacity}px`);
       const journey = Math.min(1, Math.max(0, (phase - .14) / .7));
-      element.style.setProperty("--marketplace-trace-offset", String(8 - journey * 108));
+      element.style.setProperty("--marketplace-trace-offset", String(14 - journey * 114));
       element.style.setProperty("--marketplace-endpoint-opacity", String(Math.min(1, Math.max(0, (phase - .72) / .2)) * opacity));
     };
     const tick = (now: number) => {
