@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ExternalLink, X } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
 import Image from "next/image";
 import {
   type ChangeEvent as ReactChangeEvent,
