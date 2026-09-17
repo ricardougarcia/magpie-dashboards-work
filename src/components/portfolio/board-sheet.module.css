@@ -16,7 +16,7 @@
 .specPlate dt::after { content: ":"; }
 .artifactMeta { margin-left: auto; font-size: 8px; }
 .sourceCoordinate { margin-top: 6px; font-size: 7px !important; line-height: 1.5 !important; }
-.sheetClosing { display: flex; justify-content: flex-end; padding-bottom: 26px; font: 10px/1.7 var(--font-mono), monospace; color: var(--muted); }
+.sheetClosing { display: flex; flex-direction: row; justify-content: flex-end; padding: 0 0 26px; font: 10px/1.7 var(--font-mono), monospace; color: var(--muted); }
 .sheetEnd { text-transform: uppercase; white-space: nowrap; }
 .sheetEnd > span { color: var(--signal); padding-inline: 12px; }
 @media (max-width: 1050px) {

@@ -82,7 +82,7 @@
 .ccp [data-artifact="C"] > div > div:last-child > div:first-child { align-self: end; }
 .ccp [data-artifact="C"] > div > div:last-child::after { display: none; }
 .ccp [data-source-locator] { width: 62px; flex: 0 0 62px; }
-.ccp > footer { margin-top: 0; padding-top: 12px; }
+.ccp > footer { flex-direction: row; margin-top: 0; padding: 12px 0 0; }
 .ccp > footer a { align-items: baseline; }
 
 @keyframes registerTrace { from { stroke-dashoffset: 1; opacity: .2; } to { stroke-dashoffset: 0; } }
