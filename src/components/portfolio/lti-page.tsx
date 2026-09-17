@@ -1,7 +1,6 @@
 import { CoordinateCursor } from "@/components/coordinate-cursor";
 import { ltiAssets, ltiRecord } from "@/data/lti";
 import { PortfolioShell } from "./portfolio-shell";
-import { PortfolioLink } from "./portfolio-link";
 import { LtiArtifact } from "./lti-artifact";
 import { LtiMotion, LtiWorkstreams } from "./lti-motion";
 import styles from "./lti.module.css";
@@ -81,10 +80,8 @@ export function LtiPage() {
           <section className={cx("beat", "relay-delivery", "graphite")} data-lti-beat aria-labelledby="delivery-title">
             <h2 id="delivery-title">Different methods.<br />One coordinated effort.</h2>
             <p className={styles.copy}>I used Agile with engineering, Kanban for contractor tagging and uploads, and critical-path planning to coordinate dependencies and launch targets.</p>
-            <div className={styles["relay-delivery-note"]}><p>More than 900 tools made onboarding, review, and data hygiene a substantial part of the work.</p><span className={styles.caption}>Reported project scope<br />Not an adoption measure</span></div>
-            <span className={styles["relay-closing-rule"]} aria-hidden="true" />
+            <div className={styles["relay-delivery-note"]}><p>More than 900 tools made onboarding, review, and data hygiene a substantial part of the work.</p><span className={styles.caption}>Reported project scope</span></div>
           </section>
-          <PortfolioLink href="/drawer" className={styles.returnLink} data-board-return><span>Return to the Board</span><span>Selected work</span></PortfolioLink>
         </article>
       </LtiMotion>
     </main>
