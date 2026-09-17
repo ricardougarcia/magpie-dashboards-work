@@ -1,0 +1,1083 @@
+{
+  "base": "http://127.0.0.1:3087",
+  "timestamp": "2026-09-17T01:29:40.930Z",
+  "passed": 98,
+  "failed": 0,
+  "results": [
+    {
+      "viewport": "1440x1000",
+      "name": "Board returns HTTP 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Six authored regions remain in order and PMF remains subentry 03.B",
+      "pass": true,
+      "detail": {
+        "regions": [
+          "region-magpie",
+          "region-marketplace",
+          "region-gcm",
+          "region-lti",
+          "region-partner-portal",
+          "region-learnplatform-ccp"
+        ],
+        "subentry": "03.B",
+        "next": "region-learnplatform-ccp"
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "PMF retains its authored location above CCP and beside or below Partner Portal",
+      "pass": true,
+      "detail": {
+        "pmf": {
+          "left": 756,
+          "top": 201.203125,
+          "bottom": 869.921875
+        },
+        "ccp": {
+          "left": 756,
+          "top": 949.921875
+        },
+        "portal": {
+          "right": 684,
+          "top": 201.203125,
+          "bottom": 916.546875
+        }
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "PMF title, summary, and existing destinations stay intact",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Rendering is a named link to the PMF work sample",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Rendering loads only the two approved image pathnames",
+      "pass": true,
+      "detail": [
+        {
+          "pathname": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+          "loaded": true
+        },
+        {
+          "pathname": "/portfolio/pmf/market-overview.png",
+          "loaded": true
+        }
+      ]
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Rendering presents both inquiry labels and MVP direction",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "The two inquiry paths meet at the direction marker",
+      "pass": true,
+      "detail": {
+        "target": {
+          "x": 240,
+          "y": 47
+        },
+        "endpoints": [
+          {
+            "x": 240,
+            "y": 47
+          },
+          {
+            "x": 240,
+            "y": 47
+          }
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No page overflow and the rendering stays inside the PMF card",
+      "pass": true,
+      "detail": {
+        "left": 781,
+        "right": 1338.046875,
+        "cardLeft": 756,
+        "cardRight": 1362.046875
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Mouse hover subtly changes the rendering sheets",
+      "pass": true,
+      "detail": {
+        "before": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ],
+        "after": [
+          "none",
+          "matrix(1, 0, 0, 1, 0, -3)",
+          "none",
+          "none",
+          "matrix(1, 0, 0, 1, 0, -5)",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Hover completes both inquiry paths",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Rendering hover preserves PMF-to-GCM relationship",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Keyboard Tab reaches the new rendering with a visible focus indicator",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Keyboard focus changes the rendering sheets",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Keyboard focus completes both inquiry paths",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Keyboard preview focus preserves PMF-to-GCM relationship",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Existing GCM keyboard focus still reveals its discovery relationship",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Existing GCM hover still reveals its discovery relationship",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Relationship activation pins the PMF connection after exit",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Escape dismisses the existing pinned relationship",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Reduced motion displays both inquiry paths without interaction",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Reduced motion keeps both sheets visible and static on focus",
+      "pass": true,
+      "detail": {
+        "before": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ],
+        "focused": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Reduced motion also keeps sheets static on hover",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Rendering opens the PMF page by keyboard",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Browser Back restores the Board card framing",
+      "pass": true,
+      "detail": {
+        "before": {
+          "y": 2042,
+          "top": 252.34375
+        },
+        "after": {
+          "y": 2042,
+          "top": 252.34375
+        }
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No overflow after interaction and navigation",
+      "pass": true,
+      "detail": {
+        "width": 1440,
+        "content": 1440
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No application runtime or console errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": [],
+        "transitionInterruptions": []
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Board returns HTTP 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Six authored regions remain in order and PMF remains subentry 03.B",
+      "pass": true,
+      "detail": {
+        "regions": [
+          "region-magpie",
+          "region-marketplace",
+          "region-gcm",
+          "region-lti",
+          "region-partner-portal",
+          "region-learnplatform-ccp"
+        ],
+        "subentry": "03.B",
+        "next": "region-learnplatform-ccp"
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "PMF retains its authored location above CCP and beside or below Partner Portal",
+      "pass": true,
+      "detail": {
+        "pmf": {
+          "left": 75,
+          "top": 289.515625,
+          "bottom": 962.8125
+        },
+        "ccp": {
+          "left": 75,
+          "top": 1020.8125
+        },
+        "portal": {
+          "right": 745,
+          "top": -426.84375,
+          "bottom": 231.515625
+        }
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "PMF title, summary, and existing destinations stay intact",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Rendering is a named link to the PMF work sample",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Rendering loads only the two approved image pathnames",
+      "pass": true,
+      "detail": [
+        {
+          "pathname": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+          "loaded": true
+        },
+        {
+          "pathname": "/portfolio/pmf/market-overview.png",
+          "loaded": true
+        }
+      ]
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Rendering presents both inquiry labels and MVP direction",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "The two inquiry paths meet at the direction marker",
+      "pass": true,
+      "detail": {
+        "target": {
+          "x": 240,
+          "y": 47
+        },
+        "endpoints": [
+          {
+            "x": 240,
+            "y": 47
+          },
+          {
+            "x": 240,
+            "y": 47
+          }
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No page overflow and the rendering stays inside the PMF card",
+      "pass": true,
+      "detail": {
+        "left": 100,
+        "right": 721,
+        "cardLeft": 75,
+        "cardRight": 745
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Mouse hover subtly changes the rendering sheets",
+      "pass": true,
+      "detail": {
+        "before": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ],
+        "after": [
+          "none",
+          "matrix(1, 0, 0, 1, 0, -3)",
+          "none",
+          "none",
+          "matrix(1, 0, 0, 1, 0, -5)",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Hover completes both inquiry paths",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Rendering hover preserves PMF-to-GCM relationship",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Keyboard Tab reaches the new rendering with a visible focus indicator",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Keyboard focus changes the rendering sheets",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Keyboard focus completes both inquiry paths",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Keyboard preview focus preserves PMF-to-GCM relationship",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Existing GCM keyboard focus still reveals its discovery relationship",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Existing GCM hover still reveals its discovery relationship",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Relationship activation pins the PMF connection after exit",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Escape dismisses the existing pinned relationship",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Reduced motion displays both inquiry paths without interaction",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Reduced motion keeps both sheets visible and static on focus",
+      "pass": true,
+      "detail": {
+        "before": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ],
+        "focused": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Reduced motion also keeps sheets static on hover",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Rendering opens the PMF page by keyboard",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Browser Back restores the Board card framing",
+      "pass": true,
+      "detail": {
+        "before": {
+          "y": 4146,
+          "top": 259.25
+        },
+        "after": {
+          "y": 4146,
+          "top": 259.25
+        }
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No overflow after interaction and navigation",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "content": 820
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No application runtime or console errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": [],
+        "transitionInterruptions": []
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Board returns HTTP 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "390x844",
+      "name": "Six authored regions remain in order and PMF remains subentry 03.B",
+      "pass": true,
+      "detail": {
+        "regions": [
+          "region-magpie",
+          "region-marketplace",
+          "region-gcm",
+          "region-lti",
+          "region-partner-portal",
+          "region-learnplatform-ccp"
+        ],
+        "subentry": "03.B",
+        "next": "region-learnplatform-ccp"
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "PMF retains its authored location above CCP and beside or below Partner Portal",
+      "pass": true,
+      "detail": {
+        "pmf": {
+          "left": 35,
+          "top": 165.296875,
+          "bottom": 750.359375
+        },
+        "ccp": {
+          "left": 35,
+          "top": 808.359375
+        },
+        "portal": {
+          "right": 355,
+          "top": -406.1875,
+          "bottom": 107.296875
+        }
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "PMF title, summary, and existing destinations stay intact",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Rendering is a named link to the PMF work sample",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Rendering loads only the two approved image pathnames",
+      "pass": true,
+      "detail": [
+        {
+          "pathname": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+          "loaded": true
+        },
+        {
+          "pathname": "/portfolio/pmf/market-overview.png",
+          "loaded": true
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "name": "Rendering presents both inquiry labels and MVP direction",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "The two inquiry paths meet at the direction marker",
+      "pass": true,
+      "detail": {
+        "target": {
+          "x": 240,
+          "y": 47
+        },
+        "endpoints": [
+          {
+            "x": 240,
+            "y": 47
+          },
+          {
+            "x": 240,
+            "y": 47
+          }
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "No page overflow and the rendering stays inside the PMF card",
+      "pass": true,
+      "detail": {
+        "left": 54,
+        "right": 337,
+        "cardLeft": 35,
+        "cardRight": 355
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Keyboard Tab reaches the new rendering with a visible focus indicator",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Keyboard focus changes the rendering sheets",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Keyboard focus completes both inquiry paths",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Keyboard preview focus preserves PMF-to-GCM relationship",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Existing GCM keyboard focus still reveals its discovery relationship",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Relationship activation pins the PMF connection after exit",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Escape dismisses the existing pinned relationship",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Reduced motion displays both inquiry paths without interaction",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Reduced motion keeps both sheets visible and static on focus",
+      "pass": true,
+      "detail": {
+        "before": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ],
+        "focused": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Rendering opens the PMF page by keyboard",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Browser Back restores the Board card framing",
+      "pass": true,
+      "detail": {
+        "before": {
+          "y": 3704,
+          "top": 321.03125
+        },
+        "after": {
+          "y": 3704,
+          "top": 321.03125
+        }
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "No overflow after interaction and navigation",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "content": 390
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "No application runtime or console errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": [],
+        "transitionInterruptions": []
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Board returns HTTP 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "320x700",
+      "name": "Six authored regions remain in order and PMF remains subentry 03.B",
+      "pass": true,
+      "detail": {
+        "regions": [
+          "region-magpie",
+          "region-marketplace",
+          "region-gcm",
+          "region-lti",
+          "region-partner-portal",
+          "region-learnplatform-ccp"
+        ],
+        "subentry": "03.B",
+        "next": "region-learnplatform-ccp"
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "PMF retains its authored location above CCP and beside or below Partner Portal",
+      "pass": true,
+      "detail": {
+        "pmf": {
+          "left": 35,
+          "top": 94.765625,
+          "bottom": 678.09375
+        },
+        "ccp": {
+          "left": 35,
+          "top": 736.09375
+        },
+        "portal": {
+          "right": 285,
+          "top": -433.546875,
+          "bottom": 36.765625
+        }
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "PMF title, summary, and existing destinations stay intact",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Rendering is a named link to the PMF work sample",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Rendering loads only the two approved image pathnames",
+      "pass": true,
+      "detail": [
+        {
+          "pathname": "/portfolio/pmf/prototypes/segmentation-selected.jpg",
+          "loaded": true
+        },
+        {
+          "pathname": "/portfolio/pmf/market-overview.png",
+          "loaded": true
+        }
+      ]
+    },
+    {
+      "viewport": "320x700",
+      "name": "Rendering presents both inquiry labels and MVP direction",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "The two inquiry paths meet at the direction marker",
+      "pass": true,
+      "detail": {
+        "target": {
+          "x": 240,
+          "y": 47
+        },
+        "endpoints": [
+          {
+            "x": 240,
+            "y": 47
+          },
+          {
+            "x": 240,
+            "y": 47
+          }
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "No page overflow and the rendering stays inside the PMF card",
+      "pass": true,
+      "detail": {
+        "left": 54,
+        "right": 267,
+        "cardLeft": 35,
+        "cardRight": 285
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Keyboard Tab reaches the new rendering with a visible focus indicator",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Keyboard focus changes the rendering sheets",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Keyboard focus completes both inquiry paths",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Keyboard preview focus preserves PMF-to-GCM relationship",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Existing GCM keyboard focus still reveals its discovery relationship",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Relationship activation pins the PMF connection after exit",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Escape dismisses the existing pinned relationship",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Reduced motion displays both inquiry paths without interaction",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Reduced motion keeps both sheets visible and static on focus",
+      "pass": true,
+      "detail": {
+        "before": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ],
+        "focused": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Rendering opens the PMF page by keyboard",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Browser Back restores the Board card framing",
+      "pass": true,
+      "detail": {
+        "before": {
+          "y": 3835,
+          "top": 259.640625
+        },
+        "after": {
+          "y": 3835,
+          "top": 259.640625
+        }
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "No overflow after interaction and navigation",
+      "pass": true,
+      "detail": {
+        "width": 320,
+        "content": 320
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "No application runtime or console errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": [],
+        "transitionInterruptions": []
+      }
+    }
+  ],
+  "runtime": [
+    {
+      "viewport": "1440x1000",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "transitionInterruptions": []
+    },
+    {
+      "viewport": "820x1180",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "transitionInterruptions": []
+    },
+    {
+      "viewport": "390x844",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "transitionInterruptions": []
+    },
+    {
+      "viewport": "320x700",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "transitionInterruptions": []
+    }
+  ],
+  "screenshots": [
+    "/private/tmp/pmf-two-lines/verification/pmf-board-rendering/evidence/1440x1000-pmf-card.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-board-rendering/evidence/1440x1000-board-context.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-board-rendering/evidence/390x844-pmf-card.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-board-rendering/evidence/390x844-board-context.png"
+  ],
+  "screenshotRetention": {
+    "generated": 6,
+    "retained": 4,
+    "note": "Desktop and 390px mobile card/context captures retained. A separate pre-change desktop card baseline is retained. All four viewport results remain in this report."
+  }
+}
