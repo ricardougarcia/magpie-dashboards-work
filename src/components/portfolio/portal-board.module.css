@@ -1,0 +1,32 @@
+.artifacts { padding-top: 4px; }
+.cluster .preview { display: block; padding: 26px 20px 0; color: var(--paper); background: var(--graphite); background-image: linear-gradient(rgba(241, 239, 233, .045) 1px, transparent 1px), linear-gradient(90deg, rgba(241, 239, 233, .045) 1px, transparent 1px); background-size: 28px 28px; text-decoration: none; }
+.connections { width: 100%; }
+.destinations { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: end; gap: 10px; color: var(--paper); font: 500 clamp(10px, 1vw, 13px)/1.4 var(--font-sans), sans-serif; text-align: center; }
+.route { display: block; width: 100%; height: 62px; margin-top: 8px; overflow: visible; }
+.route path { fill: none; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.routeBase { stroke: rgba(241, 239, 233, .4); }
+.routeInk { stroke: var(--signal); stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-width 360ms ease; }
+.route circle { fill: var(--paper); }
+.product { position: relative; width: 88%; margin-inline: auto; padding: 6px; background: var(--paper-raised); transition: transform 560ms cubic-bezier(.16, 1, .3, 1); }
+.productLabel { display: flex; justify-content: space-between; gap: 12px; padding: 6px 4px 11px; color: var(--graphite); font: 500 10px/1.4 var(--font-sans), sans-serif; }
+.productLabel > span:last-child { font-weight: 400; }
+.product img { display: block; width: 100%; height: auto; }
+.caption { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 18px; min-height: 58px; padding-block: 16px; color: #cbc8c0; font: 10px/1.5 var(--font-mono), monospace; }
+.caption > span:last-child { color: var(--paper); }
+.preview:is(:hover, :focus-visible) .product { transform: translateY(-5px); }
+.preview:is(:hover, :focus-visible) .routeInk { stroke-width: 2; }
+.preview:is(:hover, :focus-visible) .caption > span:last-child { text-decoration: underline; text-underline-offset: 4px; }
+.artifacts[data-entered="true"] .routeInk { animation: connect 1200ms cubic-bezier(.16, 1, .3, 1) both; }
+@keyframes connect { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@media (max-width: 540px) {
+  .cluster .preview { padding-inline: 12px; }
+  .destinations { gap: 5px; font-size: 11px; }
+  .product { width: 96%; }
+  .productLabel { font-size: 9px; }
+  .caption { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .product, .routeInk { transition: none; }
+  .artifacts[data-entered="true"] .routeInk { animation: none; }
+  .preview:is(:hover, :focus-visible) .product { transform: none; }
+}

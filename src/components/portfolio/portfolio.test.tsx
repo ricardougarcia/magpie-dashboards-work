@@ -56,7 +56,7 @@ describe("Board and Project foundation", () => {
     expect(markup.querySelector("img")?.getAttribute("alt")).toContain("Marketplace catalog");
   });
 
-  it("keeps authored Board order, honest placeholders, and finished project destinations", () => {
+  it("keeps authored Board order and finished project destinations", () => {
     const { container } = render(<PortfolioBoard projects={portfolioProjects} />);
     const entries = [...container.querySelectorAll<HTMLElement>("[data-board-number]")];
     expect(entries.map((entry) => [entry.dataset.boardNumber, entry.id])).toEqual([
@@ -64,13 +64,14 @@ describe("Board and Project foundation", () => {
       ["04", "region-lti"], ["05", "region-partner-portal"], ["06", "region-learnplatform-ccp"],
     ]);
     const reserved = entries.filter((entry) => entry.dataset.boardState === "reserved");
-    expect(reserved).toHaveLength(1);
-    expect(reserved[0].id).toBe("region-partner-portal");
+    expect(reserved).toHaveLength(0);
     expect(screen.queryByText("06 Regions / 07 entries / 02 reserved")).toBeNull();
-    reserved.forEach((entry) => {
-      expect(within(entry).getByText("Wireframe placeholder")).toBeTruthy();
-      expect(entry.querySelector("a, button")).toBeNull();
-    });
+    const portal = container.querySelector<HTMLElement>("#region-partner-portal")!;
+    expect(portal.dataset.boardState).toBe("ready");
+    expect(within(portal).getByRole("link", { name: "Partner Portal" }).getAttribute("href")).toBe("/work/portal");
+    expect(within(portal).getByRole("link", { name: "Explore Partner Portal: the work behind the ecosystem" }).getAttribute("href")).toBe("/work/portal");
+    expect(within(portal).getByRole("group", { name: "Partner Portal ecosystem connections" }).textContent).toBe("EdCo MarketplaceCanvasImpactLearnPlatform");
+    expect(within(portal).getByRole("img").getAttribute("alt")).toContain("Original Partner Portal");
     expect(screen.getByRole("link", { name: "Magpie" }).getAttribute("href")).toBe("/");
     expect(screen.getByRole("link", { name: "EdCo Marketplace" }).getAttribute("href")).toBe("/work/marketplace");
     expect(container.querySelector("#region-marketplace")?.getAttribute("data-board-state")).toBe("ready");
