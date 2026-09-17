@@ -34,10 +34,11 @@ export function PortfolioBoard({ projects }: { projects: PortfolioProject[] }) {
         </div>}>
         <div className={styles.boardGutter}>
         <div className={sheet.sheet} data-board-sheet>
-        <BoardRegistration />
+        <BoardRegistration>
         <nav className={clusters.index} aria-label="Work on the Board">
           {boardEntries.map((entry) => <a key={entry.id} href={`#region-${entry.id}`}><span>{entry.number}</span>{entry.kind === "gcm" ? "GCM + PMF" : entry.title}</a>)}
         </nav>
+        </BoardRegistration>
         <GcmBoardField className={clusters.field}>
           {boardEntries.map((entry) => {
             if (entry.kind === "magpie") return <MagpieBoardCluster key={entry.id} entry={entry} />;
