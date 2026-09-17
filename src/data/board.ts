@@ -4,7 +4,7 @@ export type BoardEntry = {
   id: string;
   number: string;
   title: string;
-  kind: "magpie" | "marketplace" | "gcm" | "ccp" | "reserved";
+  kind: "magpie" | "marketplace" | "gcm" | "lti" | "ccp" | "reserved";
   signature: "timeline" | "catalog" | "register" | "bridge" | "portal" | "workflow";
 };
 
@@ -12,7 +12,7 @@ export const boardEntries = [
   { id: "magpie", number: "01", title: "Magpie", kind: "magpie", signature: "timeline" },
   { id: "marketplace", number: "02", title: "EdCo Marketplace", kind: "marketplace", signature: "catalog" },
   { id: "gcm", number: "03", title: "GCM", kind: "gcm", signature: "register" },
-  { id: "lti", number: "04", title: "LTI", kind: "reserved", signature: "bridge" },
+  { id: "lti", number: "04", title: "LTI", kind: "lti", signature: "bridge" },
   { id: "partner-portal", number: "05", title: "Partner Portal", kind: "reserved", signature: "portal" },
   { id: "learnplatform-ccp", number: "06", title: "Customer Created Products", kind: "ccp", signature: "workflow" },
 ] as const satisfies readonly BoardEntry[];
