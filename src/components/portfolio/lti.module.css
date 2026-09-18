@@ -295,9 +295,8 @@
   max-width:48ch
 }
 .relay .relay-configure-source {
-  width:77%;
-  margin-left:auto;
-  margin-right:6%
+  width:100%;
+  margin-inline:0
 }
 .relay .relay-configure-source :global([data-lti-preview]) {
   height:189px
@@ -776,4 +775,9 @@
     transform:none;
     break-inside:avoid
   }
+}
+
+/* The configuration board replaces the portrait dialog with a complete flow. */
+.relay .relay-configure-source :global([data-lti-preview]) {
+  height:auto
 }

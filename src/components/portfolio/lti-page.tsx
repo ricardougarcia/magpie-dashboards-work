@@ -1,5 +1,5 @@
 import { CoordinateCursor } from "@/components/coordinate-cursor";
-import { ltiAssets, ltiRecord } from "@/data/lti";
+import { ltiAssets, ltiInspections, ltiRecord } from "@/data/lti";
 import { PortfolioShell } from "./portfolio-shell";
 import { LtiArtifact } from "./lti-artifact";
 import { LtiMotion, LtiWorkstreams } from "./lti-motion";
@@ -27,7 +27,7 @@ export function LtiPage() {
             <h1 id="lti-title">An integration is also a release.</h1>
             <div className={styles["relay-introduction"]}>
               <p className={styles.copy}>A configuration change travels through provider tools, institutional workflows, and a public marketplace. The work was to make those dependencies visible—and sequence them.</p>
-              <LtiArtifact artifact={ltiAssets.planning} compact priority className={styles["relay-preview"]} />
+              <LtiArtifact artifact={ltiAssets.planning} views={ltiInspections.planning} inspectionHint="Explore the plan and three workflows" compact priority className={styles["relay-preview"]} />
             </div>
             <LtiWorkstreams />
             <div className={styles["relay-decision"]}>
@@ -50,14 +50,14 @@ export function LtiPage() {
                     <p className={styles.copy}>Show LTI support where educators evaluate a tool, with available versions and a path into configuration.</p>
                     <p className={styles["relay-margin-note"]}>The entry point is part<br />of the product.</p>
                   </div>
-                  <LtiArtifact artifact={ltiAssets.discover} className={styles["relay-evidence"]} />
+                  <LtiArtifact artifact={ltiAssets.discover} views={ltiInspections.discover} inspectionHint="Inspect placements, services, and setup guidance" className={styles["relay-evidence"]} />
                 </div>
               </section>
             </div>
             <div className={styles.beat} data-lti-beat>
               <section id="controllable" className={cx("relay-box", "relay-control", "graphite")} aria-labelledby="controllable-title">
                 <RelayTitle title="Controllable" id="controllable-title" contact />
-                <LtiArtifact artifact={ltiAssets.control} className={cx("relay-evidence", "relay-control-source")} />
+                <LtiArtifact artifact={ltiAssets.control} views={ltiInspections.control} inspectionHint="Follow the provider’s create, save, and publish workflow" className={cx("relay-evidence", "relay-control-source")} />
                 <div className={styles["relay-control-footer"]}>
                   <h3>A connection needs<br /> clear controls.</h3>
                   <p className={styles.copy}>Bring Tool IDs, libraries, interoperability, and badges into the provider’s product-management view.</p>
@@ -70,9 +70,9 @@ export function LtiPage() {
                 <RelayTitle title="Configurable" id="configurable-title" contact />
                 <div className={styles["relay-configure-intro"]}>
                   <h3>Support the setup.</h3>
-                  <p className={styles.copy}>Guide Canvas setup through dynamic registration, with the URL, placements, services, and notes available in context.</p>
+                  <p className={styles.copy}>Plan URL, manual, and JSON configuration paths, including validation, permissions, placements, and review.</p>
                 </div>
-                <LtiArtifact artifact={ltiAssets.configure} className={cx("relay-evidence", "relay-configure-source")} />
+                <LtiArtifact artifact={ltiAssets.configure} views={ltiInspections.configure} inspectionHint="Explore URL, manual, and JSON setup paths" className={cx("relay-evidence", "relay-configure-source")} />
                 <span className={cx("relay-register", "mono")} aria-hidden="true">SETUP / CONTEXT / CONNECTION</span>
               </section>
             </div>
