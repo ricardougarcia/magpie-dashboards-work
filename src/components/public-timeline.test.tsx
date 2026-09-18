@@ -101,13 +101,30 @@ function getTimelineItem(name: string) {
 }
 
 describe("PublicTimeline Guiding Light narrative", () => {
-  it("starts with Learn selected and places its narrative between the section heading and scroll control", () => {
+  it("starts collapsed with an unfiltered board and reveals a manually selected narrative above the scroll control", () => {
     render(<PublicTimeline data={data} />);
+    const group = screen.getByRole("group", { name: "Focus timeline by Guiding Light" });
+    const learn = within(group).getByRole("button", { name: /Learn/ });
+    const play = screen.getByRole("button", { name: "Play Guiding Lights" });
+    const expansion = document.getElementById(play.getAttribute("aria-controls")!)!;
+    expect(group.querySelectorAll("[aria-pressed='true']")).toHaveLength(0);
+    expect(getTimelineItem("First item").classList.contains("is-guiding-match")).toBe(false);
+    expect(getTimelineItem("Second item").classList.contains("is-muted")).toBe(false);
+    expect(expansion.getAttribute("aria-hidden")).toBe("true");
+    expect(expansion.hasAttribute("inert")).toBe(true);
+    expect(play.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByRole("heading", { name: "Understand before deciding." })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Previous Guiding Light" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Next Guiding Light" })).toBeNull();
+
+    fireEvent.click(learn);
     const heading = screen.getByRole("heading", { name: "The work, in motion" });
     const narrative = screen.getByRole("heading", { name: "Understand before deciding." });
     const rail = screen.getByRole("slider", { name: "Scroll the timeline horizontally" });
 
-    expect(screen.getByRole("button", { name: /Learn/ }).getAttribute("aria-pressed")).toBe("true");
+    expect(learn.getAttribute("aria-pressed")).toBe("true");
+    expect(play.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.queryByRole("button", { name: "Pause Guiding Lights" })).toBeNull();
     expect(getTimelineItem("First item").classList.contains("is-guiding-match")).toBe(true);
     expect(getTimelineItem("Second item").classList.contains("is-muted")).toBe(true);
     expect(screen.getByText("Sole contributor")).toBeTruthy();
@@ -128,6 +145,7 @@ describe("PublicTimeline Guiding Light narrative", () => {
       },
     };
     render(<PublicTimeline data={editedData} />);
+    fireEvent.click(screen.getByRole("button", { name: /Learn/ }));
     expect(screen.getByRole("heading", { name: "An owner-edited heading." })).toBeTruthy();
     expect(screen.getByText("An owner-edited account of the discovery work.")).toBeTruthy();
     expect(screen.getByText("An owner-edited account of my contribution.")).toBeTruthy();
@@ -137,9 +155,25 @@ describe("PublicTimeline Guiding Light narrative", () => {
     expect(screen.getByRole("heading", { name: "Match the response to the problem." })).toBeTruthy();
   });
 
-  it("lets the introduction start playback, pause it, and continue with manual navigation", () => {
+  it("uses the introduction to locate the play control without starting the guide", () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    const play = screen.getByRole("button", { name: "Play Guiding Lights" });
+    const guide = container.querySelector<HTMLElement>(".magpie-guide-start")!;
+    guide.scrollIntoView = vi.fn();
+    const invitation = screen.getByRole("link", { name: "Follow the Guiding Lights — find the play button" });
+    expect(invitation.getAttribute("href")).toBe(`#${play.id}`);
+    fireEvent.click(invitation);
+    expect(guide.scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
+    expect(document.activeElement).toBe(play);
+    expect(play.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByRole("button", { name: "Pause Guiding Lights" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Understand before deciding." })).toBeNull();
+    expect(container.querySelectorAll(".guiding-light-cell[aria-pressed='true']")).toHaveLength(0);
+  });
+
+  it("starts playback only from the section action, with pause and manual navigation available", () => {
     render(<PublicTimeline data={data} />);
-    fireEvent.click(screen.getByRole("link", { name: "Begin with the Guiding Lights" }));
+    fireEvent.click(screen.getByRole("button", { name: "Play Guiding Lights" }));
     const pause = screen.getByRole("button", { name: "Pause Guiding Lights" });
     // Real pointer interaction on playback controls must not dismiss the narrative.
     fireEvent.pointerDown(pause, { pointerType: "mouse" });
@@ -156,8 +190,9 @@ describe("PublicTimeline Guiding Light narrative", () => {
 
   it("collapses the narrative for independent exploration and for normal work-item inspection", async () => {
     const { container } = render(<PublicTimeline data={data} />);
+    fireEvent.click(screen.getByRole("button", { name: /Learn/ }));
     const narrative = screen.getByRole("heading", { name: "Understand before deciding." }).closest("[data-guiding-light-guide]")!;
-    fireEvent.click(screen.getByRole("link", { name: "Explore the connected work" }));
+    fireEvent.click(screen.getByRole("link", { name: "Explore the connected work freely" }));
     expect(narrative.getAttribute("aria-hidden")).toBe("true");
     expect(narrative.hasAttribute("inert")).toBe(true);
     expect(screen.queryByRole("heading", { name: "Understand before deciding." })).toBeNull();
@@ -176,6 +211,7 @@ describe("PublicTimeline Guiding Light narrative", () => {
   it("keeps the selected light during rail interaction and item pointerdown until inspection opens", () => {
     render(<PublicTimeline data={data} />);
     const learn = screen.getByRole("button", { name: /Learn/ });
+    fireEvent.click(learn);
     const rail = screen.getByRole("slider", { name: "Scroll the timeline horizontally" });
     fireEvent.pointerDown(rail, { pointerType: "mouse" });
     expect(learn.getAttribute("aria-pressed")).toBe("true");
@@ -193,17 +229,33 @@ describe("PublicTimeline Guiding Light narrative", () => {
   it("shows Grow's conclusion and offers explicit replay or exploration after finishing", () => {
     render(<PublicTimeline data={data} />);
     fireEvent.click(screen.getByRole("button", { name: /Grow/ }));
-    expect(screen.getByRole("heading", { name: "The next stage has a foundation." })).toBeTruthy();
-    expect(screen.getByText("The introduction ends. The connections continue.")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Explore the connected work" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Ready for feature development and scale." })).toBeTruthy();
+    expect(screen.getByText("The groundwork positions the dashboards for Q4 and beyond: a foundation for new features and scalable growth.")).toBeTruthy();
+    expect(screen.getByText(/competitor analysis, customer discovery, internal alignments, and market parity reports\./)).toBeTruthy();
+    expect(screen.queryByText("The introduction ends. The connections continue.")).toBeNull();
+    expect(within(document.getElementById("guiding-light-narrative")!).queryByText(/Prepare for scale/i)).toBeNull();
+    expect(screen.getAllByRole("button", { name: "Explore the work below" })).toHaveLength(1);
     fireEvent.click(screen.getByRole("button", { name: "Finish Guiding Lights" }));
-    expect(screen.getByRole("button", { name: "Replay Guiding Lights" })).toBeTruthy();
+    const playback = screen.getByRole("navigation", { name: "Guiding Lights playback" });
+    expect(within(playback).getByRole("button", { name: "Replay Guiding Lights" })).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: /Replay/ })).toHaveLength(1);
     expect(screen.getByRole("button", { name: /Grow/ }).getAttribute("aria-pressed")).toBe("true");
 
-    fireEvent.click(screen.getByRole("button", { name: "Replay the Guiding Lights" }));
+    fireEvent.click(screen.getByRole("button", { name: "Replay Guiding Lights" }));
     expect(screen.getByRole("button", { name: /Learn/ }).getAttribute("aria-pressed")).toBe("true");
     expect(screen.getByRole("button", { name: "Pause Guiding Lights" })).toBeTruthy();
-    expect(screen.queryByText("The introduction ends. The connections continue.")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Explore the work below" })).toBeNull();
+  });
+
+  it("returns from Grow's single exploration action to the unfiltered board", () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    fireEvent.click(screen.getByRole("button", { name: /Grow/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Explore the work below" }));
+    expect(screen.queryByRole("heading", { name: "Ready for feature development and scale." })).toBeNull();
+    expect(screen.getByRole("button", { name: "Play Guiding Lights" }).getAttribute("aria-expanded")).toBe("false");
+    expect(container.querySelectorAll(".guiding-light-cell[aria-pressed='true']")).toHaveLength(0);
+    expect(getTimelineItem("Planned item").classList.contains("is-guiding-match")).toBe(false);
+    expect(getTimelineItem("First item").classList.contains("is-muted")).toBe(false);
   });
 });
 
@@ -217,8 +269,9 @@ describe("PublicTimeline presentation safeguards", () => {
 
     const hero = within(container.querySelector(".hero")!);
     expect(hero.getByRole("heading", { name: "Every connection carries a decision." })).toBeTruthy();
-    expect(hero.getByRole("link", { name: "Begin with the Guiding Lights" })).toBeTruthy();
-    expect(hero.getByRole("link", { name: "Explore the connected work" })).toBeTruthy();
+    expect(hero.queryByRole("link", { name: "Begin with the Guiding Lights" })).toBeNull();
+    expect(hero.getByRole("link", { name: "Follow the Guiding Lights — find the play button" })).toBeTruthy();
+    expect(hero.getByRole("link", { name: "Explore the connected work freely" })).toBeTruthy();
     expect(hero.queryByText(/Rico Garcia/)).toBeNull();
     expect(hero.queryByText(/Principal Product Manager/)).toBeNull();
     expect(container.querySelector(".hero-metrics")).toBeNull();
@@ -340,6 +393,7 @@ describe("PublicTimeline presentation safeguards", () => {
   it("clears Guiding Light focus on Escape and when an item is selected", async () => {
     const { container } = render(<PublicTimeline data={data} />);
     const learn = screen.getByRole("button", { name: /Learn/ });
+    fireEvent.click(learn);
     expect(learn.getAttribute("aria-pressed")).toBe("true");
     fireEvent.keyDown(window, { key: "Escape" });
     await waitFor(() => expect(learn.getAttribute("aria-pressed")).toBe("false"));
@@ -413,7 +467,6 @@ describe("PublicTimeline telemetry ownership", () => {
 
   it("dismisses a hover-only preview when the page is clicked outside it", async () => {
     render(<PublicTimeline data={data} />);
-    fireEvent.keyDown(window, { key: "Escape" });
     fireEvent.pointerEnter(getTimelineItem("First item"), { pointerType: "mouse" });
     expect(screen.getByLabelText("Preview for First item")).toBeTruthy();
 
@@ -423,7 +476,6 @@ describe("PublicTimeline telemetry ownership", () => {
 
   it("ignores hover while pinned but replaces the record when another Gantt item is selected", async () => {
     render(<PublicTimeline data={data} />);
-    fireEvent.keyDown(window, { key: "Escape" });
     const first = getTimelineItem("First item");
     const second = getTimelineItem("Second item");
 
@@ -541,7 +593,6 @@ describe("PublicTimeline telemetry ownership", () => {
 
   it("clears an unpinned hover preview when the document pointer boundary is left", async () => {
     render(<PublicTimeline data={data} />);
-    fireEvent.keyDown(window, { key: "Escape" });
     fireEvent.pointerEnter(getTimelineItem("First item"), { pointerType: "mouse" });
     expect(screen.getByLabelText("Preview for First item")).toBeTruthy();
 
@@ -564,7 +615,6 @@ describe("PublicTimeline telemetry ownership", () => {
 
   it("does not create a hover-owned modal from touch entry before selection", async () => {
     render(<PublicTimeline data={data} />);
-    fireEvent.keyDown(window, { key: "Escape" });
     const first = getTimelineItem("First item");
 
     fireEvent.pointerEnter(first, { pointerType: "touch" });
