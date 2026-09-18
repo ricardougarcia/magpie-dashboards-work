@@ -1,6 +1,6 @@
 # Resume UAT
 
-The resume is the only content on this surface. Both US Letter pages retain the original PDF's outlined characters, placement, colors, rules, badges, and registration marks. Only the full-page background and grid are replaced by the existing Portfolio body background. See [source provenance](resume-source.md).
+The resume sits below the existing site masthead. Both US Letter pages retain the original PDF's outlined characters, placement, colors, rules, badges, and registration marks. Only the full-page background and grid are replaced by the existing Portfolio body background. See [source provenance](resume-source.md).
 
 ## Selected treatment
 
@@ -10,11 +10,11 @@ Rico selected Construction 1 — Register on September 17, 2026. Small character
 
 The two pages build concurrently from a blank, transparent field. Each sequence runs once. The completed canvas gives way to the original outlined SVG for sharp text at every zoom level. No resume font substitution or HTML reflow occurs. The source PDF remains unchanged.
 
-## Download prompt
+## Navigation and download
 
-Clicking or tapping either resume page opens a native modal asking “Download the PDF?” Its paper frame, individual characters, and button frames assemble from Register's small quadrant fragments in under a second. Yes downloads the unchanged original PDF and closes the modal. Not Yet and Escape dismiss it. The original PDF control also remains available.
+The Resume and The Board mastheads share links to The Board (`/drawer`) and Resume (`/resume`), with the current page identified. The masthead retains the site's existing identity and typography.
 
-Each resume page is keyboard accessible. The modal keeps focus inside, initially focuses Not Yet, locks background scrolling, and restores focus to the triggering page on dismissal. Opening it during the resume construction settles the background document. Reduced motion shows the complete modal immediately. Reopening starts a fresh construction.
+The floating PDF control downloads the unchanged original PDF directly, including without JavaScript. Clicking the resume has no download interaction. The earlier modal, click targets, and modal-only Register text helpers have been removed at Rico's request.
 
 ## Access and interruption
 
@@ -24,7 +24,7 @@ Each resume page is keyboard accessible. The modal keeps focus inside, initially
 - With JavaScript disabled, the source SVGs are immediately visible. A failed enhancement also exposes the original document; a CSS fallback covers failure before hydration.
 - A screen-reader transcript follows each page's visual reading order. The original PDF is downloadable.
 - Narrow screens fit the original page geometry. The full-size control provides a horizontally scrollable document without making the browser viewport overflow.
-- The route is `noindex, nofollow`. No existing navigation or portfolio data changes are part of this work.
+- The route is `noindex, nofollow`. Portfolio content and work-sample navigation are unchanged.
 
 ## Scope
 

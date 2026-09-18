@@ -8,7 +8,11 @@ export type WorkSampleRecord = {
   organization: string;
 };
 
-export function SiteMasthead({ project, isBoard = false }: { project?: WorkSampleRecord; isBoard?: boolean }) {
+export function SiteMasthead({ project, isBoard = false, isResume = false }: {
+  project?: WorkSampleRecord;
+  isBoard?: boolean;
+  isResume?: boolean;
+}) {
   return (
     <header className="masthead" data-panel="0">
       <Link href="/drawer" className="wordmark" aria-label="Rico Garcia — Board">
@@ -19,10 +23,17 @@ export function SiteMasthead({ project, isBoard = false }: { project?: WorkSampl
         <span>{project?.role ?? "Product management"}</span>
         <span>/ {project?.organization ?? "Selected work"}</span>
       </div>
-      <Link href="/drawer" className="masthead-destination" aria-current={isBoard ? "page" : undefined}>
-        {!project && <span className="masthead-plus" aria-hidden="true">+</span>}
-        <span>Board / <span className={project ? undefined : "masthead-overview"}>{project?.number ?? "Overview"}</span></span>
-      </Link>
+      {isBoard || isResume ? (
+        <nav className="masthead-navigation" aria-label="Primary">
+          <Link href="/drawer" aria-current={isBoard ? "page" : undefined}>The Board</Link>
+          <Link href="/resume" aria-current={isResume ? "page" : undefined}>Resume</Link>
+        </nav>
+      ) : (
+        <Link href="/drawer" className="masthead-destination">
+          {!project && <span className="masthead-plus" aria-hidden="true">+</span>}
+          <span>Board / <span className={project ? undefined : "masthead-overview"}>{project?.number ?? "Overview"}</span></span>
+        </Link>
+      )}
     </header>
   );
 }

@@ -3,7 +3,6 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { ArrowDownToLine, Maximize2, Minimize2, RotateCcw, SkipForward } from "lucide-react";
 import { createResumeRenderer, RESUME_DURATION, type ResumeDocument } from "@/lib/resume-motion";
-import { ResumeDownloadDialog } from "./resume-download-dialog";
 import styles from "./resume.module.css";
 
 export function ResumePlayer({ children }: { children: ReactNode }) {
@@ -12,7 +11,6 @@ export function ResumePlayer({ children }: { children: ReactNode }) {
   const [replay, setReplay] = useState(0);
   const [complete, setComplete] = useState(false);
   const [actualSize, setActualSize] = useState(false);
-  const [downloadOpen, setDownloadOpen] = useState(false);
 
   useEffect(() => {
     const element = root.current!;
@@ -116,12 +114,7 @@ export function ResumePlayer({ children }: { children: ReactNode }) {
 
   return (
     <main ref={root} className={styles.resume} data-treatment="construction-1" data-size={actualSize ? "actual" : "fit"}>
-      <div className={styles.viewport} tabIndex={actualSize ? 0 : undefined} aria-label={actualSize ? "Resume at full size. Scroll horizontally to read." : undefined} onClick={(event) => {
-        if (event.target instanceof Element && event.target.closest("[data-resume-download-trigger]")) {
-          finish.current();
-          setDownloadOpen(true);
-        }
-      }}>
+      <div className={styles.viewport} tabIndex={actualSize ? 0 : undefined} aria-label={actualSize ? "Resume at full size. Scroll horizontally to read." : undefined}>
         <div className={styles.pages}>{children}</div>
       </div>
       <nav className={styles.controls} aria-label="Resume controls">
@@ -136,7 +129,6 @@ export function ResumePlayer({ children }: { children: ReactNode }) {
         </button>
         <a href="/resume-assets/Rico_Garcia_Resume.pdf" download aria-label="Download original resume PDF" title="Download original PDF"><ArrowDownToLine size={15} strokeWidth={1.5} /><span>PDF</span></a>
       </nav>
-      {downloadOpen && <ResumeDownloadDialog onDismiss={() => setDownloadOpen(false)} />}
       <span className={styles.transcript} role="status">{complete ? "Resume complete." : "Resume construction in progress. Press Escape or select Finish to show it immediately."}</span>
     </main>
   );
