@@ -1,8 +1,9 @@
 /** @vitest-environment node */
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { resolveGuidingLightNarratives } from "@/lib/guiding-light-narratives";
 const mocks = vi.hoisted(() => ({ isEditorAuthenticated: vi.fn(), saveGuidingLightNarratives: vi.fn(), saveTimelineData: vi.fn() }));
 vi.mock("@/lib/auth", () => ({ isEditorAuthenticated: mocks.isEditorAuthenticated }));
+vi.mock("server-only", () => ({}));
 vi.mock("@/lib/timeline-storage", () => ({
   getTimelineData: vi.fn(),
   saveGuidingLightNarratives: mocks.saveGuidingLightNarratives,
@@ -16,9 +17,11 @@ function request(body: unknown) {
   return new Request("https://example.com/api/timeline", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
 }
 beforeEach(() => {
+  vi.stubEnv("PORTFOLIO_CONTENT_MODE", "live");
   vi.clearAllMocks();
   mocks.isEditorAuthenticated.mockResolvedValue(true);
 });
+afterEach(() => vi.unstubAllEnvs());
 describe("owner narrative PATCH", () => {
   it("requires the existing owner session before reading or writing data", async () => {
     mocks.isEditorAuthenticated.mockResolvedValue(false);

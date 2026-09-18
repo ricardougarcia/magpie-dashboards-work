@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
 import { ResumePage } from "@/components/resume/resume-page";
+import { PortfolioNavigationProvider } from "@/components/portfolio/portfolio-navigation-provider";
+import { portfolioMetadata } from "@/lib/portfolio-metadata";
 
-export const metadata: Metadata = {
-  title: "Resume | Rico Garcia",
-  description: "Rico Garcia — Principal Product Manager. Resume.",
-  robots: { index: false, follow: false },
-};
+export function generateMetadata() {
+  return portfolioMetadata("/resume", "Resume | Rico Garcia", "Rico Garcia — Principal Product Manager. Resume.");
+}
 
-export default function Resume() {
-  return <ResumePage />;
+export default async function Resume({ searchParams }: { searchParams: Promise<{ board?: string | string[] }> }) {
+  const family = (await searchParams).board === "drawer" ? "legacy" : "public";
+  return <PortfolioNavigationProvider family={family}><ResumePage /></PortfolioNavigationProvider>;
 }

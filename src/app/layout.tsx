@@ -22,7 +22,8 @@ export const metadata: Metadata = {
     description: "Rebuild the system. Restore the trust. A nine-month product leadership case record.",
     type: "website",
   },
-  robots: { index: true, follow: true },
+  // Indexing is opt-in per intended route, approved environment, and actual host.
+  robots: { index: false, follow: false },
 };
 
 export const viewport: Viewport = {
