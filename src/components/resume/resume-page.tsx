@@ -33,6 +33,7 @@ export function ResumePage() {
             draggable={false}
           />
           <canvas className={styles.canvas} data-resume-canvas={page} aria-hidden="true" />
+          <button className={styles.sheetTrigger} type="button" data-resume-download-trigger aria-label={`Download resume PDF, page ${page}`} aria-haspopup="dialog" />
         </div>
       ))}
     </ResumePlayer>

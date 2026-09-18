@@ -10,6 +10,12 @@ Rico selected Construction 1 — Register on September 17, 2026. Small character
 
 The two pages build concurrently from a blank, transparent field. Each sequence runs once. The completed canvas gives way to the original outlined SVG for sharp text at every zoom level. No resume font substitution or HTML reflow occurs. The source PDF remains unchanged.
 
+## Download prompt
+
+Clicking or tapping either resume page opens a native modal asking “Download the PDF?” Its paper frame, individual characters, and button frames assemble from Register's small quadrant fragments in under a second. Yes downloads the unchanged original PDF and closes the modal. Not Yet and Escape dismiss it. The original PDF control also remains available.
+
+Each resume page is keyboard accessible. The modal keeps focus inside, initially focuses Not Yet, locks background scrolling, and restores focus to the triggering page on dismissal. Opening it during the resume construction settles the background document. Reduced motion shows the complete modal immediately. Reopening starts a fresh construction.
+
 ## Access and interruption
 
 - Reduced motion shows the complete document immediately, including a preference change during playback.
