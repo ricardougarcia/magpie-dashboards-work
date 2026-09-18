@@ -30,7 +30,8 @@ describe("GCM direct case-study route", () => {
     }
     expect(page.querySelectorAll("#reliability button")).toHaveLength(6);
     expect(page.querySelector("#product-work video")?.closest("[hidden]")).toBeNull();
-    expect(page.querySelector("a[data-board-return]")?.getAttribute("href")).toBe("/drawer");
+    expect(page.querySelector("main a[data-board-return]")).toBeNull();
+    expect(page.querySelector('footer a[href="/drawer"]')?.textContent).toContain("Return to Board");
   });
 
   it("identifies the sole product lead without claiming sole engineering or data-science delivery", () => {

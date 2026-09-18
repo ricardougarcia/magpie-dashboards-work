@@ -34,6 +34,14 @@ On short screens and tall mobile intros, ordinary scrolling first exposes the in
 
 Original case: https://www.ricardougarcia.com/work/gcm
 
+## Section navigation and reading fade, 2026-09-18
+
+The section index now sticks at the viewport top after the intro overlap. The article continues in native document flow underneath it. A smooth mask varies its depth across the page; its scroll position is deterministic, so reversing direction retraces the same fade without flicker. Only the article's content is masked. The graph-paper sheet and the index's aligned paper background retain their full opacity. The index releases at the end of its content sheet.
+
+The existing scroll frame also updates the reading mask after the intro finishes. Cached geometry avoids layout reads during scrolling; navigation wrapping, article resizing, font loading, and restored pages refresh the measurements. Section anchors leave room for the index and fade. Keyboard-visible focus temporarily removes the mask, and reduced motion and printing omit it. The default mask position leaves server-rendered content visible without JavaScript.
+
+The duplicate “Return to the Board / Selected work” strip is removed. The shared footer keeps its existing Board link and return-position behavior. Other case studies, content, and the intro parallax are unchanged.
+
 Original recording: https://video.wixstatic.com/video/7eca65_a9578d8c1a714034a612d04e4d02622d/1080p/mp4/file.mp4
 
 Local media preserve original evidence from the approved preview/source archive:
