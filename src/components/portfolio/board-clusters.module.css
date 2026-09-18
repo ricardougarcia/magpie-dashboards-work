@@ -6,7 +6,7 @@
 .field { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(40px, 5vw, 82px); row-gap: 80px; padding: 8px 0 56px; }
 .cluster { position: relative; display: flex; flex-direction: column; min-width: 0; max-width: none; width: 100%; margin: 0; border: 0; scroll-margin-top: 72px; }
 .heading, .ccp > header { display: block; padding: 0 0 28px; min-height: 174px; }
-.heading h2, .ccp > header h2 { font: 500 clamp(30px, 3vw, 44px)/1.05 var(--font-sans), sans-serif; letter-spacing: -.055em; margin: 17px 0 12px; overflow-wrap: break-word; }
+.heading h2, .ccp > header h2 { font: 500 clamp(32px, calc(3vw + 2px), 46px)/1.05 var(--font-sans), sans-serif; letter-spacing: -.055em; margin: 17px 0 12px; overflow-wrap: break-word; }
 .heading h2 a { text-decoration: none; }
 .heading h2 a:is(:hover, :focus-visible) { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
 .heading h2 > span, .heading h2 a > span { color: var(--signal-text); }
@@ -20,33 +20,61 @@
 .clusterFoot a > span { color: var(--ink); }
 .cluster a:focus-visible, .index a:focus-visible { outline: 2px solid var(--signal-text); outline-offset: 5px; }
 
-/* Magpie: a horizontal work record, with one detached, readable source detail. */
+/* Magpie: a source work record and a fixed-size demonstration of inspection. */
 .magpie { align-self: start; }
 .magpie > .heading { min-height: 0; padding-bottom: 16px; }
 .magpie > .heading h2 { margin: 12px 0 8px; }
 .magpie .facts { margin-top: 12px; }
 .magpie > .clusterFoot { flex-direction: row; margin-top: 0; padding: 16px 0 0; }
 .magpieArtifacts { position: relative; padding: 4px 0 0; }
-.magpieArtifacts > div:first-child { width: 93%; }
-.timelineMount { display: block; padding: 14px 12px 12px; background: var(--paper-raised); text-decoration: none; border-top: 1px solid var(--line-strong); position: relative; }
+.timelineMount { display: block; width: 93%; padding: 14px 12px 12px; background: var(--paper-raised); text-decoration: none; border-top: 1px solid var(--line-strong); position: relative; }
 .timelineMount::before { content: ""; position: absolute; left: -5px; top: -5px; width: 14px; height: 14px; border-left: 1px solid var(--graphite); border-top: 1px solid var(--graphite); }
 .timelineDrawing { display: block; width: 100%; height: auto; margin-block: 14px 10px; overflow: visible; }
 .timelineDrawing text { font: 12px var(--font-mono), monospace; fill: var(--muted); }
 .monthRule { stroke: var(--ink); stroke-opacity: .1; stroke-width: 1; }
-.workBar rect { fill: #768891; fill-opacity: .4; }
-.workBar path { stroke: #455b64; stroke-width: 2; stroke-opacity: .5; }
-.selectedWork rect { fill: var(--ink); }
-.selectedWork path { stroke: var(--paper); stroke-width: 2; }
-.sourceTrace { fill: none; stroke: var(--signal-text); stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: 0; opacity: .65; }
-.magpieArtifacts[data-entered="true"] .sourceTrace { animation: registerTrace 1450ms cubic-bezier(.22, 1, .36, 1) both; }
-.magpieArtifacts[data-entered="true"] .workBar rect { animation: registerWork 1000ms ease-out both; animation-delay: var(--bar-delay); }
-.detachedNote { display: block; position: relative; width: 64%; margin: 12px 0 0 auto; padding: 12px 16px; background: var(--paper-raised); border-left: 1px solid var(--line-strong); text-decoration: none; }
-.detachedNote::before { content: ""; position: absolute; top: 14px; left: -16px; width: 16px; height: 1px; background: var(--signal-text); }
-.detachedNote h3 { font-size: clamp(22px, 2vw, 28px); font-weight: 450; line-height: 1.15; letter-spacing: -.04em; margin: 12px 0 8px; }
-.detachedNote p { font-size: 12px; line-height: 1.65; color: var(--muted); }
-.noteFoot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 10px; color: var(--muted); }
-.detachedNote:is(:hover, :focus-visible) { border-color: var(--signal-text); }
-.detachedNote:is(:hover, :focus-visible) .noteFoot > span { color: var(--signal-text); }
+.workBar rect { fill: #768891; fill-opacity: .4; transition: fill 260ms, fill-opacity 260ms; }
+.workBar path { stroke: #455b64; stroke-width: 2; stroke-opacity: .5; transition: stroke 260ms, stroke-opacity 260ms; }
+.sourceTrace, .relatedTrace { fill: none; stroke: var(--signal-text); stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; transition: stroke-dashoffset 260ms, opacity 200ms; pointer-events: none; }
+.infoCard { display: block; position: relative; width: 82%; margin: 18px 0 0 auto; padding: 18px 20px; background: var(--paper-raised); border-left: 1px solid var(--line-strong); text-decoration: none; clip-path: inset(0 0 54px 0); transition: clip-path 320ms cubic-bezier(.16, 1, .3, 1), border-color 220ms; }
+.cardHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.magpie .infoCard:focus-visible { outline-offset: -3px; }
+.cardHeading h3 { font: 450 clamp(20px, 1.8vw, 24px)/1.15 var(--font-sans), sans-serif; letter-spacing: -.04em; margin: 0; }
+.cardHeading > svg { flex: 0 0 auto; color: var(--muted); }
+.cardDemo { margin-top: 18px; }
+.cardTabs { display: flex; gap: 22px; border-bottom: 1px solid var(--line); font: 10px/1.6 var(--font-mono), monospace; }
+.cardTabs > span { position: relative; padding-bottom: 8px; transition: color 180ms; }
+.cardTabs > span::after { content: ""; position: absolute; inset: auto 0 -1px; height: 1px; background: var(--signal-text); transition: opacity 180ms; }
+.overviewTab { color: var(--ink); }
+.connectionsTab { color: var(--muted); }
+.connectionsTab::after { opacity: 0; }
+.cardPanels { display: grid; margin-top: 16px; }
+.cardOverview, .cardConnections { grid-area: 1 / 1; transition: opacity 200ms, transform 240ms; }
+.cardOverview { display: grid; gap: 13px; }
+.cardOverview span, .cardConnections > span, .cardArtifact > div > span { font: 9px/1.5 var(--font-mono), monospace; text-transform: uppercase; color: var(--muted); }
+.cardPanels p, .cardArtifact p { font-size: 12px; line-height: 1.55; margin: 3px 0 0; }
+.cardConnections { opacity: 0; transform: translateY(6px); }
+.connectionLabels { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; font: 9px/1.6 var(--font-mono), monospace; color: var(--muted); }
+.connectionLabels span { border-bottom: 1px solid var(--line); }
+.cardArtifact { display: flex; gap: 12px; align-items: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); opacity: 0; transform: translateY(6px); transition: opacity 180ms, transform 240ms; }
+.cardArtifact > svg { flex: 0 0 auto; color: var(--muted); }
+.cardArtifact > svg:last-child { margin-left: auto; }
+.previewToggle { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; margin: 2px 0 0 auto; padding: 8px 0 8px 12px; border: 0; background: transparent; color: var(--muted); font: 10px/1.5 var(--font-mono), monospace; cursor: var(--cursor-action); }
+.previewToggle:is(:hover, :focus-visible) { color: var(--ink); }
+.previewToggle:focus-visible { outline: 2px solid var(--signal-text); outline-offset: 4px; }
+.magpie[data-preview-active="true"] .selectedWork rect { fill: var(--ink); fill-opacity: 1; }
+.magpie[data-preview-active="true"] .selectedWork path { stroke: var(--paper); stroke-opacity: 1; }
+.magpie[data-preview-active="true"] .sourceTrace { stroke-dashoffset: 0; opacity: .8; transition: stroke-dashoffset 650ms 100ms cubic-bezier(.16, 1, .3, 1), opacity 180ms; }
+.magpie[data-preview-active="true"] .infoCard { clip-path: inset(0); border-color: var(--signal-text); transition: clip-path 700ms 200ms cubic-bezier(.16, 1, .3, 1), border-color 220ms; }
+.magpie[data-preview-active="true"] .cardOverview { opacity: 0; transform: translateY(-4px); transition-delay: 1500ms; }
+.magpie[data-preview-active="true"] .cardConnections { opacity: 1; transform: none; transition-delay: 1700ms; }
+.magpie[data-preview-active="true"] .overviewTab { color: var(--muted); transition-delay: 1500ms; }
+.magpie[data-preview-active="true"] .overviewTab::after { opacity: 0; transition-delay: 1500ms; }
+.magpie[data-preview-active="true"] .connectionsTab { color: var(--ink); transition-delay: 1700ms; }
+.magpie[data-preview-active="true"] .connectionsTab::after { opacity: 1; transition-delay: 1700ms; }
+.magpie[data-preview-active="true"] .relatedWork rect { fill: var(--ink); fill-opacity: .75; transition-delay: 1700ms; }
+.magpie[data-preview-active="true"] .relatedWork path { stroke: var(--paper); stroke-opacity: .8; transition-delay: 1700ms; }
+.magpie[data-preview-active="true"] .relatedTrace { stroke-dashoffset: 0; opacity: .8; transition: stroke-dashoffset 800ms 1700ms cubic-bezier(.16, 1, .3, 1), opacity 180ms 1700ms; }
+.magpie[data-preview-active="true"] .cardArtifact { opacity: 1; transform: none; transition: opacity 380ms 2600ms, transform 500ms 2600ms cubic-bezier(.16, 1, .3, 1); }
 
 /* Reserved areas have varied blank studies; their treatment never suggests a button. */
 .reserved .heading { color: var(--muted); }
@@ -86,22 +114,21 @@
 .ccp > footer a { align-items: baseline; }
 
 @keyframes registerTrace { from { stroke-dashoffset: 1; opacity: .2; } to { stroke-dashoffset: 0; } }
-@keyframes registerWork { from { fill-opacity: .2; } to { fill-opacity: .4; } }
 @media (max-width: 1100px) {
   .field { column-gap: 36px; row-gap: 64px; }
   .heading, .ccp > header { min-height: 184px; }
   .ccp [data-evidence-active] { column-gap: 24px; }
   .ccp [data-artifact="A"], .ccp [data-artifact="C"] { grid-column: 1; }
-  .detachedNote { width: 78%; }
+  .infoCard { width: 90%; }
   .sourceLabel { font-size: 8px; }
 }
 @media (max-width: 900px) {
   .field { grid-template-columns: 1fr; row-gap: 58px; max-width: 670px; margin-inline: auto; }
   .index { column-gap: 20px; padding-bottom: 24px; }
   .heading, .ccp > header { min-height: 0; padding-bottom: 26px; }
-  .heading h2, .ccp > header h2 { font-size: clamp(30px, 5.5vw, 42px); }
-  .magpieArtifacts > div:first-child { width: 92%; }
-  .detachedNote { width: 68%; }
+  .heading h2, .ccp > header h2 { font-size: clamp(32px, calc(5.5vw + 2px), 44px); }
+  .timelineMount { width: 92%; }
+  .infoCard { width: 82%; }
   .reservedDrawing { max-height: 340px; }
   .clusterFoot, .reserved .clusterFoot { padding-top: 18px; }
   .ccp [data-artifact="C"] { width: auto !important; }
@@ -111,8 +138,8 @@
   .index a { font-size: 9px; gap: 6px; min-height: 44px; }
   .sourceLabel { font-size: 7px; }
   .timelineMount { padding: 12px 8px; }
-  .magpieArtifacts > div:first-child { width: 100%; }
-  .detachedNote { width: 86%; margin-top: 8px; }
+  .timelineMount { width: 100%; }
+  .infoCard { width: 94%; margin-top: 12px; padding: 16px; }
   .reservedCaption { margin-left: 4%; }
   .ccp [data-evidence-active] { display: flex; flex-direction: column; gap: 28px; }
   .ccp [data-artifact="A"] { width: 88%; }
@@ -122,6 +149,8 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .field *, .field *::before, .field *::after { animation: none !important; }
+  .magpie *, .magpie *::after { transition: none !important; }
+  .cardConnections, .cardOverview, .cardArtifact { transform: none !important; }
 }
 @media print {
   .index { display: none; }

@@ -44,6 +44,16 @@ describe("Board and Project foundation", () => {
     expect(titles.every((title) => title.textContent!.length > 0)).toBe(true);
   });
 
+  it("introduces Magpie inspection without featuring a specific dashboard", () => {
+    const { container } = render(<MagpieBoardCluster entry={boardEntries[0]} />);
+    expect(screen.getByRole("heading", { name: "Behind each work item." })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: /Completion Dashboard/i })).toBeNull();
+    expect(screen.getByRole("link", { name: "Behind each work item. Explore Magpie context, value, connected work, and supporting artifacts" }).getAttribute("href")).toBe("/#timeline-heading");
+    expect(screen.getByRole("button", { name: "Preview motion: Magpie work sample" }).getAttribute("aria-pressed")).toBe("false");
+    expect(container.querySelector("#region-magpie")?.getAttribute("data-preview-active")).toBe("false");
+    expect(screen.queryByRole("button", { name: "Inspect / the Magpie timeline" })).toBeNull();
+  });
+
   it("server-renders Marketplace's repository work and both audiences with working project links", () => {
     const markup = document.createElement("div");
     markup.innerHTML = renderToString(<MarketplaceBoardCluster entry={boardEntries[1]} />);
