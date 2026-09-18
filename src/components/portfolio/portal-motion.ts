@@ -7,6 +7,11 @@ const focusPoints = [[465, 255, .82], [315, 265, .88], [490, 202, 1], [830, 202,
 const routePoints = [0, .1, .334, .527, .78, .97, 1, 1];
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
+function scrollGeometry(field: HTMLElement, pinned: HTMLElement) {
+  const openingHeight = Math.max(window.innerHeight, parseFloat(getComputedStyle(field).getPropertyValue("--portal-opening-height")) || pinned.offsetHeight);
+  return { lead: openingHeight - window.innerHeight, distance: field.offsetHeight - openingHeight };
+}
+
 /** Native page scrolling drives the approved Atlas camera; it never consumes wheel input. */
 export function usePortalMotion() {
   const track = useRef<HTMLDivElement>(null);
@@ -32,7 +37,8 @@ export function usePortalMotion() {
     const pinned = stage.current;
     if (!field || !pinned) return;
     const start = window.scrollY + field.getBoundingClientRect().top;
-    window.scrollTo({ top: start + clamp(value) * (field.offsetHeight - pinned.offsetHeight), behavior: "instant" });
+    const { lead, distance } = scrollGeometry(field, pinned);
+    window.scrollTo({ top: start + (value > 0 ? lead : 0) + clamp(value) * distance, behavior: "instant" });
   }, []);
 
   const go = useCallback((index: number) => { stop(); move(portalAnchors[index]); }, [move, stop]);
@@ -58,7 +64,10 @@ export function usePortalMotion() {
     let frame = 0;
     const update = () => {
       frame = 0;
-      const p = clamp(-field.getBoundingClientRect().top / (field.offsetHeight - pinned.offsetHeight));
+      // Let the entire opening scroll into view before advancing the Atlas.
+      // The denominator stays stable when the opening's taller stage closes.
+      const { lead, distance } = scrollGeometry(field, pinned);
+      const p = clamp((-field.getBoundingClientRect().top - lead) / distance);
       progress.current = p;
       setPercent(Math.round(p * 100));
       let nearest = 0;
@@ -141,12 +150,18 @@ export function usePortalMotion() {
 
   const play = () => {
     if (reduced || playing) { stop(); return; }
-    const from = progress.current > .995 ? 0 : progress.current;
+    const field = track.current;
+    const pinned = stage.current;
+    if (!field || !pinned) return;
+    const fieldTop = window.scrollY + field.getBoundingClientRect().top;
+    const { lead, distance } = scrollGeometry(field, pinned);
+    const from = progress.current > .995 ? 0 : Math.max(0, window.scrollY - fieldTop);
+    const end = lead + distance;
     const start = performance.now();
     setPlaying(true);
     const tick = (time: number) => {
       const elapsed = clamp((time - start) / 40000);
-      move(from + (1 - from) * elapsed);
+      window.scrollTo({ top: fieldTop + from + (end - from) * elapsed, behavior: "instant" });
       if (elapsed < 1) playback.current = requestAnimationFrame(tick);
       else stop();
     };
