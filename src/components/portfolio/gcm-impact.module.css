@@ -1,0 +1,9 @@
+.field { position: relative; isolation: isolate; }
+.field > :global(.guiding-light-ink-canvas) { z-index: 0; opacity: .12; }
+.field > :is(p, h2, dl) { position: relative; z-index: 1; }
+/* Keep secondary copy above 4.5:1 even over the darkest ink deposit. */
+.field > p, .field dt { color: color-mix(in srgb, var(--muted) 80%, var(--ink)); }
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .field > :global(.guiding-light-ink-canvas) { display: none; }
+}
+@media print { .field > :global(.guiding-light-ink-canvas) { display: none; } }

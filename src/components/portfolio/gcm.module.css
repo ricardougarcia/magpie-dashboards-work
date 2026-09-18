@@ -63,6 +63,11 @@
 .sectionNav a { display: inline-flex; align-items: center; min-height: 36px; color: var(--muted); font: 10px/1.6 var(--font-mono), monospace; text-transform: uppercase; text-decoration: none; }
 .sectionNav a:is(:hover, :focus-visible) { color: var(--signal-text); }
 .section { padding: 44px 0; border-top: 1px solid var(--line); scroll-margin-top: calc(var(--gcm-nav-height) + 144px); }
+/* The added runway uses native scrolling; no wheel/touch interception. */
+.readingSection { padding: 0 !important; overflow-anchor: none; }
+.readingStage { display: flow-root; padding-block: 32px 44px; }
+.readingSection[data-gcm-pinned="true"] { height: calc(var(--gcm-stage-height) + var(--gcm-stage-travel)); }
+.readingSection[data-gcm-pinned="true"] > .readingStage { position: sticky; top: var(--gcm-stage-top); }
 .sectionHead { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); align-items: end; gap: 45px; margin-bottom: 28px; }
 .sectionHead > p { color: var(--muted); max-width: 360px; margin-bottom: 18px; }
 .ledger { display: grid; grid-template-columns: minmax(0, .83fr) minmax(0, 1.17fr); gap: clamp(28px, 4vw, 64px); align-items: start; }
@@ -187,11 +192,15 @@
 @media (pointer: coarse) { .sectionNav a, .evidenceCaption a { min-height: 44px; display: inline-flex; align-items: center; } }
 @media (prefers-reduced-motion: reduce) {
   .readingContent { mask-image: none; }
+  .readingSection[data-gcm-pinned="true"] { height: auto; }
+  .readingSection[data-gcm-pinned="true"] > .readingStage { position: static; }
   .section { scroll-margin-top: calc(var(--gcm-nav-height) + 16px); }
   .hero[data-gcm-depth] { transform: none; will-change: auto; }
   .page *, .page *::before, .page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
 @media print {
+  .readingSection[data-gcm-pinned="true"] { height: auto; }
+  .readingSection[data-gcm-pinned="true"] > .readingStage { position: static; }
   .hero[data-gcm-depth] { transform: none; will-change: auto; }
   .contentSheet::before { display: none; }
   .sectionNav, .evidenceChoices { display: none; }
@@ -199,4 +208,20 @@
   .hero { padding-top: 20px; }
   .section { break-inside: avoid; }
   .evidenceStage { min-height: 250px; }
+}
+/* Keep the held reading composition within shorter desktop viewports. */
+@media (min-width: 761px) and (max-height: 850px) {
+  .readingStage { padding-block: 24px; }
+  .readingStage .sectionHead { margin-bottom: 20px; }
+  .readingStage .architectureHeading { margin-bottom: 16px; }
+  .readingStage .requirement { min-height: 110px; }
+  .page .readingStage .ledgerCaption { margin-top: 12px; }
+}
+/* The recording retains its aspect ratio inside a contained viewing area. */
+@media (min-width: 1001px) {
+  .readingStage .evidenceStage { aspect-ratio: 1.9; }
+  .readingStage .decisionNote { min-height: 0; }
+}
+@media (min-width: 1001px) and (max-height: 850px) {
+  .readingStage .evidenceStage { min-height: 220px; max-height: max(220px, calc(100svh - 480px)); }
 }
