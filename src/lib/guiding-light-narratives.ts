@@ -22,9 +22,9 @@ export const DEFAULT_GUIDING_LIGHT_NARRATIVES: GuidingLightNarratives = {
     soleContributor: "I created the intake board and supporting processes to make requests, priorities, and decisions visible.",
   },
   Grow: {
-    heading: "The next stage has a foundation.",
-    narrative: "Recovery created capacity for the next stage. The roadmap and educator resources were delivered; K–8 ROAR remained in progress, with Q4 reporting planned.",
-    soleContributor: "I created the external roadmap and produced nine educator videos across three dashboards and three audiences.",
+    heading: "Ready for feature development and scale.",
+    narrative: "The groundwork positions the dashboards for Q4 and beyond: a foundation for new features and scalable growth.",
+    soleContributor: "I completed detailed initiative proposals for Q4 and Q1, including the work outlined in Q4 Groundwork. I also developed six evidence-rich Unified Dashboard research prototypes, supported by competitor analysis, customer discovery, internal alignments, and market parity reports.",
   },
 };
 

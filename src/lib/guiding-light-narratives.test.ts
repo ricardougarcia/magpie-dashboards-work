@@ -19,7 +19,7 @@ describe("Guiding Light narrative compatibility", () => {
     resolved.Learn.heading = "Draft";
     resolved.Grow.heading = "Another draft";
     expect(custom.heading).toBe("Owner heading");
-    expect(resolveGuidingLightNarratives().Grow.heading).toBe("The next stage has a foundation.");
+    expect(resolveGuidingLightNarratives().Grow.heading).toBe("Ready for feature development and scale.");
   });
 
   it("rejects blank narrative fields and item payloads in a narrative-only request", () => {

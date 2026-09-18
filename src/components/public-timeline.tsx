@@ -468,10 +468,11 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
     guideRef.current?.focus({ preventScroll: true });
   };
 
-  const beginGuide = () => {
+  const pointToGuide = () => {
     clearInspection();
-    tourDispatch({ type: "restart" });
+    tourDispatch({ type: "pause" });
     scrollToGuide();
+    guideRef.current?.querySelector<HTMLButtonElement>("#guiding-lights-play")?.focus({ preventScroll: true });
   };
 
   const exploreWork = () => {
@@ -488,7 +489,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
     <main className="site-shell" data-work-sample="magpie">
       <SiteMasthead project={{ mark: "M/D", number: "01", role: "Principal Product Manager", organization: "Magpie Literacy" }} />
 
-      <PanelReplacement outgoing={<GuidingLightIntroduction onBegin={beginGuide} onExplore={exploreWork} />}>
+      <PanelReplacement outgoing={<GuidingLightIntroduction onGuide={pointToGuide} onExplore={exploreWork} />}>
       <section className="timeline-section" aria-labelledby="timeline-heading" data-panel="2">
         <div ref={guideRef} className="magpie-guide-start" tabIndex={-1}>
         <div className="section-heading magpie-guide-heading">
@@ -505,7 +506,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
             onPlay={() => { clearInspection(); tourDispatch({ type: "play" }); }}
           />
         </div>
-        <GuidingLightNarrative light={activeGuidingLight} narratives={narratives} playing={tourStatus === "playing"} onExplore={exploreWork} onReplay={beginGuide} />
+        <GuidingLightNarrative light={activeGuidingLight} narratives={narratives} playing={tourStatus === "playing" || tourStatus === "opening"} onExplore={exploreWork} />
         </div>
 
         <div className="workbench">
