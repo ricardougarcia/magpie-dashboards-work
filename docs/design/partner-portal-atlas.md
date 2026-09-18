@@ -8,7 +8,11 @@ This is a Partner Portal extension within the existing Portfolio identity. It us
 
 The project lives at `/work/portal`, with `noindex, nofollow` route metadata. Board region **05 / Partner Portal** links to it through the title, artifact preview, and project link. The Board preview combines an original product interface with the four named ecosystem connections. It uses the existing Board entrance and Portfolio navigation components.
 
-The opening milestone names **EdCo Marketplace, Canvas, Impact, and LearnPlatform**. Selecting a destination identifies its connection to Partner Portal. These connections do not claim a direction of data flow. The original prose mentions five interconnected products, but the original diagram names four destinations; this treatment reproduces those four.
+The opening milestone explains **EdCo Marketplace, Canvas LMS, Impact, and LearnPlatform** in always-visible descriptions. On September 18, Rico approved bidirectional connector motion to express their relationship with Partner Portal. Small arrowheads travel along staggered paths while product names and descriptions remain still. This is a conceptual relationship diagram, not a specification of individual data transfers. The redundant original-diagram inspection controls are removed from this opening; research and product artifacts remain inspectable at their milestones.
+
+The opening gets additional native reading space on narrow screens. Scroll progress waits until that taller opening has been exposed, then resumes the existing viewport-sized milestone layout. Static double-headed connectors remain when motion is reduced; animation pauses outside the viewport, outside the opening milestone, while an inspection is open, and when the document is hidden.
+
+The product descriptions follow the owner-approved copy and official product roles: [provider ecosystem documentation](https://community.instructure.com/en/kb/articles/660336-how-do-i-use-learnplatform-as-a-provider), [Canvas](https://www.instructure.com/canvas), [Impact](https://www.instructure.com/solutions/data-insights), [LearnPlatform](https://community.instructure.com/en/kb/articles/660238-unknown), and [ESSA-aligned evaluations](https://www.instructure.com/learnplatform/rce-guidance).
 
 The active milestone places the artifact or capability beside a visible product-work panel on wide layouts and above it on narrow layouts. A desktop connector relates the two surfaces. Contribution copy, phase, and key capabilities are visible before opening “Explore the work.” The detail dialog adds context and access to the original artifact.
 
@@ -67,6 +71,7 @@ The impact chart supports mouse inspection and deliberate touch selection. Six m
 | Board 05 preview | [portal-board-cluster.tsx](../../src/components/portfolio/portal-board-cluster.tsx), [portal-board.module.css](../../src/components/portfolio/portal-board.module.css) |
 | Milestones, tabs, and inspection | [portal-page.tsx](../../src/components/portfolio/portal-page.tsx) |
 | Content, asset references, and chart values | [portal-data.ts](../../src/components/portfolio/portal-data.ts) |
+| Ecosystem descriptions and connector motion | [portal-ecosystem.tsx](../../src/components/portfolio/portal-ecosystem.tsx), [portal-ecosystem.module.css](../../src/components/portfolio/portal-ecosystem.module.css) |
 | Native scroll and playback | [portal-motion.ts](../../src/components/portfolio/portal-motion.ts) |
 | Impact chart and demo | [portal-impact.tsx](../../src/components/portfolio/portal-impact.tsx) |
 | Scoped responsive treatment | [portal.module.css](../../src/components/portfolio/portal.module.css) |

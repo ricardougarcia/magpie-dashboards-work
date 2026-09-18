@@ -6,11 +6,11 @@ import { CoordinateCursor } from "@/components/coordinate-cursor";
 import { PortfolioShell } from "./portfolio-shell";
 import { portalAssets, portalStops, portalGrowth, type PortalAssetKey } from "./portal-data";
 import { PortalImpact } from "./portal-impact";
+import { PortalEcosystem } from "./portal-ecosystem";
 import { usePortalMotion } from "./portal-motion";
 import styles from "./portal.module.css";
 
 const record = { mark: "P/P", number: "05", title: "Partner Portal", role: "Product Manager", organization: "Instructure" };
-const destinations = ["EdCo Marketplace", "Canvas", "Impact", "LearnPlatform"];
 const stations = [
   { key: "publish", index: 2, title: "Publish", subtitle: "Find a place in the ecosystem", asset: "product", caption: "Product information" },
   { key: "integrate", index: 3, title: "Implement", subtitle: "Make the connection usable", asset: "integration", caption: "Integrations + guidance" },
@@ -29,7 +29,6 @@ export function PartnerPortalPage() {
   const { track, stage, atlas, step, percent, playing, reduced, lessMotion, setLessMotion, stop, go, move, play } = usePortalMotion();
   const model = portalStops[step];
   const [research, setResearch] = useState<"workflow" | "journey">("workflow");
-  const [destination, setDestination] = useState("");
   const [hover, setHover] = useState("");
   const [view, setView] = useState<{ asset: PortalAssetKey; detail: boolean } | null>(null);
   const [zoomed, setZoomed] = useState(false);
@@ -71,7 +70,7 @@ export function PartnerPortalPage() {
     <main id="portfolio-main" data-gantt-region className={`${styles.page}${reduced ? " reduced" : ""}`}>
       <CoordinateCursor />
       <div className="scroll-track" ref={track}>
-        <div className="stage" ref={stage}>
+        <div className="stage" data-opening={step === 0} ref={stage}>
           <div className="atlas-controls">
             <nav className="story-stops" aria-label="Explore the Partner Portal case study">
               {portalStops.map((stop, index) => <button key={stop.stop} type="button" aria-current={step === index ? "step" : undefined} onClick={event => jump(event, index)}>{stop.stop}</button>)}
@@ -103,10 +102,7 @@ export function PartnerPortalPage() {
                 <span className="atlas-map-caption">Conceptual map of participation</span>
               </div>
               <section className="context-sheet" aria-label="Partner Portal ecosystem connections" inert={step !== 0}>
-                <div className="connection-title">Partner Portal</div>
-                <svg className="connection-lines" viewBox="0 0 600 135" preserveAspectRatio="none" aria-hidden="true"><path className="connection-base" d="M300 0V50H68V130M300 50H222V130M300 50H377V130M300 50H532V130" /><path className="connection-trace" pathLength="1" d="M300 0V50H68V130M300 50H222V130M300 50H377V130M300 50H532V130" /></svg>
-                <div className="destinations">{destinations.map(name => <button type="button" key={name} aria-pressed={destination === name} onClick={() => setDestination(destination === name ? "" : name)}>{name}</button>)}</div>
-                <div className="connection-foot"><span aria-live="polite">{destination ? `Partner Portal connects to ${destination}.` : "One provider home. Four named destinations."}</span><button type="button" onClick={() => inspect("ecosystem")}>Inspect original diagram</button></div>
+                <PortalEcosystem active={step === 0 && !view} reduced={reduced} />
               </section>
               <section className="research-sheet" aria-label="Discovery and workflow evidence" inert={step !== 1}>
                 <div className="research-tabs" role="tablist" aria-label="Discovery artifacts">{(["workflow", "journey"] as const).map(key => <button type="button" key={key} id={`portal-${key}-tab`} role="tab" aria-selected={research === key} aria-controls="portal-discovery-panel" tabIndex={research === key ? 0 : -1} onKeyDown={tabKeys} onClick={() => setResearch(key)}>{key === "workflow" ? "Workflow Map" : "Journey Map"}</button>)}</div>
@@ -124,7 +120,7 @@ export function PartnerPortalPage() {
             <section className="work-panel" aria-label="Product work behind this milestone" inert={step === 7}>
               <div className="work-copy"><span className="work-phase">{model.phase}</span><h3>{model.title}</h3><p data-contribution>{model.contribution}</p></div>
               <div className="work-capabilities"><ul data-features>{model.features.map(feature => <li key={feature}>{feature}</li>)}</ul></div>
-              <button type="button" className="work-source" onClick={() => inspect(model.asset)} aria-label={`Inspect ${model.caption}`}><SourceImage asset={model.asset} /><span className="work-source-caption">{model.caption}</span></button>
+              {step !== 0 && <button type="button" className="work-source" onClick={() => inspect(model.asset)} aria-label={`Inspect ${model.caption}`}><SourceImage asset={model.asset} /><span className="work-source-caption">{model.caption}</span></button>}
               <button type="button" className="work-open" onClick={() => inspect(model.asset, true)}>Explore the work</button>
             </section>
             <div className="impact-container" inert={step !== 7}><PortalImpact onInspect={inspect} /></div>
@@ -137,7 +133,7 @@ export function PartnerPortalPage() {
       <dialog className={`inspection ${view?.detail ? "work-view" : "source-view"}`} ref={dialog} aria-labelledby="portal-inspection-title" onClose={() => setView(null)} onCancel={closeInspection} onClick={event => { if (event.target === event.currentTarget) closeInspection(); }}>
         <div className="inspection-paper">
           <header><div>{view?.detail && <span>{model.phase}</span>}<h2 id="portal-inspection-title">{view?.detail ? model.title : view ? portalAssets[view.asset].title : "Project artifact"}</h2>{view && !view.detail && <p>{portalAssets[view.asset].description}</p>}</div><button type="button" ref={close} onClick={closeInspection}>Close</button></header>
-          {view?.detail ? <div className="work-view-content"><p>{model.contribution}</p><ul>{model.detail.map(detail => <li key={detail}>{detail}</li>)}</ul><button type="button" data-detail-asset onClick={() => inspect(view.asset)}><SourceImage asset={view.asset} /><span data-detail-caption>{model.caption} / Inspect original</span></button><p className="work-boundary">Discovery artifacts connect to relevant capabilities; the original case does not date each artifact to a delivery phase.</p></div> : view && <><div className="source-scroll"><button type="button" id="atlas-source-zoom" aria-label={zoomed ? "Fit source image" : "Enlarge source image"} aria-pressed={zoomed} onClick={() => setZoomed(!zoomed)}><SourceImage asset={view.asset} /></button></div><footer><span>Original project artifact · Click to enlarge</span><a href={portalAssets[view.asset].url} target="_blank" rel="noopener noreferrer">Open full original <ArrowUpRight size={13} /></a></footer></>}
+          {view?.detail ? <div className="work-view-content"><p>{model.contribution}</p><ul>{model.detail.map(detail => <li key={detail}>{detail}</li>)}</ul>{view.asset !== "ecosystem" && <button type="button" data-detail-asset onClick={() => inspect(view.asset)}><SourceImage asset={view.asset} /><span data-detail-caption>{model.caption} / Inspect original</span></button>}<p className="work-boundary">Discovery artifacts connect to relevant capabilities; the original case does not date each artifact to a delivery phase.</p></div> : view && <><div className="source-scroll"><button type="button" id="atlas-source-zoom" aria-label={zoomed ? "Fit source image" : "Enlarge source image"} aria-pressed={zoomed} onClick={() => setZoomed(!zoomed)}><SourceImage asset={view.asset} /></button></div><footer><span>Original project artifact · Click to enlarge</span><a href={portalAssets[view.asset].url} target="_blank" rel="noopener noreferrer">Open full original <ArrowUpRight size={13} /></a></footer></>}
         </div>
       </dialog>
       <noscript><section className="portal-transcript"><h2>The work behind Partner Portal</h2>{portalStops.map(stop => <section key={stop.stop}><h3>{stop.title}</h3><p>{stop.contribution}</p><ul>{stop.detail.map(detail => <li key={detail}>{detail}</li>)}</ul></section>)}</section></noscript>

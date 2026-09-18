@@ -24,8 +24,13 @@ vi.mock("./portal-motion", () => ({ usePortalMotion: () => motion }));
 vi.mock("@/components/coordinate-cursor", () => ({ CoordinateCursor: () => null }));
 vi.mock("./portfolio-shell", () => ({ PortfolioShell: ({ children }: { children: ReactNode }) => <>{children}</> }));
 
-beforeEach(() => vi.clearAllMocks());
-afterEach(cleanup);
+beforeEach(() => {
+  vi.clearAllMocks();
+  motion.step = 1;
+  vi.stubGlobal("ResizeObserver", class { observe() {} disconnect() {} });
+  vi.stubGlobal("IntersectionObserver", class { observe() {} disconnect() {} });
+});
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
 function setupDiscovery() {
   const result = render(<PartnerPortalPage />);
@@ -51,6 +56,17 @@ function expectSelectedArtifact(panel: HTMLElement, selected: HTMLElement, other
 }
 
 describe("Partner Portal discovery artifacts", () => {
+  it("explains all four ecosystem products without a click and removes redundant inspections", () => {
+    motion.step = 0;
+    const result = render(<PartnerPortalPage />);
+    const ecosystem = result.getByRole("region", { name: "Partner Portal ecosystem connections" });
+    expect(within(ecosystem).getAllByRole("listitem")).toHaveLength(4);
+    expect(within(ecosystem).getByRole("heading", { name: "Canvas LMS" })).toBeTruthy();
+    expect(ecosystem.textContent).toContain("ESSA-aligned research");
+    expect(within(ecosystem).queryByRole("button")).toBeNull();
+    const work = result.getByRole("region", { name: "Product work behind this milestone" });
+    expect(within(work).getAllByRole("button").map(button => button.textContent)).toEqual(["Explore the work"]);
+  });
   it("opens the provider-work milestone with Workflow Map first and selected, followed by Journey Map", () => {
     const { getByRole, tablist, panel, workflow, journey } = setupDiscovery();
     expect(getByRole("heading", { level: 1 }).textContent).toBe("Start with the provider’s work.");
