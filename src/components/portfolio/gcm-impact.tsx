@@ -1,12 +1,43 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { GuidingLightInkTrail } from "@/components/guiding-light-ink-trail";
 import { gcmOutcomes } from "@/data/gcm";
 import styles from "./gcm.module.css";
+import inkStyles from "./gcm-impact.module.css";
 
 /** Readable static outcomes gain one restrained arrival, with no scroll pinning. */
 export function GcmImpact() {
   const root = useRef<HTMLElement>(null);
+  const inkTrack = useRef<HTMLDivElement>(null);
+  const [inkEnabled, setInkEnabled] = useState(false);
+
+  useEffect(() => {
+    const track = inkTrack.current;
+    if (!track || typeof ResizeObserver === "undefined" || typeof IntersectionObserver === "undefined") return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    let visible = false;
+    let printing = false;
+    const update = () => setInkEnabled(visible && !printing && !document.hidden && !reduced.matches && finePointer.matches);
+    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; update(); });
+    const beforePrint = () => { printing = true; update(); };
+    const afterPrint = () => { printing = false; update(); };
+    observer.observe(track);
+    reduced.addEventListener("change", update);
+    finePointer.addEventListener("change", update);
+    document.addEventListener("visibilitychange", update);
+    window.addEventListener("beforeprint", beforePrint);
+    window.addEventListener("afterprint", afterPrint);
+    return () => {
+      observer.disconnect();
+      reduced.removeEventListener("change", update);
+      finePointer.removeEventListener("change", update);
+      document.removeEventListener("visibilitychange", update);
+      window.removeEventListener("beforeprint", beforePrint);
+      window.removeEventListener("afterprint", afterPrint);
+    };
+  }, []);
 
   useEffect(() => {
     const element = root.current!;
@@ -50,10 +81,13 @@ export function GcmImpact() {
   }, []);
 
   return <section ref={root} id="impact" className={styles.section} aria-labelledby="gcm-impact-heading">
+    <div ref={inkTrack} className={inkStyles.field} data-gcm-impact-ink>
+    {inkEnabled && <GuidingLightInkTrail trackRef={inkTrack} />}
     <p className={styles.meta}>The response / Published case-study outcomes</p>
     <h2 id="gcm-impact-heading" data-gcm-impact-arrival>From demonstration<br />to commitments.</h2>
     <dl className={styles.outcomes}>{gcmOutcomes.map(outcome => <div key={outcome.label} data-gcm-impact-arrival>
       <dt>{outcome.label}</dt><dd className={outcome.words ? styles.wordOutcome : undefined}>{outcome.value}</dd>
     </div>)}</dl>
+    </div>
   </section>;
 }

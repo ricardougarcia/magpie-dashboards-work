@@ -58,3 +58,11 @@ Local media preserve original evidence from the approved preview/source archive:
 Typography, graph paper, colors, coordinate cursor, and page shell inherit the existing Portfolio system. Motion and layout styles are scoped to GCM and its Board relationship. Marketplace, Magpie, and CCP component files are unchanged.
 
 Automated checks cover all six behavior mappings, mouse/focus/tap selection, evidence and contribution synchronization, playback preservation, Board geometry and dismissal, deep links, source wording, and native separate PMF links. Release evidence, browser checks, exact deployment SHA, and any remaining limitations belong in the UAT pull request.
+
+## Reading holds and Impact ink, 2026-09-18
+
+When the complete composition fits the visible viewport, Reliability holds below the index with additional breathing room. Native scroll progresses through expected behaviors 01–06, with a reading interval for the last item before release. Reverse scrolling retraces the sequence. Focus or click can select any item directly; incidental hover does not override scroll while held. Product Work uses one short hold and retains manual control of Demo, Data, Integration, and Evaluation; scrolling never selects these views.
+
+The content feather moves above an arriving or held section, keeping its heading fully readable, and returns gradually during release. The graph-paper grid remains unmasked. The same cached geometry handles both stages and the fade. Short layouts, reduced motion, printing, and unavailable JavaScript retain natural reading; resize and expanded disclosures preserve position when a stage no longer fits. Printing restores the previous scroll position afterward.
+
+Impact reuses the established pointer-driven ink-blot trail behind its readable outcomes. The effect is bounded to that section, has restrained opacity, and stops offscreen, in hidden documents, during printing, or for reduced motion and coarse pointers. Outcomes never depend on the effect for access.

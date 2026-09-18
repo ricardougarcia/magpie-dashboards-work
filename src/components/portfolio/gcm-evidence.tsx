@@ -24,7 +24,8 @@ export function GcmEvidence() {
     setChanged(true); setSelected(index);
   };
 
-  return <section id="product-work" className={styles.section} aria-labelledby="gcm-work-heading">
+  return <section id="product-work" className={`${styles.section} ${styles.readingSection}`} data-gcm-reading-section="product-work" data-gcm-steps="1" aria-labelledby="gcm-work-heading">
+    <div className={styles.readingStage} data-gcm-reading-stage>
     <header className={styles.sectionHead}><div><p className={styles.meta}>02 / The product work</p><h2 id="gcm-work-heading">Make the work<br />behind the demo visible.</h2></div><p>Relevant data. A connected system. Answers that could be evaluated.</p></header>
     <div className={styles.evidenceChoices} role="group" aria-label="Explore the work behind the demo">
       {gcmDecisions.map((item, index) => <button key={item.id} type="button" aria-pressed={index === selected} aria-controls="gcm-evidence-panel"
@@ -66,6 +67,7 @@ export function GcmEvidence() {
       <aside className={styles.decisionNote} aria-label={`${decision.label}: product contribution`}><div key={decision.id} className={changed ? styles.decisionEnter : undefined}>
         <p className={styles.register}>{decision.kicker}</p><h3>{decision.title}</h3><p>{decision.copy}</p><p className={styles.why}>{decision.why}</p>
       </div></aside>
+    </div>
     </div>
   </section>;
 }
