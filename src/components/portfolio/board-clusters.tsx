@@ -1,11 +1,11 @@
-import type { CSSProperties } from "react";
+import { ArrowUpRight, FileText } from "lucide-react";
 import type { BoardEntry } from "@/data/board";
 import timelineSeed from "@/data/timeline.seed.json";
 import type { TimelineData } from "@/lib/timeline-types";
 import { MONTHS } from "@/lib/timeline-types";
 import { createTimelineLayout } from "@/lib/timeline-layout";
 import { PortfolioLink } from "./portfolio-link";
-import { RegionInspection } from "./region-inspection";
+import { BoardPreview, BoardPreviewToggle } from "./board-preview";
 import { ClusterEntrance } from "./cluster-entrance";
 import styles from "./board-clusters.module.css";
 import region from "./region.module.css";
@@ -18,42 +18,50 @@ const drawing = createTimelineLayout(engineering, {
   labelWidth: 12, monthWidth: 80, monthCount: 9, laneHeaderHeight: 0,
   rowHeight: 27, barHeight: 18, laneGap: 12, barInset: 3, topInset: 34, canvasPadding: 12,
 });
-const completion = source.items.find((item) => item.id === "eng-build--v2-migration-phases-1-3-completion-dashboard")!;
-const selected = drawing.items.find((item) => item.id === completion.id)!;
+// The card explains inspection rather than featuring a particular dashboard.
+// The miniature still draws real work and recorded relationships from its source.
+const selected = drawing.items[0];
+const relatedIds = new Set(selected.relations.map((relation) => relation.targetId));
+const related = drawing.items.filter((item) => relatedIds.has(item.id));
 
 export function MagpieBoardCluster({ entry }: { entry: BoardEntry }) {
-  return <article id={`region-${entry.id}`} data-region-code="MAGPIE" data-board-number={entry.number} data-board-state="ready" className={`${styles.cluster} ${styles.magpie}`} aria-labelledby="magpie-title">
+  return <BoardPreview id={`region-${entry.id}`} data-region-code="MAGPIE" data-board-number={entry.number} data-board-state="ready" className={`${styles.cluster} ${styles.magpie}`} aria-labelledby="magpie-title">
     <header className={styles.heading}>
       <p className={region.register}>[{entry.number}] Magpie Literacy / Platform data</p>
       <h2 id="magpie-title"><PortfolioLink href="/" aria-label="Magpie">Magpie<span>.</span></PortfolioLink></h2>
       <p className={styles.summary}>Rebuild the system. Restore the trust.</p>
       <div className={styles.facts}><span>Principal Product Manager</span><span>09 months</span></div>
     </header>
-    <ClusterEntrance className={styles.magpieArtifacts}>
-      <RegionInspection label="the Magpie timeline" reference="M" summary="Engineering, research, operations, and the curve balls in between." insight="Follow the connections between the rebuild and the work that made it possible.">
+    <div className={styles.magpieArtifacts}>
         <PortfolioLink href="/#timeline-heading" className={styles.timelineMount} aria-label="Explore the Magpie work timeline">
           <div className={styles.sourceLabel}><span>A / Engineering build</span><span>Source excerpt</span></div>
           <svg viewBox={`0 0 ${drawing.width} ${drawing.height}`} className={styles.timelineDrawing} role="img" aria-label="Engineering work from the Magpie timeline, arranged from January through September">
             {MONTHS.slice(0, 9).map((month, i) => <g key={month}><text x={16 + i * 80} y="18">{month.toUpperCase()}</text><path className={styles.monthRule} d={`M ${12 + i * 80} 27 V ${drawing.height - 12}`} /></g>)}
-            {drawing.items.map((item, i) => <g key={item.id} className={item.id === completion.id ? styles.selectedWork : styles.workBar} style={{ "--bar-delay": `${i * 23}ms` } as CSSProperties}>
+            {drawing.items.map((item) => <g key={item.id} className={`${styles.workBar} ${item.id === selected.id ? styles.selectedWork : relatedIds.has(item.id) ? styles.relatedWork : ""}`}>
               <title>{`${item.name} / ${item.placement}`}</title>
               <rect x={item.rect.left} y={item.rect.top} width={item.rect.width} height={item.rect.height} />
               <path d={`M ${item.rect.left + 7} ${item.rect.top + 9} h ${Math.min(item.rect.width - 14, 36 + item.name.length)}`} />
             </g>)}
+            {related.map((item) => <path key={item.id} className={styles.relatedTrace} pathLength="1" d={`M ${selected.rect.left + selected.rect.width - 5} ${selected.rect.top + 9} H ${selected.rect.left + selected.rect.width + 9} V ${item.rect.top + 9} H ${item.rect.left + 5}`} />)}
             <path className={styles.sourceTrace} pathLength="1" d={`M ${selected.rect.left + selected.rect.width / 2} ${selected.rect.top + selected.rect.height} V ${drawing.height - 5} H ${drawing.width - 18}`} />
           </svg>
           <div className={styles.sourceLabel}><span>{drawing.items.length} work items / Lane 01</span><span>[Explore timeline]</span></div>
         </PortfolioLink>
-      </RegionInspection>
-      <PortfolioLink href="/#timeline-heading" className={styles.detachedNote} aria-label="Explore the Completion Dashboard rebuild in Magpie">
-        <span className={styles.sourceLabel}>B / From the source record</span>
-        <h3>Completion<br />Dashboard rebuild</h3>
-        <p>{completion.value}</p>
-        <span className={styles.noteFoot}>{completion.placement} <span>[Read in context]</span></span>
+      <PortfolioLink href="/#timeline-heading" className={styles.infoCard} aria-label="Behind each work item. Explore Magpie context, value, connected work, and supporting artifacts">
+        <div className={styles.cardHeading}><h3>Behind each work item.</h3><ArrowUpRight size={16} aria-hidden="true" /></div>
+        <div className={styles.cardDemo} aria-hidden="true">
+          <div className={styles.cardTabs}><span className={styles.overviewTab}>Overview</span><span className={styles.connectionsTab}>Connected work</span></div>
+          <div className={styles.cardPanels}>
+            <div className={styles.cardOverview}><div><span>Context</span><p>What prompted the work.</p></div><div><span>Value delivered</span><p>What the work made possible.</p></div></div>
+            <div className={styles.cardConnections}><span>Connected work</span><p>Follow what this work informed, supported, or enabled.</p><div className={styles.connectionLabels}><span>Research</span><span>Engineering</span><span>Operations</span></div></div>
+          </div>
+          <div className={styles.cardArtifact}><FileText size={26} strokeWidth={1} /><div><span>Artifact</span><p>Inspect the supporting evidence.</p></div><ArrowUpRight size={14} /></div>
+        </div>
       </PortfolioLink>
-    </ClusterEntrance>
+      <BoardPreviewToggle label="Magpie work sample" className={styles.previewToggle} />
+    </div>
     <footer className={styles.clusterFoot}><span>R:MAGPIE / {source.lanes.length} lanes</span><PortfolioLink href="/">View project <span>[Open]</span></PortfolioLink></footer>
-  </article>;
+  </BoardPreview>;
 }
 
 /** Deliberate blank studies, not invented product interfaces or loading states. */
