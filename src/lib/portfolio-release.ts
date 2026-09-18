@@ -41,23 +41,32 @@ export const PRODUCTION_LEGACY_REDIRECTS: Readonly<Record<string, string>> = {
   "/work/pmf": "/theboard/pmf",
 };
 
-export function publicLaunchEnabled(env: PortfolioReleaseEnvironment = process.env) {
+function releaseEnvironment(): PortfolioReleaseEnvironment {
+  return {
+    VERCEL_ENV: process.env.VERCEL_ENV,
+    VERCEL_TARGET_ENV: process.env.VERCEL_TARGET_ENV,
+    PORTFOLIO_PUBLIC_LAUNCH: process.env.PORTFOLIO_PUBLIC_LAUNCH,
+    PORTFOLIO_ROOT_REDIRECT: process.env.PORTFOLIO_ROOT_REDIRECT,
+  };
+}
+
+export function publicLaunchEnabled(env: PortfolioReleaseEnvironment = releaseEnvironment()) {
   return env.VERCEL_ENV === "production"
     && (!env.VERCEL_TARGET_ENV || env.VERCEL_TARGET_ENV === "production")
     && env.PORTFOLIO_PUBLIC_LAUNCH === "true";
 }
 
-export function isPublicPortfolioHost(host: string | null, env: PortfolioReleaseEnvironment = process.env) {
+export function isPublicPortfolioHost(host: string | null, env: PortfolioReleaseEnvironment = releaseEnvironment()) {
   // Do not consult X-Forwarded-Host or accept arbitrary *.vercel.app aliases.
   return publicLaunchEnabled(env) && host?.toLowerCase() === PORTFOLIO_HOST;
 }
 
-export function isIndexablePortfolioPage(host: string | null, pathname: string, env: PortfolioReleaseEnvironment = process.env) {
+export function isIndexablePortfolioPage(host: string | null, pathname: string, env: PortfolioReleaseEnvironment = releaseEnvironment()) {
   return isPublicPortfolioHost(host, env)
     && PUBLIC_PORTFOLIO_PATHS.some((path) => path === pathname);
 }
 
-export function portfolioRedirect(host: string | null, pathname: string, env: PortfolioReleaseEnvironment = process.env) {
+export function portfolioRedirect(host: string | null, pathname: string, env: PortfolioReleaseEnvironment = releaseEnvironment()) {
   const normalizedHost = host?.toLowerCase();
   const customDomain = publicLaunchEnabled(env)
     && (normalizedHost === PORTFOLIO_HOST || normalizedHost === `www.${PORTFOLIO_HOST}`);
