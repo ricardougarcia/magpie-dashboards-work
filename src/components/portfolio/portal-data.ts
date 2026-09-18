@@ -13,37 +13,37 @@ export const portalAssets = {
     "src": "/portfolio/portal/product.jpg",
     "title": "Provider product record",
     "description": "Original Partner Portal product-management interface. Product records are illustrative.",
-    "url": "https://static.wixstatic.com/media/7eca65_ed092834e8b841c1980307f17c8c3e0c~mv2.png"
+    "url": "/portfolio/portal/product-original.png"
   },
   "integration": {
     "src": "/portfolio/portal/integration.png",
     "title": "Integrations and implementation guidance",
     "description": "Original Partner Portal integration tools and implementation resources.",
-    "url": "https://static.wixstatic.com/media/7eca65_36416bf82cd44f839a7b4ffe4308664d~mv2.png"
+    "url": "/portfolio/portal/integration.png"
   },
   "evidence": {
     "src": "/portfolio/portal/evidence.png",
     "title": "Evidence publishing and services",
     "description": "Original Evidence tab with ESSA-aligned evidence and contact with the evidence team. Illustrative records.",
-    "url": "https://static.wixstatic.com/media/7eca65_7f6d5d0bc7ea4664ad613263cd6ab0d3~mv2.png"
+    "url": "/portfolio/portal/evidence.png"
   },
   "impact": {
     "src": "/portfolio/portal/impact.jpg",
     "title": "Original impact graph",
     "description": "Source-reported MAA and MAU values, July launch through December. The source does not supply a year or a consistent account definition.",
-    "url": "https://static.wixstatic.com/media/7eca65_5a385a8a1eb04f4a98aafd9bc2ffe13e~mv2.png"
+    "url": "/portfolio/portal/impact-original.png"
   },
   "journey": {
     "src": "/portfolio/portal/journey.png",
     "title": "Journey map: Manage vetting resources",
     "description": "Original discovery artifact connecting resource needs, requests, additions, and access approval. Its exact date within development is not documented.",
-    "url": "https://static.wixstatic.com/media/7eca65_374be732434148cdb805d483996fcb77~mv2.png"
+    "url": "/portfolio/portal/journey.png"
   },
   "workflow": {
     "src": "/portfolio/portal/workflow.png",
     "title": "Provider UX mapping",
     "description": "Original workflow overview across provider setup, product management, evidence, and LTI publishing. Open the full original for fine detail.",
-    "url": "https://static.wixstatic.com/media/7eca65_5623edbc486349ee8e014426e1e6e67f~mv2.png"
+    "url": "/portfolio/portal/workflow.png"
   },
   "ecosystem": {
     "src": "/portfolio/portal/ecosystem.jpg",
