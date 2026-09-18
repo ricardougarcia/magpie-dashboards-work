@@ -1,12 +1,15 @@
 import Image from "next/image";
 import { preload } from "react-dom";
 import resumeText from "@/data/resume-text.json";
+import { SiteMasthead } from "@/components/site-masthead";
 import { ResumePlayer } from "./resume-player";
 import styles from "./resume.module.css";
 
 export function ResumePage() {
   preload("/resume-assets/resume-vectors.json", { as: "fetch", crossOrigin: "anonymous" });
   return (
+    <>
+    <div className={styles.masthead}><SiteMasthead isResume /></div>
     <ResumePlayer>
       <div className={styles.transcript}>
         <h1>Rico Garcia — Resume</h1>
@@ -33,9 +36,9 @@ export function ResumePage() {
             draggable={false}
           />
           <canvas className={styles.canvas} data-resume-canvas={page} aria-hidden="true" />
-          <button className={styles.sheetTrigger} type="button" data-resume-download-trigger aria-label={`Download resume PDF, page ${page}`} aria-haspopup="dialog" />
         </div>
       ))}
     </ResumePlayer>
+    </>
   );
 }
