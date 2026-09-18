@@ -2,6 +2,12 @@ export const GUIDING_LIGHTS = ["Learn", "Fix", "Stabilize", "Govern", "Grow"] as
 export const COLOR_TOKENS = ["graphite", "signal", "steel", "umber", "forest"] as const;
 
 export type GuidingLight = (typeof GUIDING_LIGHTS)[number];
+export type GuidingLightNarrative = {
+  heading: string;
+  narrative: string;
+  soleContributor: string;
+};
+export type GuidingLightNarratives = Record<GuidingLight, GuidingLightNarrative>;
 export type ColorToken = (typeof COLOR_TOKENS)[number];
 
 export const LANE_COLOR_TOKENS: Record<string, ColorToken> = {
@@ -79,6 +85,7 @@ export type PublicTimelineItem = TimelineItem;
 export type TimelineData = {
   version: number;
   updatedAt: string;
+  guidingLightNarratives?: Partial<GuidingLightNarratives>;
   meta: {
     title: string;
     subtitle: string;

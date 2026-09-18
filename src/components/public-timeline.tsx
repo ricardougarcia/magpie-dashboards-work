@@ -18,6 +18,9 @@ import {
 import { SiteMasthead } from "@/components/site-masthead";
 import { PanelReplacement } from "@/components/panel-replacement";
 import { CoordinateCursor } from "@/components/coordinate-cursor";
+import { GuidingLightIntroduction, GuidingLightControls, GuidingLightNarrative } from "@/components/magpie-guiding-light-guide";
+import { useGuidingLightTour } from "@/components/use-guiding-light-tour";
+import { resolveGuidingLightNarratives } from "@/lib/guiding-light-narratives";
 import { GuidingLightInkTrail } from "@/components/guiding-light-ink-trail";
 import {
   LANE_CODES,
@@ -85,7 +88,8 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   const [activeTab, setActiveTab] = useState<TelemetryTab>("overview");
   const [telemetrySide, setTelemetrySide] = useState<TelemetrySide>("right");
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [activeGuidingLight, setActiveGuidingLight] = useState<GuidingLight | null>(null);
+  const { light: activeGuidingLight, status: tourStatus, dispatch: tourDispatch, clear: clearGuidingLight, viewRef: guideRef } = useGuidingLightTour(reduceMotion);
+  const narratives = resolveGuidingLightNarratives(data.guidingLightNarratives);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [guidingLightTethers, setGuidingLightTethers] = useState<GuidingLightTether[]>([]);
   const [tetherPath, setTetherPath] = useState<string | null>(null);
@@ -182,12 +186,12 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
         setSelectedId(null);
         setFocusedRelation(null);
         setSelectedRelation(null);
-        setActiveGuidingLight(null);
+        clearGuidingLight();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [previewOpen]);
+  }, [previewOpen, clearGuidingLight]);
 
   useEffect(() => {
     if ((!selectedId && !hoveredId) || previewOpen) return;
@@ -208,12 +212,13 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
     if (!activeGuidingLight) return;
     const dismissGuidingLightFocus = (event: PointerEvent) => {
       const target = event.target as Element | null;
-      if (target?.closest("[data-guiding-light]")) return;
-      setActiveGuidingLight(null);
+      // An item must receive its click before collapsing the narrative moves it.
+      if (target?.closest("[data-guiding-light], [data-guiding-light-guide], [data-timeline-item], .timeline-scroll-rail")) return;
+      clearGuidingLight();
     };
     document.addEventListener("pointerdown", dismissGuidingLightFocus, true);
     return () => document.removeEventListener("pointerdown", dismissGuidingLightFocus, true);
-  }, [activeGuidingLight]);
+  }, [activeGuidingLight, clearGuidingLight]);
 
   useEffect(() => {
     const clearTransientPreview = () => setHoveredId(null);
@@ -415,6 +420,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
   };
 
   const handleFocusPreview = (item: PublicTimelineItem, event: ReactFocusEvent<HTMLElement>) => {
+    if (activeGuidingLight) tourDispatch({ type: "pause" });
     previewItem(item, event.currentTarget);
   };
 
@@ -426,7 +432,7 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
       setSelectedId(null);
       setFocusedRelation(null);
       setSelectedRelation(null);
-      setActiveGuidingLight(null);
+      clearGuidingLight();
     }
   };
 
@@ -434,19 +440,44 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
     setSideFromElement(element);
     setSelectedId(item.id);
     setHoveredId(null);
-    setActiveGuidingLight(null);
+    clearGuidingLight();
     setActiveTab("overview");
     setFocusedRelation(null);
     setSelectedRelation(null);
   };
 
   const selectGuidingLight = (guidingLight: GuidingLight) => {
-    setActiveGuidingLight((current) => current === guidingLight ? null : guidingLight);
+    tourDispatch({ type: "select", light: guidingLight });
     setHoveredId(null);
     setSelectedId(null);
     setFocusedRelation(null);
     setSelectedRelation(null);
     setPreviewOpen(false);
+  };
+
+  const clearInspection = () => {
+    setHoveredId(null);
+    setSelectedId(null);
+    setFocusedRelation(null);
+    setSelectedRelation(null);
+    setPreviewOpen(false);
+  };
+
+  const scrollToGuide = () => {
+    guideRef.current?.scrollIntoView?.({ behavior: reduceMotion ? "instant" : "smooth", block: "start" });
+    guideRef.current?.focus({ preventScroll: true });
+  };
+
+  const beginGuide = () => {
+    clearInspection();
+    tourDispatch({ type: "restart" });
+    scrollToGuide();
+  };
+
+  const exploreWork = () => {
+    clearInspection();
+    clearGuidingLight();
+    scrollToGuide();
   };
 
   const toggleRelation = (relationId: string) => {
@@ -457,32 +488,24 @@ export function PublicTimeline({ data }: { data: PublicTimelineData }) {
     <main className="site-shell" data-work-sample="magpie">
       <SiteMasthead project={{ mark: "M/D", number: "01", role: "Principal Product Manager", organization: "Magpie Literacy" }} />
 
-      <PanelReplacement outgoing={
-        <section className="hero" id="top" data-panel="1">
-          <div data-panel-content>
-            <div className="hero-kicker"><span>[01]</span> Magpie Literacy / Platform Data</div>
-            <h1>
-              Rebuild the system.<br />
-              <span>Restore the trust.</span>
-            </h1>
-            <div className="hero-bottom">
-              <p className="hero-summary">{data.meta.subtitle}. A nine-month record of product leadership across engineering, research, operations, and the curve balls in between to migrate all three dashboards, restore partner trust, and prepare the platform for K–8.</p>
-              <dl className="hero-metrics" data-panel-part="tri-shelf">
-                <div><dt>Window</dt><dd>09 months</dd></div>
-                <div><dt>Work items</dt><dd>{publicItems.length}</dd></div>
-                <div><dt>Role</dt><dd>Principal Product Manager</dd></div>
-              </dl>
-            </div>
-          </div>
-        </section>
-      }>
+      <PanelReplacement outgoing={<GuidingLightIntroduction onBegin={beginGuide} onExplore={exploreWork} />}>
       <section className="timeline-section" aria-labelledby="timeline-heading" data-panel="2">
-        <div className="section-heading">
+        <div ref={guideRef} className="magpie-guide-start" tabIndex={-1}>
+        <div className="section-heading magpie-guide-heading">
           <div>
             <span className="index-mark">[02]</span>
             <h2 id="timeline-heading">The work, in motion</h2>
           </div>
 
+          <GuidingLightControls
+            light={activeGuidingLight} status={tourStatus}
+            onBack={() => tourDispatch({ type: "back" })}
+            onNext={() => tourDispatch({ type: "next" })}
+            onPause={() => tourDispatch({ type: "pause" })}
+            onPlay={() => { clearInspection(); tourDispatch({ type: "play" }); }}
+          />
+        </div>
+        <GuidingLightNarrative light={activeGuidingLight} narratives={narratives} playing={tourStatus === "playing"} onExplore={exploreWork} onReplay={beginGuide} />
         </div>
 
         <div className="workbench">
