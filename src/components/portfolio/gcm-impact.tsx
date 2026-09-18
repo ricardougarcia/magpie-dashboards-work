@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { GuidingLightInkTrail } from "@/components/guiding-light-ink-trail";
+import { GcmImpactInk } from "./gcm-impact-ink";
 import { gcmOutcomes } from "@/data/gcm";
 import styles from "./gcm.module.css";
 import inkStyles from "./gcm-impact.module.css";
@@ -82,7 +82,7 @@ export function GcmImpact() {
 
   return <section ref={root} id="impact" className={styles.section} aria-labelledby="gcm-impact-heading">
     <div ref={inkTrack} className={inkStyles.field} data-gcm-impact-ink>
-    {inkEnabled && <GuidingLightInkTrail trackRef={inkTrack} />}
+    {inkEnabled && <GcmImpactInk trackRef={inkTrack} />}
     <p className={styles.meta}>The response / Published case-study outcomes</p>
     <h2 id="gcm-impact-heading" data-gcm-impact-arrival>From demonstration<br />to commitments.</h2>
     <dl className={styles.outcomes}>{gcmOutcomes.map(outcome => <div key={outcome.label} data-gcm-impact-arrival>

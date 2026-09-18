@@ -2,8 +2,8 @@ import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GcmImpact } from "./gcm-impact";
 
-vi.mock("@/components/guiding-light-ink-trail", () => ({
-  GuidingLightInkTrail: () => <canvas data-ink-trail aria-hidden="true" />,
+vi.mock("./gcm-impact-ink", () => ({
+  GcmImpactInk: () => <canvas data-ink-trail aria-hidden="true" />,
 }));
 
 let reduced: MediaQueryList;
