@@ -26,6 +26,19 @@
 
 .sheet + .sheet { margin-top: 28px; }
 
+.sheetTrigger {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: var(--cursor-action);
+}
+.sheetTrigger:focus-visible { outline: 2px solid var(--signal); outline-offset: -4px; }
+
 .source {
   display: block;
   width: 100%;
@@ -129,7 +142,7 @@
 @keyframes revealControls { from { opacity: 0; } to { opacity: 1; } }
 
 @media (scripting: none) {
-  .controls { display: none; }
+  .controls button, .sheetTrigger { display: none; }
 }
 
 @media (max-width: 640px) {
@@ -153,5 +166,5 @@
   .sheet { break-after: page; }
   .sheet + .sheet { margin-top: 0; }
   .source { animation: none; visibility: visible; }
-  .controls, .canvas, .transcript { display: none; }
+  .controls, .canvas, .transcript, .sheetTrigger { display: none; }
 }
