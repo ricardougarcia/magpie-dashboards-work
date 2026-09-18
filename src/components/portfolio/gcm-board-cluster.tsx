@@ -49,7 +49,7 @@ export function GcmPmfBoardSlip() {
       </span>
       <svg className={styles.pmfInquiryLines} viewBox="0 0 480 54" preserveAspectRatio="none" aria-hidden="true">
         <g><path d="M 120 0 V 12 C 120 34 240 20 240 47" /><path d="M 360 0 V 12 C 360 34 240 20 240 47" /></g>
-        <g className={styles.pmfLineDraw}><path pathLength="1" d="M 120 0 V 12 C 120 34 240 20 240 47" /><path pathLength="1" d="M 360 0 V 12 C 360 34 240 20 240 47" /></g>
+        <g className={styles.pmfLineDraw}><path d="M 120 0 V 12 C 120 34 240 20 240 47" /><path d="M 360 0 V 12 C 360 34 240 20 240 47" /></g>
         <rect x="237" y="44" width="6" height="6" />
       </svg>
       <span className={styles.pmfDirection}>MVP direction</span>

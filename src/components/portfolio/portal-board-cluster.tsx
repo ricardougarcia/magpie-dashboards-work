@@ -19,10 +19,14 @@ export function PortalBoardCluster({ entry }: { entry: BoardEntry }) {
       <PortfolioLink href="/work/portal" className={styles.preview} aria-label="Explore Partner Portal: the work behind the ecosystem">
         <div className={styles.connections} role="group" aria-label="Partner Portal ecosystem connections">
           <div className={styles.destinations}><span>EdCo Marketplace</span><span>Canvas</span><span>Impact</span><span>LearnPlatform</span></div>
-          <svg className={styles.route} viewBox="0 0 400 62" preserveAspectRatio="none" aria-hidden="true">
-            <path className={styles.routeBase} d="M 50 2 V 22 H 350 V 2 M 150 2 V 22 M 250 2 V 22 M 200 22 V 60" />
-            <path className={styles.routeInk} pathLength="1" d="M 50 2 V 22 H 350 V 2 M 150 2 V 22 M 250 2 V 22 M 200 22 V 60" />
-            {[50, 150, 250, 350].map((x) => <circle key={x} cx={x} cy="2" r="2" />)}
+          {/* Percent positions keep the route responsive without stretching dots or normalized dashes. */}
+          <svg className={styles.route} aria-hidden="true">
+            {[styles.routeBase, styles.routeInk].map((className) => <g key={className} className={className}>
+              <line x1="12.5%" y1="22" x2="87.5%" y2="22" pathLength="1" />
+              {["12.5%", "37.5%", "62.5%", "87.5%"].map((x) => <line key={x} x1={x} y1="22" x2={x} y2="2" pathLength="1" />)}
+              <line x1="50%" y1="22" x2="50%" y2="60" pathLength="1" />
+            </g>)}
+            {["12.5%", "37.5%", "62.5%", "87.5%"].map((x) => <circle key={x} cx={x} cy="2" r="2" />)}
           </svg>
         </div>
         <div className={styles.productStage}>

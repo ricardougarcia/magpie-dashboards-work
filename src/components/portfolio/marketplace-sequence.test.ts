@@ -3,8 +3,8 @@ import { getMarketplaceFrame, marketplaceImageStops } from "./marketplace-sequen
 
 describe("Marketplace scroll sequence", () => {
   it("gives each catalog and the shared product a separate readable stop before Research", () => {
-    expect(marketplaceImageStops).toEqual([0, .22, .44, .66]);
-    for (const [index, progress] of [.07, .29, .51, .71].entries()) {
+    expect(marketplaceImageStops).toEqual([0, .16, .44, .66]);
+    for (const [index, progress] of [.03, .29, .51, .71].entries()) {
       const frame = getMarketplaceFrame(progress);
       expect(frame.selected).toBe(index);
       if (frame.from !== frame.to) expect(frame.reveal).toBe(frame.to === index ? 1 : 0);
@@ -15,7 +15,7 @@ describe("Marketplace scroll sequence", () => {
   });
 
   it("changes only between adjacent originals and keeps each transition between its two stops", () => {
-    for (const [index, progress] of [.18, .40, .62].entries()) {
+    for (const [index, progress] of [.11, .40, .62].entries()) {
       const frame = getMarketplaceFrame(progress);
       expect([frame.from, frame.to]).toEqual([index, index + 1]);
       expect(frame.reveal).toBeGreaterThan(0);
