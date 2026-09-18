@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { gcmBehaviors, type GcmComponent } from "@/data/gcm";
 import styles from "./gcm.module.css";
 
@@ -11,6 +11,7 @@ const components: { id: GcmComponent; action: string; name: string; description:
 ];
 
 export function GcmLedger() {
+  const root = useRef<HTMLElement>(null);
   const [selected, setSelected] = useState(0);
   const [touched, setTouched] = useState(false);
   const behavior = gcmBehaviors[selected];
@@ -20,14 +21,31 @@ export function GcmLedger() {
     setSelected(index);
   };
 
-  return <section id="reliability" className={styles.section} aria-labelledby="gcm-reliability-heading">
+  useLayoutEffect(() => {
+    const section = root.current!;
+    const advance = (event: Event) => {
+      const index = (event as CustomEvent<number>).detail;
+      if (!Number.isInteger(index) || index < 0 || index >= gcmBehaviors.length) return;
+      setSelected(index);
+      setTouched(true);
+    };
+    section.addEventListener("gcm-scroll-behavior", advance);
+    return () => section.removeEventListener("gcm-scroll-behavior", advance);
+  }, []);
+  const choose = (index: number) => {
+    select(index);
+    root.current?.dispatchEvent(new CustomEvent("gcm-select-behavior", { detail: index, bubbles: true }));
+  };
+
+  return <section ref={root} id="reliability" className={`${styles.section} ${styles.readingSection}`} data-gcm-reading-section="reliability" data-gcm-steps={gcmBehaviors.length} aria-labelledby="gcm-reliability-heading">
+    <div className={styles.readingStage} data-gcm-reading-stage>
     <header className={styles.sectionHead}><div><p className={styles.meta}>01 / Reliability by design</p><h2 id="gcm-reliability-heading">Define what a reliable<br />answer requires.</h2></div><p>I designed the expected behaviors and structured evaluations across the demo workflow.</p></header>
     <div className={styles.ledger}>
       <div className={styles.behaviorList} role="group" aria-label="Explore expected behaviors" style={{ "--selected": selected } as CSSProperties}>
         <span className={styles.behaviorMarker} aria-hidden="true" />
         {gcmBehaviors.map((item, index) => <button key={item.id} type="button" className={styles.behavior}
           aria-pressed={selected === index} aria-controls="gcm-responsibilities" aria-describedby={selected === index ? "gcm-requirement" : undefined}
-          onPointerEnter={(event) => { if (event.pointerType === "mouse") select(index); }} onFocus={() => select(index)} onClick={() => select(index)}>
+          onPointerEnter={(event) => { if (event.pointerType === "mouse" && root.current?.dataset.gcmHolding !== "true") select(index); }} onFocus={() => choose(index)} onClick={() => choose(index)}>
           <span>{String(index + 1).padStart(2, "0")}</span>{item.title}
         </button>)}
       </div>
@@ -45,5 +63,6 @@ export function GcmLedger() {
       </div>
     </div>
     <p className={styles.ledgerCaption}>Expected behaviors / Evaluation framework · Component highlights describe responsibilities.</p>
+    </div>
   </section>;
 }
