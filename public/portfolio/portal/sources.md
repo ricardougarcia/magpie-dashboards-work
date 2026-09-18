@@ -1,15 +1,15 @@
 # Partner Portal sources
 
-Content and assets are drawn from Rico Garcia's [original Partner Portal case study](https://www.ricardougarcia.com/work/portal), reviewed for the approved Ecosystem Atlas wireframe on September 17, 2026. These local images retain the best source files recovered for that study; the links below point to their published references. Local JPEG copies of the product and impact references differ in format from their published PNG URLs.
+Content and assets are drawn from Rico Garcia's [original Partner Portal case study](https://www.ricardougarcia.com/work/portal), reviewed for the approved Ecosystem Atlas wireframe on September 17, 2026. The six “Open full original” actions use locally hosted original PNGs. Product and impact keep their existing JPEG display copies and provide separate original PNGs. The published-reference links below preserve provenance.
 
 ## Assets
 
 | Local image | Published reference |
 | --- | --- |
-| [product.jpg](product.jpg) | [Published source](https://static.wixstatic.com/media/7eca65_ed092834e8b841c1980307f17c8c3e0c~mv2.png) |
+| [product.jpg](product.jpg) · [Original PNG](product-original.png) | [Published source](https://static.wixstatic.com/media/7eca65_ed092834e8b841c1980307f17c8c3e0c~mv2.png) |
 | [integration.png](integration.png) | [Published source](https://static.wixstatic.com/media/7eca65_36416bf82cd44f839a7b4ffe4308664d~mv2.png) |
 | [evidence.png](evidence.png) | [Published source](https://static.wixstatic.com/media/7eca65_7f6d5d0bc7ea4664ad613263cd6ab0d3~mv2.png) |
-| [impact.jpg](impact.jpg) | [Published source](https://static.wixstatic.com/media/7eca65_5a385a8a1eb04f4a98aafd9bc2ffe13e~mv2.png) |
+| [impact.jpg](impact.jpg) · [Original PNG](impact-original.png) | [Published source](https://static.wixstatic.com/media/7eca65_5a385a8a1eb04f4a98aafd9bc2ffe13e~mv2.png) |
 | [journey.png](journey.png) | [Published source](https://static.wixstatic.com/media/7eca65_374be732434148cdb805d483996fcb77~mv2.png) |
 | [workflow.png](workflow.png) | [Published source](https://static.wixstatic.com/media/7eca65_5623edbc486349ee8e014426e1e6e67f~mv2.png) |
 | [ecosystem.jpg](ecosystem.jpg) | [Published source](https://static.wixstatic.com/media/7eca65_ec4711abcde54ced9ff85b47508dff69~mv2.jpg) |
