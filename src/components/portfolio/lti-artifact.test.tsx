@@ -1,14 +1,24 @@
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Artifact } from "@/lib/portfolio-types";
+import type { LtiAsset, LtiInspectionView } from "@/data/lti";
 import { LtiArtifact } from "./lti-artifact";
 
-const artifact: Artifact & { code: string } = {
-  id: "lti-test-source", code: "A076", src: "/portfolio/lti/configuration.png", width: 810, height: 1006,
-  alt: "Original Canvas configuration design", label: "Canvas configuration", surface: "paper",
-  caption: "The Add Canvas Configuration dialog presents the LTI 1.3 Dynamic Registration setup.",
+const artifact: LtiAsset = {
+  id: "lti-test-source", code: "A080", src: "/portfolio/lti/configuration-paths.png", width: 2612, height: 1484,
+  alt: "Original configuration paths board", label: "Configuration paths", surface: "paper",
+  caption: "The configuration board shows URL, manual, and JSON setup paths.",
 };
+const relatedArtifact: LtiAsset = {
+  id: "lti-related-source", code: "Planning", src: "/portfolio/lti/planning-schema.png", width: 4448, height: 2308,
+  alt: "Original planning and schema board", label: "Planning and schema", surface: "paper",
+  caption: "The planning board separates actor journeys and working questions.",
+};
+const views: readonly LtiInspectionView[] = [
+  { id: "all-paths", label: "All paths", artifact, note: artifact.caption },
+  { id: "planning-board", label: "Planning board", artifact: relatedArtifact, note: "Explore the complete working board." },
+  { id: "provider-journey", label: "Provider journey", artifact: relatedArtifact, note: "The provider flow separates saving from publishing.", region: { x: 1530, y: 300, width: 1390, height: 1700 } },
+];
 const originalShowModal = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, "showModal");
 const originalClose = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, "close");
 const originalAnimate = Object.getOwnPropertyDescriptor(Element.prototype, "animate");
@@ -40,8 +50,8 @@ afterEach(() => {
   }
 });
 
-function openInspection() {
-  const rendered = render(<LtiArtifact artifact={artifact} />);
+function openInspection(inspectionViews?: readonly LtiInspectionView[]) {
+  const rendered = render(<LtiArtifact artifact={artifact} views={inspectionViews} />);
   const trigger = screen.getByRole("link", { name: `Inspect source: ${artifact.label}` });
   trigger.focus();
   fireEvent.click(trigger);
@@ -84,10 +94,10 @@ describe("LTI source inspection", () => {
     expect(source.getAttribute("href")).toBe(artifact.src);
     expect(source.target).toBe("_blank");
     expect(source.rel).toContain("noopener");
-    expect(page.querySelector("figure")?.getAttribute("data-lti-artifact")).toBe("A076");
+    expect(page.querySelector("figure")?.getAttribute("data-lti-artifact")).toBe("A080");
     expect(page.querySelectorAll("img")).toHaveLength(1);
-    expect(page.querySelector("img")?.getAttribute("width")).toBe("810");
-    expect(page.querySelector("img")?.getAttribute("height")).toBe("1006");
+    expect(page.querySelector("img")?.getAttribute("width")).toBe("2612");
+    expect(page.querySelector("img")?.getAttribute("height")).toBe("1484");
     expect(page.querySelector("dialog")?.hasAttribute("open")).toBe(false);
   });
 
@@ -152,7 +162,7 @@ describe("LTI source inspection", () => {
 
   it("keeps the native fallback when modal inspection is unavailable", () => {
     Object.defineProperty(HTMLDialogElement.prototype, "showModal", { configurable: true, value: undefined });
-    render(<LtiArtifact artifact={artifact} compact />);
+    render(<LtiArtifact artifact={artifact} views={views} compact />);
     const trigger = screen.getByRole("link", { name: "Open original planning sheet" });
     let intercepted = false;
     document.addEventListener("click", (event) => { intercepted = event.defaultPrevented; event.preventDefault(); }, { once: true });
@@ -199,5 +209,93 @@ describe("LTI source inspection", () => {
     fireEvent.error(within(dialog).getByRole("img"));
     expect(within(dialog).getByRole("status").textContent).toContain("could not load");
     expect(within(dialog).getByRole("link").getAttribute("href")).toBe(artifact.src);
+  });
+
+  it("switches related originals and source details with the selected note and original-file link", () => {
+    const { dialog } = openInspection(views);
+    const navigation = within(dialog).getByRole("navigation", { name: "Explore source views" });
+    const first = within(navigation).getByRole("button", { name: "All paths" });
+    const related = within(navigation).getByRole("button", { name: "Planning board" });
+    expect(first.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(related);
+    expect(first.getAttribute("aria-pressed")).toBe("false");
+    expect(related.getAttribute("aria-pressed")).toBe("true");
+    expect(within(dialog).getByRole("heading", { name: relatedArtifact.label })).toBeDefined();
+    expect(new URL(within(dialog).getByRole("img").getAttribute("src")!, window.location.href).pathname).toBe(relatedArtifact.src);
+    expect(within(dialog).getByText(views[1].note)).toBeDefined();
+    expect(within(dialog).getByRole("link", { name: `Open original: ${relatedArtifact.label} (opens in a new tab)` }).getAttribute("href")).toBe(relatedArtifact.src);
+
+    const detail = within(navigation).getByRole("button", { name: "Provider journey" });
+    fireEvent.click(detail);
+    expect(detail.getAttribute("aria-pressed")).toBe("true");
+    expect(related.getAttribute("aria-pressed")).toBe("false");
+    const crop = within(dialog).getByRole("img", { name: `Provider journey. ${relatedArtifact.alt}` });
+    expect(crop.getAttribute("viewBox")).toBe("1530 300 1390 1700");
+    const source = crop.querySelector("image")!;
+    expect(source.getAttribute("href")).toBe(relatedArtifact.src);
+    expect(source.getAttribute("width")).toBe(String(relatedArtifact.width));
+    expect(source.getAttribute("height")).toBe(String(relatedArtifact.height));
+    expect(within(dialog).getByText(views[2].note)).toBeDefined();
+    expect(within(dialog).getByRole("link").getAttribute("href")).toBe(relatedArtifact.src);
+  });
+
+  it("returns a newly selected view to fit size and its starting scroll position", () => {
+    const { dialog } = openInspection(views);
+    const size = within(dialog).getByRole("button", { name: "Actual size" });
+    const viewport = within(dialog).getByRole("region");
+    fireEvent.click(size);
+    viewport.scrollLeft = 250;
+    viewport.scrollTop = 400;
+    fireEvent.click(within(dialog).getByRole("button", { name: "Provider journey" }));
+    expect(size.getAttribute("aria-pressed")).toBe("false");
+    expect(viewport.scrollLeft).toBe(0);
+    expect(viewport.scrollTop).toBe(0);
+    expect(viewport.getAttribute("aria-label")).toBe("Provider journey: source detail");
+    fireEvent.click(size);
+    expect(viewport.getAttribute("aria-label")).toBe("Provider journey: actual size, scroll to inspect");
+    expect(within(dialog).getByRole("img").getAttribute("width")).toBe("1390");
+    expect(within(dialog).getByRole("img").getAttribute("height")).toBe("1700");
+  });
+
+  it("recovers from failed complete images and cropped images when another view is selected", () => {
+    const { dialog } = openInspection(views);
+    fireEvent.error(within(dialog).getByRole("img"));
+    expect(within(dialog).getByRole("status").textContent).toContain("could not load");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Provider journey" }));
+    expect(within(dialog).queryByRole("status")).toBeNull();
+    fireEvent.error(within(dialog).getByRole("img").querySelector("image")!);
+    expect(within(dialog).getByRole("status").textContent).toContain("could not load");
+    expect(within(dialog).getByRole("link").getAttribute("href")).toBe(relatedArtifact.src);
+    fireEvent.click(within(dialog).getByRole("button", { name: "All paths" }));
+    expect(within(dialog).queryByRole("status")).toBeNull();
+    expect(within(dialog).getByRole("link").getAttribute("href")).toBe(artifact.src);
+  });
+
+  it("reopens at the initial source after closing a failed detail at actual size", () => {
+    const { dialog, trigger } = openInspection(views);
+    fireEvent.click(within(dialog).getByRole("button", { name: "Provider journey" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Actual size" }));
+    fireEvent.error(within(dialog).getByRole("img").querySelector("image")!);
+    fireEvent.click(within(dialog).getByRole("button", { name: "Close source inspection" }));
+    expect(document.activeElement).toBe(trigger);
+    fireEvent.click(trigger);
+    expect(within(dialog).getByRole("button", { name: "All paths" }).getAttribute("aria-pressed")).toBe("true");
+    expect(within(dialog).getByRole("button", { name: "Provider journey" }).getAttribute("aria-pressed")).toBe("false");
+    expect(within(dialog).getByRole("button", { name: "Actual size" }).getAttribute("aria-pressed")).toBe("false");
+    expect(within(dialog).queryByRole("status")).toBeNull();
+    expect(new URL(within(dialog).getByRole("img").getAttribute("src")!, window.location.href).pathname).toBe(artifact.src);
+    expect(within(dialog).getByRole("link").getAttribute("href")).toBe(artifact.src);
+  });
+
+  it("server-renders each additional source once for visitors without JavaScript", () => {
+    const page = new DOMParser().parseFromString(renderToString(<LtiArtifact artifact={artifact} views={views} />), "text/html");
+    const fallback = page.querySelector("noscript")!;
+    const links = fallback.querySelectorAll("a");
+    expect(links).toHaveLength(1);
+    expect(links[0].getAttribute("href")).toBe(relatedArtifact.src);
+    expect(links[0].textContent).toBe(relatedArtifact.label);
+    expect(links[0].target).toBe("_blank");
+    expect(links[0].rel).toContain("noopener");
+    expect(page.querySelector("[data-lti-source]")?.getAttribute("href")).toBe(artifact.src);
   });
 });

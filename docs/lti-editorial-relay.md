@@ -1,6 +1,6 @@
 # LTI Editorial Relay
 
-The owner selected **Editorial Relay** from the three merged LTI studies. The implementation preserves the selected composition, wording, archived source assets, and native-scroll motion while using the Portfolio's shared work-sample header.
+The owner selected **Editorial Relay** from the three merged LTI studies. The implementation preserves the selected composition and native-scroll motion while using the Portfolio's shared work-sample header. The September 18 source-depth update replaces the Canvas configuration dialog with the configuration flow board and adds related source views; see [LTI source inspection](lti-source-depth.md).
 
 ## Narrative and evidence boundaries
 
@@ -8,7 +8,7 @@ The opening, **“An integration is also a release.”**, introduces the depende
 
 The planning decision, **“Wait for LTI 1.3. Include it in the provider launch.”**, is documented in W002. The source records a decision and dependencies; it does not establish the final shipped date.
 
-Three editorial spreads then explain the experience principles: **Discoverable**, **Controllable**, and **Configurable**. These are distinct from the opening workstreams, with no implied one-to-one mapping. Their evidence is the product detail, provider product table, and Canvas configuration dialog. Task lists from the opening are not repeated in the body.
+Three editorial spreads then explain the experience principles: **Discoverable**, **Controllable**, and **Configurable**. These are distinct from the opening workstreams, with no implied one-to-one mapping. Their primary evidence is the product detail, provider product table, and configuration flow board. Source inspection also exposes integration-detail screens and the Planning & Schema actor journeys. Task lists from the opening are not repeated in the body.
 
 The closing, **“Different methods. One coordinated effort.”**, retains the reported use of Agile with engineering, Kanban with contractors, and critical-path planning. The reported scope of more than 900 tools describes onboarding, validation, and data hygiene work. It is not an adoption or impact measure. Counts and records in the provider table are sample data; no résumé metric is reassigned to this case.
 
@@ -16,7 +16,7 @@ The closing, **“Different methods. One coordinated effort.”**, retains the r
 
 The recovered archive is `portfolio-migration-research-2026-09-06` in the parent GANT workspace. The portfolio case record is `source-pages/work--lti.txt`, particularly lines 10–54. The recorded release decision is in `authenticated-wix/text/W002.txt`, lines 144–154, and the original process-map PDF, `authenticated-wix/assets/W002__LTI + LC  - Process & Timeline (1).pdf`.
 
-The selected rendering is `artifacts/lti-merged-studies/relay.html`, combined with `connected-hero.html`, `shared.css`, and the transforms in `assemble.py`. The completed interactive review is `lti-merged-directions.html` in the session's visualization directory. The application uses the archived original PNGs rather than the compressed previews embedded in that review.
+The selected rendering is `artifacts/lti-merged-studies/relay.html`, combined with `connected-hero.html`, `shared.css`, and the transforms in `assemble.py`. The completed interactive review is `lti-merged-directions.html` in the session's visualization directory. The application uses original PNGs rather than the compressed previews embedded in that review. The table below records the initial Editorial Relay assets; A076 was superseded by A080 in the source-depth update.
 
 | Source | Archived file | Application file | Original dimensions |
 | --- | --- | --- | --- |
@@ -39,7 +39,7 @@ The study's proposal selector, simulated phone mode, automatic playback, and scr
 
 ## Verification
 
-Asset provenance and implementation behavior are separate checks. Each copied PNG's byte length, dimensions, and SHA-256 digest were checked against the recovered archive. All four copied files match their source bytes:
+Asset provenance and implementation behavior are separate checks. Each copied PNG's byte length, dimensions, and SHA-256 digest were checked against the recovered archive. At the initial implementation, all four copied files matched their source bytes. A076 is retained here as historical provenance; it is no longer used by the page or inspection:
 
 | Source | Bytes | SHA-256 |
 | --- | ---: | --- |
