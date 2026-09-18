@@ -38,6 +38,16 @@
 .content p { margin: 14px 0 0; color: var(--muted, #6b6a64); font-size: 12px; }
 .panel :is(button, input, textarea, summary):focus-visible { outline: 2px solid #bd3e2b; outline-offset: 3px; }
 
+@media (max-width: 960px) {
+  .panel[open] + :global(.editor-layout) :global(.editor-inspector) {
+    position: static;
+    height: auto;
+    box-shadow: none;
+  }
+  .panel[open] + :global(.editor-layout) :global(.inspector-scroll) { height: auto; }
+  .panel[open] + :global(.editor-layout) :global(.editor-board) { padding-bottom: 0; }
+}
+
 @media (max-width: 650px) {
   .panel { margin: 12px; }
   .panel summary span { display: block; margin: 6px 0 0; }
