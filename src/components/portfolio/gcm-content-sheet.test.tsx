@@ -36,6 +36,40 @@ function scene() {
   };
 }
 
+function readingScene() {
+  const geometry = { navHeight: 60, articleGap: 0, sheetHeight: 2000 };
+  vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockImplementation(function (this: HTMLElement) {
+    if (this.hasAttribute("data-gcm-arrival")) throw new Error("Translated intro geometry must not drive the foreground.");
+    if (this.hasAttribute("data-gcm-section-nav")) {
+      return new DOMRect(sheetLeft, Math.max(0, sheetTop - window.scrollY), 1000, geometry.navHeight);
+    }
+    if (this.hasAttribute("data-gcm-reading-content")) {
+      return new DOMRect(sheetLeft, sheetTop + geometry.navHeight + geometry.articleGap - window.scrollY, 1000, geometry.sheetHeight - geometry.navHeight);
+    }
+    return new DOMRect(sheetLeft, sheetTop - window.scrollY, 1000, geometry.sheetHeight);
+  });
+  const result = render(<main>
+    <header data-gcm-arrival data-arrival-settled="true" data-count-settled="true"><h1>What makes an AI answer worth trusting?</h1><strong>97%</strong></header>
+    <GcmContentSheet>
+      <nav data-gcm-section-nav><a href="#reliability">01 / Reliability</a></nav>
+      <article data-gcm-reading-content><section id="reliability"><button>Choose a requirement</button></section></article>
+    </GcmContentSheet>
+  </main>);
+  const article = result.container.querySelector<HTMLElement>("[data-gcm-reading-content]")!;
+  return {
+    ...result,
+    geometry,
+    hero: result.container.querySelector<HTMLElement>("[data-gcm-arrival]")!,
+    sheet: result.container.querySelector<HTMLElement>("[data-gcm-content-sheet]")!,
+    nav: result.container.querySelector<HTMLElement>("[data-gcm-section-nav]")!,
+    article,
+    // Express the mask boundary in viewport coordinates, independently of the
+    // article's document position. CSS appearance is verified in the browser.
+    fadeViewportY: () => Number.parseFloat(article.style.getPropertyValue("--gcm-fade-y")) +
+      sheetTop + geometry.navHeight + geometry.articleGap - window.scrollY,
+  };
+}
+
 beforeEach(() => {
   frameId = 0;
   frames = new Map();
@@ -199,6 +233,129 @@ describe("GCM foreground sheet", () => {
     expect(documentRemoved).toHaveBeenCalledWith("visibilitychange", expect.any(Function));
     expect(preferenceRemoved).toHaveBeenCalledWith("change", expect.any(Function));
     expect(hero.style.getPropertyValue("--gcm-intro-offset")).toBe("");
+    await act(async () => { finishFonts(); await Promise.resolve(); });
+    fireEvent.scroll(window);
+    fireEvent.resize(window);
+    expect(frames.size).toBe(0);
+  });
+});
+
+describe("GCM pinned navigation reading fade", () => {
+  it("keeps the fade at the panel edge after intro travel ends without layout reads on scroll", () => {
+    const { hero, article, sheet, nav, fadeViewportY } = readingScene();
+    scrollToPosition(600);
+    const introOffset = hero.style.getPropertyValue("--gcm-intro-offset");
+    const startFade = article.style.getPropertyValue("--gcm-fade-y");
+    const bounds = vi.mocked(HTMLElement.prototype.getBoundingClientRect);
+    bounds.mockClear();
+
+    vi.stubGlobal("scrollY", 900);
+    fireEvent.scroll(window);
+    vi.stubGlobal("scrollY", 1100);
+    fireEvent.scroll(window);
+    expect(frames.size).toBe(1);
+    flushFrame();
+
+    expect(article.style.getPropertyValue("--gcm-fade-y")).not.toBe(startFade);
+    expect(fadeViewportY()).toBe(60);
+    expect(hero.style.getPropertyValue("--gcm-intro-offset")).toBe(introOffset);
+    expect(hero.dataset.gcmDepth).toBe("resting");
+    expect(bounds).not.toHaveBeenCalled();
+    expect(sheet.style.getPropertyValue("--gcm-fade-y")).toBe("");
+    expect(nav.style.getPropertyValue("--gcm-fade-y")).toBe("");
+    expect(frames.size).toBe(0);
+    fireEvent.scroll(window);
+    expect(frames.size).toBe(0);
+  });
+
+  it("reverses the fade and grid registration without changing content or replaying the intro", () => {
+    const { hero, article, nav } = readingScene();
+    const originalText = article.textContent;
+    const initialFade = article.style.getPropertyValue("--gcm-fade-y");
+    scrollToPosition(920);
+    const forward = [article.style.getPropertyValue("--gcm-fade-y"), nav.style.getPropertyValue("--gcm-nav-paper-y")];
+    scrollToPosition(1500);
+    expect(article.style.getPropertyValue("--gcm-fade-y")).not.toBe(forward[0]);
+    scrollToPosition(920);
+    expect([article.style.getPropertyValue("--gcm-fade-y"), nav.style.getPropertyValue("--gcm-nav-paper-y")]).toEqual(forward);
+    scrollToPosition(0);
+    expect(article.style.getPropertyValue("--gcm-fade-y")).toBe(initialFade);
+    expect(article.textContent).toBe(originalText);
+    expect(hero.dataset.arrivalSettled).toBe("true");
+    expect(hero.dataset.countSettled).toBe("true");
+  });
+
+  it("remeasures wrapped navigation and changed article geometry before aligning the fade", () => {
+    const { geometry, hero, sheet, nav, article, fadeViewportY } = readingScene();
+    expect(resizeObserver.observe).toHaveBeenCalledWith(nav);
+    expect(resizeObserver.observe).toHaveBeenCalledWith(article);
+    scrollToPosition(1000);
+    expect(fadeViewportY()).toBe(60);
+    geometry.navHeight = 104;
+    geometry.articleGap = 24;
+    geometry.sheetHeight = 2500;
+    act(() => resizeCallback([], resizeObserver));
+    expect(frames.size).toBe(1);
+    flushFrame();
+    expect(sheet.style.getPropertyValue("--gcm-nav-height")).toBe("104px");
+    expect(fadeViewportY()).toBe(104);
+    expect(hero.style.getPropertyValue("--gcm-intro-offset")).toBe("390px");
+    scrollToPosition(2800);
+    expect(fadeViewportY()).toBe(104);
+  });
+
+  it("removes the fade for reduced motion and print, then restores the current scroll position", () => {
+    const { hero, article, nav, fadeViewportY } = readingScene();
+    scrollToPosition(900);
+    vi.stubGlobal("scrollY", 1000);
+    fireEvent.scroll(window);
+    expect(frames.size).toBe(1);
+    act(() => { Object.assign(reduced, { matches: true }); reduced.dispatchEvent(new Event("change")); });
+    expect(frames.size).toBe(0);
+    expect(article.style.getPropertyValue("--gcm-fade-y")).toBe("");
+    expect(hero.style.getPropertyValue("--gcm-intro-offset")).toBe("");
+    const reducedGrid = nav.style.getPropertyValue("--gcm-nav-paper-y");
+    scrollToPosition(1100);
+    expect(article.style.getPropertyValue("--gcm-fade-y")).toBe("");
+    expect(nav.style.getPropertyValue("--gcm-nav-paper-y")).not.toBe(reducedGrid);
+    act(() => { Object.assign(reduced, { matches: false }); reduced.dispatchEvent(new Event("change")); });
+    expect(fadeViewportY()).toBe(60);
+
+    fireEvent(window, new Event("beforeprint"));
+    expect(article.style.getPropertyValue("--gcm-fade-y")).toBe("");
+    vi.stubGlobal("scrollY", 1300);
+    fireEvent.scroll(window);
+    expect(frames.size).toBe(0);
+    fireEvent(window, new Event("afterprint"));
+    flushFrame();
+    expect(fadeViewportY()).toBe(60);
+  });
+
+  it("pauses hidden-page work and cleans up the reading styles and queued callbacks", async () => {
+    const hidden = vi.spyOn(document, "hidden", "get").mockReturnValue(false);
+    const { article, nav, fadeViewportY, unmount } = readingScene();
+    scrollToPosition(900);
+    vi.stubGlobal("scrollY", 1000);
+    fireEvent.scroll(window);
+    hidden.mockReturnValue(true);
+    fireEvent(document, new Event("visibilitychange"));
+    expect(frames.size).toBe(0);
+    vi.stubGlobal("scrollY", 1200);
+    fireEvent.scroll(window);
+    expect(frames.size).toBe(0);
+    hidden.mockReturnValue(false);
+    fireEvent(document, new Event("visibilitychange"));
+    flushFrame();
+    expect(fadeViewportY()).toBe(60);
+
+    vi.stubGlobal("scrollY", 1400);
+    fireEvent.scroll(window);
+    expect(frames.size).toBe(1);
+    unmount();
+    expect(frames.size).toBe(0);
+    expect(article.style.getPropertyValue("--gcm-fade-y")).toBe("");
+    expect(nav.style.getPropertyValue("--gcm-nav-paper-y")).toBe("");
+    expect(resizeObserver.disconnect).toHaveBeenCalledOnce();
     await act(async () => { finishFonts(); await Promise.resolve(); });
     fireEvent.scroll(window);
     fireEvent.resize(window);
