@@ -30,13 +30,15 @@
 .pmfEvidenceLabel { display: block; margin-bottom: 9px; font: 400 10px/1.5 var(--font-mono), monospace; }
 .pmfEvidence img { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; object-fit: contain; background: var(--paper-raised); }
 .pmfInquiryLines { display: block; width: 100%; height: 54px; overflow: visible; }
-.pmfInquiryLines path { fill: none; stroke: var(--line-strong); stroke-width: 1; vector-effect: non-scaling-stroke; }
-.pmfInquiryLines .pmfLineDraw path { stroke: var(--signal-text); stroke-width: 1.25; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 720ms cubic-bezier(.22, 1, .36, 1); }
+.pmfInquiryLines path { fill: none; stroke: var(--line-strong); stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+/* Reveal the complete geometry; stretched non-scaling strokes cannot safely use normalized dashes. */
+.pmfLineDraw { clip-path: inset(0 0 100% 0); transition: clip-path 720ms cubic-bezier(.22, 1, .36, 1); }
+.pmfInquiryLines .pmfLineDraw path { stroke: var(--signal-text); stroke-width: 1.75; }
 .pmfInquiryLines rect { fill: var(--signal-text); }
 .pmfDirection { display: block; margin-top: 5px; text-align: center; font: 400 10px/1.5 var(--font-mono), monospace; color: var(--muted); }
 .pmfPreview:is(:hover, :focus-visible) .pmfResearchSheet { transform: translateY(-3px); }
 .pmfPreview:is(:hover, :focus-visible) .pmfMarketSheet { transform: translateY(-5px); }
-.pmfPreview:is(:hover, :focus-visible) .pmfLineDraw path { stroke-dashoffset: 0; }
+.pmfPreview:is(:hover, :focus-visible) .pmfLineDraw { clip-path: inset(-2px); }
 .pmfPreview:is(:hover, :focus-visible) .pmfDirection { color: var(--signal-text); }
 .pmfFoot { display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 20px; margin-top: 18px; padding: 0; font: 9px/1.6 var(--font-mono), monospace; color: var(--muted); }
 .pmfFoot a { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; text-decoration: none; }
@@ -52,5 +54,5 @@
 @keyframes connect { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @media (max-width: 900px) { .field { grid-template-areas: "magpie" "marketplace" "gcm" "lti" "portal" "pmf" "ccp"; } .model h3 { font-size: clamp(21px, calc(4vw - 2px), 26px); } }
 @media (max-width: 540px) { .components { font-size: 10px; } .pmf { padding: 20px 18px; } .pmfEvidence { gap: 8px; } .pmfResearchSheet, .pmfMarketSheet { padding: 7px; } .pmfEvidenceLabel { font-size: 9px; min-height: 27px; } }
-@media (prefers-reduced-motion: reduce) { .connector path, .connector circle { animation: none !important; transition: none; } .pmfPreview * { transition: none !important; transform: none !important; } .pmfInquiryLines .pmfLineDraw path { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .connector path, .connector circle { animation: none !important; transition: none; } .pmfPreview * { transition: none !important; transform: none !important; } .pmfLineDraw { clip-path: inset(-2px); } }
 @media print { .connector, .related { display: none; } .pmf { break-inside: avoid; margin-bottom: 40px; } }

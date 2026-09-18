@@ -1,4 +1,4 @@
-export const marketplaceImageStops = [0, .22, .44, .66] as const;
+export const marketplaceImageStops = [0, .16, .44, .66] as const;
 const clamp = (n: number) => Math.min(1, Math.max(0, Number.isFinite(n) ? n : 0));
 const interval = (p: number, start: number, end: number) => clamp((p - start) / (end - start));
 const smooth = (n: number) => n * n * (3 - 2 * n);
@@ -9,7 +9,8 @@ export function getMarketplaceFrame(progress: number) {
   let from = 0, to = 0, reveal = 0;
   for (let index = 0; index < 3; index++) {
     const end = marketplaceImageStops[index + 1];
-    const start = end - .08;
+    // Begin the first change earlier so the held opening responds promptly.
+    const start = end - (index === 0 ? .10 : .08);
     if (p >= end) from = to = index + 1;
     else if (p > start) { from = index; to = index + 1; reveal = interval(p, start, end); break; }
   }

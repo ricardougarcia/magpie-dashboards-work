@@ -81,8 +81,10 @@ function pointer(target: Element, type: "over" | "out", pointerType = "mouse", r
   fireEvent(target, boundary);
 }
 
-function setup() {
-  const result = render(<MarketplaceDeliveryFocus />);
+function setup(parentOpening = false) {
+  const result = render(parentOpening
+    ? <div data-confluence data-layout="animated" data-progress="0.5"><MarketplaceDeliveryFocus /></div>
+    : <MarketplaceDeliveryFocus />);
   const root = result.container.querySelector<HTMLElement>("[data-delivery-focus]")!;
   const choices = marketplaceWorkstreams.map(work => root.querySelector<HTMLElement>(`[data-delivery-choice="${work.id}"]`)!);
   const panels = marketplaceWorkstreams.map(work => root.querySelector<HTMLElement>(`[data-delivery-panel="${work.id}"]`)!);
@@ -105,6 +107,9 @@ beforeEach(() => {
   media = new Map(); motions = [];
   window.history.replaceState(null, "", "/work/marketplace");
   vi.stubGlobal("innerWidth", 1440);
+  vi.stubGlobal("innerHeight", 1000);
+  vi.stubGlobal("scrollY", 0);
+  vi.stubGlobal("scrollTo", vi.fn((options: ScrollToOptions) => { vi.stubGlobal("scrollY", options.top ?? 0); }));
   vi.stubGlobal("matchMedia", vi.fn(mediaFor));
   resizeDisconnect = vi.fn();
   vi.stubGlobal("ResizeObserver", class {
@@ -493,4 +498,121 @@ it("cleans up pending hover, motion, and subscribed media on unmount", () => {
   expect(running.every(motion => motion.cancel.mock.calls.length > 0 || motion.finish.mock.calls.length > 0)).toBe(true);
   expect(mediaBefore.every(match => match.listeners.size === 0)).toBe(true);
   expect(resizeDisconnect).toHaveBeenCalled();
+});
+
+function measureSequence(view: ReturnType<typeof setup>, height = 620) {
+  const stage = view.root.querySelector<HTMLElement>("[data-delivery-stage]")!;
+  let stageHeight = height;
+  Object.defineProperty(stage, "offsetHeight", { configurable: true, get: () => stageHeight });
+  Object.defineProperty(view.root, "offsetHeight", { configurable: true, get: () => stageHeight + (view.root.dataset.scroll === "pinned" ? parseFloat(view.root.style.getPropertyValue("--delivery-travel")) : 0) });
+  vi.spyOn(view.root, "getBoundingClientRect").mockImplementation(() => new DOMRect(0, 1000 - window.scrollY, 1280, view.root.offsetHeight));
+  fireEvent.resize(window);
+  const start = 1000 - parseFloat(view.root.style.getPropertyValue("--delivery-top"));
+  const travel = parseFloat(view.root.style.getPropertyValue("--delivery-travel"));
+  return {
+    start, travel,
+    move: (progress: number) => {
+      vi.stubGlobal("scrollY", start + travel * progress);
+      fireEvent.scroll(window);
+      advance(20);
+    },
+    height: (value: number) => { stageHeight = value; fireEvent.resize(window); },
+  };
+}
+
+it("pins a fitting section below both headers and reports the first scroll before advancing A through D", () => {
+  const view = setup();
+  const scroll = measureSequence(view);
+  expect(view.root.dataset.scroll).toBe("pinned");
+  expect(view.root.style.getPropertyValue("--delivery-top")).toBe("132px");
+  const cue = view.root.querySelector<HTMLElement>("[data-scroll-progress]")!;
+  scroll.move(.001);
+  expectSelection(view, 0);
+  expect(parseFloat(cue.style.getPropertyValue("--scroll-progress"))).toBeGreaterThan(0);
+  scroll.move(.3); expectSelection(view, 1);
+  scroll.move(.6); expectSelection(view, 2);
+  scroll.move(.9); expectSelection(view, 3);
+  expect(cue.querySelector<HTMLAnchorElement>("[data-scroll-next]")?.hidden).toBe(false);
+  expect(cue.querySelector("[data-scroll-next]")?.getAttribute("href")).toBe("#impact");
+  scroll.move(1.2); expectSelection(view, 3);
+  scroll.move(.6); expectSelection(view, 2);
+  scroll.move(.3); expectSelection(view, 1);
+  scroll.move(-.1); expectSelection(view, 0);
+});
+
+it("synchronizes an explicit selection with native scroll so the following movement continues from that workstream", () => {
+  const view = setup();
+  const scroll = measureSequence(view);
+  scroll.move(.1);
+  fireEvent.click(view.choices[2]);
+  expectSelection(view, 2);
+  expect(window.scrollTo).toHaveBeenLastCalledWith({ top: scroll.start + scroll.travel * .56, behavior: "instant" });
+  scroll.move(.57);
+  expectSelection(view, 2);
+  scroll.move(.85);
+  expectSelection(view, 3);
+});
+
+it("aligns a workstream deep link after the parent handoff lands so the next scroll does not replace the linked panel", () => {
+  const view = setup(true);
+  const scroll = measureSequence(view);
+  window.history.replaceState(null, "", `/work/marketplace#${marketplaceWorkstreams[3].id}`);
+  fireEvent(window, new HashChangeEvent("hashchange"));
+  expectSelection(view, 3);
+  view.root.closest<HTMLElement>("[data-confluence]")!.dataset.progress = "1";
+  fireEvent(view.root, new CustomEvent("delivery-navigate", { detail: marketplaceWorkstreams[3].id }));
+  expect(window.scrollY).toBe(scroll.start + scroll.travel * .84);
+  scroll.move(.85);
+  expectSelection(view, 3);
+});
+
+it("does not advance Delivery from the parent catalog's temporary sticky geometry", () => {
+  const view = setup(true);
+  const scroll = measureSequence(view);
+  scroll.move(.9);
+  expectSelection(view, 0);
+  view.root.closest<HTMLElement>("[data-confluence]")!.dataset.progress = "1";
+  scroll.move(.91);
+  expectSelection(view, 3);
+});
+
+it("releases the runway when content no longer fits and retains the selected disclosure for natural reading", () => {
+  const view = setup();
+  const scroll = measureSequence(view);
+  scroll.move(.3);
+  const detail = view.panels[1].querySelector("details")!;
+  fireEvent.click(detail.querySelector("summary")!);
+  finishMotions(detail);
+  scroll.height(950);
+  expect(view.root.dataset.scroll).toBe("natural");
+  expect(detail.open).toBe(true);
+  scroll.move(.9);
+  expectSelection(view, 1);
+  expect(detail.open).toBe(true);
+});
+
+it.each(["min-width", "prefers-reduced-motion"])("keeps native reading and direct choices available for the %s fallback", query => {
+  const view = setup();
+  const scroll = measureSequence(view);
+  setMedia(query, query === "prefers-reduced-motion");
+  expect(view.root.dataset.scroll).toBe("natural");
+  scroll.move(.9);
+  expectSelection(view, 0);
+  fireEvent.click(view.choices[2]);
+  expectSelection(view, 2);
+});
+
+it("does not replace a keyboard-focused disclosure during scroll or leave an animation frame after unmount", () => {
+  const view = setup();
+  const scroll = measureSequence(view);
+  scroll.move(.01);
+  fireEvent.keyDown(view.root, { key: "Tab" });
+  act(() => { view.panels[0].querySelector("summary")!.focus(); });
+  scroll.move(.6);
+  expectSelection(view, 0);
+  vi.stubGlobal("scrollY", scroll.start + scroll.travel * .9);
+  fireEvent.scroll(window);
+  expect(vi.getTimerCount()).toBeGreaterThan(0);
+  view.unmount();
+  expect(vi.getTimerCount()).toBe(0);
 });

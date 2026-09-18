@@ -17,6 +17,8 @@
 .sources a[aria-current="true"] { color: var(--signal-text); }
 .continue { display: inline-flex; min-height: 44px; align-items: center; margin-top: 22px; font-size: 11px; text-underline-offset: 5px; color: var(--muted); }
 .evidence { position: relative; min-width: 0; }
+.scrollCue { display: none; }
+.confluence:is([data-layout="measure"], [data-layout="animated"]) .scrollCue { display: block; }
 .field { position: relative; }
 .image { scroll-margin-top: calc(var(--masthead-height, 0px) + 24px); margin-bottom: 44px !important; }
 .image > a { display: flex; width: 100%; align-items: center; justify-content: center; padding: 14px; background: var(--paper-raised); border: 1px solid var(--line-strong); }

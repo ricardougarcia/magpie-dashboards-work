@@ -3,12 +3,14 @@
 import { useEffect, useRef } from "react";
 import { marketplaceArtifacts as artifacts, marketplaceWorkstreams } from "@/data/marketplace";
 import { MarketplaceArtifact, MarketplaceImage } from "./marketplace-artifact";
+import { paintScrollProgress, ScrollProgress } from "./scroll-progress";
 import styles from "./marketplace-delivery-focus.module.css";
 
 export const DELIVERY_HOVER_DELAY = 120;
 export const DELIVERY_PANEL_DURATION = 380;
 export const DELIVERY_FRAME_DURATION = 650;
 const conceptTriggerLabel = "Explore the in-platform discovery concept · A051";
+const deliveryStops = [0, .28, .56, .84] as const;
 
 /** The original four bodies and anchor destinations remain readable without JavaScript. */
 export function MarketplaceDeliveryFocus() {
@@ -22,6 +24,10 @@ export function MarketplaceDeliveryFocus() {
     const frame = element.querySelector<HTMLElement>("[data-delivery-frame]")!;
     const status = element.querySelector<HTMLElement>("[data-delivery-status]")!;
     const workspace = element.querySelector<HTMLElement>("[data-delivery-workspace]")!;
+    const stage = element.querySelector<HTMLElement>("[data-delivery-stage]")!;
+    const confluence = element.closest<HTMLElement>("[data-confluence]");
+    const masthead = element.closest("[data-portfolio-view]")?.querySelector<HTMLElement>(":scope > .masthead");
+    const navigation = confluence?.querySelector<HTMLElement>("[data-marketplace-navigation]");
     const details = [...element.querySelectorAll<HTMLDetailsElement>("[data-delivery-detail]")];
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const hover = window.matchMedia("(hover: hover)");
@@ -29,6 +35,8 @@ export function MarketplaceDeliveryFocus() {
     let selected = 0, disposed = false, keyboardMode = false;
     let dwell: ReturnType<typeof setTimeout> | undefined;
     let reveal: Animation | null = null;
+    let scrollRaf = 0, pinned = false, scrollTop = 0, travel = 0, measuring = false;
+    let lastScrollY = window.scrollY, entered = false;
     const disclosureMotion = new Map<HTMLDetailsElement, { open: boolean; height: Animation | null; body: Animation | null }>();
 
     const cancelIntent = () => { clearTimeout(dwell); dwell = undefined; };
@@ -72,16 +80,17 @@ export function MarketplaceDeliveryFocus() {
       frame.style.transform = `translateY(${choice.offsetTop}px)`;
       frame.style.height = `${Math.max(0, choice.offsetHeight - 24)}px`;
     };
-    const select = (next: number, source: "initial" | "hover" | "focus" | "click" | "hash") => {
+    const select = (next: number, source: "initial" | "hover" | "focus" | "click" | "hash" | "scroll") => {
       cancelIntent();
       if (disposed || (next === selected && source !== "initial")) return;
       // A pointer passing across the index must not remove a keyboard user's
       // focused disclosure from the accessibility tree.
-      if (source === "hover" && keyboardMode && panels[selected].contains(document.activeElement)) return;
+      if ((source === "hover" || source === "scroll") && keyboardMode && panels[selected].contains(document.activeElement)) return;
       settleReveal();
       selected = next;
       if (source !== "initial") details.forEach(detail => settleDisclosure(detail, true));
       element.dataset.selected = marketplaceWorkstreams[next].id;
+      if (source !== "scroll") paintScrollProgress(element, deliveryStops[next], next);
       choices.forEach((choice, i) => {
         choice.setAttribute("role", "button");
         choice.setAttribute("aria-pressed", String(i === next));
@@ -107,6 +116,67 @@ export function MarketplaceDeliveryFocus() {
         }
       }
     };
+    const readingAvailable = () => !element.closest("[inert]") &&
+      !(confluence?.dataset.layout === "animated" && Number(confluence.dataset.progress ?? 0) < 1);
+    const start = () => element.getBoundingClientRect().top + window.scrollY - scrollTop;
+    const paintScroll = () => {
+      scrollRaf = 0;
+      const moved = Math.abs(window.scrollY - lastScrollY) > .5;
+      lastScrollY = window.scrollY;
+      if (disposed || !pinned || !moved || !readingAvailable() || element.querySelector("dialog[open]")) return;
+      const distance = window.scrollY - start();
+      if (distance < 0 && !entered) return;
+      entered = distance >= 0;
+      const progress = Math.max(0, Math.min(1, distance / travel));
+      const next = deliveryStops.findLastIndex(stop => progress >= stop);
+      select(Math.max(0, next), "scroll");
+      paintScrollProgress(element, progress, selected);
+    };
+    const scheduleScroll = () => { if (!scrollRaf && !disposed) scrollRaf = requestAnimationFrame(paintScroll); };
+    const measureScroll = () => {
+      if (disposed || measuring || element.querySelector("dialog[open]")) return;
+      measuring = true;
+      const oldPinned = pinned, oldTravel = travel;
+      const oldTop = element.getBoundingClientRect().top + window.scrollY;
+      const oldHeight = element.offsetHeight;
+      const after = oldPinned && window.scrollY >= oldTop + oldTravel - scrollTop;
+      scrollTop = (masthead?.offsetHeight ?? 62) + (navigation?.offsetHeight ?? 70);
+      const viewport = Math.min(window.innerHeight, window.visualViewport?.height ?? window.innerHeight);
+      const height = stage.offsetHeight;
+      // Every part of the section must fit, including an expanded disclosure.
+      // Small viewports keep the existing direct-selection reading layout.
+      pinned = wide.matches && !reduced.matches && height > 0 && height <= viewport - scrollTop - 12;
+      travel = Math.max(600, (viewport - scrollTop) * 1.45);
+      element.style.setProperty("--delivery-top", `${scrollTop}px`);
+      element.style.setProperty("--delivery-height", `${height}px`);
+      element.style.setProperty("--delivery-travel", `${travel}px`);
+      element.dataset.scroll = pinned ? "pinned" : "natural";
+      if (oldPinned !== pinned || oldTravel !== travel) {
+        // Preserve the article's position when a resize changes a runway above
+        // the reader. No wheel interception or synthetic scroll accumulation.
+        if (after && oldHeight > 0) {
+          const delta = element.offsetHeight - oldHeight;
+          if (Math.abs(delta) > 1) window.scrollTo({ top: Math.max(0, window.scrollY + delta), behavior: "instant" });
+        } else if (oldPinned && !pinned && entered) {
+          window.scrollTo({ top: Math.max(0, oldTop - scrollTop), behavior: "instant" });
+        }
+        lastScrollY = window.scrollY;
+      }
+      measuring = false;
+    };
+    const landSelection = (next: number) => {
+      if (!pinned || !readingAvailable()) return;
+      window.scrollTo({ top: Math.max(0, start() + travel * deliveryStops[next]), behavior: "instant" });
+      lastScrollY = window.scrollY;
+      entered = true;
+      paintScrollProgress(element, deliveryStops[next], next);
+    };
+    const navigate = (event: Event) => {
+      const next = marketplaceWorkstreams.findIndex(work => work.id === (event as CustomEvent<string>).detail);
+      if (next < 0) return;
+      select(next, "hash");
+      landSelection(next);
+    };
     const hashSelection = () => {
       cancelIntent();
       let id = "";
@@ -119,8 +189,9 @@ export function MarketplaceDeliveryFocus() {
       element.dataset.reduced = String(reduced.matches);
       if (reduced.matches) { settleReveal(); details.forEach(detail => settleDisclosure(detail)); }
       positionFrame();
+      measureScroll();
     };
-    const resized = () => { cancelIntent(); positionFrame(); };
+    const resized = () => { cancelIntent(); positionFrame(); measureScroll(); };
     const keyboardInput = () => { keyboardMode = true; cancelIntent(); };
     const pointerInput = () => { keyboardMode = false; cancelIntent(); };
     const revealWorkspace = () => {
@@ -144,12 +215,14 @@ export function MarketplaceDeliveryFocus() {
         if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         event.preventDefault();
         select(i, "click");
+        landSelection(i);
         revealWorkspace();
       };
       const key = (event: KeyboardEvent) => {
         if (event.key !== " " && event.key !== "Enter") return;
         event.preventDefault();
         select(i, "click");
+        landSelection(i);
         revealWorkspace();
       };
       choice.addEventListener("pointerenter", enter);
@@ -180,19 +253,28 @@ export function MarketplaceDeliveryFocus() {
     window.addEventListener("hashchange", hashSelection);
     window.addEventListener("popstate", hashSelection);
     window.addEventListener("resize", resized);
+    window.addEventListener("scroll", scheduleScroll, { passive: true });
+    window.visualViewport?.addEventListener("resize", resized);
+    element.addEventListener("close", resized, true);
+    element.addEventListener("delivery-navigate", navigate);
     [reduced, hover, wide].forEach(query => query.addEventListener("change", preferenceChanged));
     const observer = typeof ResizeObserver === "function" ? new ResizeObserver(resized) : null;
     observer?.observe(index);
+    observer?.observe(stage);
+    if (masthead) observer?.observe(masthead);
+    if (navigation) observer?.observe(navigation);
     choices.forEach(choice => observer?.observe(choice));
     element.style.setProperty("--delivery-frame-duration", `${DELIVERY_FRAME_DURATION}ms`);
     preferenceChanged();
     select(0, "initial");
     element.dataset.mode = "focused";
+    measureScroll();
     hashSelection();
+    document.fonts?.ready.then(() => { if (!disposed) resized(); });
 
     return () => {
       disposed = true;
-      cancelIntent(); settleReveal(); observer?.disconnect();
+      cancelIntent(); settleReveal(); observer?.disconnect(); cancelAnimationFrame(scrollRaf);
       details.forEach(detail => settleDisclosure(detail));
       detailCleanups.forEach(cleanup => cleanup());
       cleanups.forEach(cleanup => cleanup());
@@ -212,13 +294,19 @@ export function MarketplaceDeliveryFocus() {
       window.removeEventListener("hashchange", hashSelection);
       window.removeEventListener("popstate", hashSelection);
       window.removeEventListener("resize", resized);
+      window.removeEventListener("scroll", scheduleScroll);
+      window.visualViewport?.removeEventListener("resize", resized);
+      element.removeEventListener("close", resized, true);
+      element.removeEventListener("delivery-navigate", navigate);
       [reduced, hover, wide].forEach(query => query.removeEventListener("change", preferenceChanged));
       element.dataset.mode = "reading";
+      element.dataset.scroll = "natural";
     };
   }, []);
 
   return <section ref={root} id="orchestration" className={styles.delivery} aria-labelledby="orchestration-heading"
-    data-marketplace-section data-delivery-focus data-mode="reading" data-selected={marketplaceWorkstreams[0].id}>
+    data-marketplace-section data-delivery-focus data-mode="reading" data-scroll="natural" data-selected={marketplaceWorkstreams[0].id}>
+    <div className={styles.stage} data-delivery-stage>
     <header className={styles.heading}>
       <h2 id="orchestration-heading">The work between<br />three and one.</h2>
       <p>Catalog consolidation, provider workflows, and the legacy transition had to advance together.</p>
@@ -264,6 +352,8 @@ export function MarketplaceDeliveryFocus() {
           </figcaption>
         </figure>
       </div>
+    </div>
+    <ScrollProgress labels={marketplaceWorkstreams.map(work => work.number)} nextLabel="Continue to Impact" nextHref="#impact" className={styles.scrollCue} />
     </div>
   </section>;
 }

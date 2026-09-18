@@ -4,6 +4,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { marketplaceArtifacts as artifacts } from "@/data/marketplace";
 import { MarketplaceImage } from "./marketplace-artifact";
 import { getMarketplaceFrame, marketplaceImageStops } from "./marketplace-sequence";
+import { ScrollProgress, paintScrollProgress } from "./scroll-progress";
 import styles from "./marketplace-confluence.module.css";
 
 const images = [artifacts.ai, artifacts.appCenter, artifacts.library, artifacts.catalog];
@@ -84,6 +85,7 @@ export function MarketplaceConfluence({ intro, children }: { intro: ReactNode; c
       if (enhanced && keyboard && evidenceNote?.contains(document.activeElement)) frame = getMarketplaceFrame(.70);
       if (enhanced && keyboard && reading.contains(document.activeElement)) frame = getMarketplaceFrame(1);
       element.dataset.progress = String(progress); element.dataset.selected = String(frame.selected);
+      paintScrollProgress(opening, clamp(progress / marketplaceImageStops[3]), frame.selected);
       element.dataset.scene = enhanced && frame.arrival > 0 ? "research" : frame.selected === 3 ? "product" : "source";
       element.style.setProperty("--separation", `${12 * (1 - frame.registration)}px`);
       element.style.setProperty("--line-opacity", String(1 - .65 * frame.registration));
@@ -189,6 +191,9 @@ export function MarketplaceConfluence({ intro, children }: { intro: ReactNode; c
         window.scrollTo({ top: Math.max(0, y), behavior: "instant" });
       } else target.scrollIntoView({ block: "start", behavior: "instant" });
       paint();
+      if (target.hasAttribute("data-delivery-panel")) {
+        target.closest("[data-delivery-focus]")?.dispatchEvent(new CustomEvent("delivery-navigate", { detail: id }));
+      }
       if (focus) {
         const destination = id === "repositories" ? choices[0] : links.find(link => link.hash === `#${id}`);
         destination?.focus({ preventScroll: true });
@@ -210,7 +215,7 @@ export function MarketplaceConfluence({ intro, children }: { intro: ReactNode; c
       event.preventDefault();
       if (window.location.hash !== link.hash) window.history.pushState(null, "", link.hash);
       if (artifactHash()) { onHash(); return; }
-      measure(); land(id, link.hasAttribute("data-continue-research") || link.hasAttribute("data-nav-section"));
+      measure(); land(id, link.hasAttribute("data-continue-research") || link.hasAttribute("data-nav-section") || link.hasAttribute("data-scroll-next"));
     };
     go.current = (index) => {
       if (enhanced) window.scrollTo({ top: Math.max(0, start() + travel * marketplaceImageStops[index]), behavior: "instant" });
@@ -268,6 +273,7 @@ export function MarketplaceConfluence({ intro, children }: { intro: ReactNode; c
               <summary><span className={styles.noteMark} aria-hidden="true" />What came together</summary>
               <div><p>Product information, publishing rules, and provider workflows supported the shared catalog. Legacy data continued into the shared backend during the transition.</p><p><strong>Edu App Center was sunset.</strong> The source record does not establish that all three catalogs were retired.</p><button type="button" onClick={() => { if (note.current) { note.current.open = false; note.current.querySelector("summary")?.focus(); } }}>Close note</button></div>
             </details>
+            <ScrollProgress labels={["01", "02", "03", "04"]} nextLabel="Continue to Research" nextHref="#investigation" className={styles.scrollCue} />
           </div>
         </section>
       </div>

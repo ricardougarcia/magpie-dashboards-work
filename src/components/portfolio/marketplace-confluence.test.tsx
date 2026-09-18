@@ -125,13 +125,31 @@ it("renders all four readable originals and native destinations before hydration
 it("holds each catalog in order before exposing Research, and reverses through the same originals", () => {
   const { root, reading, catalogFrames } = setup();
   expect(root.dataset.choreography).toBe("true");
-  for (const [progress, selected] of [[.07, 0], [.29, 1], [.51, 2], [.71, 3], [.51, 2], [.29, 1], [.07, 0]] as const) {
+  for (const [progress, selected] of [[.03, 0], [.29, 1], [.51, 2], [.71, 3], [.51, 2], [.29, 1], [.03, 0]] as const) {
     scrollToProgress(progress);
     expect(Number(root.dataset.selected)).toBe(selected);
     expect(reading.inert).toBe(true);
     catalogFrames.forEach((frame, index) => expect(frame.inert, catalogs[index].label).toBe(index !== selected));
     expect(root.querySelectorAll("[data-source-choice][aria-current], [data-product-choice][aria-current]")).toHaveLength(1);
   }
+});
+
+it("acknowledges the first scroll before replacing a catalog and offers continuation at the last", () => {
+  const { root, opening } = setup();
+  const cue = opening.querySelector<HTMLElement>("[data-scroll-progress]")!;
+  scrollToProgress(.01);
+  expect(Number(root.dataset.selected)).toBe(0);
+  expect(Number(cue.style.getPropertyValue("--scroll-progress"))).toBeGreaterThan(0);
+  expect(cue.querySelector<HTMLElement>("[data-scroll-invitation]")?.hidden).toBe(false);
+  scrollToProgress(.12);
+  expect(Number(root.dataset.selected)).toBe(1);
+  scrollToProgress(.71);
+  const next = cue.querySelector<HTMLAnchorElement>("[data-scroll-next]")!;
+  expect(next.hidden).toBe(false);
+  expect(next.hash).toBe("#investigation");
+  scrollToProgress(.01);
+  expect(next.hidden).toBe(true);
+  expect(cue.dataset.scrollComplete).toBe("false");
 });
 
 it("reveals Research navigation at handoff and removes it again when returning to the catalogs", () => {
@@ -153,7 +171,7 @@ it("keeps both clipped originals pointer-enabled during a wipe and exposes one k
   const { root, catalogFrames } = setup();
   // JSDOM cannot hit-test clipped regions. Browser verification must prove that
   // each visible part opens its own original; these are the DOM prerequisites.
-  for (const progress of [.15, .21, .37, .43, .59, .65]) {
+  for (const progress of [.07, .15, .37, .43, .59, .65]) {
     scrollToProgress(progress);
     const visible = catalogFrames.filter(frame => !frame.inert);
     expect(visible).toHaveLength(2);
@@ -179,9 +197,10 @@ it("lets a source choice move directly to its scroll beat and then resumes the i
   expect(root.querySelector("[data-product-choice]")?.getAttribute("aria-current")).toBe("true");
 });
 
-it("lets keyboard readers bypass the held sequence and continue at the Research navigation", () => {
+it.each(["[data-continue-research]", "[data-scroll-next]"])("lets keyboard readers continue at Research through %s", selector => {
   const { root, reading } = setup();
-  const next = root.querySelector<HTMLAnchorElement>("[data-continue-research]")!;
+  if (selector === "[data-scroll-next]") scrollToProgress(.71);
+  const next = root.querySelector<HTMLAnchorElement>(selector)!;
   fireEvent.keyDown(document, { key: "Tab" });
   act(() => next.focus());
   fireEvent.click(next);
