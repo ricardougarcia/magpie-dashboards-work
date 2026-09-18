@@ -4666,3 +4666,14 @@ body:has(.site-shell)::-webkit-scrollbar,
     visibility: visible !important;
   }
 }
+
+/* Magpie Guiding Lights: additions above the existing, unchanged Gantt. */
+.magpie-guide-start { scroll-margin-top: 104px; outline: none; }
+.magpie-guide-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.magpie-guide-heading > div { min-width: 0; }
+.magpie-guide-heading h2 { font-size: clamp(32px, 4.6vw, 68px); }
+@media (max-width: 800px) {
+  .magpie-guide-start { scroll-margin-top: 120px; }
+  .magpie-guide-heading { align-items: flex-start; flex-direction: column; gap: 16px; padding-inline: 22px; padding-bottom: 24px; }
+  .magpie-guide-heading h2 { font-size: clamp(29px, 6.3vw, 48px); }
+}

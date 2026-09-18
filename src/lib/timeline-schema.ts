@@ -3,6 +3,25 @@ import { z } from "zod";
 const guidingLightSchema = z.enum(["Learn", "Fix", "Stabilize", "Govern", "Grow"]);
 const colorTokenSchema = z.enum(["graphite", "signal", "steel", "umber", "forest"]);
 
+const guidingLightNarrativeSchema = z.object({
+  heading: z.string().trim().min(1).max(160),
+  narrative: z.string().trim().min(1).max(1200),
+  soleContributor: z.string().trim().min(1).max(1200),
+});
+
+export const guidingLightNarrativesSchema = z.object({
+  Learn: guidingLightNarrativeSchema,
+  Fix: guidingLightNarrativeSchema,
+  Stabilize: guidingLightNarrativeSchema,
+  Govern: guidingLightNarrativeSchema,
+  Grow: guidingLightNarrativeSchema,
+});
+
+export const guidingLightNarrativesPatchSchema = z.object({
+  expectedVersion: z.number().int().positive(),
+  guidingLightNarratives: guidingLightNarrativesSchema,
+}).strict();
+
 const connectorTerminalSchema = z.object({
   side: z.enum(["top", "right", "bottom", "left"]),
   offset: z.number().min(0).max(1),
@@ -65,6 +84,7 @@ export const timelineItemSchema = z
 export const timelineDataSchema = z.object({
   version: z.number().int().positive(),
   updatedAt: z.string().datetime(),
+  guidingLightNarratives: guidingLightNarrativesSchema.partial().optional(),
   meta: z.object({
     title: z.string().min(1),
     subtitle: z.string().min(1),

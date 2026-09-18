@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { isEditorAuthenticated } from "@/lib/auth";
-import { timelineDataSchema } from "@/lib/timeline-schema";
-import { getTimelineData, saveTimelineData } from "@/lib/timeline-storage";
+import { guidingLightNarrativesPatchSchema, timelineDataSchema } from "@/lib/timeline-schema";
+import { getTimelineData, saveGuidingLightNarratives, saveTimelineData, TimelineVersionConflictError } from "@/lib/timeline-storage";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +33,25 @@ export async function PUT(request: Request) {
     return NextResponse.json(saved);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to save the timeline.";
-    return NextResponse.json({ error: message }, { status: 503 });
+    return NextResponse.json({ error: message }, { status: error instanceof TimelineVersionConflictError ? 409 : 503 });
+  }
+}
+
+export async function PATCH(request: Request) {
+  if (!(await isEditorAuthenticated())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const parsed = guidingLightNarrativesPatchSchema.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ error: "The Guiding Light narratives are invalid.", issues: parsed.error.flatten() }, { status: 400 });
+  }
+
+  try {
+    const saved = await saveGuidingLightNarratives(parsed.data.expectedVersion, parsed.data.guidingLightNarratives);
+    return NextResponse.json(saved);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unable to save the narratives.";
+    return NextResponse.json({ error: message }, { status: error instanceof TimelineVersionConflictError ? 409 : 503 });
   }
 }

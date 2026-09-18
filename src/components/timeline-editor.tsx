@@ -15,7 +15,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import narrativeStyles from "./timeline-narrative-editor.module.css";
+import { resolveGuidingLightNarratives } from "@/lib/guiding-light-narratives";
 import { ConnectorRouteEditor } from "@/components/connector-route-editor";
 import { materializeMissingConnectors, setReciprocalConnector } from "@/lib/connector-parity";
 import { EditorConnectionPreview } from "@/components/editor-connection-preview";
@@ -36,6 +38,7 @@ import {
   monthPointOptions,
   placementSpan,
   type GuidingLight,
+  type GuidingLightNarrative,
   type OrthogonalConnectorRoute,
   type TimelineData,
   type TimelineItem,
@@ -54,6 +57,10 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
   const [data, setData] = useState(() => cloneData(initialData));
   const [selectedId, setSelectedId] = useState(initialData.items[0]?.id ?? "");
   const [dirty, setDirty] = useState(false);
+  const [itemsDirty, setItemsDirty] = useState(false);
+  const [narrativeLight, setNarrativeLight] = useState<GuidingLight>("Learn");
+  const draftRevision = useRef(0);
+  const itemRevision = useRef(0);
   const [saving, setSaving] = useState(false);
   const [saveState, setSaveState] = useState<"idle" | "saved" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState("");
@@ -65,6 +72,7 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
   const mediaQualityMessage = selected?.media ? lowResolutionGifMessage(selected.media) : null;
   const timelineItems = data.items.filter((item) => !item.planned);
   const futureItems = data.items.filter((item) => item.planned);
+  const narratives = resolveGuidingLightNarratives(data.guidingLightNarratives);
 
   const itemsByLane = useMemo(
     () => data.lanes.map((lane) => {
@@ -79,7 +87,12 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
     [data.lanes, timelineItems],
   );
 
-  function commit(updater: (draft: TimelineData) => void) {
+  function commit(updater: (draft: TimelineData) => void, changesItems = true) {
+    draftRevision.current += 1;
+    if (changesItems) {
+      itemRevision.current += 1;
+      setItemsDirty(true);
+    }
     setData((current) => {
       const next = cloneData(current);
       updater(next);
@@ -88,6 +101,14 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
     setDirty(true);
     setSaveState("idle");
     setStatusMessage("");
+  }
+
+  function updateNarrative(field: keyof GuidingLightNarrative, value: string) {
+    commit((draft) => {
+      const next = resolveGuidingLightNarratives(draft.guidingLightNarratives);
+      next[narrativeLight] = { ...next[narrativeLight], [field]: value };
+      draft.guidingLightNarratives = next;
+    }, false);
   }
 
   function chooseItem(id: string) {
@@ -181,6 +202,9 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
     const next = cloneData(data);
     const created = materializeMissingConnectors(next);
     if (created > 0) {
+      draftRevision.current += 1;
+      itemRevision.current += 1;
+      setItemsDirty(true);
       setData(next);
       setDirty(true);
       setSaveState("idle");
@@ -262,27 +286,37 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
   async function save() {
     setSaving(true);
     setStatusMessage("");
-    const normalizedData = {
-      ...data,
-      items: data.items.map((item) => ({ ...item, colorToken: colorTokenForLane(item.lane) })),
-    };
-    const response = await fetch("/api/timeline", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(normalizedData),
-    });
-    const payload = (await response.json().catch(() => null)) as TimelineData | { error?: string } | null;
-    if (!response.ok || !payload || !("items" in payload)) {
+    const submittedRevision = draftRevision.current;
+    const submittedItemRevision = itemRevision.current;
+    try {
+      const body = itemsDirty ? {
+        ...data,
+        items: data.items.map((item) => ({ ...item, colorToken: colorTokenForLane(item.lane) })),
+      } : {
+        expectedVersion: data.version,
+        guidingLightNarratives: resolveGuidingLightNarratives(data.guidingLightNarratives),
+      };
+      const response = await fetch("/api/timeline", {
+        method: itemsDirty ? "PUT" : "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const payload = (await response.json().catch(() => null)) as TimelineData | { error?: string } | null;
+      if (!response.ok || !payload || !("items" in payload)) {
+        throw new Error(payload && "error" in payload ? payload.error ?? "Save failed." : "Save failed.");
+      }
+      const hasNewEdits = draftRevision.current !== submittedRevision;
+      setData((current) => hasNewEdits ? { ...current, version: payload.version, updatedAt: payload.updatedAt } : payload);
+      setDirty(hasNewEdits);
+      setItemsDirty(itemRevision.current !== submittedItemRevision);
+      setSaveState(hasNewEdits ? "idle" : "saved");
+      setStatusMessage(hasNewEdits ? "Saved. Your newer edits are still unsaved." : "Saved to Vercel Blob.");
+    } catch (error) {
       setSaveState("error");
-      setStatusMessage(payload && "error" in payload ? payload.error ?? "Save failed." : "Save failed.");
+      setStatusMessage(error instanceof Error ? error.message : "Save failed.");
+    } finally {
       setSaving(false);
-      return;
     }
-    setData(payload);
-    setDirty(false);
-    setSaving(false);
-    setSaveState("saved");
-    setStatusMessage("Saved to Vercel Blob.");
   }
 
   return (
@@ -305,6 +339,26 @@ export function TimelineEditor({ initialData }: { initialData: TimelineData }) {
           </form>
         </div>
       </header>
+
+      <details className={narrativeStyles.panel}>
+        <summary>Guiding Light narratives <span>Edit the introduction to each principle</span></summary>
+        <div className={narrativeStyles.content}>
+          <div className={narrativeStyles.lights} role="group" aria-label="Choose a Guiding Light narrative">
+            {GUIDING_LIGHTS.map((light, index) => (
+              <button key={light} type="button" aria-pressed={narrativeLight === light} onClick={() => setNarrativeLight(light)}>
+                <span>{String(index + 1).padStart(2, "0")}</span> {light}
+              </button>
+            ))}
+          </div>
+          <fieldset className={narrativeStyles.fields}>
+            <legend>{narrativeLight} narrative</legend>
+            <label>Heading<input maxLength={160} value={narratives[narrativeLight].heading} onChange={(event) => updateNarrative("heading", event.target.value)} /></label>
+            <label>Narrative<textarea rows={3} maxLength={1200} value={narratives[narrativeLight].narrative} onChange={(event) => updateNarrative("narrative", event.target.value)} /></label>
+            <label>Sole contributor<textarea rows={3} maxLength={1200} value={narratives[narrativeLight].soleContributor} onChange={(event) => updateNarrative("soleContributor", event.target.value)} /></label>
+          </fieldset>
+          <p>Use Save changes above to publish your edits. Each principle keeps its own text.</p>
+        </div>
+      </details>
 
       <div className={`editor-layout ${editingConnections ? "is-connector-mode" : ""}`}>
         {editingConnections && selected ? (
