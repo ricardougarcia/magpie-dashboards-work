@@ -2,8 +2,10 @@
 
 Date: 2026-09-18
 
-Application revision: `2550ae26eefdc8cb7103513c200c5a2fb421c29d`  
-Tested tree: `71e40e2a47ccdbe4d35edaa8386e1627ba3a747b`  
+Application revision: `2550ae26eefdc8cb7103513c200c5a2fb421c29d`
+
+Tested tree: `71e40e2a47ccdbe4d35edaa8386e1627ba3a747b`
+
 UAT baseline: `0c3793fd8bcde625cfe9279d4c50a783e7734822`
 
 ## Automated checks
