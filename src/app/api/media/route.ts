@@ -2,6 +2,7 @@ import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 
 import { isEditorAuthenticated } from "@/lib/auth";
+import { isSnapshotContentMode, SNAPSHOT_READ_ONLY_MESSAGE } from "@/lib/content-mode";
 import {
   MEDIA_ALLOWED_CONTENT_TYPES,
   MEDIA_MAX_SIZE_BYTES,
@@ -21,6 +22,9 @@ function parseClientPayload(value: string | null): { itemId: string; filename: s
 }
 
 export async function POST(request: Request) {
+  if (isSnapshotContentMode()) {
+    return NextResponse.json({ error: SNAPSHOT_READ_ONLY_MESSAGE }, { status: 403 });
+  }
   if (!hasBlobStorage()) {
     return NextResponse.json(
       { error: "Vercel Blob is not connected. Set BLOB_READ_WRITE_TOKEN before uploading media." },

@@ -1,7 +1,9 @@
 import "server-only";
 
 import { list, put } from "@vercel/blob";
+import candidateData from "@/data/timeline.candidate.json";
 import seedData from "@/data/timeline.seed.json";
+import { assertContentWritable, isSnapshotContentMode } from "@/lib/content-mode";
 import { prepareTimelineSave } from "@/lib/timeline-persistence";
 import { fetchTimelineBlob, latestTimelineSnapshot } from "@/lib/timeline-storage-cache";
 import { timelineDataSchema } from "@/lib/timeline-schema";
@@ -12,7 +14,7 @@ const DATA_PATH = "magpie/timeline.json";
 const HISTORY_PREFIX = "magpie/history/timeline-v";
 
 export function hasBlobStorage() {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  return !isSnapshotContentMode() && Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
 export class TimelineVersionConflictError extends Error {
@@ -23,6 +25,7 @@ export class TimelineVersionConflictError extends Error {
 }
 
 async function getStoredTimelineData(): Promise<TimelineData | null> {
+  assertContentWritable();
   let cursor: string | undefined;
   let latest: ReturnType<typeof latestTimelineSnapshot> | null = null;
   do {
@@ -40,6 +43,7 @@ async function getStoredTimelineData(): Promise<TimelineData | null> {
 }
 
 async function readCurrentForSave(expectedVersion: number): Promise<TimelineData> {
+  assertContentWritable();
   if (!hasBlobStorage()) {
     throw new Error("Vercel Blob is not connected. Set BLOB_READ_WRITE_TOKEN before saving edits.");
   }
@@ -50,6 +54,12 @@ async function readCurrentForSave(expectedVersion: number): Promise<TimelineData
 }
 
 export async function getTimelineData(): Promise<TimelineData> {
+  // A missing export fails the build; an invalid export fails this read. Never
+  // replace the reviewed content with seed data or an environment's live store.
+  if (isSnapshotContentMode()) {
+    return timelineDataSchema.parse(candidateData) as TimelineData;
+  }
+
   if (!hasBlobStorage()) {
     return timelineDataSchema.parse(seedData) as TimelineData;
   }
@@ -85,6 +95,7 @@ export async function saveGuidingLightNarratives(
 }
 
 async function writeTimelineSnapshot(next: TimelineData): Promise<TimelineData> {
+  assertContentWritable();
   const serialized = JSON.stringify(next);
 
   const snapshot = await put(`${HISTORY_PREFIX}${next.version}.json`, serialized, {

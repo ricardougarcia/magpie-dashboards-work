@@ -17,6 +17,7 @@ import { saveGuidingLightNarratives, saveTimelineData, TimelineVersionConflictEr
 let current: TimelineData;
 let written: TimelineData | null;
 beforeEach(() => {
+  vi.stubEnv("PORTFOLIO_CONTENT_MODE", "live");
   vi.stubEnv("BLOB_READ_WRITE_TOKEN", "test-token");
   vi.clearAllMocks();
   current = structuredClone(seed) as TimelineData;

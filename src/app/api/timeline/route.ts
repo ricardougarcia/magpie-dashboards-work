@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { isEditorAuthenticated } from "@/lib/auth";
+import { isSnapshotContentMode, SNAPSHOT_READ_ONLY_MESSAGE } from "@/lib/content-mode";
 import { guidingLightNarrativesPatchSchema, timelineDataSchema } from "@/lib/timeline-schema";
 import { getTimelineData, saveGuidingLightNarratives, saveTimelineData, TimelineVersionConflictError } from "@/lib/timeline-storage";
 
@@ -16,6 +17,9 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+  if (isSnapshotContentMode()) {
+    return NextResponse.json({ error: SNAPSHOT_READ_ONLY_MESSAGE }, { status: 403 });
+  }
   if (!(await isEditorAuthenticated())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -38,6 +42,9 @@ export async function PUT(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  if (isSnapshotContentMode()) {
+    return NextResponse.json({ error: SNAPSHOT_READ_ONLY_MESSAGE }, { status: 403 });
+  }
   if (!(await isEditorAuthenticated())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { gcmPmfHref } from "@/data/gcm";
+import { PortfolioLink } from "./portfolio-link";
 import base from "./gcm.module.css";
 import styles from "./gcm-companion.module.css";
 
@@ -94,10 +95,10 @@ export function GcmCompanion() {
         {paused ? "Resume connector motion" : "Pause connector motion"}
       </button>
     </div>
-    <a ref={linkRef} href={gcmPmfHref} className={styles.study}>
+    <PortfolioLink ref={linkRef} href={gcmPmfHref} className={styles.study}>
       <span className={styles.thumbnail}><Image src="/portfolio/pmf/market-overview.png" alt="" fill sizes="(max-width: 420px) 86px, 132px" /></span>
       <span className={styles.studyText}><span className={styles.title}>Product Market Fit…<br />with no product</span><span className={base.meta}>Research work sample / SaferData</span></span>
-    </a>
+    </PortfolioLink>
     <svg className={styles.connector} aria-hidden="true" focusable="false">
       <path ref={pathRef} pathLength="1" />
       <circle ref={originRef} r="2" />
