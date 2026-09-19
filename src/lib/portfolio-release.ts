@@ -1,5 +1,5 @@
-export const PORTFOLIO_ORIGIN = "https://ricardougarcia.com";
-export const PORTFOLIO_HOST = "ricardougarcia.com";
+export const PORTFOLIO_HOST = "ricardo-garcia-portfolio.vercel.app";
+export const PORTFOLIO_ORIGIN = `https://${PORTFOLIO_HOST}`;
 
 export const PUBLIC_PORTFOLIO_PATHS = [
   "/theboard",
@@ -29,7 +29,7 @@ export const WIX_ONLY_REDIRECTS: Readonly<Record<string, string>> = {
   "/work/copy-of-marketplace": "/theboard/magpie",
 };
 
-// Existing UAT routes keep rendering until the approved custom-domain launch.
+// Existing UAT routes keep rendering outside the approved production host.
 export const PRODUCTION_LEGACY_REDIRECTS: Readonly<Record<string, string>> = {
   "/drawer": "/theboard",
   "/work/magpie": "/theboard/magpie",
@@ -67,19 +67,16 @@ export function isIndexablePortfolioPage(host: string | null, pathname: string, 
 }
 
 export function portfolioRedirect(host: string | null, pathname: string, env: PortfolioReleaseEnvironment = releaseEnvironment()) {
-  const normalizedHost = host?.toLowerCase();
-  const customDomain = publicLaunchEnabled(env)
-    && (normalizedHost === PORTFOLIO_HOST || normalizedHost === `www.${PORTFOLIO_HOST}`);
+  const productionHost = isPublicPortfolioHost(host, env);
   const explicitDestination = WIX_ONLY_REDIRECTS[pathname]
-    ?? (customDomain ? PRODUCTION_LEGACY_REDIRECTS[pathname] : undefined);
+    ?? (productionHost ? PRODUCTION_LEGACY_REDIRECTS[pathname] : undefined);
   // This decision is intentionally separate from search launch and defaults OFF.
-  const rootDestination = customDomain && pathname === "/" && env.PORTFOLIO_ROOT_REDIRECT === "theboard"
+  const rootDestination = productionHost && pathname === "/" && env.PORTFOLIO_ROOT_REDIRECT === "theboard"
     ? "/theboard"
     : undefined;
-  const canonicalHostRedirect = customDomain && normalizedHost === `www.${PORTFOLIO_HOST}`;
-  if (!explicitDestination && !rootDestination && !canonicalHostRedirect) return null;
+  if (!explicitDestination && !rootDestination) return null;
   return {
     pathname: explicitDestination ?? rootDestination ?? pathname,
-    canonicalOrigin: customDomain ? PORTFOLIO_ORIGIN : null,
+    canonicalOrigin: productionHost ? PORTFOLIO_ORIGIN : null,
   };
 }
