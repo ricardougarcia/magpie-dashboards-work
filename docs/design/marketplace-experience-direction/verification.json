@@ -1,0 +1,286 @@
+{
+  "errors": [],
+  "widths": {
+    "320": {
+      "width": 320,
+      "scrollWidth": 320,
+      "images": true,
+      "missingAnchors": 0
+    },
+    "390": {
+      "width": 390,
+      "scrollWidth": 390,
+      "images": true,
+      "missingAnchors": 0
+    },
+    "820": {
+      "width": 820,
+      "scrollWidth": 820,
+      "images": true,
+      "missingAnchors": 0
+    },
+    "1440": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "images": true,
+      "missingAnchors": 0
+    }
+  },
+  "states": [
+    {
+      "width": 1440,
+      "kind": "index",
+      "state": "0",
+      "active": "0",
+      "focusable": 1
+    },
+    {
+      "width": 1440,
+      "kind": "index",
+      "state": "1",
+      "active": "1",
+      "focusable": 1
+    },
+    {
+      "width": 1440,
+      "kind": "index",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    },
+    {
+      "width": 1440,
+      "kind": "proof",
+      "state": "0",
+      "active": "0",
+      "focusable": 1
+    },
+    {
+      "width": 1440,
+      "kind": "proof",
+      "state": "1",
+      "active": "1",
+      "focusable": 1
+    },
+    {
+      "width": 1440,
+      "kind": "proof",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    },
+    {
+      "width": 1440,
+      "kind": "confluence",
+      "state": "0",
+      "active": "0",
+      "focusable": 3
+    },
+    {
+      "width": 1440,
+      "kind": "confluence",
+      "state": "1",
+      "active": "1",
+      "focusable": 3
+    },
+    {
+      "width": 1440,
+      "kind": "confluence",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    },
+    {
+      "width": 820,
+      "kind": "index",
+      "state": "0",
+      "active": "0",
+      "focusable": 1
+    },
+    {
+      "width": 820,
+      "kind": "index",
+      "state": "1",
+      "active": "1",
+      "focusable": 1
+    },
+    {
+      "width": 820,
+      "kind": "index",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    },
+    {
+      "width": 820,
+      "kind": "proof",
+      "state": "0",
+      "active": "0",
+      "focusable": 1
+    },
+    {
+      "width": 820,
+      "kind": "proof",
+      "state": "1",
+      "active": "1",
+      "focusable": 1
+    },
+    {
+      "width": 820,
+      "kind": "proof",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    },
+    {
+      "width": 820,
+      "kind": "confluence",
+      "state": "0",
+      "active": "0",
+      "focusable": 3
+    },
+    {
+      "width": 820,
+      "kind": "confluence",
+      "state": "1",
+      "active": "1",
+      "focusable": 3
+    },
+    {
+      "width": 820,
+      "kind": "confluence",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    },
+    {
+      "width": 390,
+      "kind": "index",
+      "state": "0",
+      "active": "0",
+      "focusable": 1
+    },
+    {
+      "width": 390,
+      "kind": "index",
+      "state": "1",
+      "active": "1",
+      "focusable": 1
+    },
+    {
+      "width": 390,
+      "kind": "index",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    },
+    {
+      "width": 390,
+      "kind": "proof",
+      "state": "0",
+      "active": "0",
+      "focusable": 1
+    },
+    {
+      "width": 390,
+      "kind": "proof",
+      "state": "1",
+      "active": "1",
+      "focusable": 1
+    },
+    {
+      "width": 390,
+      "kind": "proof",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    },
+    {
+      "width": 390,
+      "kind": "confluence",
+      "state": "0",
+      "active": "0",
+      "focusable": 3
+    },
+    {
+      "width": 390,
+      "kind": "confluence",
+      "state": "1",
+      "active": "1",
+      "focusable": 3
+    },
+    {
+      "width": 390,
+      "kind": "confluence",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    },
+    {
+      "width": 320,
+      "kind": "index",
+      "state": "0",
+      "active": "0",
+      "focusable": 1
+    },
+    {
+      "width": 320,
+      "kind": "index",
+      "state": "1",
+      "active": "1",
+      "focusable": 1
+    },
+    {
+      "width": 320,
+      "kind": "index",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    },
+    {
+      "width": 320,
+      "kind": "proof",
+      "state": "0",
+      "active": "0",
+      "focusable": 1
+    },
+    {
+      "width": 320,
+      "kind": "proof",
+      "state": "1",
+      "active": "1",
+      "focusable": 1
+    },
+    {
+      "width": 320,
+      "kind": "proof",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    },
+    {
+      "width": 320,
+      "kind": "confluence",
+      "state": "0",
+      "active": "0",
+      "focusable": 3
+    },
+    {
+      "width": 320,
+      "kind": "confluence",
+      "state": "1",
+      "active": "1",
+      "focusable": 3
+    },
+    {
+      "width": 320,
+      "kind": "confluence",
+      "state": "2",
+      "active": "2",
+      "focusable": 1
+    }
+  ],
+  "reducedMotion": "0s",
+  "keyboard": true,
+  "pass": true
+}

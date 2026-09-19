@@ -1,0 +1,428 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-12T17:10:59.500951+00:00",
+  "title": "Design System: Rico Garcia Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "oklch(95.2011% 0.008270 91.4843)",
+        "tonalRamp": [
+          "oklch(15.000% 0.008270 91.4843)",
+          "oklch(26.429% 0.008270 91.4843)",
+          "oklch(37.857% 0.008270 91.4843)",
+          "oklch(49.286% 0.008270 91.4843)",
+          "oklch(60.714% 0.008270 91.4843)",
+          "oklch(72.143% 0.008270 91.4843)",
+          "oklch(83.571% 0.008270 91.4843)",
+          "oklch(95.000% 0.008270 91.4843)"
+        ]
+      },
+      "paper-raised": {
+        "role": "neutral",
+        "displayName": "Paper Raised",
+        "canonical": "oklch(97.3297% 0.006963 88.6423)",
+        "tonalRamp": [
+          "oklch(15.000% 0.006963 88.6423)",
+          "oklch(26.429% 0.006963 88.6423)",
+          "oklch(37.857% 0.006963 88.6423)",
+          "oklch(49.286% 0.006963 88.6423)",
+          "oklch(60.714% 0.006963 88.6423)",
+          "oklch(72.143% 0.006963 88.6423)",
+          "oklch(83.571% 0.006963 88.6423)",
+          "oklch(95.000% 0.006963 88.6423)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(27.6848% 0.000000 89.8756)",
+        "tonalRamp": [
+          "oklch(15.000% 0.000000 89.8756)",
+          "oklch(26.429% 0.000000 89.8756)",
+          "oklch(37.857% 0.000000 89.8756)",
+          "oklch(49.286% 0.000000 89.8756)",
+          "oklch(60.714% 0.000000 89.8756)",
+          "oklch(72.143% 0.000000 89.8756)",
+          "oklch(83.571% 0.000000 89.8756)",
+          "oklch(95.000% 0.000000 89.8756)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "oklch(52.3305% 0.009312 99.0107)",
+        "tonalRamp": [
+          "oklch(15.000% 0.009312 99.0107)",
+          "oklch(26.429% 0.009312 99.0107)",
+          "oklch(37.857% 0.009312 99.0107)",
+          "oklch(49.286% 0.009312 99.0107)",
+          "oklch(60.714% 0.009312 99.0107)",
+          "oklch(72.143% 0.009312 99.0107)",
+          "oklch(83.571% 0.009312 99.0107)",
+          "oklch(95.000% 0.009312 99.0107)"
+        ]
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Signal",
+        "canonical": "oklch(59.3733% 0.185211 31.4573)",
+        "tonalRamp": [
+          "oklch(15.000% 0.185211 31.4573)",
+          "oklch(26.429% 0.185211 31.4573)",
+          "oklch(37.857% 0.185211 31.4573)",
+          "oklch(49.286% 0.185211 31.4573)",
+          "oklch(60.714% 0.185211 31.4573)",
+          "oklch(72.143% 0.185211 31.4573)",
+          "oklch(83.571% 0.185211 31.4573)",
+          "oklch(95.000% 0.185211 31.4573)"
+        ]
+      },
+      "signal-text": {
+        "role": "primary",
+        "displayName": "Signal Text",
+        "canonical": "oklch(54.3724% 0.166369 31.3210)",
+        "tonalRamp": [
+          "oklch(15.000% 0.166369 31.3210)",
+          "oklch(26.429% 0.166369 31.3210)",
+          "oklch(37.857% 0.166369 31.3210)",
+          "oklch(49.286% 0.166369 31.3210)",
+          "oklch(60.714% 0.166369 31.3210)",
+          "oklch(72.143% 0.166369 31.3210)",
+          "oklch(83.571% 0.166369 31.3210)",
+          "oklch(95.000% 0.166369 31.3210)"
+        ]
+      },
+      "magpie-graphite": {
+        "role": "neutral",
+        "displayName": "Magpie Graphite",
+        "canonical": "oklch(28.1231% 0.005605 156.8544)",
+        "tonalRamp": [
+          "oklch(15.000% 0.005605 156.8544)",
+          "oklch(26.429% 0.005605 156.8544)",
+          "oklch(37.857% 0.005605 156.8544)",
+          "oklch(49.286% 0.005605 156.8544)",
+          "oklch(60.714% 0.005605 156.8544)",
+          "oklch(72.143% 0.005605 156.8544)",
+          "oklch(83.571% 0.005605 156.8544)",
+          "oklch(95.000% 0.005605 156.8544)"
+        ]
+      },
+      "ink-residue": {
+        "role": "neutral",
+        "displayName": "Ink Residue",
+        "canonical": "oklch(87.2390% 0.006884 97.3645)",
+        "tonalRamp": [
+          "oklch(15.000% 0.006884 97.3645)",
+          "oklch(26.429% 0.006884 97.3645)",
+          "oklch(37.857% 0.006884 97.3645)",
+          "oklch(49.286% 0.006884 97.3645)",
+          "oklch(60.714% 0.006884 97.3645)",
+          "oklch(72.143% 0.006884 97.3645)",
+          "oklch(83.571% 0.006884 97.3645)",
+          "oklch(95.000% 0.006884 97.3645)"
+        ]
+      },
+      "portfolio-line": {
+        "role": "neutral",
+        "displayName": "Portfolio Line",
+        "canonical": "oklch(27.6848% 0.000000 89.8756 / 0.16)",
+        "tonalRamp": [
+          "oklch(15.000% 0.000000 89.8756 / 0.16)",
+          "oklch(26.429% 0.000000 89.8756 / 0.16)",
+          "oklch(37.857% 0.000000 89.8756 / 0.16)",
+          "oklch(49.286% 0.000000 89.8756 / 0.16)",
+          "oklch(60.714% 0.000000 89.8756 / 0.16)",
+          "oklch(72.143% 0.000000 89.8756 / 0.16)",
+          "oklch(83.571% 0.000000 89.8756 / 0.16)",
+          "oklch(95.000% 0.000000 89.8756 / 0.16)"
+        ]
+      },
+      "portfolio-line-strong": {
+        "role": "neutral",
+        "displayName": "Portfolio Line Strong",
+        "canonical": "oklch(27.6848% 0.000000 89.8756 / 0.36)",
+        "tonalRamp": [
+          "oklch(15.000% 0.000000 89.8756 / 0.36)",
+          "oklch(26.429% 0.000000 89.8756 / 0.36)",
+          "oklch(37.857% 0.000000 89.8756 / 0.36)",
+          "oklch(49.286% 0.000000 89.8756 / 0.36)",
+          "oklch(60.714% 0.000000 89.8756 / 0.36)",
+          "oklch(72.143% 0.000000 89.8756 / 0.36)",
+          "oklch(83.571% 0.000000 89.8756 / 0.36)",
+          "oklch(95.000% 0.000000 89.8756 / 0.36)"
+        ]
+      },
+      "global-line": {
+        "role": "neutral",
+        "displayName": "Global Line",
+        "canonical": "oklch(27.6848% 0.000000 89.8756 / 0.18)",
+        "tonalRamp": [
+          "oklch(15.000% 0.000000 89.8756 / 0.18)",
+          "oklch(26.429% 0.000000 89.8756 / 0.18)",
+          "oklch(37.857% 0.000000 89.8756 / 0.18)",
+          "oklch(49.286% 0.000000 89.8756 / 0.18)",
+          "oklch(60.714% 0.000000 89.8756 / 0.18)",
+          "oklch(72.143% 0.000000 89.8756 / 0.18)",
+          "oklch(83.571% 0.000000 89.8756 / 0.18)",
+          "oklch(95.000% 0.000000 89.8756 / 0.18)"
+        ]
+      },
+      "global-line-strong": {
+        "role": "neutral",
+        "displayName": "Global Line Strong",
+        "canonical": "oklch(27.6848% 0.000000 89.8756 / 0.42)",
+        "tonalRamp": [
+          "oklch(15.000% 0.000000 89.8756 / 0.42)",
+          "oklch(26.429% 0.000000 89.8756 / 0.42)",
+          "oklch(37.857% 0.000000 89.8756 / 0.42)",
+          "oklch(49.286% 0.000000 89.8756 / 0.42)",
+          "oklch(60.714% 0.000000 89.8756 / 0.42)",
+          "oklch(72.143% 0.000000 89.8756 / 0.42)",
+          "oklch(83.571% 0.000000 89.8756 / 0.42)",
+          "oklch(95.000% 0.000000 89.8756 / 0.42)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "project-display": {
+        "displayName": "Project display",
+        "purpose": "CCP/general Project hero, not Magpie display."
+      },
+      "project-heading": {
+        "displayName": "Project heading",
+        "purpose": "Approved general Project section headline."
+      },
+      "project-prose": {
+        "displayName": "Project prose",
+        "purpose": "General Project reading/detail body, not every caption."
+      },
+      "label": {
+        "displayName": "Portfolio label",
+        "purpose": "Portfolio metadata; component .045em and cursor tracking overrides are intentional."
+      },
+      "coordinate": {
+        "displayName": "Viewport coordinates",
+        "purpose": "Shared CoordinateCursor only."
+      },
+      "magpie-display": {
+        "displayName": "Magpie display",
+        "purpose": "Original Magpie hero, retains weight670."
+      }
+    },
+    "shadows": [
+      {
+        "name": "magpie-timeline-hover",
+        "value": "inset 3px 0 0 var(--item-color), 0 5px 12px rgba(40,40,40,.16)",
+        "purpose": "Magpie timeline hover with -2px lift; requires the item color. Not a Portfolio artifact-mount token."
+      }
+    ],
+    "motion": [
+      {
+        "name": "coordinate-visibility",
+        "value": "140ms ease",
+        "purpose": "F01: opacity only; pointer updates are frame-coalesced, without spring."
+      },
+      {
+        "name": "hero-panel-replacement",
+        "value": "scroll; outgoingSpeed .25; floor .15",
+        "purpose": "F03: geometry-driven, no duration or easing token."
+      },
+      {
+        "name": "board-pixel-enter",
+        "value": "1150ms + 180ms settlement",
+        "purpose": "F04: 1330ms total, per-cell seeded delay and steps preserved."
+      },
+      {
+        "name": "board-pixel-exit",
+        "value": "850ms",
+        "purpose": "F04: full exit, scaled by phase distance; reverse from current state."
+      },
+      {
+        "name": "evidence-trace",
+        "value": "700ms cubic-bezier(.22,1,.36,1)",
+        "purpose": "F06: 2px source-linked B-to-C trace."
+      },
+      {
+        "name": "board-map-scale",
+        "value": "1 + .012 × scrollProgress",
+        "purpose": "F08: max1.012, transform origin50%40%; not viewer zoom."
+      },
+      {
+        "name": "magpie-board-source-trace",
+        "value": "1450ms cubic-bezier(.22,1,.36,1)",
+        "purpose": "F09: Board excerpt entrance only."
+      },
+      {
+        "name": "workflow-map-camera",
+        "value": "900ms cubic-bezier(.22,1,.36,1)",
+        "purpose": "F11: width, left, top and aspect/padding transitions."
+      },
+      {
+        "name": "reading-marker",
+        "value": "420ms cubic-bezier(.22,1,.36,1)",
+        "purpose": "F12: marker position; opacity is220ms ease."
+      },
+      {
+        "name": "ccp-section-takeover",
+        "value": "scroll; upper-third boundary; opacity floor .72",
+        "purpose": "F13: content only, stationary transparent section shells."
+      },
+      {
+        "name": "workflow-traveler",
+        "value": "760ms cubic-bezier(.4,0,.2,1)",
+        "purpose": "F15: normalized .18/.82 dash, explicit replay or first entry."
+      },
+      {
+        "name": "workflow-receiver",
+        "value": "850ms ease",
+        "purpose": "F15: starts420ms after handoff delay; sequencing580ms plus340ms before-flow pause."
+      },
+      {
+        "name": "decision-connection",
+        "value": "520ms cubic-bezier(.22,1,.36,1)",
+        "purpose": "F16: reciprocal graphite connection."
+      },
+      {
+        "name": "original-link-underline",
+        "value": "350ms cubic-bezier(.22,1,.36,1)",
+        "purpose": "F16: width24px to100% on hover/focus."
+      },
+      {
+        "name": "telemetry-aperture-enter",
+        "value": "200ms cubic-bezier(.22,1,.36,1)",
+        "purpose": "F17: aperture entrance; body/media timings remain separate."
+      },
+      {
+        "name": "telemetry-tether",
+        "value": "1700ms cubic-bezier(.22,1,.36,1)",
+        "purpose": "F17: source-to-aperture path; times[0,.6,1]."
+      },
+      {
+        "name": "portfolio-document-transition",
+        "value": "420ms cubic-bezier(.2,.7,.2,1)",
+        "purpose": "F18: opt-in native document transition; ordinary-link fallback."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "board-cluster-columns",
+        "value": "900px"
+      },
+      {
+        "name": "portfolio-narrow",
+        "value": "760px"
+      },
+      {
+        "name": "board-cluster-inner",
+        "value": "540px"
+      },
+      {
+        "name": "board-register-medium",
+        "value": "1050px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Board return link",
+      "kind": "nav",
+      "refersTo": "board-link",
+      "description": "Native Board navigation. Source: portfolio.module.css .boardLink. Document navigation and restore behavior remain F18.",
+      "html": "<a class=\"ds-board-link\" href=\"#board-preview\"><span aria-hidden=\"true\">←</span>Board</a>",
+      "css": ".ds-board-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;text-decoration:none;color:var(--ink,#282828);font:10px/1.6 var(--font-mono, \"Geist Mono\"), monospace;text-transform:uppercase;letter-spacing:.055em;cursor:var(--cursor-action,pointer)}.ds-board-link>span{color:var(--signal,#d6452f);font-size:18px}.ds-board-link:hover{color:var(--signal,#d6452f)}.ds-board-link:focus-visible{outline:2px solid var(--signal,#d6452f);outline-offset:4px;}"
+    },
+    {
+      "name": "Enter work sample",
+      "kind": "nav",
+      "description": "Fine underline and tracking change from region.module.css .enter and .actionVerb. Preview anchor only.",
+      "html": "<a class=\"ds-enter\" href=\"#work-preview\"><span>Customer Created Products</span><span class=\"ds-action\">Enter work sample</span></a>",
+      "css": ".ds-enter{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:10px 0;min-height:44px;color:var(--ink,#282828);font:10px/1.6 var(--font-mono, \"Geist Mono\"), monospace;text-transform:uppercase;letter-spacing:.045em;text-decoration:underline;text-decoration-color:transparent;text-decoration-thickness:1px;text-underline-offset:5px;transition:text-decoration-color 180ms;cursor:var(--cursor-action,pointer)}.ds-enter:is(:hover,:focus-visible){text-decoration-color:var(--ink,#282828)}.ds-enter:focus-visible{outline:2px solid var(--signal,#d6452f);outline-offset:4px;}.ds-action{font:9px/1.5 var(--font-mono, \"Geist Mono\"), monospace;color:var(--muted,#6b6a64);letter-spacing:.04em;transition:letter-spacing 220ms}.ds-enter:is(:hover,:focus-visible) .ds-action{letter-spacing:.09em;color:var(--ink,#282828)}@media(prefers-reduced-motion:reduce){.ds-enter,.ds-action{transition:none}}"
+    },
+    {
+      "name": "Trace workflow control",
+      "kind": "button",
+      "refersTo": "workflow-replay",
+      "description": "Explicit replay button from workflow-trace.module.css. This style sample does not simulate the workflow; see F15.",
+      "html": "<button class=\"ds-replay\" type=\"button\">Trace workflow</button>",
+      "css": ".ds-replay{min-height:44px;border:0;background:none;padding:8px 0;color:var(--muted,#6b6a64);font:10px/1.6 var(--font-mono, \"Geist Mono\"), monospace;cursor:var(--cursor-action,pointer)}.ds-replay:hover{color:var(--ink,#282828)}.ds-replay:focus-visible{outline:2px solid var(--signal,#d6452f);outline-offset:4px;}"
+    },
+    {
+      "name": "Workflow Map view controls",
+      "kind": "button",
+      "refersTo": "map-view-control",
+      "description": "Pinned Overview and preview styling from the final region.module.css overrides. Pin, camera, zoom, and continuous ink require ArtifactViewer and F10–F11.",
+      "html": "<div class=\"ds-map-tabs\" role=\"group\" aria-label=\"Workflow Map views\"><button type=\"button\" aria-pressed=\"true\"><span>Overview</span><span class=\"ds-pin\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-pressed=\"false\"><span>Creation handoff</span><span class=\"ds-pin\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-pressed=\"false\"><span>Matching &amp; merge</span><span class=\"ds-pin\" aria-hidden=\"true\"></span></button></div>",
+      "css": ".ds-map-tabs{display:flex;flex-wrap:wrap;position:relative;isolation:isolate;overflow:hidden;background:var(--paper-raised,#f8f6f1);border-bottom:1px solid rgba(40,40,40,.36);font:10px/1.6 var(--font-mono, \"Geist Mono\"), monospace;letter-spacing:.045em;text-transform:uppercase}.ds-map-tabs button{position:relative;display:inline-flex;align-items:center;gap:10px;min-height:46px;padding:12px 16px;border:0;border-right:1px solid rgba(40,40,40,.16);background:transparent;color:var(--ink,#282828);font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:var(--cursor-action,pointer)}.ds-map-tabs button[aria-pressed=true]{box-shadow:inset 0 -1px var(--signal-text,#bd3e2b)}.ds-map-tabs button>span:first-child{position:relative;z-index:2;color:var(--paper-raised,#f8f6f1);mix-blend-mode:difference}.ds-map-tabs button:is(:hover,:focus-visible){background:rgba(40,40,40,.04)}.ds-map-tabs button:focus-visible{outline:2px solid var(--signal-text,#bd3e2b);outline-offset:-3px}.ds-pin{position:relative;z-index:2;width:3px;height:3px;background:var(--signal-text,#bd3e2b);opacity:0}.ds-map-tabs button[aria-pressed=true] .ds-pin{opacity:1}@media(max-width:760px){.ds-map-tabs button{flex:1;font-size:9px;padding:12px 8px}}"
+    },
+    {
+      "name": "CCP native disclosure",
+      "kind": "custom",
+      "description": "Native details/summary with CCP overrides: leading plus/minus, graphite text, no box. Preview copy identifies this as a control specimen.",
+      "html": "<details class=\"ds-details\"><summary>Read the detail<span class=\"ds-details-mark\" aria-hidden=\"true\"></span></summary><div class=\"ds-detail-body\"><p>Control specimen. The project supplies the actual supporting evidence.</p></div></details>",
+      "css": ".ds-details{margin-top:28px;color:var(--ink,#282828)}.ds-details summary{display:flex;justify-content:flex-start;align-items:center;gap:18px;min-height:58px;padding:16px 0;color:var(--muted,#6b6a64);font:11px/1.6 var(--font-mono, \"Geist Mono\"), monospace;text-transform:uppercase;list-style:none;cursor:var(--cursor-action,pointer)}.ds-details summary::-webkit-details-marker{display:none}.ds-details summary:hover{color:var(--ink,#282828)}.ds-details summary:focus-visible{outline:2px solid var(--signal,#d6452f);outline-offset:4px;}.ds-details-mark{order:-1}.ds-details-mark::after{content:\"+\";font-size:17px;color:var(--muted,#6b6a64)}.ds-details[open] .ds-details-mark::after{content:\"−\"}.ds-detail-body{padding:12px 0 32px;max-width:690px}.ds-detail-body p{color:var(--muted,#6b6a64);font:15px/1.75 var(--font-sans,Geist),Arial,sans-serif}"
+    },
+    {
+      "name": "Coordinate readout typography",
+      "kind": "custom",
+      "description": "Static specimen of the exact stacked, unpadded CoordinateCursor type. The actual fixed position, edge flips, guides, and input behavior are F01; this specimen does not track the pointer.",
+      "html": "<div class=\"ds-coordinate\" aria-label=\"Example viewport coordinates\"><span>X:420PX</span><span>Y:180PX</span></div>",
+      "css": ".ds-coordinate{display:flex;flex-direction:column;align-items:flex-start;gap:1px;color:rgba(40,40,40,.36);font-family:var(--font-mono, \"Geist Mono\"), monospace;font-size:9px;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:-.055em;line-height:1.18;text-transform:uppercase;white-space:nowrap;pointer-events:none}"
+    },
+    {
+      "name": "Original artifact link",
+      "kind": "nav",
+      "description": "CCP source-link underline grows from 24px to full width in 350ms. Source: ccp.module.css. Preview anchor substitutes for the original-file destination.",
+      "html": "<a class=\"ds-original\" href=\"#original-preview\">Open full-size original</a>",
+      "css": ".ds-original{display:table;position:relative;border:0;background:transparent;padding:16px 0 12px;color:var(--ink,#282828);text-decoration:none;font:10px/1.6 var(--font-mono, \"Geist Mono\"), monospace;cursor:var(--cursor-action,pointer)}.ds-original::after{content:\"\";position:absolute;left:0;bottom:9px;height:1px;width:24px;background:var(--graphite,#282828);opacity:.45;transition:width 350ms cubic-bezier(.22,1,.36,1)}.ds-original:is(:hover,:focus-visible)::after{width:100%}.ds-original:focus-visible{outline:2px solid var(--signal,#d6452f);outline-offset:4px;}@media(prefers-reduced-motion:reduce){.ds-original::after{transition:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "An authored Board of product work",
+    "overview": "Use the approved paper, graphite, editorial type, and technical annotation language to make real evidence understandable. Composition should reveal scope and judgment while allowing inspection. Preserve distinctive work samples rather than applying one case-study layout everywhere.\n\nThis is an implementation-derived record of the approved Magpie, Board, and CCP work, through commit `201bae93fdc97c030cd1f06ad4e9cba2ac38bdf6`. Rico confirmed these surfaces are approved during this reconstruction. **EdCo Marketplace design is excluded pending owner review**, even though its newer code exists in UAT. No tokens, motion settings, snippets, or surface rules here are extracted from that unreviewed design.\n\nExact effect contracts live in [Portfolio context v2](docs/portfolio-context.md). The frontmatter records current token roles; it is not permission to standardize every source value. Type roles labeled `project-*` come from the CCP/general Project styles. Magpie keeps its separate display role. Surface briefs own composition and mode.",
+    "keyCharacteristics": [
+      "Genuine artifacts with concise, source-aware annotations.",
+      "Flat paper and precise graphite structure.",
+      "Deliberately different Project signatures.",
+      "Named interactions with preserved timing, geometry, and interruption behavior.",
+      "Native scrolling and navigation with explicit inspection controls."
+    ],
+    "rules": [
+      {
+        "name": "The Scope Rule",
+        "body": "A token or color used by one component does not automatically become a Portfolio-wide rule. Magpie's lane acquisition still settles to `#171917`; its sampled tones and the Board's dissolve use a different palette. See F04–F05 before changing either.",
+        "section": "colors"
+      },
+      {
+        "name": "The Role Rule",
+        "body": "Vary size and weight within the established Sans/Mono roles to create hierarchy. Do not introduce a new type family merely to make another Project different. Preserve unpadded `X:…PX` and `Y:…PX` viewport labels; padded Sheet coordinates are a separate instrument.",
+        "section": "typography"
+      },
+      {
+        "name": "The Evidence Rule",
+        "body": "Keep source images readable and use normalized crop geometry to connect a detail to its original. A full-size original must remain reachable. Do not reinterpret a source-linked detail as an unrelated image or draw a connection without evidence.",
+        "section": "layout"
+      },
+      {
+        "name": "The Material Rule",
+        "body": "Preserve original image pixels. Use an external backing, mount, crop, or annotation to explain them. Avoid fake wear, torn edges, scrapbook effects, or decorative motion that competes with evidence.",
+        "section": "elevation & depth"
+      }
+    ],
+    "dos": [
+      "Do preserve each named behavior's trigger, geometry, timing, interruption, and fallback together.",
+      "Do keep source artifacts and essential explanations readable before an entrance animation.",
+      "Do use shared identity while letting approved Project compositions differ.",
+      "Do preserve keyboard, touch, visible focus, native scrolling, and reduced-motion alternatives.",
+      "Do record superseded decisions and distinguish owner approval from code presence."
+    ],
+    "donts": [
+      "Don't extract reusable design guidance from unreviewed EdCo Marketplace work.",
+      "Don't collapse different effects into one “subtle animation” or “parallax” preset.",
+      "Don't restore the removed Board title block, pale pixel wash, or CCP's rejected staggered alignment.",
+      "Don't add Miro-style pan/zoom, decorative arrows everywhere, or an empty boot state.",
+      "Don't fabricate evidence, treat historical tests as a new pass, or promote production without the owner's release request."
+    ]
+  }
+}
