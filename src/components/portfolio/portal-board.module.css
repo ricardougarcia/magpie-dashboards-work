@@ -1,0 +1,58 @@
+.artifacts { position: relative; padding-top: 4px; }
+.cluster .preview { display: block; padding: 26px 20px 0; color: var(--paper); background: var(--graphite); background-image: linear-gradient(rgba(241, 239, 233, .045) 1px, transparent 1px), linear-gradient(90deg, rgba(241, 239, 233, .045) 1px, transparent 1px); background-size: 28px 28px; text-decoration: none; }
+.connections { width: 100%; }
+.destinations { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: end; gap: 10px; color: var(--paper); font: 500 clamp(10px, 1vw, 13px)/1.4 var(--font-sans), sans-serif; text-align: center; }
+.route { display: block; width: 100%; height: 62px; margin-top: 8px; overflow: visible; }
+.route line { fill: none; stroke-width: inherit; }
+.routeBase { stroke: rgba(241, 239, 233, .4); }
+.routeInk { stroke: var(--signal); stroke-width: 1; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 450ms ease, stroke-width 450ms ease; }
+.route circle { fill: var(--paper); transform-box: fill-box; transform-origin: center; transition: fill 360ms ease, transform 360ms cubic-bezier(.16, 1, .3, 1); }
+.productStage { position: relative; isolation: isolate; padding-bottom: 44px; }
+.supportingSheet { position: absolute; z-index: -1; top: 20px; bottom: 28px; display: flex; flex-direction: column; width: 64%; padding: 5px; color: var(--graphite); background: var(--paper-raised); opacity: 0; transform: translateY(-10px) scale(.94); transition: transform 650ms cubic-bezier(.16, 1, .3, 1), opacity 320ms ease; }
+.integrations { left: 10%; z-index: 0; transform-origin: 65% 30%; }
+.evidence { right: 10%; transform-origin: 35% 30%; }
+.sheetImage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.sheetImage img { object-fit: cover; object-position: top left; }
+.sheetLabels { position: absolute; z-index: 2; inset: auto 6% 9px; display: flex; justify-content: space-between; gap: 12px; opacity: 0; transform: translateY(-4px); transition: opacity 260ms, transform 400ms; pointer-events: none; font: 500 11px/1.4 var(--font-sans), sans-serif; color: var(--graphite); }
+.sheetLabels > span { padding: 4px 6px; background: var(--paper-raised); }
+.product { position: relative; z-index: 1; width: 88%; margin-inline: auto; padding: 6px; background: var(--paper-raised); transition: transform 650ms cubic-bezier(.16, 1, .3, 1), box-shadow 650ms ease; }
+.productLabel { display: flex; justify-content: space-between; gap: 12px; padding: 6px 4px 11px; color: var(--graphite); font: 500 10px/1.4 var(--font-sans), sans-serif; }
+.productLabel > span:last-child { font-weight: 400; }
+.product img { display: block; width: 100%; height: auto; }
+.caption { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 18px; min-height: 58px; padding-block: 16px; color: #cbc8c0; font: 10px/1.5 var(--font-mono), monospace; }
+.caption > span:last-child { color: var(--paper); }
+.cluster[data-preview-active="true"] .product { transform: translateY(-10px) scale(1.015); box-shadow: 0 14px 24px rgba(0, 0, 0, .24); transition-duration: 900ms; }
+.cluster[data-preview-active="true"] .supportingSheet { opacity: 1; transition-duration: 1100ms, 450ms; transition-delay: 140ms, 80ms; }
+.cluster[data-preview-active="true"] .sheetLabels { opacity: 1; transform: none; transition-delay: 650ms; }
+.cluster[data-preview-active="true"] .integrations { transform: translate(-7%, 20px) rotate(-5deg); }
+.cluster[data-preview-active="true"] .evidence { transform: translate(7%, 20px) rotate(5deg); }
+.cluster[data-preview-active="true"] .routeInk { stroke-dashoffset: 0; stroke-width: 1.5; transition: stroke-dashoffset 1600ms cubic-bezier(.16, 1, .3, 1) 700ms, stroke-width 360ms ease 700ms; }
+.cluster[data-preview-active="true"] .route circle { fill: var(--signal); transform: scale(1.65); transition-delay: 2300ms; }
+.preview:is(:hover, :focus-visible) .caption > span:last-child { text-decoration: underline; text-underline-offset: 4px; }
+.previewToggle { display: flex; align-items: center; gap: 7px; min-height: 44px; margin: 4px 0 0 auto; padding: 8px 0; border: 0; color: var(--graphite); background: transparent; font: 10px/1.4 var(--font-mono), monospace; cursor: pointer; }
+.previewToggle:hover { text-decoration: underline; text-underline-offset: 4px; }
+.previewToggle:focus-visible { outline: 2px solid var(--signal); outline-offset: 4px; }
+@media (max-width: 540px) {
+  .cluster .preview { padding-inline: 12px; }
+  .destinations { gap: 5px; font-size: 11px; }
+  .product { width: 96%; }
+  .productStage { padding-bottom: 40px; }
+  .supportingSheet { width: 66%; bottom: 25px; }
+  .sheetLabels { inset-inline: 8%; bottom: 8px; font-size: 10px; }
+  .cluster[data-preview-active="true"] .product { transform: translateY(-8px); }
+  .cluster[data-preview-active="true"] .integrations { transform: translate(-7%, 17px) rotate(-4deg); }
+  .cluster[data-preview-active="true"] .evidence { transform: translate(7%, 17px) rotate(4deg); }
+  .productLabel { font-size: 9px; }
+  .caption { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cluster[data-preview-active] .product, .cluster[data-preview-active] .supportingSheet, .cluster[data-preview-active] .routeInk, .cluster[data-preview-active] .route circle, .cluster[data-preview-active] .sheetLabels { transition: none; }
+  .product { transform: none; }
+  .supportingSheet { opacity: 1; }
+  .sheetLabels { opacity: 1; transform: none; }
+  .integrations, .cluster[data-preview-active="true"] .integrations { transform: translate(-7%, 17px) rotate(-4deg); }
+  .evidence, .cluster[data-preview-active="true"] .evidence { transform: translate(7%, 17px) rotate(4deg); }
+  .routeInk { stroke-dashoffset: 0; stroke-width: 1.5; }
+  .route circle { fill: var(--signal); transform: scale(1.65); }
+  .cluster[data-preview-active="true"] .product { transform: none; box-shadow: none; }
+}

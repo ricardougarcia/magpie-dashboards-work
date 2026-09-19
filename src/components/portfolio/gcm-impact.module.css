@@ -1,0 +1,11 @@
+.field { position: relative; isolation: isolate; overflow: clip; }
+.field[data-ink-ready="true"] {
+  background: linear-gradient(rgba(40, 40, 40, .018) 1px, transparent 1px), linear-gradient(90deg, rgba(40, 40, 40, .018) 1px, transparent 1px), var(--paper);
+  background-size: 28px 28px;
+  background-position: var(--gcm-ink-grid-x) var(--gcm-ink-grid-y);
+}
+.ink { position: absolute; z-index: 2; left: 0; top: 0; width: 320px; height: 320px; pointer-events: none; mix-blend-mode: difference; }
+.field > :is(p, h2, dl) { position: relative; z-index: 1; }
+.field > p, .field dt { color: color-mix(in srgb, var(--muted) 80%, var(--ink)); }
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) { .ink { display: none; } }
+@media print { .ink { display: none; } }

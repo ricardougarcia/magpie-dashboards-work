@@ -6,6 +6,7 @@ import { reverseConnectorRoute } from "@/lib/connector-parity";
 import { resolveConnectorPoints, routeFromPixelPoints } from "@/lib/orthogonal-connectors";
 import { readMediaDimensions } from "@/lib/media-dimensions.client";
 import type { TimelineData } from "@/lib/timeline-types";
+import { resolveGuidingLightNarratives } from "@/lib/guiding-light-narratives";
 
 vi.mock("@vercel/blob/client", () => ({ upload: vi.fn() }));
 vi.mock("@/lib/media-dimensions.client", () => ({ readMediaDimensions: vi.fn() }));
@@ -125,6 +126,78 @@ afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
+});
+
+describe("TimelineEditor Guiding Light narrative drafts", () => {
+  function openNarratives() {
+    fireEvent.click(screen.getByText("Guiding Light narratives"));
+  }
+
+  it("keeps drafts for each principle and saves narrative-only edits without sending Gantt items", async () => {
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      const body = JSON.parse(String(init?.body));
+      return new Response(JSON.stringify({ ...data, version: data.version + 1, guidingLightNarratives: body.guidingLightNarratives }), { status: 200 });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    render(<TimelineEditor initialData={data} />);
+    openNarratives();
+    fireEvent.change(screen.getByRole("textbox", { name: "Heading" }), { target: { value: "Learn draft" } });
+    fireEvent.click(screen.getByRole("button", { name: "05 Grow" }));
+    fireEvent.change(screen.getByRole("textbox", { name: "Sole contributor" }), { target: { value: "Grow contribution draft" } });
+    fireEvent.click(screen.getByRole("button", { name: "01 Learn" }));
+    expect((screen.getByRole("textbox", { name: "Heading" }) as HTMLInputElement).value).toBe("Learn draft");
+    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await waitFor(() => expect(screen.getByText("Saved to Vercel Blob.")).toBeTruthy());
+    const init = fetchMock.mock.calls[0][1]!;
+    const sent = JSON.parse(String(init.body));
+    expect(init.method).toBe("PATCH");
+    expect(sent.expectedVersion).toBe(data.version);
+    expect(sent.items).toBeUndefined();
+    expect(sent.guidingLightNarratives.Learn.heading).toBe("Learn draft");
+    expect(sent.guidingLightNarratives.Grow.soleContributor).toBe("Grow contribution draft");
+  });
+
+  it("saves item and narrative edits together without losing either draft", async () => {
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => new Response(String(init?.body), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<TimelineEditor initialData={data} />);
+    fireEvent.change(screen.getByRole("textbox", { name: "Item name" }), { target: { value: "Edited item" } });
+    openNarratives();
+    fireEvent.change(screen.getByRole("textbox", { name: "Narrative" }), { target: { value: "Edited introduction" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await waitFor(() => expect(screen.getByText("Saved to Vercel Blob.")).toBeTruthy());
+    const init = fetchMock.mock.calls[0][1]!;
+    const sent = JSON.parse(String(init.body));
+    expect(init.method).toBe("PUT");
+    expect(sent.items[0].name).toBe("Edited item");
+    expect(sent.guidingLightNarratives.Learn.narrative).toBe("Edited introduction");
+  });
+
+  it("retains the owner's draft when a stale save is rejected", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ error: "A newer timeline exists." }), { status: 409 })));
+    render(<TimelineEditor initialData={data} />);
+    openNarratives();
+    fireEvent.change(screen.getByRole("textbox", { name: "Heading" }), { target: { value: "Keep this draft" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await waitFor(() => expect(screen.getByText("A newer timeline exists.")).toBeTruthy());
+    expect((screen.getByRole("textbox", { name: "Heading" }) as HTMLInputElement).value).toBe("Keep this draft");
+    expect(screen.getByText("Unsaved changes")).toBeTruthy();
+  });
+
+  it("retains edits made while an earlier narrative save is pending", async () => {
+    let finishSave: (response: Response) => void = () => {};
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>((resolve) => { finishSave = resolve; })));
+    render(<TimelineEditor initialData={data} />);
+    openNarratives();
+    fireEvent.change(screen.getByRole("textbox", { name: "Heading" }), { target: { value: "Submitted heading" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    fireEvent.change(screen.getByRole("textbox", { name: "Heading" }), { target: { value: "Newer draft heading" } });
+    const savedNarratives = resolveGuidingLightNarratives();
+    savedNarratives.Learn.heading = "Submitted heading";
+    await act(async () => finishSave(new Response(JSON.stringify({ ...data, version: data.version + 1, guidingLightNarratives: savedNarratives }), { status: 200 })));
+    expect((screen.getByRole("textbox", { name: "Heading" }) as HTMLInputElement).value).toBe("Newer draft heading");
+    expect(screen.getByText("Unsaved changes")).toBeTruthy();
+  });
 });
 
 describe("TimelineEditor orthogonal connector workflow", () => {

@@ -1,0 +1,56 @@
+.panel {
+  margin: 18px 24px;
+  border: 1px solid var(--line, #cbc8c0);
+  background: var(--paper-raised, #f8f6f1);
+}
+
+.panel summary {
+  padding: 17px 20px;
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.panel summary span {
+  margin-left: 12px;
+  color: var(--muted, #6b6a64);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.content { padding: 0 20px 20px; }
+.lights { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 20px; }
+.lights button {
+  padding: 10px 15px;
+  min-height: 44px;
+  border: 1px solid var(--line, #cbc8c0);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.lights button span { font-family: var(--font-geist-mono), monospace; font-size: 11px; }
+.lights button[aria-pressed="true"] { color: #f8f6f1; background: #282828; border-color: #282828; }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; border: 0; padding: 0; min-width: 0; }
+.fields legend { margin-bottom: 12px; font-weight: 650; }
+.fields label { display: grid; gap: 7px; font-size: 12px; }
+.fields label:first-of-type { grid-column: 1 / -1; }
+.fields input, .fields textarea { width: 100%; padding: 10px; border: 1px solid var(--line, #cbc8c0); background: #fffdf8; color: #282828; font: inherit; font-size: 14px; line-height: 1.5; border-radius: 0; }
+.fields textarea { resize: vertical; }
+.content p { margin: 14px 0 0; color: var(--muted, #6b6a64); font-size: 12px; }
+.panel :is(button, input, textarea, summary):focus-visible { outline: 2px solid #bd3e2b; outline-offset: 3px; }
+
+@media (max-width: 960px) {
+  .panel[open] + :global(.editor-layout) :global(.editor-inspector) {
+    position: static;
+    height: auto;
+    box-shadow: none;
+  }
+  .panel[open] + :global(.editor-layout) :global(.inspector-scroll) { height: auto; }
+  .panel[open] + :global(.editor-layout) :global(.editor-board) { padding-bottom: 0; }
+}
+
+@media (max-width: 650px) {
+  .panel { margin: 12px; }
+  .panel summary span { display: block; margin: 6px 0 0; }
+  .fields { grid-template-columns: 1fr; }
+  .content { padding: 0 14px 16px; }
+}

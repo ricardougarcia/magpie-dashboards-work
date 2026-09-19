@@ -1,0 +1,98 @@
+"use client";
+
+import Image from "next/image";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { Artifact } from "@/lib/portfolio-types";
+import { GuidingLightInkTrail } from "@/components/guiding-light-ink-trail";
+import styles from "./region.module.css";
+
+export function ArtifactCrop({ artifact, detail, magnification = 1 }: { artifact: Artifact; detail: NonNullable<Artifact["details"]>[number]; magnification?: number }) {
+  const { x, y, width, height } = detail.crop;
+  return <div className={styles.crop} style={{ aspectRatio: `${artifact.width * width} / ${artifact.height * height}` }}>
+    <Image src={artifact.src} alt={`${detail.label}: ${detail.caption}`} width={artifact.width} height={artifact.height} sizes={`(max-width: 760px) ${250 * magnification}vw, ${2400 * magnification}px`} style={{ width: `${100 / width}%`, maxWidth: "none", left: `${-100 * x / width}%`, top: `${-100 * y / height}%` }} />
+  </div>;
+}
+
+export function ArtifactViewer({ artifact }: { artifact: Artifact }) {
+  const [pinnedId, setPinnedId] = useState<string | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null | undefined>(undefined);
+  const [focusedId, setFocusedId] = useState<string | null | undefined>(undefined);
+  const [reducedMotion, setReducedMotion] = useState(true);
+  const tabs = useRef<HTMLDivElement>(null);
+  const detailId = focusedId !== undefined ? focusedId : hoveredId !== undefined ? hoveredId : pinnedId;
+  const [zoom, setZoom] = useState(1);
+  const viewport = useRef<HTMLDivElement>(null);
+  const detail = artifact.details?.find((entry) => entry.id === detailId);
+  const crop = detail?.crop ?? { x: 0, y: 0, width: 1, height: 1 };
+  const ratio = artifact.width * crop.width / (artifact.height * crop.height);
+  const viewportId = `${artifact.id}-viewport`;
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(preference.matches);
+    update(); preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
+  useLayoutEffect(() => {
+    if (viewport.current) {
+      viewport.current.scrollLeft = (viewport.current.scrollWidth - viewport.current.clientWidth) / 2;
+      viewport.current.scrollTop = 0;
+    }
+  }, [zoom, detailId]);
+  useEffect(() => {
+    const settle = () => {
+      const moving = viewport.current?.getAnimations?.({ subtree: true }).filter((animation) => animation.playState === "running") ?? [];
+      moving.forEach((animation) => animation.finish());
+      return moving.length > 0;
+    };
+    // Finish before native anchor navigation measures the destination, including
+    // selecting the same hash again. Modified clicks keep their browser behavior.
+    const beforeNavigation = (event: MouseEvent) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+      const href = event.target instanceof Element ? event.target.closest("a")?.getAttribute("href") : null;
+      if (href?.startsWith("#") && document.getElementById(href.slice(1))) settle();
+    };
+    const settleForNavigation = () => {
+      const target = document.getElementById(window.location.hash.slice(1));
+      if (target && settle()) target.scrollIntoView({ behavior: "instant", block: "start" });
+    };
+    document.addEventListener("click", beforeNavigation, true);
+    window.addEventListener("hashchange", settleForNavigation);
+    return () => {
+      document.removeEventListener("click", beforeNavigation, true);
+      window.removeEventListener("hashchange", settleForNavigation);
+    };
+  }, []);
+  const selectView = (id: string | null) => { setPinnedId(id); setFocusedId(undefined); setHoveredId(undefined); setZoom(1); };
+  const preview = (id: string | null) => { setHoveredId(id); setZoom(1); };
+  const views = [{ id: null, label: "Overview" }, ...(artifact.details ?? []).map(({ id, label }) => ({ id, label }))];
+  return <div className={styles.viewer} data-artifact-viewer data-map-view={detailId ?? "overview"} data-pinned-view={pinnedId ?? "overview"}>
+    <div ref={tabs} className={styles.viewerControls} data-map-tabs role="group" aria-label={`${artifact.label} views`} onPointerLeave={(event) => { if (event.pointerType !== "touch") setHoveredId(undefined); }} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocusedId(undefined); }}>
+      <GuidingLightInkTrail trackRef={tabs} disabled={reducedMotion} coreColor="#282828" />
+      {views.map((entry) => <button key={entry.id ?? "overview"} type="button" aria-pressed={pinnedId === entry.id} data-preview={detailId === entry.id} aria-controls={viewportId}
+        onPointerEnter={(event) => { if (event.pointerType !== "touch") preview(entry.id); }}
+        onFocus={(event) => { if (event.currentTarget.matches(":focus-visible")) { setFocusedId(entry.id); setZoom(1); } }}
+        onBlur={() => setFocusedId(undefined)}
+        onClick={() => selectView(entry.id)}><span>{entry.label}</span><span className={styles.pinnedMark} aria-hidden="true" /></button>)}
+    </div>
+    <div className={styles.zoomControls} role="group" aria-label="Map magnification">
+      <span>{zoom > 1 ? "Scroll / swipe to inspect" : "Complete view"}</span>
+      <button type="button" disabled={zoom === 1} aria-label="Zoom out on map" onClick={() => setZoom((value) => Math.max(1, value - 1))}>−</button>
+      <output aria-label="Map zoom">{zoom}×</output>
+      <button type="button" disabled={zoom === 4} aria-label="Zoom in on map" onClick={() => setZoom((value) => Math.min(4, value + 1))}>+</button>
+    </div>
+    <div ref={viewport} id={viewportId} className={styles.viewerViewport} tabIndex={0} role="region" aria-label={`${detail?.label ?? artifact.label}, ${zoom} times magnification`} style={{ aspectRatio: String(ratio) }}>
+      <div className={styles.viewerSurface} style={{ width: `${zoom * 100}%` }}>
+      <div className={styles.viewerMap} data-map-camera style={{ paddingTop: `${100 / ratio}%` }}>
+        <Image src={artifact.src} alt={detail ? `${detail.label}: ${detail.caption}` : artifact.alt} width={artifact.width} height={artifact.height} sizes="(max-width: 760px) 1000vw, 6000px" style={{ width: `${100 / crop.width}%`, left: `${-100 * crop.x / crop.width}%`, top: `${-100 * crop.y / crop.height}%` }} />
+      </div>
+      </div>
+    </div>
+    <div className={styles.viewerCaption}>
+      <p aria-live="polite">{detail?.caption ?? artifact.caption}</p>
+      {detail ? <div className={styles.locator} aria-label={`${detail.label} location within the full map`} role="img">
+        <Image src={artifact.src} alt="" width={artifact.width} height={artifact.height} sizes="112px" />
+        <span style={{ left: `${detail.crop.x * 100}%`, top: `${detail.crop.y * 100}%`, width: `${detail.crop.width * 100}%`, height: `${detail.crop.height * 100}%` }} />
+      </div> : <span className={styles.viewHint}>Choose a detail to inspect</span>}
+    </div>
+  </div>;
+}

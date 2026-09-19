@@ -1,6 +1,6 @@
 /** @vitest-environment node */
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   handleUpload: vi.fn(),
@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("@vercel/blob/client", () => ({ handleUpload: mocks.handleUpload }));
+vi.mock("server-only", () => ({}));
 vi.mock("@/lib/auth", () => ({ isEditorAuthenticated: mocks.isEditorAuthenticated }));
 vi.mock("@/lib/timeline-storage", () => ({ hasBlobStorage: mocks.hasBlobStorage }));
 
@@ -24,11 +25,13 @@ function tokenRequest() {
 }
 
 beforeEach(() => {
+  vi.stubEnv("PORTFOLIO_CONTENT_MODE", "live");
   mocks.handleUpload.mockReset();
   mocks.hasBlobStorage.mockReset();
   mocks.hasBlobStorage.mockReturnValue(true);
   mocks.isEditorAuthenticated.mockReset();
 });
+afterEach(() => vi.unstubAllEnvs());
 
 describe("media client-upload token route", () => {
   it("fails clearly when Vercel Blob is not connected", async () => {

@@ -1,0 +1,40 @@
+.artifacts { padding-top: 4px; }
+.cluster .preview { display: block; container-type: inline-size; padding: 24px 18px 0; color: var(--paper); background: var(--graphite); text-decoration: none; }
+.workstreams { --connection-gap: calc(9cqw + 10px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--connection-gap); padding-block: 8px 30px; }
+.workstream { position: relative; display: flex; align-items: center; justify-content: center; min-height: 96px; padding: 12px 8px; border: 1px solid rgba(241, 239, 233, .55); text-align: center; font: 500 clamp(12px, 1.25vw, 16px)/1.3 var(--font-sans), sans-serif; transition: transform 560ms cubic-bezier(.16, 1, .3, 1), border-color 320ms ease; }
+.contact { position: absolute; left: 100%; top: 50%; width: calc(var(--connection-gap) + 1px); height: 1px; background: var(--signal); transform-origin: left center; transition: transform 560ms cubic-bezier(.16, 1, .3, 1); }
+.contact::before, .contact::after { content: ""; position: absolute; top: -2px; width: 5px; height: 5px; background: var(--signal); }
+.contact::before { left: -2px; }
+.contact::after { right: -2px; }
+.workstream:not(:last-child)::after { content: ""; position: absolute; right: -3px; top: calc(50% - 2px); width: 5px; height: 5px; background: var(--signal); }
+.preview:is(:hover, :focus-visible) .workstream { border-color: var(--paper); }
+.preview:is(:hover, :focus-visible) .workstream:first-child { transform: translateX(var(--connection-gap)); }
+.preview:is(:hover, :focus-visible) .workstream:last-child { transform: translateX(calc(-1 * var(--connection-gap))); }
+.preview:is(:hover, :focus-visible) .contact { transform: scaleX(0); }
+.plan { padding: 9px; background: var(--paper-raised); }
+.plan img { display: block; width: 100%; height: auto; }
+.caption { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; align-items: center; min-height: 48px; padding-block: 12px; color: #cbc8c0; font: 10px/1.5 var(--font-mono), monospace; text-transform: uppercase; letter-spacing: .035em; }
+.caption > span:last-child { color: var(--paper); }
+.preview:is(:hover, :focus-visible) .caption > span:last-child { text-decoration: underline; text-underline-offset: 4px; }
+.artifacts[data-entered="true"] .contact { animation: connect 900ms cubic-bezier(.16, 1, .3, 1); }
+@keyframes connect { from { opacity: .35; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(-3px); } }
+@media (max-width: 540px) {
+  .cluster .preview { padding-inline: 14px; }
+  .workstreams { --connection-gap: 12px; grid-template-columns: 1fr; padding: 0 10px 26px; }
+  .workstream { min-height: 60px; font-size: 15px; }
+  .contact { left: 50%; top: 100%; width: 1px; height: 13px; transform-origin: center top; }
+  .contact::before, .contact::after { left: -2px; }
+  .contact::before { top: -2px; }
+  .contact::after { top: auto; bottom: -2px; right: auto; }
+  .workstream:not(:last-child)::after { left: calc(50% - 2px); top: auto; bottom: -3px; right: auto; }
+  .preview:is(:hover, :focus-visible) .workstream:first-child { transform: translateY(12px); }
+  .preview:is(:hover, :focus-visible) .workstream:last-child { transform: translateY(-12px); }
+  .preview:is(:hover, :focus-visible) .contact { transform: scaleY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .workstream, .contact { transition: none; }
+  .artifacts[data-entered="true"] .contact { animation: none; }
+  .preview:is(:hover, :focus-visible) .workstream:first-child,
+  .preview:is(:hover, :focus-visible) .workstream:last-child,
+  .preview:is(:hover, :focus-visible) .contact { transform: none; }
+}

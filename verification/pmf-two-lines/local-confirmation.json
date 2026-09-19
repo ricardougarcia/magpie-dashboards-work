@@ -1,0 +1,3370 @@
+{
+  "base": "http://127.0.0.1:3086",
+  "timestamp": "2026-09-16T21:32:52.570Z",
+  "passed": 400,
+  "failed": 11,
+  "results": [
+    {
+      "viewport": "1440x1000",
+      "name": "PMF route returns 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Semantic title and six checkpoints render",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Portfolio fonts loaded",
+      "pass": true,
+      "detail": "Geist, \"Geist Fallback\", sans-serif"
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No horizontal overflow on arrival",
+      "pass": true,
+      "detail": {
+        "viewport": 1440,
+        "content": 1440
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No framework error overlay",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-choice: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-choice: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 648
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-choice: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-choice: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-choice: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-instrument: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-instrument: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 648
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-instrument: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-instrument: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-instrument: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-synthesis: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-synthesis: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 648
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-synthesis: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-synthesis: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "research-synthesis: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "market-context: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "market-context: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 1368
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "market-context: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "market-context: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "market-context: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "capabilities-in-context: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "capabilities-in-context: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 1368
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "capabilities-in-context: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "capabilities-in-context: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "capabilities-in-context: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "opportunity-synthesis: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "opportunity-synthesis: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 1368
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "opportunity-synthesis: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "opportunity-synthesis: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "opportunity-synthesis: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "All four overview images loaded",
+      "pass": true,
+      "detail": [
+        {
+          "source": "/portfolio/pmf/segmentation-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/interview-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/research-matrix-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/market-overview.png",
+          "loaded": true
+        }
+      ]
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No source URLs in PMF markup",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Capability 1: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Capability 1: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Capability 2: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Capability 2: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Capability 3: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Capability 3: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Capability 4: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Capability 4: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 1: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 1: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/segmentation-overview.png"
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 1: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 1: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 960,
+        "modalHeight": 651.46875,
+        "imageWidth": 906,
+        "imageHeight": 508.15625
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 1: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 1: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 487,
+        "before": 487
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 2: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 2: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/interview-overview.png"
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 2: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 2: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 960,
+        "modalHeight": 763.3125,
+        "imageWidth": 906,
+        "imageHeight": 620
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 2: background scrolling locked",
+      "pass": false
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 2: Escape restores focus and body",
+      "pass": false,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 752,
+        "before": 689
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 3: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 3: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/research-matrix-overview.png"
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 3: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 3: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 960,
+        "modalHeight": 373.78125,
+        "imageWidth": 906,
+        "imageHeight": 230.46875
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 3: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 3: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 1617,
+        "before": 1617
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 4: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 4: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/market-overview.png"
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 4: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 4: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 960,
+        "modalHeight": 703.46875,
+        "imageWidth": 906,
+        "imageHeight": 560.15625
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 4: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Artifact 4: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 487,
+        "before": 487
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Native scroll draws rails and convergence forward",
+      "pass": true,
+      "detail": {
+        "startProgress": {
+          "rails": [
+            0.04730467503233718,
+            0.04730467503233718
+          ],
+          "join": 0
+        },
+        "endProgress": {
+          "rails": [
+            1,
+            1
+          ],
+          "join": 1
+        }
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Convergence heading and supporting copy align to the joined line",
+      "pass": true,
+      "detail": {
+        "center": 720,
+        "headingCenter": 720,
+        "copyCenter": 720
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Scroll progress reverses with native scroll",
+      "pass": true,
+      "detail": {
+        "rails": [
+          0.04730467503233718,
+          0.04730467503233718
+        ],
+        "join": 0
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Convergence originates at rendered rails",
+      "pass": true,
+      "detail": {
+        "origins": [
+          26,
+          526
+        ],
+        "moves": [
+          26,
+          526,
+          500
+        ]
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Resize preserves page bounds",
+      "pass": true,
+      "detail": {
+        "viewport": 1457,
+        "content": 1457
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Runtime reduced motion resolves rails and diagrams",
+      "pass": true,
+      "detail": {
+        "rails": [
+          "1",
+          "1"
+        ],
+        "join": "1",
+        "map": "1"
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "Direct checkpoint hash lands on correct content",
+      "pass": true,
+      "detail": 28
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No horizontal overflow after interactions",
+      "pass": true,
+      "detail": {
+        "viewport": 1440,
+        "content": 1440
+      }
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No confidential original requests from PMF",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "1440x1000",
+      "name": "No browser runtime errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "PMF route returns 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Semantic title and six checkpoints render",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Portfolio fonts loaded",
+      "pass": true,
+      "detail": "Geist, \"Geist Fallback\", sans-serif"
+    },
+    {
+      "viewport": "1280x800",
+      "name": "No horizontal overflow on arrival",
+      "pass": true,
+      "detail": {
+        "viewport": 1280,
+        "content": 1280
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "No framework error overlay",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-choice: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-choice: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 84.3125,
+        "right": 576
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-choice: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-choice: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-choice: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-instrument: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-instrument: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 576
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-instrument: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-instrument: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-instrument: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-synthesis: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-synthesis: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 576
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-synthesis: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-synthesis: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "research-synthesis: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "market-context: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "market-context: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 1216
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "market-context: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "market-context: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "market-context: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "capabilities-in-context: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "capabilities-in-context: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 1216
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "capabilities-in-context: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "capabilities-in-context: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "capabilities-in-context: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "opportunity-synthesis: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "opportunity-synthesis: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 1216
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "opportunity-synthesis: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "opportunity-synthesis: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "opportunity-synthesis: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "All four overview images loaded",
+      "pass": true,
+      "detail": [
+        {
+          "source": "/portfolio/pmf/segmentation-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/interview-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/research-matrix-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/market-overview.png",
+          "loaded": true
+        }
+      ]
+    },
+    {
+      "viewport": "1280x800",
+      "name": "No source URLs in PMF markup",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Capability 1: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Capability 1: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Capability 2: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Capability 2: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Capability 3: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Capability 3: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Capability 4: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Capability 4: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 1: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 1: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/segmentation-overview.png"
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 1: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 1: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 960,
+        "modalHeight": 639.3125,
+        "imageWidth": 906,
+        "imageHeight": 496
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 1: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 1: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 842,
+        "before": 842
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 2: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 2: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/interview-overview.png"
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 2: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 2: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 960,
+        "modalHeight": 639.3125,
+        "imageWidth": 906,
+        "imageHeight": 496
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 2: background scrolling locked",
+      "pass": false
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 2: Escape restores focus and body",
+      "pass": false,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 943,
+        "before": 880
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 3: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 3: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/research-matrix-overview.png"
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 3: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 3: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 960,
+        "modalHeight": 373.78125,
+        "imageWidth": 906,
+        "imageHeight": 230.46875
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 3: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 3: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 1770,
+        "before": 1770
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 4: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 4: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/market-overview.png"
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 4: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 4: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 960,
+        "modalHeight": 639.3125,
+        "imageWidth": 906,
+        "imageHeight": 496
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 4: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Artifact 4: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 579,
+        "before": 579
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Native scroll draws rails and convergence forward",
+      "pass": true,
+      "detail": {
+        "startProgress": {
+          "rails": [
+            0,
+            0
+          ],
+          "join": 0
+        },
+        "endProgress": {
+          "rails": [
+            1,
+            1
+          ],
+          "join": 1
+        }
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Convergence heading and supporting copy align to the joined line",
+      "pass": true,
+      "detail": {
+        "center": 640,
+        "headingCenter": 640,
+        "copyCenter": 640
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Scroll progress reverses with native scroll",
+      "pass": true,
+      "detail": {
+        "rails": [
+          0,
+          0
+        ],
+        "join": 0
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Convergence originates at rendered rails",
+      "pass": true,
+      "detail": {
+        "origins": [
+          26.000000000000004,
+          526
+        ],
+        "moves": [
+          26.000000000000004,
+          526,
+          500
+        ]
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Resize preserves page bounds",
+      "pass": true,
+      "detail": {
+        "viewport": 1297,
+        "content": 1297
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Runtime reduced motion resolves rails and diagrams",
+      "pass": true,
+      "detail": {
+        "rails": [
+          "1",
+          "1"
+        ],
+        "join": "1",
+        "map": "1"
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "Direct checkpoint hash lands on correct content",
+      "pass": true,
+      "detail": 28.375
+    },
+    {
+      "viewport": "1280x800",
+      "name": "No horizontal overflow after interactions",
+      "pass": true,
+      "detail": {
+        "viewport": 1280,
+        "content": 1280
+      }
+    },
+    {
+      "viewport": "1280x800",
+      "name": "No confidential original requests from PMF",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "1280x800",
+      "name": "No browser runtime errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "PMF route returns 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Semantic title and six checkpoints render",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Portfolio fonts loaded",
+      "pass": true,
+      "detail": "Geist, \"Geist Fallback\", sans-serif"
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No horizontal overflow on arrival",
+      "pass": true,
+      "detail": {
+        "viewport": 820,
+        "content": 820
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No framework error overlay",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-choice: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-choice: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 105.75,
+        "right": 369
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-choice: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-choice: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-choice: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-instrument: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-instrument: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 84.3125,
+        "right": 369
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-instrument: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-instrument: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-instrument: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-synthesis: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-synthesis: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 84.3125,
+        "right": 369
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-synthesis: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-synthesis: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "research-synthesis: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "market-context: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "market-context: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 779
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "market-context: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "market-context: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "market-context: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "capabilities-in-context: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "capabilities-in-context: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 84.3125,
+        "right": 779
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "capabilities-in-context: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "capabilities-in-context: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "capabilities-in-context: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "opportunity-synthesis: hover exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "opportunity-synthesis: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 779
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "opportunity-synthesis: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "opportunity-synthesis: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "opportunity-synthesis: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "All four overview images loaded",
+      "pass": true,
+      "detail": [
+        {
+          "source": "/portfolio/pmf/segmentation-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/interview-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/research-matrix-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/market-overview.png",
+          "loaded": true
+        }
+      ]
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No source URLs in PMF markup",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Capability 1: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Capability 1: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Capability 2: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Capability 2: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Capability 3: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Capability 3: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Capability 4: selected by hover",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Capability 4: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 1: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 1: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/segmentation-overview.png"
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 1: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 1: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 784,
+        "modalHeight": 551.515625,
+        "imageWidth": 732.8125,
+        "imageHeight": 411.015625
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 1: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 1: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 778,
+        "before": 778
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 2: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 2: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/interview-overview.png"
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 2: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 2: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 784,
+        "modalHeight": 776.234375,
+        "imageWidth": 732.8125,
+        "imageHeight": 635.734375
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 2: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 2: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 778,
+        "before": 778
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 3: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 3: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/research-matrix-overview.png"
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 3: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 3: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 784,
+        "modalHeight": 326.90625,
+        "imageWidth": 732.8125,
+        "imageHeight": 186.40625
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 3: background scrolling locked",
+      "pass": false
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 3: Escape restores focus and body",
+      "pass": false,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 981,
+        "before": 896
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 4: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 4: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/market-overview.png"
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 4: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 4: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 784,
+        "modalHeight": 593.578125,
+        "imageWidth": 732.8125,
+        "imageHeight": 453.078125
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 4: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Artifact 4: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 749,
+        "before": 749
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Native scroll draws rails and convergence forward",
+      "pass": true,
+      "detail": {
+        "startProgress": {
+          "rails": [
+            0.11933930304528557,
+            0.11933930304528557
+          ],
+          "join": 0
+        },
+        "endProgress": {
+          "rails": [
+            1,
+            1
+          ],
+          "join": 1
+        }
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Convergence heading and supporting copy align to the joined line",
+      "pass": true,
+      "detail": {
+        "center": 410,
+        "headingCenter": 410,
+        "copyCenter": 410
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Scroll progress reverses with native scroll",
+      "pass": true,
+      "detail": {
+        "rails": [
+          0.11933930304528557,
+          0.11933930304528557
+        ],
+        "join": 0
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Convergence originates at rendered rails",
+      "pass": true,
+      "detail": {
+        "origins": [
+          26,
+          526
+        ],
+        "moves": [
+          26,
+          526,
+          500
+        ]
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Resize preserves page bounds",
+      "pass": true,
+      "detail": {
+        "viewport": 837,
+        "content": 837
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Runtime reduced motion resolves rails and diagrams",
+      "pass": true,
+      "detail": {
+        "rails": [
+          "1",
+          "1"
+        ],
+        "join": "1",
+        "map": "1"
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "Direct checkpoint hash lands on correct content",
+      "pass": true,
+      "detail": 28.375
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No horizontal overflow after interactions",
+      "pass": true,
+      "detail": {
+        "viewport": 820,
+        "content": 820
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No confidential original requests from PMF",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "820x1180",
+      "name": "No browser runtime errors",
+      "pass": false,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": [
+          {
+            "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+            "url": "http://127.0.0.1:3086/favicon.ico"
+          }
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "PMF route returns 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "390x844",
+      "name": "Semantic title and six checkpoints render",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Portfolio fonts loaded",
+      "pass": true,
+      "detail": "Geist, \"Geist Fallback\", sans-serif"
+    },
+    {
+      "viewport": "390x844",
+      "name": "No horizontal overflow on arrival",
+      "pass": true,
+      "detail": {
+        "viewport": 390,
+        "content": 390
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "No framework error overlay",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-choice: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-choice: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 105.75,
+        "right": 366
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-choice: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-choice: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-choice: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-instrument: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-instrument: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 84.3125,
+        "right": 366
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-instrument: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-instrument: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-instrument: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-synthesis: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-synthesis: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 84.3125,
+        "right": 366
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-synthesis: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-synthesis: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "research-synthesis: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "market-context: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "market-context: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 366
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "market-context: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "market-context: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "market-context: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "capabilities-in-context: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "capabilities-in-context: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 84.3125,
+        "right": 366
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "capabilities-in-context: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "capabilities-in-context: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "capabilities-in-context: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "opportunity-synthesis: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "opportunity-synthesis: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 62.875,
+        "right": 366
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "opportunity-synthesis: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "opportunity-synthesis: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "opportunity-synthesis: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "All four overview images loaded",
+      "pass": true,
+      "detail": [
+        {
+          "source": "/portfolio/pmf/segmentation-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/interview-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/research-matrix-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/market-overview.png",
+          "loaded": true
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "name": "No source URLs in PMF markup",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "390x844",
+      "name": "Capability 1: selected by tap",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Capability 1: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Capability 2: selected by tap",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Capability 2: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Capability 3: selected by tap",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Capability 3: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Capability 4: selected by tap",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Capability 4: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 1: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 1: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/segmentation-overview.png"
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 1: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 1: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 366,
+        "modalHeight": 317.0625,
+        "imageWidth": 340,
+        "imageHeight": 190.6875
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 1: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 1: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 538,
+        "before": 538
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 2: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 2: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/interview-overview.png"
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 2: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 2: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 366,
+        "modalHeight": 400.140625,
+        "imageWidth": 340,
+        "imageHeight": 294.953125
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 2: background scrolling locked",
+      "pass": false
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 2: Escape restores focus and body",
+      "pass": false,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 788,
+        "before": 704
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 3: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 3: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/research-matrix-overview.png"
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 3: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 3: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 366,
+        "modalHeight": 212.859375,
+        "imageWidth": 340,
+        "imageHeight": 86.484375
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 3: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 3: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 1470,
+        "before": 1470
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 4: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 4: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/market-overview.png"
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 4: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 4: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 366,
+        "modalHeight": 315.390625,
+        "imageWidth": 340,
+        "imageHeight": 210.203125
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 4: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "name": "Artifact 4: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 2134,
+        "before": 2134
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Native scroll draws rails and convergence forward",
+      "pass": true,
+      "detail": {
+        "startProgress": {
+          "rails": [
+            0,
+            0
+          ],
+          "join": 0
+        },
+        "endProgress": {
+          "rails": [
+            1,
+            1
+          ],
+          "join": 1
+        }
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Convergence heading and supporting copy align to the joined line",
+      "pass": true,
+      "detail": {
+        "center": 195,
+        "headingCenter": 195,
+        "copyCenter": 195
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Scroll progress reverses with native scroll",
+      "pass": true,
+      "detail": {
+        "rails": [
+          0,
+          0
+        ],
+        "join": 0
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Convergence originates at rendered rails",
+      "pass": true,
+      "detail": {
+        "origins": [
+          51.28205128205128,
+          51.28205128205128
+        ],
+        "moves": [
+          51.28205128205128
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Resize preserves page bounds",
+      "pass": true,
+      "detail": {
+        "viewport": 407,
+        "content": 407
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Runtime reduced motion resolves rails and diagrams",
+      "pass": true,
+      "detail": {
+        "rails": [
+          "1",
+          "1"
+        ],
+        "join": "1",
+        "map": "1"
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "Direct checkpoint hash lands on correct content",
+      "pass": true,
+      "detail": 269.625
+    },
+    {
+      "viewport": "390x844",
+      "name": "No horizontal overflow after interactions",
+      "pass": true,
+      "detail": {
+        "viewport": 390,
+        "content": 390
+      }
+    },
+    {
+      "viewport": "390x844",
+      "name": "No confidential original requests from PMF",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "390x844",
+      "name": "No browser runtime errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "PMF route returns 200",
+      "pass": true,
+      "detail": 200
+    },
+    {
+      "viewport": "320x700",
+      "name": "Semantic title and six checkpoints render",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Portfolio fonts loaded",
+      "pass": true,
+      "detail": "Geist, \"Geist Fallback\", sans-serif"
+    },
+    {
+      "viewport": "320x700",
+      "name": "No horizontal overflow on arrival",
+      "pass": true,
+      "detail": {
+        "viewport": 320,
+        "content": 320
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "No framework error overlay",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-choice: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-choice: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 127.1875,
+        "right": 296
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-choice: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-choice: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-choice: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-instrument: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-instrument: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 105.75,
+        "right": 296
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-instrument: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-instrument: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-instrument: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-synthesis: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-synthesis: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 84.3125,
+        "right": 296
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-synthesis: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-synthesis: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "research-synthesis: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "market-context: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "market-context: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 84.3125,
+        "right": 296
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "market-context: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "market-context: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "market-context: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "capabilities-in-context: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "capabilities-in-context: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 84.3125,
+        "right": 296
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "capabilities-in-context: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "capabilities-in-context: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "capabilities-in-context: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "opportunity-synthesis: tap exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "opportunity-synthesis: reasoning is visible and fits",
+      "pass": true,
+      "detail": {
+        "height": 84.3125,
+        "right": 296
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "opportunity-synthesis: Escape closes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "opportunity-synthesis: keyboard focus exposes reasoning",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "opportunity-synthesis: click pins reasoning after focus leaves",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "All four overview images loaded",
+      "pass": true,
+      "detail": [
+        {
+          "source": "/portfolio/pmf/segmentation-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/interview-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/research-matrix-overview.png",
+          "loaded": true
+        },
+        {
+          "source": "/portfolio/pmf/market-overview.png",
+          "loaded": true
+        }
+      ]
+    },
+    {
+      "viewport": "320x700",
+      "name": "No source URLs in PMF markup",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "320x700",
+      "name": "Capability 1: selected by tap",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Capability 1: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Capability 2: selected by tap",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Capability 2: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Capability 3: selected by tap",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Capability 3: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Capability 4: selected by tap",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Capability 4: public research purpose shown",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 1: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 1: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/segmentation-overview.png"
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 1: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 1: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 296,
+        "modalHeight": 317,
+        "imageWidth": 270,
+        "imageHeight": 151.4375
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 1: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 1: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 757,
+        "before": 757
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 2: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 2: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/interview-overview.png"
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 2: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 2: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 296,
+        "modalHeight": 357.40625,
+        "imageWidth": 270,
+        "imageHeight": 234.21875
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 2: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 2: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 1269,
+        "before": 1269
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 3: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 3: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/research-matrix-overview.png"
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 3: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 3: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 296,
+        "modalHeight": 213.046875,
+        "imageWidth": 270,
+        "imageHeight": 68.671875
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 3: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 3: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 1780,
+        "before": 1780
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 4: opens accessible modal",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 4: viewer uses safe direct source",
+      "pass": true,
+      "detail": "/portfolio/pmf/market-overview.png"
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 4: modal contains forward and reverse focus",
+      "pass": true,
+      "detail": {
+        "forward": true,
+        "activeElement": "<button type=\"button\" autofocus=\"\">Close<span class=\"pmf_closeMark___E2o6\" aria-hidden=\"true\"></span></button>"
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 4: constrained viewer geometry",
+      "pass": true,
+      "detail": {
+        "modalWidth": 296,
+        "modalHeight": 311.3125,
+        "imageWidth": 270,
+        "imageHeight": 166.9375
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 4: background scrolling locked",
+      "pass": true
+    },
+    {
+      "viewport": "320x700",
+      "name": "Artifact 4: Escape restores focus and body",
+      "pass": true,
+      "detail": {
+        "focused": true,
+        "overflow": "",
+        "scroll": 2512,
+        "before": 2512
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Native scroll draws rails and convergence forward",
+      "pass": true,
+      "detail": {
+        "startProgress": {
+          "rails": [
+            0,
+            0
+          ],
+          "join": 0
+        },
+        "endProgress": {
+          "rails": [
+            1,
+            1
+          ],
+          "join": 1
+        }
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Convergence heading and supporting copy align to the joined line",
+      "pass": true,
+      "detail": {
+        "center": 160,
+        "headingCenter": 160,
+        "copyCenter": 160
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Scroll progress reverses with native scroll",
+      "pass": true,
+      "detail": {
+        "rails": [
+          0,
+          0
+        ],
+        "join": 0
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Convergence originates at rendered rails",
+      "pass": true,
+      "detail": {
+        "origins": [
+          62.5,
+          62.5
+        ],
+        "moves": [
+          62.5
+        ]
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Resize preserves page bounds",
+      "pass": true,
+      "detail": {
+        "viewport": 337,
+        "content": 337
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Runtime reduced motion resolves rails and diagrams",
+      "pass": true,
+      "detail": {
+        "rails": [
+          "1",
+          "1"
+        ],
+        "join": "1",
+        "map": "1"
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "Direct checkpoint hash lands on correct content",
+      "pass": false,
+      "detail": 350.34375
+    },
+    {
+      "viewport": "320x700",
+      "name": "No horizontal overflow after interactions",
+      "pass": true,
+      "detail": {
+        "viewport": 320,
+        "content": 320
+      }
+    },
+    {
+      "viewport": "320x700",
+      "name": "No confidential original requests from PMF",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "viewport": "320x700",
+      "name": "No browser runtime errors",
+      "pass": true,
+      "detail": {
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "Board has two local PMF entry links",
+      "pass": true
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "Board entry reaches the new PMF sample",
+      "pass": true
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "Board position saved for PMF",
+      "pass": true,
+      "detail": {
+        "y": 1784,
+        "project": "/work/pmf"
+      }
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "Return to Board restores framing",
+      "pass": false,
+      "detail": {
+        "expected": 1784,
+        "actual": 0
+      }
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "GCM opening and overlap hooks remain present",
+      "pass": true
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "GCM question retains its gradual animation contract",
+      "pass": true,
+      "detail": {
+        "duration": "1.8s",
+        "delay": "1.4s"
+      }
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "GCM intro still moves under the content sheet",
+      "pass": true,
+      "detail": "143px"
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "GCM behavior hover retains component highlights",
+      "pass": true
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "GCM product-work hover retains transition",
+      "pass": true
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "GCM companion links to PMF and uses protected thumbnail",
+      "pass": true,
+      "detail": {
+        "href": "/work/pmf",
+        "src": "http://127.0.0.1:3086/_next/image?url=%2Fportfolio%2Fpmf%2Fmarket-overview.png&w=256&q=75"
+      }
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "GCM companion connector remains measured and animated",
+      "pass": true,
+      "detail": {
+        "measured": "true",
+        "playing": "true"
+      }
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "GCM companion opens the new sample",
+      "pass": true
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "Timeline API remains unauthorized (GET only)",
+      "pass": true,
+      "detail": 401
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "Editor redirects to password login",
+      "pass": true
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "Removed full-detail PMF asset is unavailable",
+      "pass": true,
+      "detail": 404
+    },
+    {
+      "viewport": "entrypoints-and-boundaries",
+      "name": "Entry routes have no browser runtime errors",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "runtime": [
+    {
+      "viewport": "1440x1000",
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    {
+      "viewport": "1280x800",
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    {
+      "viewport": "820x1180",
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:3086/favicon.ico"
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    {
+      "viewport": "320x700",
+      "pageErrors": [],
+      "consoleErrors": []
+    }
+  ],
+  "nativeTransitionInterruptions": {
+    "count": 1,
+    "entries": [
+      {
+        "message": "Transition was skipped",
+        "name": "AbortError",
+        "url": "http://127.0.0.1:3086/work/pmf",
+        "stack": ""
+      }
+    ]
+  },
+  "screenshots": [
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-top.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-research-choice.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-research-instrument.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-research-synthesis.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-market-context.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-capabilities-in-context.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-opportunity-synthesis.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-capability-active.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-viewer-2.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-viewer-4.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-convergence.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1440x1000-full.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-top.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-research-choice.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-research-instrument.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-research-synthesis.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-market-context.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-capabilities-in-context.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-opportunity-synthesis.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-capability-active.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-viewer-2.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-viewer-4.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-convergence.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/1280x800-full.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-top.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-research-choice.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-research-instrument.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-research-synthesis.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-market-context.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-capabilities-in-context.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-opportunity-synthesis.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-capability-active.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-viewer-2.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-viewer-4.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-convergence.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/820x1180-full.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-top.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-research-choice.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-research-instrument.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-research-synthesis.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-market-context.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-capabilities-in-context.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-opportunity-synthesis.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-capability-active.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-viewer-2.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-viewer-4.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-convergence.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/390x844-full.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-top.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-research-choice.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-research-instrument.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-research-synthesis.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-market-context.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-capabilities-in-context.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-opportunity-synthesis.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-capability-active.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-viewer-2.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-viewer-4.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-convergence.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/320x700-full.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/board-pmf-entry.png",
+    "/private/tmp/pmf-two-lines/verification/pmf-two-lines/confirmation/gcm-companion-safe-link.png"
+  ],
+  "pmfRequests": [
+    "http://127.0.0.1:3086/_next/static/media/22a5144ee8d83bca-s.p.woff2?v=1789594229427",
+    "http://127.0.0.1:3086/_next/static/media/7d4881bb7e1bf84d-s.p.woff2?v=1789594229427",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594229427",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594229427",
+    "http://127.0.0.1:3086/_next/static/chunks/webpack.js?v=1789594229427",
+    "http://127.0.0.1:3086/_next/static/chunks/main-app.js?v=1789594229427",
+    "http://127.0.0.1:3086/_next/static/chunks/app-pages-internals.js",
+    "http://127.0.0.1:3086/_next/static/chunks/app/work/pmf/page.js",
+    "http://127.0.0.1:3086/cursor-plus.svg",
+    "http://127.0.0.1:3086/cursor-plus-pick.svg",
+    "http://127.0.0.1:3086/_next/static/media/22a5144ee8d83bca-s.p.woff2",
+    "http://127.0.0.1:3086/_next/static/media/7d4881bb7e1bf84d-s.p.woff2",
+    "http://127.0.0.1:3086/portfolio/pmf/segmentation-overview.png",
+    "http://127.0.0.1:3086/portfolio/pmf/interview-overview.png",
+    "http://127.0.0.1:3086/portfolio/pmf/research-matrix-overview.png",
+    "http://127.0.0.1:3086/portfolio/pmf/market-overview.png",
+    "http://127.0.0.1:3086/icon?92408e23af788f93",
+    "http://127.0.0.1:3086/__nextjs_font/geist-latin.woff2",
+    "http://127.0.0.1:3086/work/pmf?_rsc=IGPMQryHm1KgTDFD",
+    "http://127.0.0.1:3086/_next/static/webpack/46db2347d8344f1c.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594232215",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594232215",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.46db2347d8344f1c.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/2705ea47d7b99655.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594233240",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594233240",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.2705ea47d7b99655.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/8e31f65a84523c02.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594234702",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594234702",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.8e31f65a84523c02.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/e3f0ccf897aba7ab.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594236187",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594236187",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.e3f0ccf897aba7ab.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/43fdb1a35b5bd260.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594237302",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594237302",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.43fdb1a35b5bd260.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/670f741bde9d15da.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594238758",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594238758",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.670f741bde9d15da.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/29e9b8ab8163c2e0.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594240240",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594240240",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.29e9b8ab8163c2e0.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/1e42cccaa6c08eb5.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594240962",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594240962",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.1e42cccaa6c08eb5.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/c4944640eb79b333.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594244208",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594244208",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.c4944640eb79b333.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/dbe024750ef2d102.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594247857",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594247857",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.dbe024750ef2d102.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/e4b1461edf42c859.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594249466",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594249466",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.e4b1461edf42c859.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/549bfe2f736afb1e.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.549bfe2f736afb1e.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594251316",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594251316",
+    "http://127.0.0.1:3086/_next/static/media/22a5144ee8d83bca-s.p.woff2?v=1789594251764",
+    "http://127.0.0.1:3086/_next/static/media/7d4881bb7e1bf84d-s.p.woff2?v=1789594251764",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594251764",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594251764",
+    "http://127.0.0.1:3086/_next/static/chunks/webpack.js?v=1789594251764",
+    "http://127.0.0.1:3086/_next/static/chunks/main-app.js?v=1789594251764",
+    "http://127.0.0.1:3086/_next/static/webpack/678f74de48c8cb04.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594253678",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594253678",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.678f74de48c8cb04.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/f4d29f927b29c33a.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594254783",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594254783",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.f4d29f927b29c33a.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/ab94c245f509714d.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594256755",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594256755",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.ab94c245f509714d.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/73844d123681e588.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594257909",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594257909",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.73844d123681e588.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/4a3e5a3286b7bfe7.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594258959",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594258959",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.4a3e5a3286b7bfe7.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/3b457c8ffb042908.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.3b457c8ffb042908.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594260597",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594260597",
+    "http://127.0.0.1:3086/_next/static/webpack/0eb296702d2a2a3e.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.0eb296702d2a2a3e.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594262359",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594262359",
+    "http://127.0.0.1:3086/_next/static/webpack/260956709bccbc55.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594262626",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594262626",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.260956709bccbc55.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/a882b8e82b95de08.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.a882b8e82b95de08.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594262906",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594262906",
+    "http://127.0.0.1:3086/_next/static/webpack/9bc483628cac3ccd.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594266659",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594266659",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.9bc483628cac3ccd.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/e54ba70d6be79d62.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594271035",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594271035",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.e54ba70d6be79d62.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/2144855ff6e7caa0.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594274671",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594274671",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.2144855ff6e7caa0.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/media/22a5144ee8d83bca-s.p.woff2?v=1789594275934",
+    "http://127.0.0.1:3086/_next/static/media/7d4881bb7e1bf84d-s.p.woff2?v=1789594275934",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594275934",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594275934",
+    "http://127.0.0.1:3086/_next/static/chunks/webpack.js?v=1789594275934",
+    "http://127.0.0.1:3086/_next/static/chunks/main-app.js?v=1789594275934",
+    "http://127.0.0.1:3086/_next/static/webpack/a73c826174e0dfd4.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594287192",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594287192",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.a73c826174e0dfd4.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/4d77772c8cd551d4.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.4d77772c8cd551d4.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594287936",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594287936",
+    "http://127.0.0.1:3086/_next/static/webpack/2b3e9774686d95ce.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594288779",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594288779",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.2b3e9774686d95ce.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/1faf54f44503212f.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594290213",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594290213",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.1faf54f44503212f.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/4f2fc3b486ec1338.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594292258",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594292258",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.4f2fc3b486ec1338.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/8f7d04585e642caa.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.8f7d04585e642caa.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594295706",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594295706",
+    "http://127.0.0.1:3086/_next/static/webpack/367561637ae229d6.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.367561637ae229d6.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594299770",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594299770",
+    "http://127.0.0.1:3086/_next/static/webpack/f2190e343e82e254.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594304000",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594304000",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.f2190e343e82e254.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/411bfc4f6f54850a.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.411bfc4f6f54850a.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594305339",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594305339",
+    "http://127.0.0.1:3086/_next/static/webpack/442b6e4af0506e17.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594306924",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594306924",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.442b6e4af0506e17.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/cf6b99740fed074c.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594307300",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594307300",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.cf6b99740fed074c.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/media/22a5144ee8d83bca-s.p.woff2?v=1789594307804",
+    "http://127.0.0.1:3086/_next/static/media/7d4881bb7e1bf84d-s.p.woff2?v=1789594307804",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594307804",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594307804",
+    "http://127.0.0.1:3086/_next/static/chunks/webpack.js?v=1789594307804",
+    "http://127.0.0.1:3086/_next/static/chunks/main-app.js?v=1789594307804",
+    "http://127.0.0.1:3086/_next/static/webpack/9052f47fd8acf838.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594309622",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594309622",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.9052f47fd8acf838.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/80579842d65dd015.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.80579842d65dd015.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594310730",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594310730",
+    "http://127.0.0.1:3086/_next/static/webpack/b33bf483a3d75a08.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594312102",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594312102",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.b33bf483a3d75a08.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/c12e8ced12f408a2.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594314072",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594314072",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.c12e8ced12f408a2.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/a8ef628e5d304c8b.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.a8ef628e5d304c8b.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594315632",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594315632",
+    "http://127.0.0.1:3086/_next/static/webpack/7e1e2b89b4fea2df.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594317036",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594317036",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.7e1e2b89b4fea2df.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/06365373c57ddf16.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594318505",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594318505",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.06365373c57ddf16.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/0fe38c058f5f61ca.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594320021",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594320021",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.0fe38c058f5f61ca.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/83320111d18a9114.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594323138",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594323138",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.83320111d18a9114.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/7f917da77581672d.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.7f917da77581672d.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594327151",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594327151",
+    "http://127.0.0.1:3086/_next/static/webpack/4fad15f08c897be2.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594328615",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594328615",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.4fad15f08c897be2.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/9485f7b69ebae563.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594330601",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594330601",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.9485f7b69ebae563.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/media/22a5144ee8d83bca-s.p.woff2?v=1789594331020",
+    "http://127.0.0.1:3086/_next/static/media/7d4881bb7e1bf84d-s.p.woff2?v=1789594331020",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594331020",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594331020",
+    "http://127.0.0.1:3086/_next/static/chunks/webpack.js?v=1789594331020",
+    "http://127.0.0.1:3086/_next/static/chunks/main-app.js?v=1789594331020",
+    "http://127.0.0.1:3086/_next/static/webpack/1194ef8af44d1afb.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594332823",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594332823",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.1194ef8af44d1afb.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/a3e72177ea93d6f3.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.a3e72177ea93d6f3.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594333877",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594333877",
+    "http://127.0.0.1:3086/_next/static/webpack/f4b0e470d5f7b4d5.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594335005",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594335005",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.f4b0e470d5f7b4d5.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/2561c6e852938d49.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594336932",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594336932",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.2561c6e852938d49.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/31a142fbe8b7b055.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594337771",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594337771",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.31a142fbe8b7b055.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/5f0a6648ddce06a6.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594338971",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594338971",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.5f0a6648ddce06a6.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/79d31f82ba1bec7c.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.79d31f82ba1bec7c.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594340330",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594340330",
+    "http://127.0.0.1:3086/_next/static/webpack/4782508004300915.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594342273",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594342273",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.4782508004300915.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/e1ab7f45be7307c0.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.e1ab7f45be7307c0.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594345768",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594345768",
+    "http://127.0.0.1:3086/_next/static/webpack/95aafef69fbbcd22.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594349211",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594349211",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.95aafef69fbbcd22.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/5cee926cd2d3d8f1.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594353197",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594353197",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.5cee926cd2d3d8f1.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/30fa883e6c9eb2d6.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594354643",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594354643",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.30fa883e6c9eb2d6.hot-update.js",
+    "http://127.0.0.1:3086/_next/static/webpack/4e9d42b45ff90af2.webpack.hot-update.json",
+    "http://127.0.0.1:3086/_next/static/css/app/layout.css?v=1789594356611",
+    "http://127.0.0.1:3086/_next/static/css/app/work/pmf/page.css?v=1789594356611",
+    "http://127.0.0.1:3086/_next/static/webpack/webpack.4e9d42b45ff90af2.hot-update.js"
+  ]
+}

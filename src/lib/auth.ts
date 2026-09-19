@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { isSnapshotContentMode } from "@/lib/content-mode";
 
 export const EDITOR_COOKIE = "magpie_editor_session";
 const SESSION_VALUE = "magpie-editor-authorized-v1";
@@ -18,18 +19,21 @@ function safeEqual(left: string, right: string) {
 }
 
 export function isValidPassword(candidate: string) {
+  if (isSnapshotContentMode()) return false;
   const expected = process.env.EDIT_PASSWORD;
   if (!expected || !candidate) return false;
   return safeEqual(candidate, expected);
 }
 
 export function createSessionToken() {
+  if (isSnapshotContentMode()) return "";
   const secret = getSecret();
   if (!secret) return "";
   return createHmac("sha256", secret).update(SESSION_VALUE).digest("hex");
 }
 
 export async function isEditorAuthenticated() {
+  if (isSnapshotContentMode()) return false;
   const secret = getSecret();
   if (!secret) return false;
   const cookieStore = await cookies();

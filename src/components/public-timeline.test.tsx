@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PublicTimeline } from "@/components/public-timeline";
 import type { PublicTimelineData } from "@/lib/timeline-types";
@@ -100,15 +100,181 @@ function getTimelineItem(name: string) {
   return screen.getByRole("button", { name: new RegExp(`^${name},`) });
 }
 
+describe("PublicTimeline Guiding Light narrative", () => {
+  it("starts collapsed with an unfiltered board and reveals a manually selected narrative above the scroll control", () => {
+    render(<PublicTimeline data={data} />);
+    const group = screen.getByRole("group", { name: "Focus timeline by Guiding Light" });
+    const learn = within(group).getByRole("button", { name: /Learn/ });
+    const play = screen.getByRole("button", { name: "Play Guiding Lights" });
+    const expansion = document.getElementById(play.getAttribute("aria-controls")!)!;
+    expect(group.querySelectorAll("[aria-pressed='true']")).toHaveLength(0);
+    expect(getTimelineItem("First item").classList.contains("is-guiding-match")).toBe(false);
+    expect(getTimelineItem("Second item").classList.contains("is-muted")).toBe(false);
+    expect(expansion.getAttribute("aria-hidden")).toBe("true");
+    expect(expansion.hasAttribute("inert")).toBe(true);
+    expect(play.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByRole("heading", { name: "Understand before deciding." })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Previous Guiding Light" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Next Guiding Light" })).toBeNull();
+
+    fireEvent.click(learn);
+    const heading = screen.getByRole("heading", { name: "The work, in motion" });
+    const narrative = screen.getByRole("heading", { name: "Understand before deciding." });
+    const rail = screen.getByRole("slider", { name: "Scroll the timeline horizontally" });
+
+    expect(learn.getAttribute("aria-pressed")).toBe("true");
+    expect(play.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.queryByRole("button", { name: "Pause Guiding Lights" })).toBeNull();
+    expect(getTimelineItem("First item").classList.contains("is-guiding-match")).toBe(true);
+    expect(getTimelineItem("Second item").classList.contains("is-muted")).toBe(true);
+    expect(screen.getByText("Sole contributor")).toBeTruthy();
+    expect(screen.queryByText("My role")).toBeNull();
+    expect(heading.compareDocumentPosition(narrative) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(narrative.compareDocumentPosition(rail) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("uses saved owner narrative language and retains defaults for principles without an override", () => {
+    const editedData: PublicTimelineData = {
+      ...data,
+      guidingLightNarratives: {
+        Learn: {
+          heading: "An owner-edited heading.",
+          narrative: "An owner-edited account of the discovery work.",
+          soleContributor: "An owner-edited account of my contribution.",
+        },
+      },
+    };
+    render(<PublicTimeline data={editedData} />);
+    fireEvent.click(screen.getByRole("button", { name: /Learn/ }));
+    expect(screen.getByRole("heading", { name: "An owner-edited heading." })).toBeTruthy();
+    expect(screen.getByText("An owner-edited account of the discovery work.")).toBeTruthy();
+    expect(screen.getByText("An owner-edited account of my contribution.")).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Understand before deciding." })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: /Fix/ }));
+    expect(screen.getByRole("heading", { name: "Match the response to the problem." })).toBeTruthy();
+  });
+
+  it("uses the introduction to locate the play control without starting the guide", () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    const play = screen.getByRole("button", { name: "Play Guiding Lights" });
+    const guide = container.querySelector<HTMLElement>(".magpie-guide-start")!;
+    guide.scrollIntoView = vi.fn();
+    const invitation = screen.getByRole("link", { name: "Follow the Guiding Lights — find the play button" });
+    expect(invitation.getAttribute("href")).toBe(`#${play.id}`);
+    fireEvent.click(invitation);
+    expect(guide.scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
+    expect(document.activeElement).toBe(play);
+    expect(play.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByRole("button", { name: "Pause Guiding Lights" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Understand before deciding." })).toBeNull();
+    expect(container.querySelectorAll(".guiding-light-cell[aria-pressed='true']")).toHaveLength(0);
+  });
+
+  it("starts playback only from the section action, with pause and manual navigation available", () => {
+    render(<PublicTimeline data={data} />);
+    fireEvent.click(screen.getByRole("button", { name: "Play Guiding Lights" }));
+    const pause = screen.getByRole("button", { name: "Pause Guiding Lights" });
+    // Real pointer interaction on playback controls must not dismiss the narrative.
+    fireEvent.pointerDown(pause, { pointerType: "mouse" });
+    fireEvent.click(pause);
+    expect(screen.getByRole("button", { name: "Play Guiding Lights" }).textContent).toBe("Resume");
+    expect(screen.getByRole("heading", { name: "Understand before deciding." })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Next Guiding Light" }));
+    expect(screen.getByRole("button", { name: /Fix/ }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("heading", { name: "Match the response to the problem." })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Previous Guiding Light" }));
+    expect(screen.getByRole("button", { name: /Learn/ }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("collapses the narrative for independent exploration and for normal work-item inspection", async () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    fireEvent.click(screen.getByRole("button", { name: /Learn/ }));
+    const narrative = screen.getByRole("heading", { name: "Understand before deciding." }).closest("[data-guiding-light-guide]")!;
+    fireEvent.click(screen.getByRole("link", { name: "Explore the connected work freely" }));
+    expect(narrative.getAttribute("aria-hidden")).toBe("true");
+    expect(narrative.hasAttribute("inert")).toBe(true);
+    expect(screen.queryByRole("heading", { name: "Understand before deciding." })).toBeNull();
+    expect(container.querySelectorAll(".guiding-light-cell[aria-pressed='true']")).toHaveLength(0);
+
+    fireEvent.click(screen.getByRole("button", { name: /Learn/ }));
+    expect(narrative.getAttribute("aria-hidden")).toBe("false");
+    expect(narrative.hasAttribute("inert")).toBe(false);
+    fireEvent.click(getTimelineItem("First item"));
+    expect(await screen.findByLabelText("Selected details for First item")).toBeTruthy();
+    expect(narrative.getAttribute("aria-hidden")).toBe("true");
+    expect(container.querySelectorAll(".guiding-light-cell[aria-pressed='true']")).toHaveLength(0);
+    expect(screen.queryByRole("heading", { name: "Understand before deciding." })).toBeNull();
+  });
+
+  it("keeps the selected light during rail interaction and item pointerdown until inspection opens", () => {
+    render(<PublicTimeline data={data} />);
+    const learn = screen.getByRole("button", { name: /Learn/ });
+    fireEvent.click(learn);
+    const rail = screen.getByRole("slider", { name: "Scroll the timeline horizontally" });
+    fireEvent.pointerDown(rail, { pointerType: "mouse" });
+    expect(learn.getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("heading", { name: "Understand before deciding." })).toBeTruthy();
+
+    const item = getTimelineItem("First item");
+    fireEvent.pointerDown(item, { pointerType: "mouse" });
+    expect(learn.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(item);
+    expect(screen.getByLabelText("Selected details for First item")).toBeTruthy();
+    expect(learn.getAttribute("aria-pressed")).toBe("false");
+    expect(screen.queryByRole("heading", { name: "Understand before deciding." })).toBeNull();
+  });
+
+  it("shows Grow's conclusion and offers explicit replay or exploration after finishing", () => {
+    render(<PublicTimeline data={data} />);
+    fireEvent.click(screen.getByRole("button", { name: /Grow/ }));
+    expect(screen.getByRole("heading", { name: "Ready for feature development and scale." })).toBeTruthy();
+    expect(screen.getByText("The groundwork positions the dashboards for Q4 and beyond: a foundation for new features and scalable growth.")).toBeTruthy();
+    expect(screen.getByText(/competitor analysis, customer discovery, internal alignments, and market parity reports\./)).toBeTruthy();
+    expect(screen.queryByText("The introduction ends. The connections continue.")).toBeNull();
+    expect(within(document.getElementById("guiding-light-narrative")!).queryByText(/Prepare for scale/i)).toBeNull();
+    expect(screen.getAllByRole("button", { name: "Explore the work below" })).toHaveLength(1);
+    fireEvent.click(screen.getByRole("button", { name: "Finish Guiding Lights" }));
+    const playback = screen.getByRole("navigation", { name: "Guiding Lights playback" });
+    expect(within(playback).getByRole("button", { name: "Replay Guiding Lights" })).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: /Replay/ })).toHaveLength(1);
+    expect(screen.getByRole("button", { name: /Grow/ }).getAttribute("aria-pressed")).toBe("true");
+
+    fireEvent.click(screen.getByRole("button", { name: "Replay Guiding Lights" }));
+    expect(screen.getByRole("button", { name: /Learn/ }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: "Pause Guiding Lights" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Explore the work below" })).toBeNull();
+  });
+
+  it("returns from Grow's single exploration action to the unfiltered board", () => {
+    const { container } = render(<PublicTimeline data={data} />);
+    fireEvent.click(screen.getByRole("button", { name: /Grow/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Explore the work below" }));
+    expect(screen.queryByRole("heading", { name: "Ready for feature development and scale." })).toBeNull();
+    expect(screen.getByRole("button", { name: "Play Guiding Lights" }).getAttribute("aria-expanded")).toBe("false");
+    expect(container.querySelectorAll(".guiding-light-cell[aria-pressed='true']")).toHaveLength(0);
+    expect(getTimelineItem("Planned item").classList.contains("is-guiding-match")).toBe(false);
+    expect(getTimelineItem("First item").classList.contains("is-muted")).toBe(false);
+  });
+});
+
 describe("PublicTimeline presentation safeguards", () => {
-  it("renders the simplified copy and role without public Color Signal keys or native Gantt tooltips", () => {
+  it("renders the approved introduction without the removed byline, metrics, Color Signal keys, or native Gantt tooltips", () => {
     const { container } = render(<PublicTimeline data={data} />);
 
     expect(screen.queryByText("Hover to scan. Select a bar to pin its record and trace every connected work item.")).toBeNull();
     expect(screen.getByText("Planned")).toBeTruthy();
     expect(screen.queryByText("Planned. Not yet placed.")).toBeNull();
 
-    expect(screen.getByText("Principal Product Manager")).toBeTruthy();
+    const hero = within(container.querySelector(".hero")!);
+    expect(hero.getByRole("heading", { name: "Every connection carries a decision." })).toBeTruthy();
+    expect(hero.queryByRole("link", { name: "Begin with the Guiding Lights" })).toBeNull();
+    expect(hero.getByRole("link", { name: "Follow the Guiding Lights — find the play button" })).toBeTruthy();
+    expect(hero.getByRole("link", { name: "Explore the connected work freely" })).toBeTruthy();
+    expect(hero.queryByText(/Rico Garcia/)).toBeNull();
+    expect(hero.queryByText(/Principal Product Manager/)).toBeNull();
+    expect(container.querySelector(".hero-metrics")).toBeNull();
     expect(screen.queryByText("Sole principal PM")).toBeNull();
     expect(screen.queryByLabelText("Color key")).toBeNull();
     ["Discovery-led", "Corrective", "Reliability", "Governance", "Growth"].forEach((label) => {
@@ -228,6 +394,7 @@ describe("PublicTimeline presentation safeguards", () => {
     const { container } = render(<PublicTimeline data={data} />);
     const learn = screen.getByRole("button", { name: /Learn/ });
     fireEvent.click(learn);
+    expect(learn.getAttribute("aria-pressed")).toBe("true");
     fireEvent.keyDown(window, { key: "Escape" });
     await waitFor(() => expect(learn.getAttribute("aria-pressed")).toBe("false"));
 

@@ -1,0 +1,52 @@
+.diagram {
+  --pmf-diagram-paper: #f1efe9;
+  --pmf-diagram-muted: #c5c3bc;
+  --pmf-diagram-line: #77756e;
+  --pmf-diagram-signal: #f17962;
+  margin: 0;
+  min-width: 0;
+  color: var(--pmf-diagram-paper);
+  background: #282828;
+  font-family: var(--font-sans), sans-serif;
+}
+.capabilityDrawing { position: relative; height: 192px; }
+.capabilityPaths { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.capabilityPaths path { fill: none; stroke: var(--pmf-diagram-line); stroke-width: 1; vector-effect: non-scaling-stroke; transition: stroke 240ms ease, stroke-width 240ms ease; }
+.capabilityPaths .selectedPath { stroke: var(--pmf-diagram-signal); stroke-width: 1.5; }
+.capabilityPaths circle { fill: var(--pmf-diagram-paper); }
+.modelLabel { position: absolute; left: 0; top: 50%; transform: translateY(-50%); font: 400 13px/1.3 var(--font-sans), sans-serif; letter-spacing: -.025em; }
+.capabilityChoices { position: relative; margin-left: 32.27%; }
+.diagram .capabilityChoice { position: relative; display: flex; align-items: center; width: 100%; min-height: 48px; padding: 7px 0 7px 15px; text-align: left; border: 0; background: transparent; color: var(--pmf-diagram-muted); font: 400 14px/1.3 var(--font-sans), sans-serif; letter-spacing: -.02em; cursor: pointer; transition: color 240ms ease; }
+.diagram .capabilityChoice[aria-pressed="true"] { color: var(--pmf-diagram-paper); }
+.capabilityChoice:focus-visible { outline: 2px solid var(--pmf-diagram-signal); outline-offset: 3px; }
+.capabilityPoint { position: absolute; left: -2px; top: calc(50% - 2px); width: 4px; height: 4px; background: #282828; border: 1px solid var(--pmf-diagram-muted); transition: background-color 240ms ease, border-color 240ms ease, transform 240ms ease; }
+.capabilityChoice[aria-pressed="true"] .capabilityPoint { background: var(--pmf-diagram-signal); border-color: var(--pmf-diagram-signal); transform: scale(1.5); }
+.purpose { min-height: 97px; border-top: 1px solid #55544f; padding-top: 12px; }
+.purposeLabel { color: var(--pmf-diagram-muted); font: 400 10px/1.5 var(--font-mono), monospace; text-transform: uppercase; letter-spacing: .055em; }
+.diagram .purpose p { margin: 5px 0 0; color: var(--pmf-diagram-paper); font: 400 13px/1.55 var(--font-sans), sans-serif; max-width: 50ch; animation: purposeResolve 220ms ease both; }
+.diagram .caption { padding: 12px 0 0; color: var(--pmf-diagram-muted); font: 400 10px/1.5 var(--font-mono), monospace; text-transform: uppercase; letter-spacing: .035em; }
+.inquiryLabels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 10px; text-align: center; color: var(--pmf-diagram-paper); font: 400 13px/1.4 var(--font-sans), sans-serif; }
+.opportunityDrawing { display: block; width: 100%; height: 176px; overflow: visible; }
+.mapBase path, .mapDraw path { fill: none; stroke: var(--pmf-diagram-line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.mapBase circle { fill: #282828; stroke: var(--pmf-diagram-muted); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.mapDraw path { stroke: var(--pmf-diagram-signal); stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--pmf-map-progress, 1)); }
+.direction { position: relative; padding-top: 16px; text-align: center; }
+.directionPoint { position: absolute; top: -3px; left: calc(50% - 3px); width: 6px; height: 6px; background: var(--pmf-diagram-signal); }
+.direction strong { display: block; font: 500 20px/1.15 var(--font-sans), sans-serif; letter-spacing: -.035em; }
+.direction > span:last-child { display: block; color: var(--pmf-diagram-muted); font: 400 12px/1.5 var(--font-sans), sans-serif; margin-top: 6px; }
+.opportunity .caption { padding-top: 18px; }
+@keyframes purposeResolve { from { opacity: .65; } to { opacity: 1; } }
+@media (max-width: 380px) {
+  .diagram .capabilityChoice { font-size: 13px; padding-left: 12px; }
+  .modelLabel { font-size: 12px; }
+  .purpose { min-height: 112px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .capabilityPaths path, .capabilityChoice, .capabilityPoint { transition: none; }
+  .diagram .purpose p { animation: none; }
+  .mapDraw path { stroke-dashoffset: 0; }
+}
+@media print {
+  .mapDraw path { stroke-dashoffset: 0; }
+  .diagram .purpose p { animation: none; }
+}

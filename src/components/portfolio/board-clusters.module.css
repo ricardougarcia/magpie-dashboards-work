@@ -1,0 +1,159 @@
+/* Authored positions, normal document flow: no free camera or dense auto-packing. */
+.index { display: flex; flex-wrap: wrap; gap: 0 24px; padding: 0 0 20px; }
+.index a { display: inline-flex; align-items: baseline; gap: 9px; min-height: 36px; padding-block: 8px; font: 10px/1.6 var(--font-mono), monospace; text-decoration: none; color: var(--muted); }
+.index a > span { font-size: 8px; color: var(--signal-text); }
+.index a:is(:hover, :focus-visible) { color: var(--ink); text-decoration: underline; text-underline-offset: 5px; }
+.field { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(40px, 5vw, 82px); row-gap: 80px; padding: 8px 0 56px; }
+.cluster { position: relative; display: flex; flex-direction: column; min-width: 0; max-width: none; width: 100%; margin: 0; border: 0; scroll-margin-top: 72px; }
+.heading, .ccp > header { display: block; padding: 0 0 28px; min-height: 174px; }
+.heading h2, .ccp > header h2 { font: 500 clamp(32px, calc(3vw + 2px), 46px)/1.05 var(--font-sans), sans-serif; letter-spacing: -.055em; margin: 17px 0 12px; overflow-wrap: break-word; }
+.heading h2 a { text-decoration: none; }
+.heading h2 a:is(:hover, :focus-visible) { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+.heading h2 > span, .heading h2 a > span { color: var(--signal-text); }
+.summary, .ccp > header p:last-child { font-size: 14px; line-height: 1.55; margin-top: 0 !important; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 24px; margin-top: 20px; font: 10px/1.6 var(--font-mono), monospace; color: var(--muted); }
+.sourceLabel, .clusterFoot, .reservedCaption > span, .noteFoot { font: 9px/1.6 var(--font-mono), monospace; text-transform: uppercase; letter-spacing: .035em; }
+.sourceLabel { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; color: var(--muted); }
+.clusterFoot { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 20px; margin-top: auto; padding-top: 26px; color: var(--muted); }
+.clusterFoot a { display: inline-flex; justify-content: space-between; gap: 20px; min-height: 44px; align-items: center; text-decoration: none; }
+.clusterFoot a:is(:hover, :focus-visible) { text-decoration: underline; text-underline-offset: 5px; }
+.clusterFoot a > span { color: var(--ink); }
+.cluster a:focus-visible, .index a:focus-visible { outline: 2px solid var(--signal-text); outline-offset: 5px; }
+
+/* Magpie: a source work record and a fixed-size demonstration of inspection. */
+.magpie { align-self: start; }
+.magpie > .heading { min-height: 0; padding-bottom: 16px; }
+.magpie > .heading h2 { margin: 12px 0 8px; }
+.magpie .facts { margin-top: 12px; }
+.magpie > .clusterFoot { flex-direction: row; margin-top: 0; padding: 16px 0 0; }
+.magpieArtifacts { position: relative; padding: 4px 0 0; }
+.timelineMount { display: block; width: 93%; padding: 14px 12px 12px; background: var(--paper-raised); text-decoration: none; border-top: 1px solid var(--line-strong); position: relative; }
+.timelineMount::before { content: ""; position: absolute; left: -5px; top: -5px; width: 14px; height: 14px; border-left: 1px solid var(--graphite); border-top: 1px solid var(--graphite); }
+.timelineDrawing { display: block; width: 100%; height: auto; margin-block: 14px 10px; overflow: visible; }
+.timelineDrawing text { font: 12px var(--font-mono), monospace; fill: var(--muted); }
+.monthRule { stroke: var(--ink); stroke-opacity: .1; stroke-width: 1; }
+.workBar rect { fill: #768891; fill-opacity: .4; transition: fill 260ms, fill-opacity 260ms; }
+.workBar path { stroke: #455b64; stroke-width: 2; stroke-opacity: .5; transition: stroke 260ms, stroke-opacity 260ms; }
+.sourceTrace, .relatedTrace { fill: none; stroke: var(--signal-text); stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; transition: stroke-dashoffset 260ms, opacity 200ms; pointer-events: none; }
+.infoCard { display: block; position: relative; width: 82%; margin: 18px 0 0 auto; padding: 18px 20px; background: var(--paper-raised); border-left: 1px solid var(--line-strong); text-decoration: none; clip-path: inset(0 0 54px 0); transition: clip-path 320ms cubic-bezier(.16, 1, .3, 1), border-color 220ms; }
+.cardHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.magpie .infoCard:focus-visible { outline-offset: -3px; }
+.cardHeading h3 { font: 450 clamp(20px, 1.8vw, 24px)/1.15 var(--font-sans), sans-serif; letter-spacing: -.04em; margin: 0; }
+.cardHeading > svg { flex: 0 0 auto; color: var(--muted); }
+.cardDemo { margin-top: 18px; }
+.cardTabs { display: flex; gap: 22px; border-bottom: 1px solid var(--line); font: 10px/1.6 var(--font-mono), monospace; }
+.cardTabs > span { position: relative; padding-bottom: 8px; transition: color 180ms; }
+.cardTabs > span::after { content: ""; position: absolute; inset: auto 0 -1px; height: 1px; background: var(--signal-text); transition: opacity 180ms; }
+.overviewTab { color: var(--ink); }
+.connectionsTab { color: var(--muted); }
+.connectionsTab::after { opacity: 0; }
+.cardPanels { display: grid; margin-top: 16px; }
+.cardOverview, .cardConnections { grid-area: 1 / 1; transition: opacity 200ms, transform 240ms; }
+.cardOverview { display: grid; gap: 13px; }
+.cardOverview span, .cardConnections > span, .cardArtifact > div > span { font: 9px/1.5 var(--font-mono), monospace; text-transform: uppercase; color: var(--muted); }
+.cardPanels p, .cardArtifact p { font-size: 12px; line-height: 1.55; margin: 3px 0 0; }
+.cardConnections { opacity: 0; transform: translateY(6px); }
+.connectionLabels { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; font: 9px/1.6 var(--font-mono), monospace; color: var(--muted); }
+.connectionLabels span { border-bottom: 1px solid var(--line); }
+.cardArtifact { display: flex; gap: 12px; align-items: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); opacity: 0; transform: translateY(6px); transition: opacity 180ms, transform 240ms; }
+.cardArtifact > svg { flex: 0 0 auto; color: var(--muted); }
+.cardArtifact > svg:last-child { margin-left: auto; }
+.previewToggle { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; margin: 2px 0 0 auto; padding: 8px 0 8px 12px; border: 0; background: transparent; color: var(--muted); font: 10px/1.5 var(--font-mono), monospace; cursor: var(--cursor-action); }
+.previewToggle:is(:hover, :focus-visible) { color: var(--ink); }
+.previewToggle:focus-visible { outline: 2px solid var(--signal-text); outline-offset: 4px; }
+.magpie[data-preview-active="true"] .selectedWork rect { fill: var(--ink); fill-opacity: 1; }
+.magpie[data-preview-active="true"] .selectedWork path { stroke: var(--paper); stroke-opacity: 1; }
+.magpie[data-preview-active="true"] .sourceTrace { stroke-dashoffset: 0; opacity: .8; transition: stroke-dashoffset 650ms 100ms cubic-bezier(.16, 1, .3, 1), opacity 180ms; }
+.magpie[data-preview-active="true"] .infoCard { clip-path: inset(0); border-color: var(--signal-text); transition: clip-path 700ms 200ms cubic-bezier(.16, 1, .3, 1), border-color 220ms; }
+.magpie[data-preview-active="true"] .cardOverview { opacity: 0; transform: translateY(-4px); transition-delay: 1500ms; }
+.magpie[data-preview-active="true"] .cardConnections { opacity: 1; transform: none; transition-delay: 1700ms; }
+.magpie[data-preview-active="true"] .overviewTab { color: var(--muted); transition-delay: 1500ms; }
+.magpie[data-preview-active="true"] .overviewTab::after { opacity: 0; transition-delay: 1500ms; }
+.magpie[data-preview-active="true"] .connectionsTab { color: var(--ink); transition-delay: 1700ms; }
+.magpie[data-preview-active="true"] .connectionsTab::after { opacity: 1; transition-delay: 1700ms; }
+.magpie[data-preview-active="true"] .relatedWork rect { fill: var(--ink); fill-opacity: .75; transition-delay: 1700ms; }
+.magpie[data-preview-active="true"] .relatedWork path { stroke: var(--paper); stroke-opacity: .8; transition-delay: 1700ms; }
+.magpie[data-preview-active="true"] .relatedTrace { stroke-dashoffset: 0; opacity: .8; transition: stroke-dashoffset 800ms 1700ms cubic-bezier(.16, 1, .3, 1), opacity 180ms 1700ms; }
+.magpie[data-preview-active="true"] .cardArtifact { opacity: 1; transform: none; transition: opacity 380ms 2600ms, transform 500ms 2600ms cubic-bezier(.16, 1, .3, 1); }
+
+/* Reserved areas have varied blank studies; their treatment never suggests a button. */
+.reserved .heading { color: var(--muted); }
+.reserved .heading h2 { font-weight: 450; }
+.reservedArtifacts { position: relative; padding-top: 4px; }
+.reservedDrawing { display: block; width: 100%; height: auto; overflow: visible; }
+.reservedDrawing path, .reservedDrawing circle { fill: none; stroke: var(--ink); stroke-width: 1; stroke-opacity: .22; }
+.reservedDrawing .paperPlane { fill: var(--paper-raised); fill-opacity: .65; stroke-dasharray: 4 5; }
+.reservedDrawing .fineHatch { stroke-opacity: .1; }
+.reservedDrawing .registrationMarks { stroke-opacity: .32; stroke-dasharray: 1; }
+.reservedDrawing .bridgeStudy { stroke-width: 2; stroke-opacity: .24; }
+.reservedArtifacts[data-entered="true"] .registrationMarks { animation: registerTrace 1200ms cubic-bezier(.22, 1, .36, 1) both; }
+.reservedCaption { margin: 12px 0 0 8%; color: var(--muted); }
+.reservedCaption p { font-size: 12px; line-height: 1.6; margin-top: 6px; }
+.reserved .clusterFoot { padding-top: 38px; }
+
+/* CCP reuses the finished Board's artifacts and inspection components at new proportions. */
+.ccp { align-self: start; container-type: inline-size; --board-copy: 12px; --board-display: 25px; }
+.ccp::before, .ccp::after { display: none; }
+.ccp [data-evidence-active] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 30px 28px; }
+.ccp [data-artifact="A"] { grid-column: 1; grid-row: 1; }
+.ccp [data-artifact="B"] { grid-column: 2; grid-row: 1 / 3; padding-top: 65px; }
+.ccp [data-artifact="C"] { grid-column: 1; grid-row: 2; margin: 0 0 0 12px; }
+.ccp [data-artifact="B"] > div { display: block; }
+.ccp [data-artifact="B"] > div > div:last-child { margin: 0 -6px; }
+.ccp [data-artifact] [data-artifact-mount] { padding: 5px; }
+.ccp [data-artifact] button { margin-top: 0; min-height: 40px; }
+.ccp [data-plate-label] > span:last-child { display: none; }
+.ccp [data-plate-label] { padding-left: 0; }
+.ccp [data-pixel-size] { flex-wrap: nowrap; gap: 12px; }
+.ccp [data-pixel-size] > div:first-child { flex: 1; min-width: 0; }
+.ccp [data-artifact="C"] > div > div:last-child { width: min(380px, calc(100cqw - 12px)); }
+.ccp [data-artifact="C"] > div > div:last-child > div:first-child { align-self: end; }
+.ccp [data-artifact="C"] > div > div:last-child::after { display: none; }
+.ccp [data-source-locator] { width: 62px; flex: 0 0 62px; }
+.ccp > footer { flex-direction: row; margin-top: 0; padding: 12px 0 0; }
+.ccp > footer a { align-items: baseline; }
+
+@keyframes registerTrace { from { stroke-dashoffset: 1; opacity: .2; } to { stroke-dashoffset: 0; } }
+@media (max-width: 1100px) {
+  .field { column-gap: 36px; row-gap: 64px; }
+  .heading, .ccp > header { min-height: 184px; }
+  .ccp [data-evidence-active] { column-gap: 24px; }
+  .ccp [data-artifact="A"], .ccp [data-artifact="C"] { grid-column: 1; }
+  .infoCard { width: 90%; }
+  .sourceLabel { font-size: 8px; }
+}
+@media (max-width: 900px) {
+  .field { grid-template-columns: 1fr; row-gap: 58px; max-width: 670px; margin-inline: auto; }
+  .index { column-gap: 20px; padding-bottom: 24px; }
+  .heading, .ccp > header { min-height: 0; padding-bottom: 26px; }
+  .heading h2, .ccp > header h2 { font-size: clamp(32px, calc(5.5vw + 2px), 44px); }
+  .timelineMount { width: 92%; }
+  .infoCard { width: 82%; }
+  .reservedDrawing { max-height: 340px; }
+  .clusterFoot, .reserved .clusterFoot { padding-top: 18px; }
+  .ccp [data-artifact="C"] { width: auto !important; }
+}
+@media (max-width: 540px) {
+  .index { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; }
+  .index a { font-size: 9px; gap: 6px; min-height: 44px; }
+  .sourceLabel { font-size: 7px; }
+  .timelineMount { padding: 12px 8px; }
+  .timelineMount { width: 100%; }
+  .infoCard { width: 94%; margin-top: 12px; padding: 16px; }
+  .reservedCaption { margin-left: 4%; }
+  .ccp [data-evidence-active] { display: flex; flex-direction: column; gap: 28px; }
+  .ccp [data-artifact="A"] { width: 88%; }
+  .ccp [data-artifact="B"] { padding-top: 0; width: 100%; }
+  .ccp [data-artifact="C"] { width: calc(100% - 22px) !important; margin-left: 22px; }
+  .ccp [data-artifact="C"] > div > div:last-child { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .field *, .field *::before, .field *::after { animation: none !important; }
+  .magpie *, .magpie *::after { transition: none !important; }
+  .cardConnections, .cardOverview, .cardArtifact { transform: none !important; }
+}
+@media print {
+  .index { display: none; }
+  .field { display: block; }
+  .cluster { break-inside: avoid; margin-bottom: 40px; }
+}
