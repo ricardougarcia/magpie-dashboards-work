@@ -55,3 +55,9 @@ This is an operator checklist; no background service automatically merges or rel
 ## Failure handling
 
 Fix failures within the assigned scope or explain the blocker. Do not bypass protections, discard concurrent commits or content, treat absent checks as passing, or release an unverified revision. No automatic processing of unrelated PRs is authorized.
+
+## Exclude owner and automated browser visits from analytics
+
+Before Codex or any automated browser opens a public portfolio page on `ricardo-garcia-portfolio.vercel.app`, exclude that browser context. Open `/analytics/exclude` first, select **Exclude this browser**, and verify the saved confirmation before navigating to portfolio pages. The settings route never collects analytics. Repeat for each fresh context, browser profile, device, or cleared storage. UAT exclusions do not transfer to production.
+
+Browser test harnesses may instead seed localStorage key `portfolio:analytics:excluded:v1` with value `1` on the production origin before any page script runs. Do not rely on bot filtering or `navigator.webdriver` alone. Positive analytics tests must intercept collection requests so test visits do not enter the live dashboard. See `docs/portfolio-analytics.md` for verification and release instructions.

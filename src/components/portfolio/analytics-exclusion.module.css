@@ -1,0 +1,26 @@
+.page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+  background: #f1efe9;
+  color: #242321;
+}
+
+.card { width: min(100%, 560px); }
+.index { font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .1em; }
+.card h1 { margin: 20px 0; font-size: clamp(30px, 6vw, 42px); line-height: 1.1; }
+.card p { line-height: 1.6; }
+.button {
+  margin: 20px 0 0;
+  padding: 12px 18px;
+  border: 1px solid #242321;
+  background: #242321;
+  color: #f1efe9;
+  font: inherit;
+  cursor: pointer;
+}
+.button:focus-visible, .back:focus-visible { outline: 2px solid #a63122; outline-offset: 4px; }
+.status { overflow-wrap: anywhere; }
+.note { margin-top: 28px; font-size: 14px; color: #595650; }
+.back { display: inline-block; margin-top: 16px; text-underline-offset: 4px; }
