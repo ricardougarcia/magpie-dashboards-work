@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
+import { PortfolioAnalytics } from "@/components/portfolio/portfolio-analytics";
+import { analyticsEnvironmentEnabled } from "@/lib/portfolio-analytics";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,7 +38,15 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Suspense fallback={null}>
+          <PortfolioAnalytics enabled={analyticsEnvironmentEnabled({
+            VERCEL_ENV: process.env.VERCEL_ENV,
+            VERCEL_TARGET_ENV: process.env.VERCEL_TARGET_ENV,
+          })} />
+        </Suspense>
+      </body>
     </html>
   );
 }

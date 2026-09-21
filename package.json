@@ -12,6 +12,7 @@
     "check": "pnpm verify:data && pnpm test && pnpm lint && pnpm build"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.8.0",
     "framer-motion": "^13.2.0",
     "lucide-react": "^1.39.0",
