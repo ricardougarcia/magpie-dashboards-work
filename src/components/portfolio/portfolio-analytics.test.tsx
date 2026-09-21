@@ -80,6 +80,25 @@ describe("PortfolioAnalytics", () => {
     expect(analyticsMock).not.toHaveBeenCalled();
   });
 
+  it("mounts when Next enters an allowed route before window history catches up", () => {
+    navigation.pathname = "/analytics/exclude";
+    window.history.replaceState({}, "", navigation.pathname);
+    const view = render(<PortfolioAnalytics enabled />);
+    expect(analyticsMock).not.toHaveBeenCalled();
+
+    // Next can publish its new pathname before updating the browser URL.
+    navigation.pathname = "/theboard";
+    view.rerender(<PortfolioAnalytics enabled />);
+    expect(window.location.pathname).toBe("/analytics/exclude");
+    expect(screen.queryByTestId("analytics-mounted")).not.toBeNull();
+    const props = analyticsMock.mock.calls.at(-1)?.[0] as AnalyticsProps;
+    const event = { type: "pageview" as const, url: `${PORTFOLIO_ORIGIN}/theboard` };
+    expect(props.beforeSend?.(event)).toBeNull();
+
+    window.history.replaceState({}, "", navigation.pathname);
+    expect(props.beforeSend?.(event)).toEqual(event);
+  });
+
   it("stops collection immediately when the owner excludes this tab", () => {
     render(<PortfolioAnalytics enabled />);
     const props = analyticsMock.mock.calls.at(-1)?.[0] as AnalyticsProps;

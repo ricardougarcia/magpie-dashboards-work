@@ -9,6 +9,7 @@ import {
   isBrowserExcluded,
   isTrackedPortfolioUrl,
 } from "@/lib/portfolio-analytics";
+import { PORTFOLIO_ORIGIN } from "@/lib/portfolio-release";
 
 function subscribe(callback: () => void) {
   window.addEventListener("storage", callback);
@@ -21,7 +22,9 @@ function subscribe(callback: () => void) {
   };
 }
 
-const browserCanCollect = () => !isBrowserExcluded() && isTrackedPortfolioUrl(window.location.href);
+// Next can render a new pathname before history updates window.location.
+// Subscribe only to browser eligibility; let usePathname govern route eligibility.
+const browserCanCollect = () => !isBrowserExcluded() && window.location.origin === PORTFOLIO_ORIGIN;
 const serverCanCollect = () => false;
 
 export function PortfolioAnalytics({ enabled }: { enabled: boolean }) {

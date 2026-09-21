@@ -21,6 +21,6 @@
   cursor: pointer;
 }
 .button:focus-visible, .back:focus-visible { outline: 2px solid #a63122; outline-offset: 4px; }
-.status { overflow-wrap: anywhere; }
+.status { margin-top: 16px; overflow-wrap: anywhere; }
 .note { margin-top: 28px; font-size: 14px; color: #595650; }
 .back { display: inline-block; margin-top: 16px; text-underline-offset: 4px; }
